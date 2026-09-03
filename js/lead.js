@@ -20,6 +20,30 @@ var Sfx={ctx:null,on:true,
   pop:function(){Sfx.tone(520,.12,'triangle',.3)},
   tick:function(){Sfx.tone(1200,.05,'square',.12)},
   wrong:function(){Sfx.tone(180,.4,'sawtooth',.22)},
+  whistle:function(){
+    Sfx.tone(2400,.45,'sawtooth',.35);
+    setTimeout(function(){Sfx.tone(2700,.5,'sine',.4)},60);
+    setTimeout(function(){Sfx.tone(2400,.35,'sawtooth',.35)},200);
+  },
+  horn:function(){
+    var notes=[392,523,659,784];
+    notes.forEach(function(f,i){
+      setTimeout(function(){Sfx.tone(f,.28,'triangle',.35)},i*150);
+    });
+  },
+  drum:function(){
+    Sfx.tone(140,.25,'triangle',.5);
+    setTimeout(function(){Sfx.tone(80,.3,'sine',.4)},40);
+  },
+  cheer:function(){
+    [523,659,784,1047,1318].forEach(function(f,i){
+      setTimeout(function(){Sfx.tone(f,.35,'sine',.3)},i*80);
+    });
+  },
+  gong:function(){
+    Sfx.tone(440,1.2,'sine',.4);
+    setTimeout(function(){Sfx.tone(880,.8,'triangle',.2)},30);
+  },
   fanfare:function(){
     [523,659,784,1047].forEach(function(f,i){
       setTimeout(function(){Sfx.tone(f,.3)},i*130);
@@ -184,8 +208,13 @@ var Lead={
     var S=Lead.S,st=Lead.cur(),g=Guide.forStage(st);
     var pills=S.meet.stages.map(function(x,i){return '<i class="'+(i<S.idx?'done':i===S.idx?'on':'')+'"></i>'}).join('');
     document.getElementById('leadroot').innerHTML=
-     '<div class="lead-top"><button onclick="Lead.exit()">✕</button><div class="tt">'+esc(S.meet.n)+(S.no?' ・第'+S.no+'次':'')+'</div>'+
-       '<button onclick="Lead.tools()">🧰</button><button onclick="Lead.fs()">🖥️</button></div>'+
+     '<div class="lead-top"><button onclick="Lead.exit()" title="離開">✕</button>'+
+       '<div class="tt">'+esc(S.meet.n)+(S.no?' ・第'+S.no+'次':'')+'</div>'+
+       '<button class="lead-top-pill" onclick="Lead.quietQuick()" title="5秒安靜">🤫 安靜</button>'+
+       '<button class="lead-top-pill" onclick="Sfx.whistle();toast(\'🎺 嗶————！集合！\')" title="吹哨">🎺 哨子</button>'+
+       '<button class="lead-top-pill" onclick="Lead.addMiniGame()" title="加插遊戲">➕ 遊戲</button>'+
+       '<button onclick="Lead.tools()" title="工具箱">🧰</button>'+
+       '<button onclick="Lead.fs()" title="全螢幕">🖥️</button></div>'+
      '<div class="lead-stage" id="stageArea"><span class="stg-type">'+st.t+' ・ 環節 '+(S.idx+1)+'/'+S.meet.stages.length+'</span>'+
        '<h1>'+esc(st.n)+'</h1><div class="kids" id="kidsArea">'+Lead.screen(st)+'</div></div>'+
      '<div class="lead-bar"><div class="row"><div class="stagepill">'+pills+'</div></div>'+
@@ -196,6 +225,72 @@ var Lead={
        '<button class="btn sm ghost" onclick="Lead.next()">下一個 ▶</button></div></div>';
     Lead.stopTmr();Lead.renderTmr();
     if(Lead.after)Lead.after();
+  },
+  quietQuick:function(){
+    var root=document.getElementById('leadroot')||document.body;
+    var existing=document.getElementById('quietOverlay');
+    if(existing){existing.remove();return;}
+    var ov=document.createElement('div');
+    ov.id='quietOverlay';
+    ov.className='toolwrap';
+    ov.style.background='rgba(10,25,18,0.96)';
+    ov.style.zIndex='350';
+    ov.innerHTML='<div class="toolbox" style="text-align:center;max-width:480px;background:#fff;border-radius:24px;padding:24px">'+
+      '<div class="huge" style="font-size:5rem;line-height:1">🤫</div>'+
+      '<h2 style="color:var(--ord);font-size:1.8rem;margin:8px 0">請全體安靜・變木頭人！</h2>'+
+      '<div id="quietCount" style="font-size:4.5rem;font-weight:900;color:var(--grd);margin:10px 0">5</div>'+
+      '<p class="mute" style="font-size:1rem">睇下邊個最快靜晒同企定定...</p>'+
+      '<div class="btns" style="justify-content:center"><button class="btn sm ghost" onclick="document.getElementById(\'quietOverlay\').remove()">關閉</button></div>'+
+      '</div>';
+    root.appendChild(ov);
+    var sec=5;
+    Sfx.whistle();
+    var iv=setInterval(function(){
+      sec--;
+      var num=document.getElementById('quietCount');
+      if(!num){clearInterval(iv);return;}
+      if(sec>0){
+        num.textContent=sec;
+        Sfx.tick();
+      } else {
+        clearInterval(iv);
+        num.textContent='🎉';
+        num.style.fontSize='3.5rem';
+        var h2=ov.querySelector('h2');
+        if(h2){h2.textContent='好叻！個個都安靜企定！';h2.style.color='var(--grd)';}
+        Sfx.fanfare();
+        setTimeout(function(){
+          if(ov.parentNode)ov.remove();
+        },1600);
+      }
+    },1000);
+  },
+  addMiniGame:function(){
+    var games=[
+      {id:'traffic',ic:'🚦',n:'紅綠燈',d:'紅燈停綠燈行・5分鐘'},
+      {id:'leader',ic:'🙋',n:'領袖話',d:'專注反應肢體・5分鐘'},
+      {id:'catch',ic:'🦗',n:'捉草蜢',d:'眼明手快互動・30秒'},
+      {id:'quiz',ic:'🏆',n:'問答擂台',d:'童軍與自然搶答・5分鐘'},
+      {id:'guess',ic:'🔍',n:'估估下',d:'看剪影猜事物・5分鐘'},
+      {id:'clean',ic:'🧼',n:'洗手七步操',d:'20秒計時歌・3分鐘'},
+      {id:'task',ic:'🎯',n:'任務抽籤機',d:'轉動抽日行一善・3分鐘'},
+      {id:'emotion',ic:'😊',n:'情緒面面觀',d:'心情輪盤表達・5分鐘'}
+    ];
+    var h='<h3>➕ 加插快閃遊戲／數碼工具</h3><div class="mute" style="font-size:.82rem;margin-bottom:10px">提早完成或想轉移焦點？點擊即刻開玩，玩完可隨時返回原集會流程：</div>'+
+      '<div class="grid2">'+
+        games.map(function(g){
+          return '<div class="mem" style="margin:0;padding:10px"><h4 style="margin:0">'+g.ic+' '+g.n+'</h4><small class="mute">'+g.d+'</small><br><button class="btn sm gr" style="margin-top:6px" onclick="Lead.insertGameStage(\''+g.id+'\',\''+g.n+'\')">▶ 即插即玩</button></div>';
+        }).join('')+
+      '</div>';
+    Modal.open(h);
+  },
+  insertGameStage:function(screen,name){
+    Modal.close();
+    var S=Lead.S;
+    var newStage={t:'遊戲',n:'快閃：'+name,m:5,how:'臨時加插數碼互動遊戲',script:'「而家我哋嚟個快閃小挑戰——'+name+'！」',screen:screen};
+    S.meet.stages.splice(S.idx+1,0,newStage);
+    Lead.next();
+    toast('已加插「'+name+'」！');
   },
   fs:function(){
     try{

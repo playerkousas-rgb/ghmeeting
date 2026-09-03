@@ -657,3 +657,51 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
   flex-wrap: wrap;
 }
 
+/* 隨手開會面板 (Instant Hub) & 帶領模式快捷藥丸 */
+.quick-hub-header {
+  text-align: center;
+  margin-bottom: 12px;
+}
+.quick-hub-header h3 {
+  font-size: 1.3rem;
+  margin: 4px 0 2px;
+  color: var(--ord);
+}
+.quick-tools-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.quick-tools-strip {
+  background: rgba(255,255,255,.9);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 8px 10px;
+  margin-top: 10px;
+}
+.quick-tools-strip .pill {
+  cursor: pointer;
+  transition: all .12s;
+}
+.quick-tools-strip .pill:hover {
+  background: #ffe0b2;
+  border-color: var(--or);
+  transform: translateY(-1px);
+}
+.lead-top-pill {
+  background: rgba(255,255,255,.25);
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 99px;
+  padding: 4px 10px;
+  font-size: .8rem;
+  font-weight: 800;
+  color: #fff;
+  white-space: nowrap;
+  transition: all .12s;
+}
+.lead-top-pill:active {
+  background: rgba(255,255,255,.5);
+  transform: scale(.95);
+}
+
+
