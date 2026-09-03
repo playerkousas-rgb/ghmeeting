@@ -62,6 +62,8 @@ var Play={
   },
   craftDetail:function(tid,si){
     var t=dur(tid);if(!t||!t.stages[si])return;Prepare._detailId=tid;
-    Modal.open('<div class="eyebrow">🎨 手工準備卡</div><h3>'+esc(t.stages[si].n)+'</h3><div class="mute">來自「'+esc(t.n)+'」・可單獨使用</div>'+Prepare.brief(t.stages[si],si));
+    Modal.open('<div class="eyebrow">🎨 手工準備卡</div><h3>'+esc(t.stages[si].n)+'</h3><div class="mute">來自「'+esc(t.n)+'」・可單獨使用</div>'+
+      '<div class="btns" style="margin:6px 0 10px"><button class="btn sm" style="background:#2e7d32;color:#fff" onclick="Modal.close();App.go(\'#print\')">🖨️ 打開 A4 打印教材套包庫</button></div>'+
+      Prepare.brief(t.stages[si],si));
   }
 };

@@ -17,7 +17,7 @@ var App={
   route:function(){
     var h=(location.hash||'#plan').slice(1).split('?')[0];
     if(document.body.contains(document.getElementById('leadroot'))&&!document.getElementById('leadroot').classList.contains('hidden'))Lead.exit(false);
-    var v={plan:'plan',meet:'meet',play:'play',lead:'lead',track:'track',book:'book'}[h]||'plan';
+    var v={plan:'plan',meet:'meet',play:'play',lead:'lead',track:'track',book:'book',print:'print'}[h]||'plan';
     App.view=v;
     document.querySelectorAll('#tabbar a').forEach(function(a){a.classList.toggle('on',a.dataset.tab===v)});
     var el=document.getElementById('view');
@@ -27,6 +27,7 @@ var App={
     if(v==='lead')el.innerHTML=Lead.html();
     if(v==='track')el.innerHTML=Track.html();
     if(v==='book')el.innerHTML=HB.html();
+    if(v==='print')el.innerHTML=PrintKit.html();
     scrollTo(0,0);
   },
   go:function(h){location.hash=h},
@@ -169,10 +170,10 @@ var Plan={
     var next=pl.rows.find(function(r){return r.status==='todo'});
     var done=pl.rows.filter(function(r){return r.status==='done'}).length;
     var nextT=next?dur(next.tid):null;
-    var h='<section class="ready-hero"><span class="eyebrow">🦗 '+esc(s.group)+'・一APP在手 集會隨手</span><h1>拎起手機，集會即開即玩。</h1><p><b>100% 內置數碼道具與互動</b>：零物資準備、免印刷、免剪貼！開會口號、主題曲伴奏、互動教學、遊戲擂台與出席記錄，一機全包。</p>'+
+    var h='<section class="ready-hero"><span class="eyebrow">🦗 '+esc(s.group)+'・一APP在手 集會隨手</span><h1>拎起手機，集會即開即玩。</h1><p><b>100% 內置數碼道具與互動</b>：零物資準備、免印刷、免剪貼！開會口號、主題曲伴奏、互動教學、遊戲擂台與出席記錄，一機全包。<b>用心準備實體？</b> 亦可一鍵打印 A4 教材套包！</p>'+
       '<div class="action-grid"><button class="btn primary" onclick="'+(nextT?"Lead.start('"+nextT.id+"',"+next.no+")":"Lead.start('t01')")+'">⚡ '+(nextT?'隨手帶領第'+next.no+'次集會':'開始第1次集會')+'</button>'+
       '<button class="btn ghost" onclick="App.quickHub()">🎲 隨手開會面板</button>'+
-      '<button class="btn ghost" onclick="App.go(\'#play\')">🎮 22個數碼遊戲</button></div>'+
+      '<button class="btn ghost" onclick="App.go(\'#print\')" style="background:#e8f5e9;color:#1b5e20;border-color:#81c784">🖨️ A4 打印教材套包</button></div>'+
       (nextT?'<div class="next-strip"><span style="font-size:1.7rem">📅</span><div class="next-copy"><small>今日進度推薦</small><b>'+esc(nextT.n)+'</b><small>'+esc(nextT.theme)+'・約 '+Plan.lenOf(nextT)+' 分鐘</small></div><button class="btn sm gr" onclick="Lead.start(\''+nextT.id+'\','+next.no+')">▶ 即開</button></div>':'<div class="attention" style="margin-top:12px"><b>🎉 全年流程完成</b><br>可以去「集會」揀一張卡，或者隨時點擊「隨手開會面板」即興帶領。</div>')+
       '<div class="quick-tools-strip"><span style="font-size:.78rem;font-weight:800;color:var(--ord);display:block;margin-bottom:4px">🧰 現場隨手救急快鍵：</span>'+
         '<button class="pill" onclick="Lead.quietQuick()">🤫 5秒安靜</button>'+
