@@ -41,7 +41,7 @@ var Prepare={
     return '<article class="brief-card"><div class="brief-head"><span class="brief-no">'+(i+1)+'</span><div><h3>'+esc(s.n)+'</h3><small>'+esc(s.t)+'・'+(+s.m||0)+' 分鐘</small></div></div>'+mats+visual+
       '<div class="guide-lead"><b>領袖先做</b>'+esc(g.lead)+'</div><div class="guide-steps">'+g.steps.map(function(x){return '<div class="guide-step"><span class="gnum">'+esc(x[0])+'</span><span class="gicon">'+x[1]+'</span><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div>'}).join('')+'</div>'+
       '<div class="say-box"><b>🎤 可以直接照講</b>'+esc(g.say)+'</div><div class="watch-row"><div><b>👀 睇住呢樣</b><br>'+esc(g.watch)+'</div><div class="safe"><b>🛡️ 安全</b><br>'+esc(g.safety)+'</div></div>'+
-      ((Craft&&(Craft.match(s)||Craft.isCraft(s)))?Craft.mini(s):'')+
+      ((Craft&&(Craft.match(s)||Craft.isCraft(s)))?Craft.mini(s):'')+Kit.ownerHtml(Prepare._detailId,i,s)+
       '<details style="margin-top:9px"><summary>顯示完整玩法文字</summary><div class="box" style="margin-top:6px">'+esc(s.how||'')+'</div></details><div class="btns"><button class="btn sm gr" onclick="Prepare.detailStage(\''+esc(Prepare._detailId||'')+'\','+i+')">▶ 試用呢節</button></div></article>';
   },
   detailStage:function(id,i){
@@ -63,7 +63,8 @@ var Prepare={
           '<br><small class="mute">未做過都跟得住：睇成品示意圖＋逐步拆解，帶班時只示範頭兩步。</small></div>':'')
       })()+
       '<div class="card" style="box-shadow:none;border:1px solid var(--line);padding:11px;margin:12px 0"><h4 style="margin:0;color:var(--ord)">🧺 物資總清單・逐項撳一下剔走</h4><div class="mats-bar">'+(mats.length?mats.map(function(m){return '<span class="pill" onclick="this.classList.toggle(\'on\')"><span class="dot"></span>'+esc(m)+'</span>'}).join(''):'<span class="mute">今次唔需要額外物資</span>')+'</div></div>'+
-      '<h4 style="margin:14px 0 4px;color:var(--ord)">跟住呢條流程做</h4>'+t.stages.map(function(s,i){return Prepare.brief(s,i)}).join('')+
+      Kit.meetKitHtml(t)+
+      '<h4 style="margin:14px 0 4px;color:var(--ord)">跟住呢條流程做'+(Kit.leaderNames().length?'・撳環節下面嘅「負責領袖」分工':'')+'</h4>'+t.stages.map(function(s,i){return Prepare.brief(s,i)}).join('')+
       '<div class="attention"><b>收尾</b><br>完成後返到帶領畫面最後一頁，撳「記錄完成＋記出席」，就唔使另外抄名單。</div></div>';
     Modal.open(h);
   },
@@ -193,6 +194,11 @@ var Prepare={
     var lines=['🦗 '+t.n+'('+Plan.lenOf(t)+'分鐘)','主題:'+t.theme,''];
     t.stages.forEach(function(s,i){lines.push((i+1)+'. ['+s.m+'分鐘]['+s.t+'] '+s.n);if(s.how)lines.push('   '+s.how);if(s.mats&&s.mats.length)lines.push('   🧺 '+s.mats.join('、'))});
     var mats=matsOf(t);if(mats.length)lines.push('','🧺 物資總清單:'+mats.join('、'));
+    var tips=Kit.matsTipTxt(mats);if(tips)lines.push('','📦 備料提示:',tips);
+    var own=Kit.ownersOf(t);
+    if(own.some(function(x){return x}))lines.push('','👥 分工:',t.stages.map(function(s,i){return '  '+(i+1)+'. '+s.n+' → '+(own[i]||'未定')}).join('\n'));
+    var ck=Kit.checkFor(t.stages||[]);
+    if(ck)lines.push('','🧭 '+ck.n+'（出發前讀一次）',ck.items.map(function(x,i){return '  '+(i+1)+'. '+x}).join('\n'));
     lines.push('','— 分享自 小童軍集會助手 © Scout System');
     var txt=lines.join('\n');
     if(navigator.share)navigator.share({text:txt}).catch(function(){});

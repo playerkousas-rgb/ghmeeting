@@ -178,7 +178,7 @@ var Lead={
     Lead.open();
   },
   startGame:function(screen,name){
-    var titles={leader:'領袖話',traffic:'紅綠燈',catch:'捉草蜢',memory:'記憶配對',quiz:'問答擂台',guess:'估估下',judge:'對錯法庭',rhythm:'節奏模仿',chute:'快樂傘玩法卡',story:'故事寶盒',roll:'音樂傳球點名',bodycard:'身體地圖紅黃綠',recycle:'三色回收分類',flags:'國旗區旗敬禮',clean:'洗手七步好寶寶',emotion:'情緒面面觀',task:'任務抽籤機',bpstory:'貝登堡故事繪本',scoutfamily:'童軍大家庭地圖',foodrainbow:'彩虹健康飲食盤',transport:'交通工具大圖鑑',moon:'中秋射月拋圈',ghinfo:'認識小草蜢',badgego:'獎章Go Go Go',scarf:'整理領巾圖解'};
+    var titles={leader:'領袖話',traffic:'紅綠燈',catch:'捉草蜢',memory:'記憶配對',quiz:'問答擂台',guess:'估估下',judge:'對錯法庭',rhythm:'節奏模仿',chute:'快樂傘玩法卡',story:'故事寶盒',roll:'音樂傳球點名',bodycard:'身體地圖紅黃綠',recycle:'三色回收分類',flags:'國旗區旗敬禮',clean:'洗手七步好寶寶',emotion:'情緒面面觀',task:'任務抽籤機',bpstory:'貝登堡故事繪本',scoutfamily:'童軍大家庭地圖',foodrainbow:'彩虹健康飲食盤',transport:'交通工具大圖鑑',moon:'中秋射月拋圈',ghinfo:'認識小草蜢',badgego:'獎章Go Go Go',scarf:'整理領巾圖解',promise:'誓詞・規律・口號'};
     Lead.cleanupTimers();
     Lead.S={meet:{id:'game-'+screen,n:name||titles[screen]||'即玩活動',stages:[{t:'遊戲',n:name||titles[screen]||'即玩活動',m:10,screen:screen}]},idx:0,left:600,timerOn:false,no:0};
     Lead.open();
@@ -209,16 +209,19 @@ var Lead={
     var pills=S.meet.stages.map(function(x,i){return '<i class="'+(i<S.idx?'done':i===S.idx?'on':'')+'"></i>'}).join('');
     document.getElementById('leadroot').innerHTML=
      '<div class="lead-top"><button onclick="Lead.exit()" title="離開">✕</button>'+
-       '<div class="tt">'+esc(S.meet.n)+(S.no?' ・第'+S.no+'次':'')+'</div>'+
+       '<div class="tt">'+esc(S.meet.n)+(S.no?' ・第'+S.no+'次':'')+
+         (function(){var ow=Kit.ownerOf(S.meet.id,S.idx);return '<span class="tt-who">'+(ow?'🧑‍🏫 '+esc(ow):'🧑‍🏫 未分工・準備卡可填')+'</span>'})()+
+       '</div>'+
        '<button class="lead-top-pill" onclick="Lead.quietQuick()" title="5秒安靜">🤫 安靜</button>'+
        '<button class="lead-top-pill" onclick="Sfx.whistle();toast(\'🎺 嗶————！集合！\')" title="吹哨">🎺 哨子</button>'+
+       '<button class="lead-top-pill" onclick="Kit.openCheckFor(Lead.S.meet)" title="今場執行檢查表">🧭 檢查表</button>'+
        '<button class="lead-top-pill" onclick="Lead.addMiniGame()" title="加插遊戲">➕ 遊戲</button>'+
        '<button onclick="Lead.tools()" title="工具箱">🧰</button>'+
        '<button onclick="Lead.fs()" title="全螢幕">🖥️</button></div>'+
      '<div class="lead-stage" id="stageArea"><span class="stg-type">'+st.t+' ・ 環節 '+(S.idx+1)+'/'+S.meet.stages.length+'</span>'+
        '<h1>'+esc(st.n)+'</h1><div class="kids" id="kidsArea">'+Lead.screen(st)+'</div></div>'+
      '<div class="lead-bar"><div class="row"><div class="stagepill">'+pills+'</div></div>'+
-       '<div class="row"><div style="flex:1;min-width:0"><span class="cue-label">領袖而家做</span><div class="now">'+esc(g.lead)+'</div><div class="leader-action">'+esc(g.watch)+'</div><div class="script">🎤 '+(esc(st.script||g.say)||'—')+'</div></div>'+
+       '<div class="row"><div style="flex:1;min-width:0"><span class="cue-label">領袖而家做'+(function(){var c=Kit.checkFor(st);return c?' <button class="lnk cue-chk" onclick="Kit.openCheck(\''+c.key+'\')">'+c.ic+' '+esc(c.n)+'</button>':' <button class="lnk cue-chk" onclick="Kit.hubOpen()">🧰 點預備</button>'})()+'</span><div class="now">'+esc(g.lead)+'</div><div class="leader-action">'+esc(g.watch)+'</div><div class="script">🎤 '+(esc(st.script||g.say)||'—')+'</div></div>'+
        '<div class="timer" id="tmr" onclick="Lead.toggleTmr()">'+Lead.fmt(S.left)+'</div></div>'+
        '<div class="row"><button class="btn sm ghost" onclick="Lead.prev()" '+(S.idx?'':'disabled style="opacity:.4"')+'>◀ 上一個</button>'+
        '<button class="btn sm" onclick="Lead.toggleTmr()" id="tmrBtn">▶ 開始計時</button>'+
@@ -1325,7 +1328,7 @@ Lead.brhTick=function(re){
 Lead.tools=function(tab){
   var mem=(Store.get('members',[])||[]).map(function(m){return m.n});
   var t=tab||'wheel';
-  var tabs=[['wheel','🎡 抽籤'],['group','👥 分組'],['score','🥇 計分'],['cd','⏳ 倒數'],['sfx','📣 音效'],['breath','🍃 呼吸']];
+  var tabs=[['wheel','🎡 抽籤'],['group','👥 分組'],['score','🥇 計分'],['cd','⏳ 倒數'],['sfx','📣 音效'],['breath','🍃 呼吸'],['check','🧭 檢查表']];
   var body=Lead.toolBody(t,mem);
   Lead.closeTools();
   var w=document.createElement('div');w.className='toolwrap';
@@ -1346,6 +1349,7 @@ Lead.closeTools=function(){
 
 Lead.toolBody=function(t,mem){
   var names=mem.length?mem:['小明','小美','阿力','阿詩','子朗','恩恩'];
+  if(t==='check')return Kit.checkToolHtml(Lead.S?Lead.S.meet:null);
   if(t==='wheel')return '<input type="text" id="whN" value="'+esc(names.join(','))+'" placeholder="名單(逗號分隔)"><div class="wheel" id="whl"><b id="whName">🎲</b></div>'+
     '<div class="btns" style="justify-content:center"><button class="btn" onclick="Lead.spin()">🎡 轉!</button></div>';
   if(t==='group')return '<div class="btns"><span class="pill" onclick="Lead.grp(2)">2組</span><span class="pill" onclick="Lead.grp(3)">3組</span><span class="pill" onclick="Lead.grp(4)">4組</span></div><div id="grpOut"><div class="mute">撳上面揀組數</div></div>';

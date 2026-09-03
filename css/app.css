@@ -1321,6 +1321,7 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
 .craft-fail span{color:#5b4636;font-size:.78rem}
 .craft-two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .craft-two .craft-block{margin:0 0 8px}
+.craft-block.warn{background:#fff5f4;border-color:#f3c9c4}
 .craft-block.life{background:#f2f8ff;border-color:#cfe3f7}
 .craft-block.win{background:#f1f8e9;border-color:#c5e1a5}
 .craft-block.safe{background:#fff3f0;border-color:#ffcdbf}
@@ -1400,3 +1401,112 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
 .act-col{min-width:132px}
 button.lnk{color:var(--grd);font-weight:800;text-decoration:underline;padding:0 2px;font-size:.85rem;cursor:pointer}
 button.lnk:hover{color:var(--ord)}
+/* ==========================================================================
+   🧰 Kit — 「叫你做 → 教你點做」補漏層（備料・檢查表・分工・訊息範本・嘉許狀）
+   ========================================================================== */
+.craft-refs{margin:10px 0;background:#f3f7ff;border:1px solid #d7e3fb;border-radius:15px;padding:10px 11px}
+.craft-refs h4{margin:0 0 7px;font-size:.78rem;color:#0d47a1;letter-spacing:.4px}
+.craft-refs .cr-list{display:grid;gap:6px}
+.craft-refs a{display:block;text-align:left;background:#fff;border:1px solid #cddffb;border-radius:11px;
+  padding:7px 9px;font-size:.78rem;color:#0d47a1;font-weight:700;line-height:1.35;text-decoration:none}
+.craft-refs a:active{background:#e8f1ff}
+.craft-refs small{display:block;margin-top:6px;font-size:.72rem;line-height:1.35}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+/* 準備卡底嘅預備包 */
+.kit-card{background:linear-gradient(180deg,#f6fff4,#fff);border:1.5px solid #cfe8cd!important}
+.kit-h4{margin:0 0 6px;font-size:.84rem;color:var(--grd);letter-spacing:.3px}
+.kit-owner{margin-top:9px;border-top:1px dashed #cfe8cd;padding-top:8px}
+.kit-owner b{font-size:.8rem;color:var(--grd)}
+.kit-note{font-size:.72rem;line-height:1.4;margin-top:4px}
+.owner-in{width:100%;margin-top:6px;font-size:.8rem;padding:7px 9px;border:1.5px solid var(--line);
+  border-radius:10px;background:#fff;color:var(--ink);font-family:inherit}
+.owner-in:focus{outline:none;border-color:var(--gr)}
+/* 物資備料指引 */
+.kit-tip{margin-top:9px;background:#fffdf6;border:1px solid #f0e2c8;border-radius:13px;padding:9px 10px;position:relative}
+.kt-h{font-size:.8rem;font-weight:800;color:#8d6e63;padding-right:88px}
+.kt-t{position:absolute;right:8px;top:6px;font-size:.68rem;padding:3px 8px}
+.kt-b{display:none;margin-top:7px;font-size:.78rem;line-height:1.45}
+.kit-tip.open .kt-b,.kit-tip:hover .kt-b{display:block}
+.kt-row{display:flex;gap:7px;padding:5px 0;border-top:1px dashed #f0e2c8}
+.kt-row:first-child{border-top:none}
+.kt-row b{flex:0 0 78px;color:var(--ord);font-size:.79rem}
+.kt-row div{min-width:0;word-break:break-word}
+/* 執行檢查表 */
+.kit-check{margin:10px 0;background:#fff;border:1.5px solid var(--line);border-radius:15px;padding:10px 11px}
+.kc-h{display:flex;align-items:center;gap:7px;font-size:.84rem;font-weight:800;color:var(--ord);margin-bottom:6px}
+.kc-list{list-style:none;margin:0;padding:0;display:grid;gap:4px;counter-reset:kc}
+.kc-list li{display:flex;gap:7px;align-items:flex-start;font-size:.79rem;line-height:1.42;
+  padding:5px 7px;border-radius:10px;background:#fffaf2;cursor:pointer;transition:.12s}
+.kc-list li:active{transform:scale(.99)}
+.kc-no{flex:0 0 auto;width:19px;height:19px;border-radius:50%;border:1.5px solid var(--or);
+  color:var(--ord);font-size:.68rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+.kc-list li.on{background:#e8f5e9}
+.kc-list li.on .kc-no{background:var(--gr);border-color:var(--grd);color:#fff}
+.kc-list li.on{text-decoration:line-through;color:var(--mute)}
+.kc-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:7px;padding-top:7px;border-top:1px dashed var(--line)}
+.kc-foot small{font-size:.7rem}
+.modal-check{border:none;padding:0;background:none}
+/* 分工（逐節） */
+.owner-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:8px 0;font-size:.78rem;font-weight:700;color:var(--grd)}
+.owner-row .owner-in{flex:1;min-width:120px;margin:0}
+.owner-chips{display:flex;gap:5px;flex-wrap:wrap;width:100%}
+.owner-chips .pill{padding:3px 9px;font-size:.72rem}
+/* 手冊 hub */
+.kit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.kit-msg{background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 10px;margin:8px 0}
+.km-h{display:flex;align-items:center;gap:6px;font-size:.84rem;font-weight:800;color:var(--ord)}
+.km-b{font-size:.78rem;line-height:1.5;white-space:pre-wrap;background:#fffdf6;border-radius:10px;
+  padding:7px 9px;margin:6px 0;border:1px dashed var(--line);max-height:150px;overflow:auto}
+.kit-badge,.kit-gh{display:grid;gap:6px;margin-top:6px}
+.kb-row,.kg-row{display:flex;gap:8px;align-items:flex-start;background:#fff;border:1px solid var(--line);
+  border-radius:12px;padding:8px 10px;font-size:.78rem;flex-wrap:wrap}
+.kb-row b{color:var(--ord);flex:0 0 auto}
+.kb-row small,.kg-row small{display:block;color:#5d4037;line-height:1.4;font-size:.74rem}
+.kb-row .btn{margin-left:auto;flex:0 0 auto}
+.kg-row>span{font-size:1.25rem;line-height:1.1}
+.kg-row div{flex:1;min-width:0}
+.kg-row b{font-size:.8rem;color:var(--ord);display:block}
+/* 帶領畫面：負責人 + 檢查表 shortcut */
+.lead-top .tt{white-space:normal;line-height:1.2}
+.tt-who{display:inline-block;margin-left:8px;font-size:.68rem;font-weight:700;background:rgba(255,255,255,.22);
+  border-radius:99px;padding:2px 9px;vertical-align:middle}
+.cue-chk{font-size:.72rem!important}
+.badge-where{display:block;font-size:.7rem;color:#5d4037;line-height:1.36;margin:2px 0 1px 22px;font-weight:400}
+.tool-check{display:grid;gap:5px}
+.tc-row{display:flex;gap:7px;align-items:center;font-size:.76rem;background:#fff8ee;border-radius:10px;padding:6px 8px}
+.tc-row b{color:var(--ord);flex:1;min-width:0}
+.tc-row small{color:var(--mute);font-size:.7rem}
+/* A4：備料提示・檢查表・嘉許狀 */
+.p-mat-tips{margin-top:6px;border-top:1px dashed #ccc;padding-top:5px}
+.p-tip-title{font-size:8.5pt;font-weight:800;color:#6d4c41;margin-bottom:3px}
+.p-mat-tip{font-size:8pt;line-height:1.42;padding:2px 0;border-bottom:1px dotted #eee}
+.p-owner{font-size:8.5pt;text-align:center}
+.check-table td{font-size:9pt;padding:4px 6px}
+.ck-no{width:22px;text-align:center;color:#888;font-size:8pt}
+.ck-box{width:26px}
+.check-table .ck-box{border:1.2px solid #666;border-radius:3px;height:15px}
+.pbreak{page-break-after:always;break-after:page}
+.cert-sheet{display:block}
+.cert-box{border:3px double #b8860b;border-radius:10px;padding:26px 22px;text-align:center;background:#fffdf5}
+.cert-ic{font-size:26px}
+.cert-t{font-size:15pt;color:#8d6e63;margin:4px 0}
+.cert-sub{font-size:13pt;letter-spacing:8px;font-weight:800;color:#5d4037;margin:2px 0 14px}
+.cert-lead{font-size:9pt;color:#8d6e63;margin:8px 0 2px}
+.cert-name{font-size:22px;font-weight:800;border-bottom:1.5px solid #b8860b;display:inline-block;
+  padding:0 18px 3px;margin:2px 0 8px}
+.cert-quote{font-size:9pt;color:#a1887f;margin:12px 0;font-style:italic}
+.cert-sign{display:flex;justify-content:space-between;font-size:9pt;margin-top:26px;color:#5d4037}
+.cert-note{font-size:7.5pt;color:#999;margin-top:14px;border-top:1px dashed #ddd;padding-top:5px}
+.kit-sheet .p-sec-title{font-size:9.5pt}
+@media(max-width:560px){
+  .kit-grid{grid-template-columns:1fr}
+  .kt-row{flex-direction:column;gap:2px}
+  .kt-row b{flex:none}
+  .kb-row .btn{margin-left:0}
+}
+@media print{
+  .kit-check,.kit-tip,.craft-refs{display:none}
+  .cert-box{break-inside:avoid}
+  .check-table tr{break-inside:avoid}
+  .p-mat-tips{break-inside:avoid}
+}

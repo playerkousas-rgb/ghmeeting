@@ -516,6 +516,67 @@ var Craft={
     ]
   },
 
+
+  /* ============ 參考圖解／示範片（上網先睇一次；唔使照做，最緊知實物係點） ============ */
+  refs:{
+    lantern:[['Pinkoi・10 款燈籠 DIY（含利是封逐步圖）','https://blog.pinkoi.com/hk/lifestyle/2207-lantern-diy/'],
+      ['Oh!BaMa・利是封燈籠＋紙流蘇做法','https://www.ohpama.com/379934/%E9%96%B1%E8%AE%80%E5%AD%B8%E7%BF%92/%E9%82%8A%E7%8E%A9%E9%82%A3%E5%AD%B8/%E6%96%B0%E5%B9%B4%E8%A3%9D%E9%A3%BE-%E6%95%99%E4%BD%A0%E8%BC%95%E9%AC%86%E8%A6%AA%E6%89%8B%E8%A3%BD%E4%BD%9C%E5%88%A9%E6%98%AF%E5%B0%81%E8%A3%9D%E9%A3%BE/'],
+      ['小兄弟實驗室・六角摺紙燈籠（免費模版可下載）','https://tw.toybrains.com/blog/kid-dos-fun-paper-lantern']],
+    popup:[['Art & Happiness・pop-up 梯級原理（有短片）','https://www.artandhappiness.net/blog/popupcards'],
+      ['wikiHow・Make a Pop Up Card（圖文逐步）','https://www.wikihow.com/Make-a-Pop-Up-Card'],
+      ['Panya・幼兒花朵彈出卡（貼紙級難度）','https://tw.toybrains.com/blog/panya-chuang-mothers-day']],
+    plane:[['ToyBrains・5 種紙飛機摺法（飛得遠嘅原理）','https://tw.toybrains.com/blog/5-funny-paper-airplane-instructions'],
+      ['HowOrigami・子彈型八步圖解','https://howorigami.com/post/ba0e25eb25.html'],
+      ['American Math・紙飛機摺法＋彈射裝置','https://www.americanmathenglish.com/%E7%B4%99%E9%A3%9B%E6%A9%9F']],
+    boat:[['wikiHow・Make a Paper Boat（10 步有圖）','https://www.wikihow.com/Make-a-Paper-Boat'],
+      ['DIY Magazine・經典紙船摺紙（中文逐步圖）','https://www.diy-magazine.com/zh-TW/instructions/origami/paper-boat/'],
+      ['Origami Plus・加帆版（有影片）','https://origami.plus/origami-sailboat']],
+    mask:[['Kids Activities Blog・紙碟面具（開眼・穿繩）','https://kidsactivitiesblog.com/50883/make-paper-plate-masks/'],
+      ['Crafts 4 Toddlers・動物紙碟面具變體','https://crafts4toddlers.com/easy-paper-plate-animal-masks/'],
+      ['Easy Peasy and Fun・熊仔面具逐步圖','https://www.easypeasyandfun.com/how-to-make-paper-plate-masks/']],
+    frame:[['Kids Art n Craft・雪糕棒相框合集','https://www.kidsartncraft.com/diy-popsicle-stick-photo-frame-craft-ideas/'],
+      ['Factory Direct Craft・初階相框（15 分鐘版）','https://factorydirectcraft.com/factorydirectcraft_blog/kid-friendly-popsicle-stick-picture-frame-tutorial/']],
+    portrait:[['Art Projects for Kids・自畫像一步步（U 形面起手）','https://artprojectsforkids.org/how-to-draw-a-self-portrait-for-kids/'],
+      ['同網站・半面自畫像（唔使畫對稱，細手最啱）','https://artprojectsforkids.org/half-portrait-tutorial/'],
+      ['同網站・自畫像底稿模版可印','https://artprojectsforkids.org/self-portrait-template/']],
+    egg:[['Kids Activities Blog・9 種唔使染蛋嘅玩法','https://kidsactivitiesblog.com/137216/alternatives-to-easter-egg-dyeing/'],
+      ['Happy Hooligans・塑料蛋點解要打底先唔甩色','https://happyhooligans.ca/painted-plastic-easter-eggs/'],
+      ['Parents・35 款蛋仔設計（貼紙・指印・碎紙）','https://www.parents.com/creative-easter-egg-ideas-for-kids-11922392']],
+    junk:[['Artsy Momma・回收物料砌機械人（材料清單）','https://artsymomma.com/recycled-robots-craft-kids.html'],
+      ['DK・紙箱機械人（可入面戴嘅版）','https://dk.com/en-us/blogs/articles/how-to-make-box-robots-kids-cardboard-box-craft-project'],
+      ['Instructables・紙皮砌砌合合 6 步','https://www.instructables.com/Make-a-Cardboard-Robot/']],
+    card:[['Arty Crafty Kids・手掌印聖誕卡（有模版）','https://www.artycraftykids.com/christmas/handprint-christmas-cards/'],
+      ['Simple Everyday Mom・Santa 手掌卡逐步圖','https://www.simpleeverydaymom.com/santa-handprint-card/'],
+      ['同網站・馴鹿卡（對摺＋剪手掌形）','https://www.simpleeverydaymom.com/handprint-reindeer-card/']],
+    nametag:[['WithLoveLive・開學名牌・書包卡 16 款','https://withlovelive.com/first-day-of-school-crafts/'],
+      ['Education.com・立體名牌（膠粒砌字）','https://www.education.com/activity/article/3-d-sculpture/'],
+      ['Learn Create Love・雪糕棒砌名（認字版）','https://learncreatelove.com/popsicle-stick-name-practice/']],
+    mural:[['I Am The Chef Too・合作長卷畫・Pass the canvas','https://www.imthecheftoo.com/blogs/stem-for-kids/engaging-collaborative-art-projects-for-kids-to-try'],
+      ['Play to Learn・幼兒集體壁畫（分日加層）','https://playtolearnpreschool.us/art-through-play/'],
+      ['Kaplan・指印壁畫逐步（Kraft paper）','https://blog.kaplanco.com/ii/collaborative-play']],
+    decor:[['Oh!BaMa・21 款新年手作（紙鏈・窗花・花球）','https://www.ohpama.com/379934/%E9%96%B1%E8%AE%80%E5%AD%B8%E7%BF%92/%E9%82%8A%E7%8E%A9%E9%82%A3%E5%AD%B8/%E6%96%B0%E5%B9%B4%E8%A3%9D%E9%A3%BE-%E6%95%99%E4%BD%A0%E8%BC%95%E9%AC%86%E8%A6%AA%E6%89%8B%E8%A3%BD%E4%BD%9C%E5%88%A9%E6%98%AF%E5%B0%81%E8%A3%9D%E9%A3%BE/']]
+  },
+  sq:{lantern:'利是封 燈籠 摺法 步驟',nametag:'幼兒 名牌 手作 開學',portrait:'幼兒 自畫像 教學 步驟',
+    card:'幼兒 聖誕卡 手作 步驟',popup:'pop up card 幼兒 教學 步驟',fu:'揮春 幼兒 書法 體驗',
+    egg:'塑料蛋 彩繪 幼兒 教學',junk:'紙箱 機械人 回收 手作 幼兒',frame:'雪糕棒 相框 幼兒 手作',
+    plane:'紙飛機 摺法 教學',boat:'紙船 摺法 步驟',mask:'紙碟 面具 幼兒 手作',
+    mural:'幼兒 集體畫 長卷 活動',promise:'幼兒 好行為 記錄表 打卡',decor:'紙鏈 拉花 幼兒 手作 教室布置'},
+  refHtml:function(k){
+    var r=this.refs[k]||[],kw=this.sq[k]||'';
+    var links=r.map(function(x){return '<a class="btn sm ghost" href="'+x[1]+'" target="_blank" rel="noopener">🖼️ '+esc(x[0])+'</a>'}).join('');
+    if(kw)links+='<a class="btn sm ghost" href="https://www.youtube.com/results?search_query='+encodeURIComponent(kw)+'" target="_blank" rel="noopener">▶️ 睇示範片（搜尋）</a>';
+    if(!links)return '';
+    return '<div class="craft-refs"><h4>🔗 想睇多一次實物點做（圖解／影片）</h4><div class="cr-list">'+links+'</div>'+
+      '<small class="mute">需上網。集會中途唔使開片—睇上面嘅成品圖＋步驟已經夠；呢啲連結係俾你開會前、或者同屋企人準備時用。</small></div>';
+  },
+  refLines:function(k){
+    var r=this.refs[k]||[];
+    if(!r.length)return '';
+    return '<div class="print-section"><div class="p-sec-title">🔗 開會前睇一次（圖解／影片）</div><div class="p-para tiny">'+
+      r.map(function(x){return '・'+esc(x[0])+'：'+esc(x[1])}).join('<br>')+
+      '　<small>（呢頁唔使上網都得：上面已列晒成品標準與逐步做法）</small></div></div>';
+  },
+
   /* ---------- 工具函數 ---------- */
   byKey:function(k){for(var i=0;i<this.lib.length;i++)if(this.lib[i].k===k)return this.lib[i];return null},
   nameRe:/美勞|手工|DIY|名牌|燈籠|揮春|承諾卡|紙飛機|紙船|相框|彩繪|面具|摺紙|心意卡|立體卡|自畫像|復活蛋|變寶|拉花|創作|decorat|craft/i,
@@ -555,6 +616,7 @@ var Craft={
       '<div class="craft-block"><h4>📚 你自己先學做一次（跟著做就得）</h4>'+
         '<ol class="craft-learn">'+c.learn.map(function(x){return '<li><span class="cl-ic">'+x[0]+'</span><div><b>'+esc(x[1])+'</b><br><span>'+esc(x[2])+'</span></div></li>'}).join('')+'</ol>'+
         '<div class="craft-alt"><b>💡 想換個做法（進階／轉化版）</b>'+esc(c.alt)+'</div></div>'+
+      this.refHtml(c.k)+
       '<div class="craft-block"><h4>🎤 帶班時點拆（呢三步先係現場用）</h4>'+
         '<div class="craft-teach">'+c.teach.map(function(x){return '<div class="ct-step"><span class="ct-no">'+esc(x[0])+'</span><span class="ct-ic">'+x[1]+'</span><div><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div></div>'}).join('')+'</div>'+
         '<div class="say-box"><b>🗣️ 可以照讀</b>'+esc(c.say)+'</div></div>'+
@@ -625,6 +687,7 @@ var Craft={
       '<div class="print-section"><div class="p-sec-title">👀 成品標準（講俾小朋友聽都得）</div><div class="p-para">'+esc(c.look)+'</div></div>'+
       '<div class="print-section"><div class="p-sec-title">🧺 物資・每人幾多・開會前備料</div><div class="p-para"><b>物資：</b>'+esc(c.need)+'<br><b>備料：</b>'+esc(c.prep)+'</div></div>'+
       (fold?'<div class="print-section"><div class="p-sec-title">🔑 關鍵三步圖解</div><div class="p-folds">'+fold.map(function(x,i){return '<div class="p-fold"><svg viewBox="0 0 136 106">'+x.s+'</svg><b>'+(i+1)+'. '+esc(x.t)+'</b></div>'}).join('')+'</div></div>':'')+
+      this.refLines(c.k)+
       '<div class="print-section"><div class="p-sec-title">📚 領袖自學：你自己先做一次</div><table class="print-table"><tbody>'+
         c.learn.map(function(x,i){return '<tr><td style="width:9%"><b>'+(i+1)+'</b> '+x[0]+'</td><td style="width:23%"><b>'+esc(x[1])+'</b></td><td style="font-size:8.5pt">'+esc(x[2])+'</td></tr>'}).join('')+
       '</tbody></table><div class="p-para" style="margin-top:4px"><b>💡 想換個做法：</b>'+esc(c.alt)+'</div></div>'+

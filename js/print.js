@@ -76,6 +76,24 @@ var PrintKit={
       render:function(ck){return Craft.printSheet(ck)}
     },
     {
+      id:'checklists',
+      cat:'plan',
+      ic:'🧭',
+      n:'集會執行檢查表（戶外・玩水・頒獎・美勞）',
+      desc:'將「檢查場地、執齊物資」呢類口號變返逐項可剔清單：戶外出發前 10 項、玩水安全 10 項、頒獎典禮 10 項、美勞前 10 項，附影相私隱四句。',
+      pages:'A4 1–4 頁（全套或單張）',
+      render:function(k){return Kit.printSheet(k)}
+    },
+    {
+      id:'cert-sheet',
+      cat:'admin',
+      ic:'🏅',
+      n:'嘉許狀（即時頒發版・自動按名單出）',
+      desc:'跟團員名單一人一張，內容自動填咗嘅團員章項目；無名單就出空白版即場寫。官方獎章證書仍需按旅團程序向總部申請。',
+      pages:'A4 1 頁／人',
+      render:function(){return PrintKit.renderCertSheet()}
+    },
+    {
       id:'goodturn-sheet',
       cat:'worksheet',
       ic:'📅',
@@ -189,10 +207,22 @@ var PrintKit={
      ========================================================================== */
 
   /* 1. 30次集會專屬備課教案 */
+  /* 11b. 嘉許狀：按名單一人一張（內部即時鼓勵版） */
+  renderCertSheet:function(){
+    var mem=Store.get('members',[]);
+    if(!mem.length)return Kit.printCert('','小童軍集會全程參與');
+    return mem.map(function(m,i){
+      var items=(DATA.badgeItems||[]).filter(function(b){return m.badge&&m.badge[b.k]}).map(function(b){return b.t});
+      var txt=items.length?('團員章進階：'+items.join('、')):'全年小童軍集會參與（出席 '+Track.attCount(m)+' 次）';
+      return (i?'<div class="pbreak"></div>':'')+Kit.printCert(m.n,txt);
+    }).join('');
+  },
+
   renderLessonPlan:function(tid){
     var t=dur(tid)||TPLS[0];
     var s=Store.get('settings',{group:'香港童軍總會 小童軍團'});
     var mats=matsOf(t);
+    var own=Kit.ownersOf(t);
     var h='<div class="a4-sheet lesson-plan-sheet">'+
       '<div class="print-header">'+
         '<div class="p-title-group">'+
@@ -208,18 +238,20 @@ var PrintKit={
         '<div class="p-mats-grid">'+
           (mats.length?mats.map(function(m){return '<div class="p-mat-item"><span class="p-box"></span> '+esc(m)+'</div>'}).join(''):'<div class="mute">本次集會無需額外實物物資（全數碼/肢體互動）</div>')+
         '</div>'+
+        Kit.matsTipPrint(mats)+
       '</div>'+
 
       '<div class="print-section">'+
-        '<div class="p-sec-title">⏱️ 集會程序表、帶領講稿與安全指引</div>'+
+        '<div class="p-sec-title">⏱️ 集會程序表、帶領講稿與安全指引（邊個帶邊節已填低）</div>'+
         '<table class="print-table">'+
-          '<thead><tr><th style="width:12%">時間</th><th style="width:20%">環節名稱</th><th style="width:40%">帶領步驟與領袖示範</th><th style="width:28%">領袖口語講稿 / 安全提醒</th></tr></thead>'+
+          '<thead><tr><th style="width:10%">時間</th><th style="width:17%">環節名稱</th><th style="width:11%">負責</th><th style="width:36%">帶領步驟與領袖示範</th><th style="width:26%">領袖口語講稿 / 安全提醒</th></tr></thead>'+
           '<tbody>'+
             t.stages.map(function(st,idx){
               var g=Guide.forStage(st);
               return '<tr>'+
                 '<td><b>'+st.m+'分鐘</b><br><span class="p-tag">'+st.t+'</span></td>'+
                 '<td><b>'+(idx+1)+'. '+esc(st.n)+'</b></td>'+
+                '<td class="p-owner"><b>'+esc(own[idx]||'未定')+'</b><br><span class="p-tag">'+esc(st.t)+'</span></td>'+
                 '<td><div style="font-weight:700;color:#2e7d32;font-size:8.5pt">【先做】'+esc(g.lead)+'</div><div style="font-size:8pt;margin-top:2px">'+esc(st.how)+'</div></td>'+
                 '<td><div style="font-style:italic;color:#b71c1c;font-size:8pt">🎤 '+esc(st.script||g.say)+'</div><div style="font-size:7.5pt;color:#555;margin-top:3px">🛡️ <b>注意：</b>'+esc(g.safety)+'</div></td>'+
               '</tr>';

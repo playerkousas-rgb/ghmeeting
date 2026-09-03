@@ -2,12 +2,19 @@
 var HB={
   tab:'core',
   html:function(){
-    var tabs=[['core','⚖️ 核心內容'],['craft','🎨 手工自學'],['badge','🏅 獎章制度'],['chute','🌈 快樂傘'],['sfh','🛡️ 保護自己'],['tips','💡 帶領貼士'],['about','ℹ️ 關於']];
+    var tabs=[['core','⚖️ 核心內容'],['craft','🎨 手工自學'],['kit','🧰 點預備'],['badge','🏅 獎章制度'],['chute','🌈 快樂傘'],['sfh','🛡️ 保護自己'],['tips','💡 帶領貼士'],['about','ℹ️ 關於']];
     var h='<div class="card"><h2>📖 手冊</h2><div>'+tabs.map(function(t){return '<span class="pill'+(HB.tab===t[0]?' on':'')+'" onclick="HB.t(\''+t[0]+'\')">'+t[1]+'</span>'}).join('')+'</div></div>';
     h+=HB[HB.tab]();
     return h;
   },
   t:function(x){HB.tab=x;App.route()},
+  kit:function(){
+    return '<div class="card"><h2>🧰 做之前點預備</h2><div class="mute" style="font-size:.84rem">呢篇係「叫你做 → 教你點做」：物資要備幾多、場地檢查咩、家長訊息點寫、章項去邊度教、頒獎點先唔亂。開會前一晚睇一次就夠。</div></div>'+
+      Kit.hubHtml()+
+      '<div class="card"><h3>🧺 執袋（開會前晚 10 分鐘版）</h3><div class="box">'+
+      '① 今場物資逐樣放落袋（用準備卡嗰個「剔走」清單）<br>② 後備版材料（已剪好／印好）另外一個膠袋<br>③ 大人工具：釘書機、切孔器、熱熔膠（貼低「領袖用」字句）<br>④ 名牌／咭套＋後備筆 2 支<br>⑤ 急救包、哨子、後備水樽<br>⑥ 手機充滿＋充電棒（投影用）<br><small class="mute">想紙本：「集會 → 撳張卡 → 🖨️ 打印本集 A4 教案」，檢查表會跟住印埋。</small></div></div>';
+  },
+
   core:function(){
     var f=DATA.facts;
     return '<div class="card"><h2>⚖️ 小童軍核心內容</h2>'+
@@ -72,7 +79,8 @@ var HB={
       '<b>③ 儀式感係魔法</b><br>開會散會快樂傘、口號、敬禮,次次一樣——安全感+歸屬感就嚟自重複。<br><br>'+
       '<b>④ 人人有獎</b><br>計分遊戲記得輪流贏;讚具體行為:「你剛才讓位俾隊友,好嘢!」<br><br>'+
       '<b>⑤ 預備執輸</b><br>環節爛咗/唔啱玩?即刻轉後備:快樂傘一式、律動指令、靜息呼吸。<br><br>'+
-      '<b>⑥ 一句完場</b><br>散會前圍圈,每人講「今日最開心係……」,家長接得放心。</div></div>';
+      '<b>⑥ 一句完場</b><br>散會前圍圈,每人講「今日最開心係……」,家長接得放心。<br><br>'+
+      '<b>⑦ 影相同意（一次搞掂，一年唔使再問）</b><br>'+esc(Kit.photo.replace(/^📷\s*/,''))+'<br><small class="mute">想直接抄範本：去「🧰 點預備」→ 家長訊息範本。</small></div></div>';
   },
   about:function(){
     return '<div class="card"><h2>ℹ️ 關於</h2><div class="box">🦗 <b>小童軍集會助手 Grasshopper Hub</b><br>由年度計劃到散會嗰刻:規劃→執集會→帶領→追蹤。<br><br>'+

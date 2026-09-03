@@ -47,6 +47,9 @@ var App={
         '<button class="btn sm ghost" onclick="App.startInstant(\'fitness\',40)">🏃 體能反應 (40分)</button>'+
         '<button class="btn sm gr" onclick="App.startInstant(\'general\',60)">✨ 60分鐘全能大集會</button>'+
       '</div></div>'+
+      '<div class="card" style="border:1.5px solid var(--line);padding:12px;margin:8px 0"><h4 style="margin:0 0 6px;color:var(--ord)">🧭 開會前點預備（叫你做 → 教你點做）</h4>'+
+        '<div class="mute" style="font-size:.78rem;margin-bottom:8px">物資每人幾多、場地檢查咩、家長訊息點寫、章項去邊度教—全部有清單同範本，唔使自己由零估。</div>'+        '<div class="quick-tools-row">'+
+        '<button class="btn sm" onclick="Modal.close();Kit.hubOpen()">🧰 點預備總覽</button>'+        '<button class="btn sm ghost" onclick="Modal.close();Kit.openCheckFor(dur(\''+(nextT?nextT.id:'t01')+'\'))">🧭 今場檢查表</button>'+        '<button class="btn sm ghost" onclick="Modal.close();Kit.msgOpen()">📣 家長訊息範本</button>'+        '</div></div>'+
       '<div class="card" style="border:1.5px solid var(--line);padding:12px;margin:8px 0"><h4 style="margin:0 0 6px;color:var(--ord)">🧰 隨手救急快鍵</h4><div class="quick-tools-row">'+
         '<button class="btn sm" onclick="Modal.close();Lead.quietQuick()">🤫 5秒安靜</button>'+
         '<button class="btn sm ghost" onclick="Sfx.whistle();toast(\'🎺 嗶————！集合！\')">🎺 吹哨</button>'+
@@ -135,6 +138,10 @@ var App={
       '<label class="f">旅團名稱</label><input type="text" id="stG" value="'+esc(s.group)+'" placeholder="例如:第123旅小童軍團">'+
       '<label class="f">開季月份</label><select id="stS">'+['1','2','3','4','5','6','7','8','9','10','11','12'].map(function(m){return '<option value="'+m+'"'+(s.start===m?' selected':'')+'>'+m+'月</option>'}).join('')+'</select>'+
       '<label class="f">恆常集會時長</label><select id="stD">'+['40','60','90','120','180'].map(function(d){return '<option value="'+d+'"'+(s.dur===d?' selected':'')+'>'+d+' 分鐘</option>'}).join('')+'</select>'+
+      '<label class="f">領袖名單（分工時可以直接揀名，用、分開）</label><input type="text" id="stL" value="'+esc(s.leaders||'')+'" placeholder="例：陳sir、Miss 王、Billie 師姐">'+
+      '<label class="f">恆常集合時間／地點（貼心：家长訊息範本會自動填呢兩格）</label>'+
+      '<div class="row2"><div><input type="text" id="stT" value="'+esc(s.time||'')+'" placeholder="例：9:15-10:15"></div><div><input type="text" id="stP" value="'+esc(s.place||'')+'" placeholder="例：旅團部地下球場"></div></div>'+
+      '<label class="f">聯絡電話（只存喺你部機，用於家長訊息範本）</label><input type="text" id="stPh" value="'+esc(s.phone||'')+'" placeholder="例：9123 4567">'+
       '<div class="btns" style="margin-top:14px"><button class="btn blk" onclick="App.saveSettings()">儲存</button></div>'+
       '<hr class="soft"><div class="mute" style="font-size:.78rem">🧹 重建年度行事曆會重設規劃表(唔影響團員資料):<br><button class="btn sm ghost" onclick="App.seedPlan(true);Modal.close();toast(\'已重建年度行事曆\')">重建行事曆</button> '+
       '<button class="btn sm ghost rd" style="color:#b71c1c;border-color:#e53935" onclick="if(confirm(\'清除所有本機資料(含團員/集會/規劃)?\')){localStorage.clear();location.reload()}">清除全部資料</button></div>');
@@ -143,6 +150,9 @@ var App={
     var s=Store.get('settings',{});
     s.group=document.getElementById('stG').value||'我的旅團';
     s.start=document.getElementById('stS').value;s.dur=document.getElementById('stD').value;
+    s.leaders=(document.getElementById('stL').value||'').trim();
+    s.time=(document.getElementById('stT').value||'').trim();s.place=(document.getElementById('stP').value||'').trim();
+    s.phone=(document.getElementById('stPh').value||'').trim();
     Store.set('settings',s);Modal.close();App.route();toast('已儲存 ✓');
   },
   /* ---- 年度規劃種子(跟隨開季月份排22次) ---- */
@@ -182,6 +192,7 @@ var Plan={
         '<button class="pill" onclick="Lead.quickTool(\'wheel\')">🎲 點名抽籤</button>'+
         '<button class="pill" onclick="Lead.quickTool(\'score\')">🥇 計分板</button>'+
         '<button class="pill" onclick="Lead.quickTool(\'group\')">👥 分組機</button>'+
+        '<button class="pill" onclick="Kit.hubOpen()">🧰 點預備・檢查表</button>'+
       '</div>'+
       '</section><div class="steps-banner"><div class="mini-step"><b>01・即開</b>撳一下全螢幕帶領，免準備道具</div><div class="mini-step"><b>02・互動</b>小朋友睇螢幕玩遊戲，領袖睇講稿</div><div class="mini-step"><b>03・記出席</b>完場一鍵打卡，進度自動保存</div></div>'+
       '<div class="stat"><div class="s"><b>'+(pl.rows.length-done)+'</b>尚餘集會</div><div class="s"><b>'+done+'/'+pl.rows.length+'</b>已完成</div><div class="s"><b>'+mem.length+'</b>團員</div></div>';

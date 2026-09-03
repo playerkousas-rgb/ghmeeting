@@ -21,12 +21,16 @@ var Track={
     return '<div class="mem"><h4>'+esc(m.n)+' <small class="mute">'+esc(m.bday||'')+'</small></h4>'+
       '<div class="progbar"><i style="width:'+memPct+'%"></i></div><small class="mute">團員章 '+memPct+'%・出席 '+Track.attCount(m)+' 次</small>'+
       '<div style="margin:8px 0 4px"><b style="font-size:.85rem">團員章</b></div>'+
-      DATA.badgeItems.map(function(b){return '<div class="chk" style="font-size:.8rem;padding:3px 0"><span class="dot'+(bi[b.k]?' on':'')+'" onclick="Track.tog('+i+',\''+b.k+'\')"></span>'+b.t+'</div>'}).join('')+
+      DATA.badgeItems.map(function(b){var inf=Kit.badgeInfo(b.k);
+        return '<div class="chk" style="font-size:.8rem;padding:3px 0"><span class="dot'+(bi[b.k]?' on':'')+'" onclick="Track.tog('+i+',\''+b.k+'\')"></span>'+b.t+
+        (bi[b.k]||!inf?'':'<small class="badge-where">📍 '+esc(inf.where)+(inf.link?' <button class="lnk" onclick="'+inf.link+'">▶ 即刻開</button>':'')+'</small>')+'</div>'}).join('')+
+      '<div class="mute" style="font-size:.72rem;margin:2px 0 0">👆 未剔嘅項會顯示「去邊度教・即刻開」；剔咗即當作過關（資料只存喺你部機）。</div>'+
       '<div style="margin:8px 0 4px"><b style="font-size:.85rem">進步獎章</b></div><div class="btns">'+
       DATA.steps.map(function(s,si){return '<span class="pill'+(step>si?' on':'')+'" onclick="Track.step('+i+','+(si+1)+')">'+s.n+'</span>'}).join('')+'</div>'+
       '<div style="margin:8px 0 4px"><b style="font-size:.85rem">🦗 小草蜢 '+ghDone+'/7</b></div>'+
-      DATA.ghDomains.map(function(d,gi){var c=m.gh&&m.gh[gi]||0;
+      DATA.ghDomains.map(function(d,gi){var c=m.gh&&m.gh[gi]||0;var g=Kit.ghMap[gi];
         return '<div class="chk" style="font-size:.8rem;padding:3px 0">'+d.ic+' '+d.n+' '+
+        (c?'':'<small class="badge-where">💡 '+(g?esc(g.sug):'')+'</small>')+
         '<span style="margin-left:auto">'+[0,1].map(function(x){return '<span class="dot'+(c>x?' on':'')+'" onclick="Track.gh('+i+','+gi+')"></span>'}).join('')+'</span></div>'}).join('')+
       '<div class="btns" style="margin-top:6px"><button class="btn sm ghost" onclick="Track.edit('+i+')">✏️</button>'+
       '<button class="btn sm ghost rd" style="color:#b71c1c;border-color:#e53935" onclick="Track.del('+i+')">🗑️</button></div></div>';
