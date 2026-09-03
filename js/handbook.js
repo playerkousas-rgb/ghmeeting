@@ -45,8 +45,7 @@ var HB={
       '<hr class="soft"><b>常用活動</b><div class="box" style="font-size:.88rem">身體地圖紅黃綠・好/壞觸摸分類・信任圈・我話唔好角色扮演・安全密語・安全故事時間</div>'+
       '<div class="btns"><button class="btn sm" onclick="HB.sfhGame()">👨‍⚖️ 即玩:對錯法庭(SFH篇)</button></div></div>';
   },
-  sfhGame:function(){Lead.quickTool('_');setTimeout(function(){
-    document.getElementById('kidsArea').innerHTML=Lead.scr.judge();},80)},
+  sfhGame:function(){Lead.startGame('judge','對錯法庭 (保護自己篇)');},
   tips:function(){
     return '<div class="card"><h2>💡 帶領貼士(4-7歲)</h2><div class="box">'+
       '<b>① 5-10分鐘一轉</b><br>幼兒專注力短,每個環節唔好過15分鐘,動靜交替:狂野遊戲後接靜態故事/靜息。<br><br>'+
