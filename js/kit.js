@@ -121,12 +121,12 @@ var Kit={
       return '<div class="kit-msg"><div class="km-h"><span>'+m.ic+'</span><b>'+esc(m.n)+'</b>'+
         '<button class="btn sm" onclick="Kit.copy(Kit.msgs['+i+'].t,this)">📋 複製</button>'+
         '<button class="btn sm ghost" onclick="Kit.editMsg('+i+')">✏️ 改內容</button></div>'+
-        '<pre class="km-b">'+esc(Kit.fill(m.t))+'</pre></div>'
+        '<pre class="km-b">'+esc(Kit.fill(m.t,Kit._ctx||{}))+'</pre></div>'
     }).join('');
   },
   editMsg:function(i){
     var m=this.msgs[i];
-    Modal.open('<h3>✏️ 改範本：'+esc(m.n)+'</h3><div class="mute" style="font-size:.8rem">用 {date} {time} {place} {theme} {child} {parent} {leader} 呢類符號，複製時會自動填你旅團設定嘅資料。</div>'+
+    Modal.open('<h3>✏️ 改範本：'+esc(m.n)+'</h3><div class="mute" style="font-size:.8rem">可以用呢啲符號，複製時自動填你旅團設定嘅資料：{date} {weekday} {time} {place} {phone} {leader} {theme} {extra} {deadline} {depart} {back} {item1} {item2} {done} {highlight} {thanks} {parent} {child}；冇填到嘅會顯示「請填」，當提醒自己補返就得。</div>'+
       '<textarea id="kgMsg" style="width:100%;min-height:220px;font-size:.85rem">'+esc(m.t)+'</textarea>'+
       '<div class="btns"><button class="btn sm gr" onclick="Kit.saveMsg('+i+')">💾 儲存</button><button class="btn sm ghost" onclick="Kit.copy(document.getElementById(\'kgMsg\').value,this)">📋 複製而家呢份</button></div>');
   },
