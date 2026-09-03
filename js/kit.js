@@ -86,16 +86,21 @@ var Kit={
     o=o||{};
     var s=Store.get('settings',{group:'',dur:'60'});
     var tm=String(s.time||'').match(/(\d{1,2}[:：]\d{2})\D{0,4}(\d{1,2}[:：]\d{2})/);
-    var d=o.date||new Date().toLocaleDateString('zh-HK');
+    var dd=Kit._d(o.date),today=new Date();
+    var d=dd?Kit.fmtDate(o.date):(o.date?String(o.date):((today.getMonth()+1)+'月'+today.getDate()+'日'));
     return String(text).replace(/\{(\w+)\}/g,function(_,k){
-      if(o[k]!=null&&o[k]!=='')return o[k];
+      if(k!=='date'&&k!=='weekday'&&k!=='deadline'&&o[k]!=null&&o[k]!=='')return o[k];
       if(k==='date')return d;
-      if(k==='weekday')return '星期'+'日一二三四五六'.charAt(new Date().getDay());
+      if(k==='weekday')return '星期'+'日一二三四五六'.charAt((dd||today).getDay());
       if(k==='place'||k==='time'||k==='phone')return s[k]||'(請填'+(k==='place'?'集合地點':k==='time'?'時間':'電話')+')';
       if(k==='leader')return ((s.leaders||'').split(/[,，、\/]+/)[0]||'').trim()||s.group||'(請填聯絡人)';
       if(k==='depart')return tm?Kit._addMin(tm[1],5):'(開隊時間)';
       if(k==='back')return tm?tm[2]:'(完場時間)';
-      if(k==='deadline')return '集會前一日';
+      if(k==='deadline'){
+        if(!dd)return '集會前一日';
+        var p=new Date(dd.getTime()-86400000);
+        return (p.getMonth()+1)+'月'+p.getDate()+'日（星期'+'日一二三四五六'.charAt(p.getDay())+'）之前';
+      }
       if(k==='item1'||k==='item2')return o.items?o.items[+k.slice(4)-1]||'(請填物料)':'(請填物料)';
       return '(請填 '+k+')';
     });
@@ -154,13 +159,16 @@ var Kit={
   ctxFor:function(tid){
     var t=(typeof dur==='function')?dur(tid):null;if(!t)return {};
     var mats=(typeof matsOf==='function')?matsOf(t):[];
-    return {theme:t.theme||'',items:mats.slice(0,2),extra:mats.slice(0,3).join('、')||'水同毛巾就得'};
+    return {tid:tid,theme:t.theme||'',items:mats.slice(0,2),extra:mats.slice(0,3).join('、')||'水同毛巾就得',date:this.planRowDate(tid)};
   },
   msgOpen:function(ctx){
     if(typeof ctx==='string')ctx=Kit.ctxFor(ctx);
     Kit._ctx=ctx||{};
-    var note=Kit._ctx.theme?'<div class="attention" style="margin:8px 0"><b>已用今場資料預填</b>　主題：'+esc(Kit._ctx.theme)+(Kit._ctx.items&&Kit._ctx.items.length?'　・要帶：'+esc(Kit._ctx.items.join('、')):'')+'　（得返日期／聯絡人要改）</div>':'';
-    Modal.open('<div class="card"><h2>📣 家長訊息範本</h2><div class="mute" style="font-size:.82rem">撳「📋 複製」即貼去 WhatsApp／群組。大括號位會自動填「設定 → 旅團設定」嘅時間、地點、電話；未填嘅會寫「請填」。</div>'+note+Kit.msgHtml()+'</div>');
+    var drow=(Kit._ctx.tid&&typeof dur==='function'&&dur(Kit._ctx.tid))?Kit.dateRowHtml(Kit._ctx.tid):'';
+    var note=Kit._ctx.theme?'<div class="attention" style="margin:8px 0"><b>已用今場資料預填</b>　主題：'+esc(Kit._ctx.theme)+
+      (Kit._ctx.date&&Kit._ctx.date.length===10?'　・日期：'+esc(Kit.fmtDate(Kit._ctx.date))+'（跟行事曆低咗嗰格）':'　・日期：未訂（複製前改一下）')+
+      (Kit._ctx.items&&Kit._ctx.items.length?'　・要帶：'+esc(Kit._ctx.items.join('、')):'')+'　（得返聯絡人／其他嘢要改）</div>':'';
+    Modal.open('<div class="card"><h2>📣 家長訊息範本</h2><div class="mute" style="font-size:.82rem">撳「📋 複製」即貼去 WhatsApp／群組。大括號位會自動填「設定 → 旅團設定」嘅時間、地點、電話；未填嘅會寫「請填」。</div>'+note+drow+Kit.msgHtml()+'</div>');
   },
   ownerRowHtml:function(tid,i,st){
     var key=tid+':'+i,nm=this.ownerOf(tid,i,st);
@@ -196,7 +204,8 @@ var Kit={
     var def=(Store.get('meetmeta',{}).__def)||'';
     var h='<div class="card kit-card"><h4 class="kit-h4">🧰 做之前點預備（備料・檢查表・分工）</h4>';
     h+=this.matsTipHtml(mats);
-    h+=this.checkHtml(t.stages||[]);
+    h+=this.checkHtml(t.stages||[],t,t.id);
+    h+=this.dateRowHtml(t.id);
     h+='<div class="kit-owner"><b>👥 邊個帶邊節（填咗即刻儲存，打印教案都會跟住出）</b>';
     h+='<input class="owner-in" list="leaderList" placeholder="全部未定＝你一個帶晒（呢格係預設負責人）" value="'+esc(def)+'" oninput="Kit.setDefaultOwner(this.value)">';
     h+='<div class="mute kit-note">填呢格＝所有未註明嘅環節都算呢位帶；想逐節唔同，喺下面每個環節入面改。';
@@ -234,13 +243,36 @@ var Kit={
     for(var key in this.mats){if(k.indexOf(key)>-1||key.indexOf(k)>-1)return this.mats[key]}
     return null;
   },
-  checkHtml:function(st,t){
+  checkHtml:function(st,t,mid){
     var c=this.checkFor(st||{t:(t&&t.t)||'',n:(t&&t.n)||'',how:''});
     if(!c)c=this.checkFor(t||null);
     if(!c)return '';
-    return '<div class="kit-check"><div class="kc-h">'+c.ic+' '+esc(c.n)+' <span class="tag">逐項剔走・可打印</span></div>'+
-      '<ol class="kc-list">'+c.items.map(function(x,i){return '<li onclick="this.classList.toggle(\'on\')"><span class="kc-no">'+(i+1)+'</span>'+esc(x)+'</li>'}).join('')+'</ol>'+
-      '<div class="kc-foot"><button class="btn sm" onclick="Kit.copy(Kit.checkTxt(\''+c.n.replace(/'/g,'')+'\'),this)">📋 複製清單</button><small class="mute">出發前讀一次；完成晒先至開隊。</small></div></div>';
+    var id=mid||(t&&t.id)||'',on=this.ckGet(id,c.key);
+    return '<div class="kit-check"><div class="kc-h">'+c.ic+' '+esc(c.n)+' <span class="tag">逐項剔走・剔咗會記住</span></div>'+
+      '<ol class="kc-list">'+c.items.map(function(x,i){return '<li class="'+(on.indexOf(i)>=0?'on':'')+'" onclick="Kit.tickItem(\''+id+'\',\''+c.key+'\','+i+',this)"><span class="kc-no">'+(i+1)+'</span>'+esc(x)+'</li>'}).join('')+'</ol>'+
+      '<div class="kc-foot">'+(id?'<span class="kc-prog">'+this.checkProg(id,c.key)+'</span>':'')+
+      '<button class="btn sm" onclick="Kit.copy(Kit.checkTxt(\''+c.n.replace(/'/g,'')+'\'),this)">📋 複製清單</button>'+
+      (on.length?'<button class="btn sm ghost" onclick="Kit.ckSet(\''+id+'\',\''+c.key+'\',[]);Kit.refreshCheck()">🧽 清重剔</button>':'')+
+      '<small class="mute">出發前讀一次，完成晒先至開隊。剔咗嘅位會喺呢部機記住；撳「✅ 完成今場」就自動清返，下次由頭剔。</small></div>'+
+      this.uncheckNote(id,c.key)+'</div>';
+  },
+  refreshCheck:function(){
+    var t=(typeof Prepare!=='undefined'&&Prepare._detailId&&typeof dur==='function')?dur(Prepare._detailId):null;
+    if(t&&t.stages&&Prepare.detail)Prepare.detail(t.id);
+  },
+  openCheck:function(k,mid){
+    var c=this.checks[k];
+    if(!c){for(var kk in this.checks){if(this.checks[kk].n===k)c=this.checks[kk]}}
+    if(!c)return;
+    var id=mid||'',on=this.ckGet(id,c.key);
+    Modal.open('<div class="eyebrow">🧭 執行檢查表</div><h3>'+c.ic+' '+esc(c.n)+'</h3>'+
+      '<div class="mute" style="font-size:.82rem">逐項剔走（剔咗變綠色；撳錯再撳一次取消）。呢個清單係俾領袖用嘅—唔使讀俾小朋友聽。</div>'+
+      '<div class="kit-check modal-check">'+(id?'<div class="kc-prog">'+this.checkProg(id,c.key)+'</div>':'')+
+      '<ol class="kc-list">'+c.items.map(function(x,i){return '<li class="'+(on.indexOf(i)>=0?'on':'')+'" onclick="Kit.tickItem(\''+id+'\',\''+c.key+'\','+i+',this)"><span class="kc-no">'+(i+1)+'</span>'+esc(x)+'</li>'}).join('')+'</ol></div>'+
+      this.uncheckNote(id,c.key)+
+      '<div class="btns"><button class="btn sm gr" onclick="Kit.copy(Kit.checkTxt(\''+c.n+'\'),this)">📋 複製清單（貼去領袖群）</button>'+
+      (on.length?'<button class="btn sm ghost" onclick="Kit.ckSet(\''+id+'\',\''+c.key+'\',[]);Kit.openCheck(\''+k+'\',\''+id+'\')">🧽 清重剔</button>':'')+
+      '<button class="btn sm ghost" onclick="Modal.close();PrintKit.openModal(\'checklists\',\''+k+'\')">🖨️ 打印 A4</button></div>');
   },
   checkTxt:function(name){
     for(var k in this.checks)if(this.checks[k].n===name)return '🦗 '+this.checks[k].n+'\n'+this.checks[k].items.map(function(x,i){return (i+1)+'. '+x}).join('\n');
@@ -316,6 +348,186 @@ var Kit={
     Modal.close();Sfx.ding();toast('☔ 已存入「我嘅集會」—隨時帶得住');
     if(typeof App!=='undefined'&&App.go){App.go('#meet');App.route()}
   },
+  /* ============ ⑧ 集會日期：喺行事曆低咗，家長訊息就自動啱（不用每日重打） ============ */
+  planRow:function(tid){
+    var pl=Store.get('plan',{rows:[]});
+    return (pl.rows||[]).filter(function(r){return r.tid===tid})[0]||null;
+  },
+  /* 冇喺行事曆入面嘅范本（例如 g1／自製場），日期就低喺 meetmeta，一樣自動填 */
+  planRowDate:function(tid){
+    var r=this.planRow(tid);
+    if(r&&r.date)return r.date;
+    var m=Store.get('meetmeta',{})||{};
+    return m['date:'+tid]||'';
+  },
+  setPlanDate:function(no,v){
+    var pl=Store.get('plan',{rows:[]});var r=(pl.rows||[]).filter(function(x){return x.no===no})[0];
+    if(!r)return;
+    r.date=v||'';Store.set('plan',pl);
+    toast(v?'📅 已低實：'+Kit.fmtDate(v):'清咗日期');
+    if(typeof App!=='undefined')App.route();
+    if(typeof Prepare!=='undefined'&&Prepare._detailId)Prepare.detail(Prepare._detailId);
+  },
+  setDate:function(tid,v){
+    var m=Store.get('meetmeta',{})||{};
+    if(v)m['date:'+tid]=v;else delete m['date:'+tid];
+    Store.set('meetmeta',m);
+    toast(v?'📅 已低實：'+Kit.fmtDate(v):'清咗日期');
+    if(typeof Prepare!=='undefined'&&Prepare._detailId)Prepare.detail(Prepare._detailId);
+  },
+  fmtDate:function(v){
+    var d=this._d(v);if(!d)return String(v||'');
+    return (d.getMonth()+1)+'月'+d.getDate()+'日・星期'+'日一二三四五六'.charAt(d.getDay());
+  },
+  _d:function(v){
+    var m=String(v||'').match(/(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/);
+    if(!m)return null;
+    var d=new Date(+m[1],+m[2]-1,+m[3],12,0,0);
+    return isNaN(d.getTime())?null:d;
+  },
+  dateRowHtml:function(tid){
+    if(typeof dur!=='function'||!tid)return '';
+    var r=this.planRow(tid),cur=this.planRowDate(tid);
+    var safe=String(tid).replace(/[^A-Za-z0-9_-]/g,'');
+    var cmd=r?('Kit.setPlanDate('+r.no+',this.value)'):("Kit.setDate('"+safe+"',this.value)");
+    return '<div class="kit-date"><span>📅 今場日期：<b>'+(cur?esc(Kit.fmtDate(cur)):'未訂')+'</b></span>'+
+      '<input type="date" value="'+esc(cur||'')+'" onchange="'+cmd+'">'+
+      '<small class="mute">低咗呢格，家長訊息嘅日期、星期、「之前一日話我知」就全部自動啱'+(r?('（行事曆撳第'+r.no+'格都改到）'):'（呢張范本未排進行事曆，所以低咗喺呢度）')+'</small></div>';
+  },
+  /* ============ ⑨ 檢查表留痕：剔咗就記住，完場自動清（唔使驚撳錯、驚中途走開） ============ */
+  ckKey:function(mid,k){return (mid||'misc')+'|'+k},
+  ckGet:function(mid,k){if(!mid)return [];var a=Store.get('checkins',{})||{};return a[this.ckKey(mid,k)]||[]},
+  ckSet:function(mid,k,on){
+    if(!mid)return;
+    var a=Store.get('checkins',{})||{};var key=this.ckKey(mid,k);
+    if(on&&on.length)a[key]=on.slice();else delete a[key];
+    Store.set('checkins',a);
+  },
+  ckClear:function(mid){
+    var a=Store.get('checkins',{})||{},hit=0;
+    Object.keys(a).forEach(function(k){if(k.indexOf((mid||'')+'|')===0){delete a[k];hit++}});
+    if(hit)Store.set('checkins',a);
+    return hit;
+  },
+  tickItem:function(mid,k,i,el){
+    if(!mid){if(el)el.classList.toggle('on');return}
+    var on=this.ckGet(mid,k);var p=on.indexOf(i);
+    if(p<0)on.push(i);else on.splice(p,1);
+    this.ckSet(mid,k,on);
+    if(el&&el.parentNode){
+      var wrap=el.parentNode.parentNode,pb=wrap?wrap.querySelector('.kc-prog'):null;
+      if(pb)pb.innerHTML=this.checkProg(mid,k);
+    }
+    var total=(this.checks[k]||{items:[]}).items.length;
+    if(p<0&&on.length===total){Sfx.ding();toast('✅ 全部剔晒—可以出發')}
+  },
+  checkProg:function(mid,k){
+    var c=this.checks[k];if(!c||!mid)return '';
+    var on=this.ckGet(mid,k),left=c.items.length-on.length;
+    return '<b>'+on.length+'/'+c.items.length+'</b>'+(left?('・未剔 '+left+' 項'):'・全部剔晒 ✅');
+  },
+  uncheckNote:function(mid,k){
+    var c=this.checks[k];if(!c||!mid)return '';
+    var on=this.ckGet(mid,k);
+    if(!on.length||on.length===c.items.length)return '';
+    var left=c.items.map(function(x,i){return [x,i]}).filter(function(p){return on.indexOf(p[1])<0});
+    return '<div class="kc-left">⚠️ 上次留低 '+left.length+' 項未剔：'+left.map(function(p){return esc(p[0].split('：')[0])}).join('、')+'</div>';
+  },
+  /* ============ ⑩ 🔎 全站搜尋：范本・手工・物料・檢查表・教材包・遊戲一框搵晒 ============ */
+  searchIndex:function(){
+    if(this._si&&this._siAt===this._stamp())return this._si;
+    var ix=[],T=(typeof TPLS!=='undefined')?TPLS:[];
+    var push=function(g,title,sub,hay,go,btn){ix.push({g:g,title:title,sub:sub,hay:String(hay||'').toLowerCase(),go:go,btn:btn||'開'})};
+    T.forEach(function(t){
+      var bag=[t.n,t.theme,(T.catName||{})[t.cat]||'',t.mo||''];
+      (t.stages||[]).forEach(function(s){bag.push(s.n,s.t,s.how||'',(s.mats||[]).join(' '),s.script||'')});
+      push('🧩 集會範本',t.n,t.theme+'・'+(t.stages||[]).length+' 個環節',bag.join(' '),"Modal.close();Prepare.detail('"+t.id+"')");
+    });
+    (Store.get('mymeets',[])||[]).forEach(function(m){
+      var bag=[m.n];(m.stages||[]).forEach(function(s){bag.push(s.n,s.how||'',(s.mats||[]).join(' '))});
+      push('🗂️ 我嘅集會',m.n,'約 '+(m.stages||[]).reduce(function(a,s){return a+(+s.m||0)},0)+' 分鐘',bag.join(' '),"Modal.close();Lead.startMy('"+m.id+"')",'▶ 帶領');
+    });
+    ((typeof Craft!=='undefined'&&Craft.lib)?Craft.lib:[]).forEach(function(c){
+      push('🎨 手工自學卡',c.ic+' '+c.n,'成品：'+String(c.look||'').slice(0,40),[c.n,c.look,c.need,c.prep,c.alt,c.planb].join(' '),"Modal.close();Craft.open('"+c.k+"')");
+    });
+    Object.keys(this.mats).forEach(function(m){var t=Kit.mats[m];
+      push('🧺 物資點備',m,String(t.q).slice(0,44),[m,t.q,t.how||'',t.sub||''].join(' '),"Modal.close();Kit.hubOpen()");
+    });
+    Object.keys(this.checks).forEach(function(k){var c=Kit.checks[k];
+      push('🧭 執行檢查表',c.ic+' '+c.n,c.items.length+' 項可剔・逐項講清點樣檢查',c.n+' '+c.items.join(' '),"Modal.close();Kit.openCheck('"+k+"')");
+    });
+    ((typeof PrintKit!=='undefined'&&PrintKit.kits)?PrintKit.kits:[]).forEach(function(p){
+      push('🖨️ A4 教材包',p.ic+' '+p.n,String(p.desc||'').slice(0,48),[p.n,p.desc,p.pages].join(' '),"Modal.close();App.go('#print');setTimeout(function(){PrintKit.openModal('"+p.id+"')},90)");
+    });
+    ((typeof Play!=='undefined'&&Play.games)?Play.games:[]).forEach(function(g){
+      push('🎮 即玩遊戲／工具',g.ic+' '+g.n,String(g.d||'').slice(0,48),[g.n,g.d,g.meta].join(' '),"Modal.close();Lead.startGame('"+g.id+"','"+g.n+"')",'▶ 即開');
+    });
+    this.badgeMap.forEach(function(b){
+      push('🏅 團員章',b.t,'📍 '+b.where,b.t+' '+b.where+' '+b.how,b.link,'▶ 開');
+    });
+    this.ghMap.forEach(function(g){
+      push('🦗 小草蜢範疇',g.ic+' '+g.n,'建議：'+g.sug,g.n+' '+g.sug+' '+g.meet,"Modal.close();Kit.hubOpen()");
+    });
+    this.msgs.forEach(function(m,i){
+      push('📣 家長訊息範本',m.ic+' '+m.n,String(m.t).replace(/\n/g,' ').slice(0,46),m.n+' '+m.t,"Modal.close();Kit.msgOpen()");
+    });
+    if(this.rain)Object.keys(this.rain).forEach(function(id){var t=(typeof dur==='function')?dur(id):null;
+      push('☔ 落雨後備版',(t?t.n:'')+' → 室內版',Kit.rain[id].note,Kit.rain[id].stages.join(' ')+' 雨 後備 室內',"Modal.close();Kit.rainAsk('"+id+"')",'☔ 睇後備版');
+    });
+    [['core','⚖️ 核心內容（誓詞・規律・支部）'],['craft','🎨 手工自學總覽'],['kit','🧰 做之前點預備'],['badge','🏅 獎章制度'],['chute','🌈 快樂傘 21 式'],['sfh','🛡️ 保護自己'],['tips','💡 4–7 歲帶領貼士']].forEach(function(x){
+      push('📖 手冊',x[1],'手冊分頁',[x[1],x[0],'手冊'].join(' '),"Modal.close();App.go('#book');setTimeout(function(){HB.t('"+x[0]+"')},60)");
+    });
+    this._si=ix;this._siAt=this._stamp();
+    return ix;
+  },
+  _stamp:function(){try{return String((Store.get('mymeets',[])||[]).length)+'-'+Object.keys(this.mats).length}catch(e){return '1'}},
+  searchFind:function(q){
+    var s=String(q||'').trim().toLowerCase();
+    if(!s)return [];
+    var terms=s.split(/[\s,，、]+/).filter(function(x){return x});
+    var hit=[];
+    this.searchIndex().forEach(function(it){
+      var hay=it.hay+' '+it.title.toLowerCase()+' '+it.g.toLowerCase(),score=0,got=0;
+      for(var i=0;i<terms.length;i++){
+        var t=terms[i];
+        if(hay.indexOf(t)>=0){got++;score+=(it.title.toLowerCase().indexOf(t)>=0?9:2)+Math.min(4,hay.split(t).length-1)}
+      }
+      if(got)hit.push({it:it,score:score-(terms.length-got)*14,got:got});
+    });
+    hit.sort(function(a,b){return (b.got-a.got)||(b.score-a.score)});
+    return hit.slice(0,16).map(function(x){x.it._s=x.score;return x.it});
+  },
+  searchHtml:function(q){
+    var s=String(q||'').trim();
+    if(!s){
+      return '<div class="srch-tip"><b>撳下面任何一個，即刻跳去可以用嗰度</b><div class="srch-chips">'+
+        ['燈籠','玩水','頒獎','物料','落雨','唱歌','名牌','回收','故事','靜息','傘','大雨'].map(function(x){
+          return '<button class="pill" onclick="Kit.searchType2(this)">'+esc(x)+'</button>'}).join('')+'</div>'+
+        '<small class="mute">搜到：30 張集會范本、15 張手工自學卡、物資點備、四張檢查表、A4 教材包、即玩遊戲、章項、手冊分頁。</small></div>';
+    }
+    var res=this.searchFind(s);
+    if(!res.length)return '<div class="srch-none">搵唔到「'+esc(s)+'」<br><small class="mute">試吓其他字：例如「傘」「蛋」「揮春」「回收」「頒獎」「雨」</small></div>';
+    var last='';
+    return '<div class="srch-out">'+res.map(function(it){
+      var head=it.g!==last?'<div class="srch-g">'+it.g+'</div>':'';last=it.g;
+      return head+'<button class="srch-row" onclick="'+it.go+'"><span class="srch-t">'+esc(it.title)+'</span><small>'+esc(it.sub)+'</small><span class="srch-go">'+it.btn+' ↗</span></button>';
+    }).join('')+'</div>';
+  },
+  searchType:function(inp){
+    var out=document.getElementById('srchOut');
+    if(out)out.innerHTML=Kit.searchHtml(inp.value);
+  },
+  searchType2:function(btn){
+    var inp=document.getElementById('srchIn');
+    if(inp){inp.value=btn.textContent;Kit.searchType(inp);inp.focus()}
+  },
+  searchOpen:function(){
+    Modal.open('<div class="srch"><h3>🔎 全站搵嘢</h3>'+
+      '<input type="search" id="srchIn" placeholder="例：燈籠／玩水／頒獎／落雨／物料銀行" autocomplete="off" oninput="Kit.searchType(this)">'+
+      '<div id="srchOut">'+Kit.searchHtml('')+'</div>'+
+      '<div class="mute" style="font-size:.72rem;margin-top:8px">唔使上网；淨係搵 APP 自己嘅內容。</div></div>');
+    var i=document.getElementById('srchIn');if(i)setTimeout(function(){i.focus()},60);
+  },
   hubOpen:function(){Modal.open(Kit.hubHtml())},
   prepMsgFor:function(tid){Kit.msgOpen(Kit.ctxFor(tid))},
   prepCheckPrint:function(tid){
@@ -327,7 +539,7 @@ var Kit={
   openCheckFor:function(m){
     var st=(m&&m.stages)||[];
     var c=Kit.checkFor(st);
-    Kit.openCheck(c?c.key:'outdoor');
+    Kit.openCheck(c?c.key:'outdoor',(m&&m.id)||'');
   },
   checkToolHtml:function(m){
     var st=(m&&m.stages)||[];
@@ -335,8 +547,8 @@ var Kit={
       return st.some(function(x){return c.when.test((x.t||'')+' '+(x.n||'')+' '+(x.how||''))})});
     if(!keys.length)keys=['outdoor'];
     return '<div class="tool-check">'+st.map(function(x){var c=Kit.checkFor(x);
-        return '<div class="tc-row"><b>'+esc(x.n)+'</b><small>'+(c?c.ic+' '+esc(c.n):'一般環節・跟常規就夠')+'</small>'+(c?'<button class="btn sm ghost" onclick="Kit.openCheck(\''+c.key+'\')">打開</button>':'')+'</div>'}).join('')+
-      '<div class="btns" style="margin-top:8px">'+keys.map(function(k){return '<button class="btn sm gr" onclick="Kit.openCheck(\''+k+'\')">'+Kit.checks[k].ic+' '+esc(Kit.checks[k].n)+'</button>'}).join('')+'</div>'+
+        return '<div class="tc-row"><b>'+esc(x.n)+'</b><small>'+(c?c.ic+' '+esc(c.n):'一般環節・跟常規就夠')+'</small>'+(c?'<button class="btn sm ghost" onclick="Kit.openCheck(\''+c.key+'\',\''+((m&&m.id)||'')+'\')">打開</button>':'')+'</div>'}).join('')+
+      '<div class="btns" style="margin-top:8px">'+keys.map(function(k){return '<button class="btn sm gr" onclick="Kit.openCheck(\''+k+'\',\''+((m&&m.id)||'')+'\')">'+Kit.checks[k].ic+' '+esc(Kit.checks[k].n)+'</button>'}).join('')+'</div>'+
       '<div class="mute" style="font-size:.75rem;margin-top:6px">逐項剔走；完成晒先至開隊。呢張表係領袖自己用，唔使讀俾小朋友聽。</div></div>';
   },
   badgeInfo:function(k){return this.badgeMap.filter(function(b){return b.k===k})[0]||null},
@@ -380,16 +592,6 @@ var Kit={
   ownersOf:function(t){
     var id=t.id||((typeof Prepare!=='undefined')&&Prepare._detailId)||'';
     return (t.stages||[]).map(function(s,i){return Kit.ownerOf(id,i,s)});
-  },
-  openCheck:function(k){
-    var c=this.checks[k];
-    if(!c){for(var kk in this.checks){if(this.checks[kk].n===k)c=this.checks[kk]}}
-    if(!c)return;
-    Modal.open('<div class="eyebrow">🧭 執行檢查表</div><h3>'+c.ic+' '+esc(c.n)+'</h3>'+
-      '<div class="mute" style="font-size:.82rem">逐項剔走（剔咗變綠色）。呢個清單係俾領袖用嘅—唔使讀俾小朋友聽。</div>'+
-      '<div class="kit-check modal-check"><ol class="kc-list">'+c.items.map(function(x,i){return '<li onclick="this.classList.toggle(\'on\')"><span class="kc-no">'+(i+1)+'</span>'+esc(x)+'</li>'}).join('')+'</ol></div>'+
-      '<div class="btns"><button class="btn sm gr" onclick="Kit.copy(Kit.checkTxt(\''+c.n+'\'),this)">📋 複製清單（貼去領袖群）</button>'+
-      '<button class="btn sm ghost" onclick="Modal.close();PrintKit.openModal(\'checklists\',\''+k+'\')">🖨️ 打印 A4</button></div>');
   },
   meetCheckKeys:function(t){
     var out=[];((t&&t.stages)||[]).forEach(function(st){var c=Kit.checkFor(st);if(c&&out.indexOf(c.key)<0)out.push(c.key)});

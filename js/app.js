@@ -147,7 +147,7 @@ var App={
       '<button class="btn sm ghost rd" style="color:#b71c1c;border-color:#e53935" onclick="if(confirm(\'清除所有本機資料(含團員/集會/規劃)?\')){localStorage.clear();location.reload()}">清除全部資料</button></div>');
   },
   exportAll:function(){
-    var keys=['settings','plan','members','recs','mymeets','owners','meetmeta','msgTpl'],data={app:'ghmeeting',ver:1,at:new Date().toISOString(),keys:{}};
+    var keys=['settings','plan','members','recs','mymeets','owners','meetmeta','msgTpl','checkins'],data={app:'ghmeeting',ver:1,at:new Date().toISOString(),keys:{}};
     keys.forEach(function(k){var v=Store.get(k,null);if(v!==null&&v!==undefined)data.keys[k]=v});
     try{
       var blob=new Blob([JSON.stringify(data,null,1)],{type:'application/json'});
@@ -219,6 +219,7 @@ var Plan={
         '<button class="pill" onclick="Lead.quickTool(\'wheel\')">🎲 點名抽籤</button>'+
         '<button class="pill" onclick="Lead.quickTool(\'score\')">🥇 計分板</button>'+
         '<button class="pill" onclick="Lead.quickTool(\'group\')">👥 分組機</button>'+
+        '<button class="pill" onclick="Kit.searchOpen()">🔍 全站搵嘢</button>'+
         '<button class="pill" onclick="Kit.hubOpen()">🧰 點預備・檢查表</button>'+
       '</div>'+
       '</section><div class="steps-banner"><div class="mini-step"><b>01・即開</b>撳一下全螢幕帶領，免準備道具</div><div class="mini-step"><b>02・互動</b>小朋友睇螢幕玩遊戲，領袖睇講稿</div><div class="mini-step"><b>03・記出席</b>完場一鍵打卡，進度自動保存</div></div>'+
@@ -239,7 +240,7 @@ var Plan={
     pl.rows.forEach(function(r){
       var t=dur(r.tid);if(!t)return;
       var st=r.status==='done'?'<span class="tag g">✓ 完成</span>':r.status==='skip'?'<span class="tag br">跳過</span>':'<span class="tag">未做</span>';
-      h+='<tr style="cursor:pointer;'+(r.status==='todo'?'':'opacity:.75')+'" onclick="Plan.rowAction('+r.no+')"><td><b>'+r.no+'</b><br><small class="mute">'+t.mo+'</small></td>'+
+      h+='<tr style="cursor:pointer;'+(r.status==='todo'?'':'opacity:.75')+'" onclick="Plan.rowAction('+r.no+')"><td><b>'+r.no+'</b><br><small class="mute">'+(r.date?esc(Kit.fmtDate(r.date))+'・'+esc(t.mo):esc(t.mo))+'</small></td>'+
         '<td><a href="#meet" onclick="event.preventDefault();event.stopPropagation();Prepare.detail(\''+t.id+'\')"><b>'+esc(t.n)+'</b></a><br><small class="mute">'+esc(t.theme)+'</small></td><td>'+st+'</td></tr>';
     });
     return h+'</div><div class="btns"><button class="btn sm ghost" onclick="Plan.markAllDone()">記低呢季完成晒</button></div>';
@@ -252,12 +253,20 @@ var Plan={
       '<button class="btn sm '+(r.status==='todo'?'':'ghost')+'" onclick="Plan.setRow('+no+',\'todo\')">未做</button>'+
       '<button class="btn sm gr '+(r.status==='done'?'':'ghost')+'" onclick="Plan.setRow('+no+',\'done\')">✓ 完成</button>'+
       '<button class="btn sm ghost" style="color:#4e342e" onclick="Plan.setRow('+no+',\'skip\')">跳過</button></div>'+
+      '<label class="f">📅 今場日期（低一次，之後家長訊息、星期、截止日全部自動填）</label>'+
+      '<div class="date-row"><input type="date" value="'+esc(r.date||'')+'" onchange="Plan.setDate('+no+',this.value)">'+(r.date?'<button class="btn sm ghost" onclick="Plan.setDate('+no+',\'\');Plan.rowAction('+no+')">清走</button>':'')+'</div>'+
       '<label class="f">改用其他範本</label><select onchange="Plan.swap('+no+',this.value)">'+
       TPLS.map(function(x){return '<option value="'+x.id+'"'+(x.id===r.tid?' selected':'')+'>'+esc(x.n)+'</option>'}).join('')+'</select>'+
       '<div class="btns" style="margin-top:12px"><button class="btn gr" onclick="Modal.close();Lead.start(\''+r.tid+'\','+no+')">▶ 帶領呢次</button></div>');
   },
   setRow:function(no,st){var pl=Store.get('plan');pl.rows.find(function(x){return x.no===no}).status=st;Store.set('plan',pl);
     if(st==='done')Track.attendPrompt(no);else{Modal.close();App.route()}},
+  setDate:function(no,v){
+    if(typeof Kit!=='undefined'&&Kit.setPlanDate){Kit.setPlanDate(no,v)}
+    else{var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});if(r){r.date=v||'';Store.set('plan',pl)}}
+    if(typeof App!=='undefined')App.route();
+    Modal.close();
+  },
   swap:function(no,tid){var pl=Store.get('plan');pl.rows.find(function(x){return x.no===no}).tid=tid;Store.set('plan',pl);toast('已換範本');Modal.close();App.route()},
   roadmap:function(){
     var mem=Store.get('members');

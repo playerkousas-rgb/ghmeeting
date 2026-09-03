@@ -102,6 +102,7 @@ var Track={
       if(ghs.length){m.gh=m.gh||[];ghs.forEach(function(gi){m.gh[gi]=Math.min(2,(m.gh[gi]||0)+1)})}
     });
     Store.set('members',mem);
+    if(typeof Kit!=='undefined'&&Kit.ckClear)Kit.ckClear(t.id);
     var newMem=mem.filter(function(m,i){return !wasDone[i]&&Track.memberDone(m)});
     var newGh=mem.filter(function(m,i){return !wasGh[i]&&Track.ghDone(m)});
     Modal.close();App.route();

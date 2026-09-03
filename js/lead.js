@@ -221,7 +221,7 @@ var Lead={
      '<div class="lead-stage" id="stageArea"><span class="stg-type">'+st.t+' ・ 環節 '+(S.idx+1)+'/'+S.meet.stages.length+'</span>'+
        '<h1>'+esc(st.n)+'</h1><div class="kids" id="kidsArea">'+Lead.screen(st)+'</div></div>'+
      '<div class="lead-bar"><div class="row"><div class="stagepill">'+pills+'</div></div>'+
-       '<div class="row"><div style="flex:1;min-width:0"><span class="cue-label">領袖而家做'+(function(){var c=Kit.checkFor(st);return c?' <button class="lnk cue-chk" onclick="Kit.openCheck(\''+c.key+'\')">'+c.ic+' '+esc(c.n)+'</button>':' <button class="lnk cue-chk" onclick="Kit.hubOpen()">🧰 點預備</button>'})()+'</span><div class="now">'+esc(g.lead)+'</div><div class="leader-action">'+esc(g.watch)+'</div><div class="script">🎤 '+(esc(st.script||g.say)||'—')+'</div></div>'+
+       '<div class="row"><div style="flex:1;min-width:0"><span class="cue-label">領袖而家做'+(function(){var c=Kit.checkFor(st);return c?' <button class="lnk cue-chk" onclick="Kit.openCheck(\''+c.key+'\',\''+((Lead.S.meet&&Lead.S.meet.id)||'')+'\')">'+c.ic+' '+esc(c.n)+'</button>':' <button class="lnk cue-chk" onclick="Kit.hubOpen()">🧰 點預備</button>'})()+'</span><div class="now">'+esc(g.lead)+'</div><div class="leader-action">'+esc(g.watch)+'</div><div class="script">🎤 '+(esc(st.script||g.say)||'—')+'</div></div>'+
        '<div class="timer" id="tmr" onclick="Lead.toggleTmr()">'+Lead.fmt(S.left)+'</div></div>'+
        '<div class="row"><button class="btn sm ghost" onclick="Lead.prev()" '+(S.idx?'':'disabled style="opacity:.4"')+'>◀ 上一個</button>'+
        '<button class="btn sm" onclick="Lead.toggleTmr()" id="tmrBtn">▶ 開始計時</button>'+

@@ -1518,3 +1518,28 @@ button.lnk:hover{color:var(--ord)}
   .check-table tr{break-inside:avoid}
   .p-mat-tips{break-inside:avoid}
 }
+
+/* ===== 留痕・日期・全站搜尋 ===== */
+.kit-date{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0 2px;padding:8px 10px;background:#fff8e1;border:1px solid #ffe082;border-radius:10px}
+.kit-date span{font-size:.82rem}
+.kit-date b{color:#6d4c41}
+.kit-date input[type=date]{width:auto;flex:0 0 auto;padding:5px 8px;font-size:.82rem;border:1px solid #d7ccc8;border-radius:8px;background:#fff}
+.kit-date small{flex:1 1 100%;line-height:1.4}
+.date-row{display:flex;gap:8px;align-items:center}
+.date-row input[type=date]{flex:1 1 auto;width:auto}
+.kc-prog{font-size:.78rem;background:#e8f5e9;color:#1b5e20;border-radius:999px;padding:2px 8px;margin-right:6px;display:inline-block}
+.kc-prog b{font-size:.86rem}
+.kc-left{margin:6px 0 0;padding:7px 9px;background:#fff3e0;border-left:3px solid #fb8c00;border-radius:0 8px 8px 0;font-size:.78rem;line-height:1.45;color:#4e342e}
+.srch input[type=search]{width:100%;box-sizing:border-box;margin:6px 0 10px;padding:10px 12px;font-size:.95rem;border:2px solid var(--ord,#8d6e63);border-radius:10px;background:#fff}
+.srch-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.srch-tip{font-size:.82rem;line-height:1.5}
+.srch-tip b{display:block;margin-bottom:6px}
+.srch-none{padding:14px 6px;text-align:center;font-size:.86rem;line-height:1.6}
+.srch-g{margin:10px 0 4px;font-size:.74rem;font-weight:800;color:#6d4c41;letter-spacing:.02em}
+.srch-out{max-height:56vh;overflow:auto;-webkit-overflow-scrolling:touch}
+.srch-row{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;box-sizing:border-box;text-align:left;background:#fafafa;border:1px solid #e0d6cf;border-radius:10px;padding:8px 10px;margin:0 0 6px;cursor:pointer;font:inherit}
+.srch-row:hover,.srch-row:active{background:#fff3e0;border-color:#ffb74d}
+.srch-t{font-size:.86rem;font-weight:800;color:var(--ink,#3e2723)}
+.srch-row small{font-size:.74rem;color:#6d4c41;line-height:1.35}
+.srch-go{align-self:flex-end;font-size:.72rem;font-weight:800;color:#2e7d32}
+@media (max-width:520px){.srch-out{max-height:50vh}.kit-date{gap:6px}}
