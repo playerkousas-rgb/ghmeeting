@@ -16,8 +16,8 @@ var HB={
       '<div class="grid2"><div class="mem"><h4>📣 口號</h4><div class="big" style="font-size:1.3rem">'+f.slogan+'</div></div>'+
       '<div class="mem"><h4>🏔️ 銘言</h4><div class="big" style="font-size:1.3rem">'+f.motto+'</div></div></div>'+
       '<div class="mem" style="margin:10px 0"><h4>🎵 主題曲 Greeny Marchin\u2019 On <span class="tag">'+f.songNote+'</span></h4>'+
-      f.song.map(function(l){return '<div style="font-size:1.1rem;font-weight:700">'+esc(l)+'</div>'}).join('')+
-      '<div class="btns" style="margin-top:8px"><button class="btn sm" onclick="App.go(\'#lead\');setTimeout(function(){Lead._songSolo=1},50)">▶ 去帶領模式唱</button></div></div>'+
+      f.song.map(function(l,i){return '<div style="font-size:1.1rem;font-weight:700"><span class="tag">'+(i+1)+'</span>'+esc(l)+'</div>'}).join('')+
+      '<div class="song-note" style="margin-top:8px"><b>新領袖唔識旋律？</b> 去帶領畫面按「播放伴奏」，APP 會用寄調 London Bridge 的旋律帶住唱；先聽一次，再逐句唱。</div><div class="btns" style="margin-top:8px"><button class="btn sm" onclick="Lead.startStage(\'t02\',1)">▶ 直接開卡拉OK</button></div></div>'+
       '<div class="mem" style="margin:10px 0"><h4>🦗 支部小檔案</h4><div class="box">・年齡:4至7歲(8歲生日自動結束小童軍身分)<br>・特色:不設考驗,透過遊戲、唱歌、故事、律動、美勞學習<br>・目標:德智體群美靈平衡・認識自己、快樂同行<br>・團:最少6人、最多36人;領袖比例最好1:6<br>・快樂傘(PARABALLOON)係支部標誌,用於開會散會儀式</div></div></div>';
   },
   badge:function(){
@@ -30,9 +30,10 @@ var HB={
       '<div class="grid2" style="margin-top:8px">'+DATA.ghDomains.map(function(d){return '<div class="mem"><h4>'+d.ic+' '+d.n+'</h4><small class="mute">2項體驗</small></div>'}).join('')+'</div></div>';
   },
   chute:function(){
-    return '<div class="card"><h2>🌈 快樂傘16式</h2><div class="mute" style="font-size:.83rem">安全三則:全體揸實傘邊・保持距離・傘面唔企人。「升降旗」玩法定全做埋團員章「揚動快樂傘」要求。</div>'+
-      '<div class="grid2" style="margin-top:8px">'+DATA.chute.map(function(c){
-        return '<div class="mem"><h4>'+c.ic+' '+c.n+' <span class="tag">'+c.tag+'</span></h4><div class="box" style="font-size:.85rem">'+esc(c.h)+'</div><small class="mute">💡 '+esc(c.t)+'</small></div>'}).join('')+'</div></div>';
+    return '<div class="card"><h2>🌈 快樂傘：先學基本動作，再揀玩法</h2><div class="mute" style="font-size:.83rem">新領袖唔需要靠估。先看下面動作圖，開會／散會照做；之後每次只揀一式遊戲。安全優先：揸實傘邊・留一隻手臂距離・傘面唔企人。</div>'+Lead.parachuteSvg('open')+
+      '<div class="attention"><b>開會口令</b> 「面向傘、跪低、執實」→ 一、二、三揚傘。<br><b>散會口令</b> 「停、口號、慢慢放低」→ 傘落到膝頭才整理。</div>'+
+      '<h3 style="margin-top:16px">16式玩法卡</h3><div class="grid2" style="margin-top:8px">'+DATA.chute.map(function(c,i){
+        return '<div class="mem"><h4>'+c.ic+' '+c.n+' <span class="tag">'+c.tag+'</span></h4><div class="box" style="font-size:.85rem">'+esc(c.h)+'</div><small class="mute">💡 '+esc(c.t)+'</small><div class="btns"><button class="btn sm gr" onclick="Lead.startChute('+i+')">▶ 開圖卡</button></div></div>'}).join('')+'</div></div>';
   },
   sfh:function(){
     return '<div class="card"><h2>🛡️ 保護自己免受傷害</h2><div class="box">團員章必須項。學習目標:</div>'+

@@ -21,7 +21,8 @@
   <main id="view"></main>
   <nav id="tabbar">
     <a href="#plan" data-tab="plan"><span>📅</span>規劃</a>
-    <a href="#meet" data-tab="meet"><span>🧩</span>集會</a>
+    <a href="#meet" data-tab="meet"><span>🧩</span>集會卡</a>
+    <a href="#play" data-tab="play"><span>🎮</span>活動</a>
     <a href="#lead" data-tab="lead"><span>▶️</span>帶領</a>
     <a href="#track" data-tab="track"><span>🏅</span>追蹤</a>
     <a href="#book" data-tab="book"><span>📖</span>手冊</a>
@@ -30,12 +31,14 @@
 <div id="leadroot" class="hidden"></div>
 <div id="modal"></div>
 <script src="js/data.js"></script>
+<script src="js/guide.js"></script>
 <script src="js/tpls.js"></script>
 <script src="js/app.js"></script>
 <script src="js/prepare.js"></script>
 <script src="js/lead.js"></script>
 <script src="js/track.js"></script>
 <script src="js/handbook.js"></script>
+<script src="js/play.js"></script>
 <script>
 if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});}
 App.init();

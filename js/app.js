@@ -17,12 +17,13 @@ var App={
   route:function(){
     var h=(location.hash||'#plan').slice(1).split('?')[0];
     if(document.body.contains(document.getElementById('leadroot'))&&!document.getElementById('leadroot').classList.contains('hidden'))Lead.exit(false);
-    var v={plan:'plan',meet:'meet',lead:'lead',track:'track',book:'book'}[h]||'plan';
+    var v={plan:'plan',meet:'meet',play:'play',lead:'lead',track:'track',book:'book'}[h]||'plan';
     App.view=v;
     document.querySelectorAll('#tabbar a').forEach(function(a){a.classList.toggle('on',a.dataset.tab===v)});
     var el=document.getElementById('view');
     if(v==='plan')el.innerHTML=Plan.html();
     if(v==='meet')el.innerHTML=Prepare.html();
+    if(v==='play')el.innerHTML=Play.html();
     if(v==='lead')el.innerHTML=Lead.html();
     if(v==='track')el.innerHTML=Track.html();
     if(v==='book')el.innerHTML=HB.html();
@@ -71,15 +72,13 @@ var Plan={
     var next=pl.rows.find(function(r){return r.status==='todo'});
     var done=pl.rows.filter(function(r){return r.status==='done'}).length;
     var nextT=next?dur(next.tid):null;
-    var h='<div class="card"><h2>👋 '+esc(s.group)+'</h2>'+
-      '<div class="stat"><div class="s"><b>'+(pl.rows.length-done)+'</b>尚餘集會</div><div class="s"><b>'+done+'/'+pl.rows.length+'</b>已完成</div><div class="s"><b>'+mem.length+'</b>團員</div></div>'+
-      (nextT?'<hr class="soft"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div style="flex:1;min-width:200px"><b>📅 下次集會</b> '+esc(nextT.n)+'<br><small class="mute">'+esc(nextT.theme)+'・建議 '+nextT.mo+'・約 '+Plan.lenOf(nextT)+' 分鐘</small></div>'+
-        '<button class="btn gr" onclick="Lead.start(\''+nextT.id+'\',\''+next.no+'\')">▶ 帶領</button>'+
-        '<button class="btn ghost" onclick="App.go(\'#meet\');setTimeout(function(){Prepare.detail(\''+nextT.id+'\')},50)">📄 預覽</button></div>'
-      :'<hr class="soft"><div class="empty">🎉 全年集會完成!去「🧩集會」加自訂集會,或者重建行事曆再嚟一季。</div>')+
-      '</div>';
+    var h='<section class="ready-hero"><span class="eyebrow">🦗 '+esc(s.group)+'・今日帶領包</span><h1>拎起手機，就可以開始。</h1><p>唔使先讀完手冊。每個環節都有圖解、領袖口令、示範步驟和安全提示。</p>'+
+      '<div class="action-grid"><button class="btn primary" onclick="'+(nextT?"Lead.start('"+nextT.id+"',"+next.no+")":"Lead.start('t01')")+'">▶ '+(nextT?'帶領下次集會':'開始第一次帶領')+'</button><button class="btn ghost" onclick="App.go(\'#play\')">🎮 揀遊戲／手工</button><button class="btn ghost" onclick="'+(mem.length?"App.go('#track')":"Track.add()")+'">'+(mem.length?'✓ 已有團員名單':'➕ 加團員')+'</button></div>'+
+      (nextT?'<div class="next-strip"><span style="font-size:1.7rem">📅</span><div class="next-copy"><small>下一個未完成</small><b>'+esc(nextT.n)+'</b><small>'+esc(nextT.theme)+'・約 '+Plan.lenOf(nextT)+' 分鐘</small></div><button class="btn sm ghost" onclick="Prepare.detail(\''+nextT.id+'\')">先睇卡</button></div>':'<div class="attention" style="margin-top:12px"><b>🎉 全年流程完成</b><br>可以去「集會」揀一張卡，或者建立自己的集會。</div>')+
+      '</section><div class="steps-banner"><div class="mini-step"><b>01・準備</b>睇物資清單，按圖示排好場地</div><div class="mini-step"><b>02・帶領</b>撳「▶」；小朋友畫面會自己走</div><div class="mini-step"><b>03・記錄</b>完場點出席，進度自動保存</div></div>'+
+      '<div class="stat"><div class="s"><b>'+(pl.rows.length-done)+'</b>尚餘集會</div><div class="s"><b>'+done+'/'+pl.rows.length+'</b>已完成</div><div class="s"><b>'+mem.length+'</b>團員</div></div>';
     h+='<div class="card"><h2>🗓️ 年度行事曆 <span class="tag">'+done+'/'+pl.rows.length+' 完成</span></h2>'+
-      '<div class="mute" style="font-size:.82rem;margin-bottom:8px">跟《小童軒活動指引》首年流程排好:第1–4次玩到攞團員章,之後進步獎章+節日特別集會。撳任何一格可以換範本/記完成。</div>'+
+      '<div class="mute" style="font-size:.82rem;margin-bottom:8px">已按小童軍成長節奏排好：先熟習團生活，再逐步加入生活技能、合作、戶外和節日活動。撳任何一格可以換卡、標記完成或直接開始。</div>'+
       Plan.calendar(pl)+'</div>';
     h+='<div class="card"><h2>🗺️ 42個月完整路線圖</h2><div class="mute" style="font-size:.82rem">團員章 → 四級進步獎章(約22個月)→ 小草蜢獎章(7範疇×2體驗)→ 晉團幼童軍</div>'+Plan.roadmap()+'</div>';
     h+='<div class="card"><h2>🦗 小草蜢歷險(6歲起)</h2><div class="mute" style="font-size:.82rem;margin-bottom:8px">七大範疇各完成2項體驗=小草蜢獎章。app 已為每個範疇預備一次集會範本。</div><div class="grid2">'+
@@ -94,8 +93,8 @@ var Plan={
     pl.rows.forEach(function(r){
       var t=dur(r.tid);if(!t)return;
       var st=r.status==='done'?'<span class="tag g">✓ 完成</span>':r.status==='skip'?'<span class="tag br">跳過</span>':'<span class="tag">未做</span>';
-      h+='<tr style="'+(r.status==='todo'?'':'opacity:.75')+'"><td><b>'+r.no+'</b><br><small class="mute">'+t.mo+'</small></td>'+
-        '<td><a href="#meet" onclick="event.preventDefault();Prepare.detail(\''+t.id+'\')"><b>'+esc(t.n)+'</b></a><br><small class="mute">'+esc(t.theme)+'</small></td><td>'+st+'</td></tr>';
+      h+='<tr style="cursor:pointer;'+(r.status==='todo'?'':'opacity:.75')+'" onclick="Plan.rowAction('+r.no+')"><td><b>'+r.no+'</b><br><small class="mute">'+t.mo+'</small></td>'+
+        '<td><a href="#meet" onclick="event.preventDefault();event.stopPropagation();Prepare.detail(\''+t.id+'\')"><b>'+esc(t.n)+'</b></a><br><small class="mute">'+esc(t.theme)+'</small></td><td>'+st+'</td></tr>';
     });
     return h+'</div><div class="btns"><button class="btn sm ghost" onclick="Plan.markAllDone()">記低呢季完成晒</button></div>';
   },

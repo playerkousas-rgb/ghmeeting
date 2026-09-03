@@ -50,7 +50,7 @@ small,.mute{color:var(--mute)}
 .tag.r{background:#ffcdd2;color:#b71c1c}.tag.br{background:#d7ccc8;color:#4e342e}
 .pill{display:inline-block;background:#fff;border:1.5px solid var(--line);border-radius:99px;
   padding:4px 12px;font-size:.82rem;margin:3px 3px 0 0;font-weight:600}
-.pill.on{background:#ffe0b2;border-color:var(--or)}
+.pill.on{background:#ffe0b2;border-color:var(--or)}.pill.on .dot{background:var(--gr);border-color:var(--grd)}
 input[type=text],input[type=number],input[type=date],select,textarea{
   font-family:inherit;font-size:.95rem;padding:9px 12px;border:1.5px solid var(--line);border-radius:12px;
   background:#fff;color:var(--ink);width:100%}
@@ -167,3 +167,35 @@ hr.soft{border:none;border-top:1.5px dashed var(--line);margin:12px 0}
 .progbar i{display:block;height:100%;background:linear-gradient(90deg,var(--or),var(--gr))}
 toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#3e2723;color:#fff;
   border-radius:99px;padding:10px 20px;font-size:.9rem;z-index:300;box-shadow:var(--sh);white-space:nowrap}
+/* =========== 即用工作流 =========== */
+.ready-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#fff3e0 0%,#fff 55%,#e8f5e9 100%);border:1px solid #ffe0b2;border-radius:24px;padding:20px 18px;box-shadow:var(--sh)}
+.ready-hero:after{content:'🦗';position:absolute;right:-8px;bottom:-22px;font-size:7rem;opacity:.12;transform:rotate(-12deg)}
+.ready-hero h1{font-size:clamp(1.55rem,5vw,2.3rem);color:var(--ord);margin:.15em 0 .2em;max-width:75%}
+.ready-hero p{margin:0;max-width:620px;font-size:.98rem}.eyebrow{font-size:.72rem;letter-spacing:1px;font-weight:800;color:var(--grd)}
+.action-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;margin-top:16px;position:relative;z-index:1}
+.action-grid .btn{min-height:54px;padding:9px 10px}.action-grid .primary{background:var(--grd);font-size:1rem}
+.next-strip{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:11px 12px;margin-top:12px;position:relative;z-index:1}
+.next-strip .next-copy{flex:1;min-width:0}.next-copy b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.next-copy small{display:block}
+.steps-banner{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.mini-step{background:#fff;border-radius:14px;padding:10px;box-shadow:var(--sh);font-size:.82rem}.mini-step b{display:block;color:var(--ord);font-size:1.15rem}
+.attention{border-left:5px solid var(--or);background:#fff8e1;border-radius:12px;padding:10px 12px;font-size:.88rem}.attention b{color:var(--ord)}
+/* leader-ready cards: every activity has a visual sequence, a spoken cue and a safety note */
+.brief-head{display:flex;align-items:flex-start;gap:10px}.brief-head .brief-no{width:34px;height:34px;border-radius:12px;background:var(--ord);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex:0 0 auto}.brief-head h3{margin:0;color:var(--ink)}
+.brief-head small{display:block}.brief-card{border:1px solid var(--line);border-radius:18px;padding:13px;margin:10px 0;background:#fff}.brief-card.done{background:#f4fbf4}
+.guide-lead{background:#e8f5e9;border-radius:12px;padding:9px 11px;margin:10px 0;font-size:.9rem}.guide-lead b{color:var(--grd);display:block;font-size:.75rem;letter-spacing:.5px}
+.guide-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}.guide-step{background:#fff8ee;border:1px solid #ffe0b2;border-radius:13px;padding:9px 8px;min-height:100px}.guide-step .gnum{display:inline-flex;width:22px;height:22px;align-items:center;justify-content:center;background:var(--or);color:#fff;border-radius:50%;font-size:.75rem;font-weight:800}.guide-step .gicon{font-size:1.65rem;display:block;line-height:1.15;margin:4px 0}.guide-step b{font-size:.82rem;display:block}.guide-step small{font-size:.75rem;line-height:1.35;display:block}
+.say-box{border:2px solid #c8e6c9;border-radius:13px;padding:9px 11px;font-size:.9rem;background:#f7fff7}.say-box b{color:var(--grd);font-size:.75rem;display:block}.watch-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;font-size:.78rem}.watch-row>div{padding:7px 9px;border-radius:10px;background:#f7f4f1}.watch-row .safe{background:#fff3f0;color:#7b2929}
+.mats-bar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:8px 0}.mats-bar b{font-size:.8rem;color:var(--mute)}
+/* visual parachute instruction */
+.parachute-kit{background:linear-gradient(150deg,#edf8ff,#fff);border:1px solid #c7e5f6;border-radius:18px;padding:10px;margin:10px 0}.parachute-kit h4{margin:0 0 4px;color:#1565c0}.parachute-visual{display:flex;justify-content:center;align-items:center;min-height:148px}.parachute-visual svg{width:min(100%,430px);height:auto;max-height:190px}.para-caption{text-align:center;font-size:.78rem;color:#5d7180;margin-top:-3px}.para-safety{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.para-safety span{background:#fff;border:1px solid #c7e5f6;border-radius:99px;padding:4px 8px;font-size:.74rem;color:#28566c}
+.lead-guide{width:min(820px,100%);background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;margin:8px auto 0;box-shadow:0 3px 12px rgba(80,40,0,.06)}.lead-guide .guide-lead{margin:0 0 9px;font-size:.95rem}.lead-guide .guide-steps{margin-bottom:8px}.lead-guide .guide-step{min-height:80px}.lead-guide .watch-row{margin-bottom:0}
+.lead-stage .how.visual-how{font-size:clamp(.95rem,2vw,1.15rem);max-width:760px;text-align:left}.lead-stage .kids .lead-guide{max-width:850px}.child-prompt{text-align:center;color:var(--mute);font-size:.85rem;margin:3px 0 0}
+/* interactive sung line */
+.song-tools{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:9px 0}.song-note{max-width:690px;background:#fff8e1;border-radius:13px;padding:8px 12px;text-align:center;color:#795548;font-size:.86rem}.song-note b{color:var(--ord)}
+.songline{cursor:default}.songline.on{background:#fff3cd;border-radius:13px;padding:0 12px;box-shadow:0 0 0 3px #ffd54f55}.songline.sung{color:var(--grd)}
+/* larger, more useful leader rail */
+.lead-bar .script{font-size:.9rem;color:#d7e8dc;line-height:1.35}.lead-bar .cue-label{font-size:.68rem;letter-spacing:.7px;color:#a5d6a7;display:block}.lead-bar .now{font-size:1rem}.lead-bar .leader-action{font-size:.8rem;color:#fff;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:650px){.action-grid{grid-template-columns:1fr 1fr}.action-grid .primary{grid-column:1/-1}.steps-banner{grid-template-columns:1fr}.guide-steps{grid-template-columns:1fr 1fr 1fr}.guide-step{min-height:112px}.watch-row{grid-template-columns:1fr}.lead-guide{padding:9px}.lead-guide .guide-step{padding:7px 5px}.lead-bar .leader-action{display:none}}
+@media(max-width:430px){.guide-steps{gap:5px}.guide-step .gicon{font-size:1.35rem}.guide-step small{font-size:.7rem}.brief-card{padding:10px}.ready-hero{padding:16px 14px}}
+/* =========== 資深領袖活動架 =========== */
+.activity-hero{background:linear-gradient(135deg,#e8f5e9,#fff 60%,#fff3e0);border:1px solid #c8e6c9}.activity-hero h2{font-size:clamp(1.45rem,5vw,2rem);margin:.15em 0}.activity-hero p{max-width:700px;margin:0}.activity-stat{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;margin-top:13px;color:var(--mute);font-size:.78rem}.activity-stat b{font-size:1.5rem;color:var(--grd);margin-left:8px}.activity-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}.activity-tabs .pill{cursor:pointer}.activity-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.activity-card{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:17px;padding:12px;min-width:0}.activity-icon{font-size:2.2rem;line-height:1.1;flex:0 0 auto}.activity-copy{min-width:0;flex:1}.activity-copy h3{font-size:1rem;margin:0;color:var(--ord)}.activity-copy small{color:var(--mute);font-size:.74rem}.activity-copy p{font-size:.83rem;line-height:1.4;margin:5px 0;color:var(--ink)}.activity-mats{font-size:.75rem;color:var(--mute);line-height:1.35}.activity-action{align-self:center;flex:0 0 auto}.activity-action .btn{white-space:nowrap}
+@media(max-width:650px){.activity-grid{grid-template-columns:1fr}.activity-card{padding:10px}.activity-icon{font-size:2rem}.activity-action .btn{padding:7px 8px;font-size:.76rem}}
