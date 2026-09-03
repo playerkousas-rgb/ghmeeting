@@ -3,20 +3,20 @@ var Prepare={
   filter:'all',
   html:function(){
     var cats=[['all','全部'],['member','團員章'],['prog','進步'],['fest','特別'],['outdoor','戶外'],['gh','小草蜢'],['custom','自訂']];
-    var h='<div class="card"><h2>🧩 集會庫</h2><div class="mute" style="font-size:.83rem">'+TPLS.length+'個範本以《小童軍活動指引》第三版綱要編寫:首年22次+小草蜢七大範疇+空白。撳「▶帶領」即刻用;「✏️」複製入編排器自己改。</div>'+
+    var h='<div class="card"><h2>🧩 帶領卡庫</h2><div class="mute" style="font-size:.83rem">'+TPLS.length+'張即用帶領卡。每張卡都拆成「先做咩、點樣示範、要講咩、要留意咩」；唔需要先讀完一大段文字。撳「睇準備卡」即刻跟住做。</div>'+
       '<div style="margin:8px 0">'+cats.map(function(c){return '<span class="pill'+(Prepare.filter===c[0]?' on':'')+'" onclick="Prepare.f(\''+c[0]+'\')">'+c[1]+'</span>'}).join('')+'</div>';
     var list=TPLS.filter(function(t){return Prepare.filter==='all'||t.cat===Prepare.filter});
     list.forEach(function(t){
       h+='<div class="mem" style="margin:10px 0"><h4>'+esc(t.n)+' <span class="tag">'+TPLS.catName[t.cat]+'</span></h4>'+
         '<small class="mute">'+esc(t.theme)+'・建議'+t.mo+'・約'+Plan.lenOf(t)+'分鐘・'+t.stages.length+'個環節</small>'+
-        '<div class="btns" style="margin:8px 0 0"><button class="btn sm" onclick="Prepare.detail(\''+t.id+'\')">📄 詳情</button>'+
-        '<button class="btn sm gr" onclick="Lead.start(\''+t.id+'\')">▶ 帶領</button>'+
-        '<button class="btn sm ghost" onclick="Prepare.edit(\''+t.id+'\')">✏️ 複製修改</button></div></div>';
+        '<div class="btns" style="margin:8px 0 0"><button class="btn sm" onclick="Prepare.detail(\''+t.id+'\')">🧭 睇準備卡</button>'+
+        '<button class="btn sm gr" onclick="Lead.start(\''+t.id+'\')">▶ 即刻帶領</button>'+
+        '<button class="btn sm ghost" onclick="Prepare.edit(\''+t.id+'\')">✏️ 改內容</button></div></div>';
     });
     h+='</div>';
     var my=Store.get('mymeets');
     h+='<div class="card"><h2>🗂️ 我嘅集會 <span class="tag g">'+my.length+'</span></h2>'+
-      (my.length?'<div class="mute" style="font-size:.83rem">你儲存嘂自製/修改集會。</div>'+my.map(function(m){
+      (my.length?'<div class="mute" style="font-size:.83rem">你儲存嘅自製／修改集會。</div>'+my.map(function(m){
         return '<div class="mem" style="margin:10px 0"><h4>'+esc(m.n)+'</h4><small class="mute">約'+m.stages.reduce(function(a,s){return a+(+s.m||0)},0)+'分鐘・'+m.stages.length+'環節</small>'+
         '<div class="btns" style="margin:8px 0 0"><button class="btn sm gr" onclick="Lead.startMy(\''+m.id+'\')">▶ 帶領</button>'+
         '<button class="btn sm ghost" onclick="Prepare.editMy(\''+m.id+'\')">✏️ 編輯</button>'+
@@ -26,22 +26,27 @@ var Prepare={
     return h;
   },
   f:function(c){Prepare.filter=c;App.route()},
+  brief:function(s,i){
+    var g=Guide.forStage(s);
+    var mats=(s.mats||[]).length?'<div class="mats-bar"><b>🧺 要拎：</b>'+s.mats.map(function(m){return '<span class="pill" onclick="this.classList.toggle(\'on\')"><span class="dot"></span>'+esc(m)+'</span>'}).join('')+'</div>':'';
+    var visual=(s.screen==='chuteopen'||s.screen==='chuteclose'||s.screen==='chute')?Lead.parachuteSvg(s.screen==='chuteclose'?'close':'open'):'';
+    return '<article class="brief-card"><div class="brief-head"><span class="brief-no">'+(i+1)+'</span><div><h3>'+esc(s.n)+'</h3><small>'+esc(s.t)+'・'+(+s.m||0)+' 分鐘</small></div></div>'+mats+visual+
+      '<div class="guide-lead"><b>領袖先做</b>'+esc(g.lead)+'</div><div class="guide-steps">'+g.steps.map(function(x){return '<div class="guide-step"><span class="gnum">'+esc(x[0])+'</span><span class="gicon">'+x[1]+'</span><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div>'}).join('')+'</div>'+
+      '<div class="say-box"><b>🎤 可以直接照講</b>'+esc(g.say)+'</div><div class="watch-row"><div><b>👀 睇住呢樣</b><br>'+esc(g.watch)+'</div><div class="safe"><b>🛡️ 安全</b><br>'+esc(g.safety)+'</div></div>'+
+      '<details style="margin-top:9px"><summary>顯示完整玩法文字</summary><div class="box" style="margin-top:6px">'+esc(s.how||'')+'</div></details><div class="btns"><button class="btn sm gr" onclick="Prepare.detailStage(\''+esc(Prepare._detailId||'')+'\','+i+')">▶ 試用呢節</button></div></article>';
+  },
+  detailStage:function(id,i){
+    var t=dur(id);if(t&&t.stages[i])Lead.startStage(id,i);
+  },
   detail:function(id){
-    var t=dur(id);if(!t)return;
+    var t=dur(id);if(!t)return;Prepare._detailId=id;
     var mats=matsOf(t);
-    var h='<h3>'+esc(t.n)+' <span class="tag">'+TPLS.catName[t.cat]+'</span></h3>'+
-      '<div class="mute" style="font-size:.85rem">'+esc(t.theme)+'・建議'+t.mo+'・合共約 <b>'+Plan.lenOf(t)+' 分鐘</b></div>'+
-      '<div class="tbl" style="margin-top:8px"><tr><th>分鐘</th><th>環節</th><th>內容・物資</th></tr>';
-    t.stages.forEach(function(s,i){
-      h+='<tr><td><b>'+(+s.m||0)+'</b><br><small class="mute">'+s.t+'</small></td><td><b>'+esc(s.n)+'</b>'+(s.badge?'<br><span class="tag g">團員章:'+DATA.badgeItems.find(function(b){return b.k===s.badge}).t+'</span>':'')+(s.gh!=null?'<br><span class="tag b">小草蜢:'+DATA.ghDomains[s.gh].n+'</span>':'')+'</td>'+
-        '<td>'+esc(s.how||'')+((s.mats&&s.mats.length)?'<br><small class="mute">🧺 '+esc(s.mats.join('、'))+'</small>':'')+'</td></tr>';
-    });
-    h+='</div>';
-    if(mats.length)h+='<hr class="soft"><b>🧺 物資總清單</b><div style="margin-top:6px">'+mats.map(function(m){return '<span class="pill">'+esc(m)+'</span>'}).join('')+'</div>';
-    h+='<div class="btns" style="margin-top:12px">'+
-      '<button class="btn gr" onclick="Modal.close();Lead.start(\''+t.id+'\')">▶ 直接帶領</button>'+
-      '<button class="btn ghost" onclick="Prepare.edit(\''+t.id+'\')">✏️ 複製入編排器</button>'+
-      '<button class="btn ghost" onclick="Prepare.shareTpl(\''+t.id+'\')">📤 分享文字</button></div>';
+    var h='<div class="ready-detail"><div class="eyebrow">🧭 領袖準備卡・'+esc(t.mo)+'</div><h3>'+esc(t.n)+'</h3><div class="mute" style="font-size:.85rem">'+esc(t.theme)+'・約 <b>'+Plan.lenOf(t)+' 分鐘</b>・'+t.stages.length+' 個小步驟</div>'+
+      '<div class="btns" style="margin-top:12px"><button class="btn gr blk" onclick="Modal.close();Lead.start(\''+t.id+'\')">▶ 由頭開始帶領</button><button class="btn ghost" onclick="Prepare.shareTpl(\''+t.id+'\')">📤 分享準備卡</button></div>'+
+      '<div class="attention" style="margin-top:12px"><b>開場前只做三件事</b><br>① 按下面物資清單執齊　② 預留活動位置　③ 撳「由頭開始帶領」，跟綠色領袖欄一步一步做。</div>'+
+      '<div class="card" style="box-shadow:none;border:1px solid var(--line);padding:11px;margin:12px 0"><h4 style="margin:0;color:var(--ord)">🧺 物資總清單・逐項撳一下剔走</h4><div class="mats-bar">'+(mats.length?mats.map(function(m){return '<span class="pill" onclick="this.classList.toggle(\'on\')"><span class="dot"></span>'+esc(m)+'</span>'}).join(''):'<span class="mute">今次唔需要額外物資</span>')+'</div></div>'+
+      '<h4 style="margin:14px 0 4px;color:var(--ord)">跟住呢條流程做</h4>'+t.stages.map(function(s,i){return Prepare.brief(s,i)}).join('')+
+      '<div class="attention"><b>收尾</b><br>完成後返到帶領畫面最後一頁，撳「記錄完成＋記出席」，就唔使另外抄名單。</div></div>';
     Modal.open(h);
   },
   /* ---------- 編排器 ---------- */

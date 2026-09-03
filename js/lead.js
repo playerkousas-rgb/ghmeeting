@@ -10,6 +10,31 @@ var Sfx={ctx:null,on:true,
   fanfare:function(){[523,659,784,1047].forEach(function(f,i){setTimeout(function(){Sfx.tone(f,.3)},i*130)})},
   alarm:function(){[0,1,2].forEach(function(i){setTimeout(function(){Sfx.tone(980,.18,'square',.3);},i*260)})}
 };
+/* 不依賴外部連結的簡單伴奏：手機／投影一按就會用瀏覽器彈出 London Bridge 旋律。 */
+var Music={
+  ctx:null,playing:false,beat:.42,iv:null,stopTimer:null,voices:[],
+  notes:[392,440,392,349,330,349,392,294,330,349,330,349,392,392,440,392,349,330,349,392,294,392,330,262,262],
+  lines:[4,4,4,4,4,5],
+  play:function(){
+    this.stop();
+    try{
+      this.ctx=Sfx.ac();var now=this.ctx.currentTime+.06;
+      for(var i=0;i<this.notes.length;i++){
+        var o=this.ctx.createOscillator(),g=this.ctx.createGain(),at=now+i*this.beat;
+        o.type='triangle';o.frequency.value=this.notes[i];g.gain.setValueAtTime(.001,at);g.gain.linearRampToValueAtTime(.22,at+.025);g.gain.exponentialRampToValueAtTime(.001,at+this.beat*.82);o.connect(g);g.connect(this.ctx.destination);o.start(at);o.stop(at+this.beat*.86);this.voices.push(o);
+      }
+      this.playing=true;this.highlight(0);var self=this;this.iv=setInterval(function(){self.highlight((self._step||0)+1)},this.beat*1000);
+      this.stopTimer=setTimeout(function(){self.stop()},this.notes.length*this.beat*1000+180);
+    }catch(e){toast('裝置未能播放伴奏，請確認瀏覽器聲音已開啟')}
+  },
+  highlight:function(step){
+    this._step=step;if(step<0){if(window.Lead&&Lead.songHighlight)Lead.songHighlight(-1);return}
+    var total=this.notes.length;if(step>=total){this.stop();return}
+    var n=step,line=0;while(line<this.lines.length&&n>=this.lines[line]){n-=this.lines[line];line++}
+    if(window.Lead&&Lead.songHighlight)Lead.songHighlight(line);
+  },
+  stop:function(){clearInterval(this.iv);clearTimeout(this.stopTimer);this.iv=null;this.stopTimer=null;this.voices.forEach(function(o){try{o.stop()}catch(e){}});this.voices=[];this.playing=false;this._step=0;if(window.Lead&&Lead.songHighlight)Lead.songHighlight(-1)}
+};
 var Lead={
   S:null,tmr:null,
   html:function(){
@@ -17,7 +42,8 @@ var Lead={
     var next=pl.rows.find(function(r){return r.status==='todo'});
     var nextT=next?dur(next.tid):null;
     var my=Store.get('mymeets');
-    var h='<div class="card"><h2>▶️ 帶領模式</h2><div class="mute" style="font-size:.85rem">大畫面投影俾小朋友:誓詞大字、卡拉OK、遊戲、計時;綠色領袖欄顯示講稿提示,全場只需撳「下一個▶」。</div>';
+    var h='<div class="card"><h2>▶️ 現場帶領</h2><div class="mute" style="font-size:.85rem">左邊（或投影）係小朋友畫面；下面綠色欄係領袖提示。唔識唱、唔識玩都唔緊要：先睇圖，再照讀口令，最後撳「下一個」。</div>';
+    h+='<div class="attention"><b>第一次用？</b> 先撳「帶領下次集會」，唔需要另外準備投影片；唱歌環節有內置伴奏，快樂傘有動作圖。</div>';
     if(nextT)h+='<div class="btns" style="margin-top:10px"><button class="btn gr blk" onclick="Lead.start(\''+nextT.id+'\','+next.no+')">▶ 帶領下次集會:'+esc(nextT.n).slice(0,18)+'…</button></div>';
     h+='</div>';
     h+='<div class="card"><h2>📚 現成範本</h2><div class="grid2">'+
@@ -39,6 +65,16 @@ var Lead={
     Lead.S={meet:JSON.parse(JSON.stringify(t)),idx:0,left:(t.stages[0].m||5)*60,timerOn:false,no:no||0};
     Lead.open();
   },
+  startStage:function(id,i){
+    var t=dur(id);if(!t||!t.stages[i])return;
+    Lead.S={meet:{id:t.id,n:t.n+'・試用單一環節',stages:[JSON.parse(JSON.stringify(t.stages[i]))]},idx:0,left:(t.stages[i].m||5)*60,timerOn:false,no:0};
+    Modal.close();Lead.open();
+  },
+  startChute:function(i){
+    var c=DATA.chute[i];if(!c)return;
+    Lead.S={meet:{id:'chute-'+i,n:'快樂傘玩法卡・'+c.n,stages:[{t:'遊戲',n:c.n,m:10,screen:'chute',chuteIndex:i}]},idx:0,left:600,timerOn:false,no:0};
+    Lead.open();
+  },
   startMy:function(id){
     var m=Store.get('mymeets').find(function(x){return x.id===id});if(!m)return;
     Lead.S={meet:JSON.parse(JSON.stringify(m)),idx:0,left:(m.stages[0].m||5)*60,timerOn:false,no:0};
@@ -51,7 +87,7 @@ var Lead={
     try{document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen()}catch(e){}
   },
   exit:function(reroute){
-    clearInterval(Lead.tmr);Lead.tmr=null;
+    clearInterval(Lead.tmr);Lead.tmr=null;Music.stop();
     document.getElementById('leadroot').classList.add('hidden');
     document.getElementById('view').classList.remove('hidden');
     if(document.fullscreenElement)try{document.exitFullscreen()}catch(e){}
@@ -59,7 +95,7 @@ var Lead={
   },
   cur:function(){return Lead.S.meet.stages[Lead.S.idx]},
   render:function(){
-    var S=Lead.S,st=Lead.cur();
+    var S=Lead.S,st=Lead.cur(),g=Guide.forStage(st);
     var pills=S.meet.stages.map(function(x,i){return '<i class="'+(i<S.idx?'done':i===S.idx?'on':'')+'"></i>'}).join('');
     document.getElementById('leadroot').innerHTML=
      '<div class="lead-top"><button onclick="Lead.exit()">✕</button><div class="tt">'+esc(S.meet.n)+(S.no?' ・第'+S.no+'次':'')+'</div>'+
@@ -67,7 +103,7 @@ var Lead={
      '<div class="lead-stage" id="stageArea"><span class="stg-type">'+st.t+' ・ 環節 '+(S.idx+1)+'/'+S.meet.stages.length+'</span>'+
        '<h1>'+esc(st.n)+'</h1><div class="kids" id="kidsArea">'+Lead.screen(st)+'</div></div>'+
      '<div class="lead-bar"><div class="row"><div class="stagepill">'+pills+'</div></div>'+
-       '<div class="row"><div style="flex:1;min-width:0"><div class="now">'+esc(st.n)+'</div><div class="script">🎤 '+(esc(st.script)||'—')+'</div></div>'+
+       '<div class="row"><div style="flex:1;min-width:0"><span class="cue-label">領袖而家做</span><div class="now">'+esc(g.lead)+'</div><div class="leader-action">'+esc(g.watch)+'</div><div class="script">🎤 '+(esc(st.script||g.say)||'—')+'</div></div>'+
        '<div class="timer" id="tmr" onclick="Lead.toggleTmr()">'+Lead.fmt(S.left)+'</div></div>'+
        '<div class="row"><button class="btn sm ghost" onclick="Lead.prev()" '+(S.idx?'':'disabled style="opacity:.4"')+'>◀ 上一個</button>'+
        '<button class="btn sm" onclick="Lead.toggleTmr()" id="tmrBtn">▶ 開始計時</button>'+
@@ -95,17 +131,19 @@ var Lead={
       '<div class="btns" style="justify-content:center"><button class="btn gr" onclick="Lead.done()">✓ 記錄完成+記出席</button><button class="btn ghost" onclick="Lead.exit()">離開</button></div>';
     clearInterval(Lead.tmr);
   },
-  done:function(){var no=Lead.S.no;if(no)Track.attendPrompt(no);else Lead.exit()},
+  done:function(){var no=Lead.S.no;if(no){var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});if(r){r.status='done';Store.set('plan',pl)}Track.attendPrompt(no)}else Lead.exit()},
   /* ================= 投影畫面 ================= */
   screen:function(st){
     Lead.after=null;var k=st.screen||(st.t==='唱遊'?'song':'howto');
+    if(k!=='song')Music.stop();
     var fn=Lead.scr[k]||Lead.scr.howto;return fn(st);
   }
 };
 Lead.scr={
   howto:function(st){
-    var mats=(st.mats||[]).length?'<div style="margin-top:10px"><small class="mute">🧺 '+esc(st.mats.join('、'))+'</small></div>':'';
-    return '<div class="how">'+esc(st.how||st.n)+'</div>'+mats;
+    var g=Guide.forStage(st);
+    var mats=(st.mats||[]).length?'<div class="mats-bar" style="justify-content:center"><b>🧺</b>'+st.mats.map(function(m){return '<span class="pill">'+esc(m)+'</span>'}).join('')+'</div>':'';
+    return '<div class="child-prompt">領袖先示範一次，小朋友跟住每一步做</div>'+Lead.guideHtml(g)+mats;
   },
   story:function(st){
     var p=DATA.storyPrompts[Math.floor(Math.random()*DATA.storyPrompts.length)];
@@ -118,31 +156,34 @@ Lead.scr={
       '<div class="btns" style="justify-content:center"><button class="btn sm" onclick="Lead.promiseBig()">🔍 放大逐句讀</button></div>';
   },
   chuteopen:function(){
-    return '<div class="big">🌈 快樂傘開會儀式</div><div class="how">① 全體面向快樂傘企好 ② 單腿跪姿、雙手掌心向下執傘邊 ③ 一齊大聲叫口號,揚起快樂傘!</div>'+
-      '<div class="huge" style="font-size:clamp(2rem,8vw,4.5rem)">「小童軍——向前進!」</div>';
+    var g=Guide.forStage({screen:'chuteopen'});
+    return '<div class="big">🌈 快樂傘開會・跟圖做</div>'+Lead.parachuteSvg('open')+Lead.guideHtml(g)+'<div class="huge" style="font-size:clamp(2rem,8vw,4.5rem)">「小童軍——向前進!」</div>';
   },
   chuteclose:function(){
-    return '<div class="big">🌈 快樂傘散會儀式</div><div class="how">一齊大叫口號,單腿跪姿輕輕放低快樂傘,執拾好,敬禮散會。</div>'+
-      '<div class="huge" style="font-size:clamp(2rem,8vw,4.5rem)">「小童軍——向前進!」</div>';
+    var g=Guide.forStage({screen:'chuteclose'});
+    return '<div class="big">🌈 快樂傘散會・跟圖做</div>'+Lead.parachuteSvg('close')+Lead.guideHtml(g)+'<div class="huge" style="font-size:clamp(2rem,8vw,4.5rem)">「小童軍——向前進!」</div>';
   },
   song:function(){
-    var lines=DATA.facts.song;
-    Lead.after=function(){Lead.songTick(0)};
-    return '<div class="big" style="font-size:1.3rem;color:var(--mute)">🎵 小童軍主題曲(寄調 London Bridge)</div>'+
+    Music.stop();var lines=DATA.facts.song;
+    Lead.after=function(){};
+    var g=Guide.forStage({t:'唱遊',screen:'song'});
+    return '<div class="big" style="font-size:1.3rem;color:var(--mute)">🎵 小童軍主題曲・卡拉OK</div><div class="song-note"><b>唔使搵 YouTube：</b>'+esc(DATA.facts.songHint||'按播放，跟住黃色句子唱。')+' APP 會自己彈出寄調 London Bridge 的旋律。</div>'+
       lines.map(function(l,i){return '<div class="songline" id="sg'+i+'">'+esc(l)+'</div>'}).join('')+
-      '<div class="btns" style="justify-content:center"><button class="btn sm ghost" onclick="Lead.songStop()">⏹ 停</button><button class="btn sm" onclick="Lead.songTick(0)">▶ 由頭</button></div>';
+      '<div class="song-tools"><button class="btn" onclick="Lead.songTick(0)">▶ 播放伴奏+卡拉OK</button><button class="btn sm ghost" onclick="Lead.songStop()">⏹ 停止</button></div>'+
+      '<div class="child-prompt">第一次帶：先播放一次，領袖跟住旋律唱；第二次先邀請小朋友加入。</div>'+Lead.guideHtml(g);
   },
-  chute:function(){
-    var c=DATA.chute[Math.floor(Math.random()*DATA.chute.length)];
-    return '<div class="qa-q">'+c.ic+' '+c.n+' <span class="tag">'+c.tag+'</span></div><div class="how">'+esc(c.h)+'</div>'+
-      '<div style="margin-top:8px"><small class="mute">💡 '+esc(c.t)+'</small></div>'+
+  chute:function(st){
+    var c=st&&st.chuteIndex!=null?DATA.chute[st.chuteIndex]:null;
+    c=c||DATA.chute[Math.floor(Math.random()*DATA.chute.length)];var g=Guide.chute(c);
+    return '<div class="qa-q">'+c.ic+' '+c.n+' <span class="tag">'+c.tag+'</span></div>'+Lead.parachuteSvg('open')+Lead.guideHtml(g)+
       '<div class="btns" style="justify-content:center"><button class="btn sm" onclick="Lead.rerender()">🔀 抽另一式</button></div>';
   },
   roll:function(){
     var mem=Store.get('members').map(function(m){return m.n});
     Lead._pool=mem.length?mem:['(請先喺「🏅追蹤」加團員名單)'];
-    return '<div class="qa-q">🎤 音樂傳球點名</div><div class="how">音樂停嗰陣,撳一下抽位小朋友!</div>'+
-      '<div class="huge" id="rollOut">❓</div><div class="btns" style="justify-content:center"><button class="btn" onclick="Lead.roll()">🎲 抽一位</button></div>';
+    var g=Guide.forStage({t:'點名',n:'音樂傳球點名'});
+    return '<div class="qa-q">🎤 音樂傳球點名</div><div class="child-prompt">有音樂就跟節奏傳；冇音樂就由領袖拍手：一、二、一、二，停拍就停球。</div><div class="guide-steps" style="max-width:640px">'+g.steps.map(function(x){return '<div class="guide-step"><span class="gnum">'+esc(x[0])+'</span><span class="gicon">'+x[1]+'</span><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div>'}).join('')+'</div>'+
+      '<div class="huge" id="rollOut">❓</div><div class="btns" style="justify-content:center"><button class="btn" onclick="Lead.roll()">⏸ 停球・抽一位</button></div>';
   },
   quiz:function(){
     var q=DATA.quiz[Math.floor(Math.random()*DATA.quiz.length)];
@@ -205,21 +246,24 @@ Lead.scr={
       '<div class="breath" id="brh">吸~~~</div><div class="btns" style="justify-content:center"><button class="btn sm ghost" onclick="Lead.brhTick(true)">🔄 由頭</button></div>';
   }
 };
+Lead.guideHtml=function(g){
+  return '<div class="lead-guide"><div class="guide-lead"><b>領袖先做</b>'+esc(g.lead)+'</div><div class="guide-steps">'+g.steps.map(function(x){return '<div class="guide-step"><span class="gnum">'+esc(x[0])+'</span><span class="gicon">'+x[1]+'</span><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div>'}).join('')+'</div><div class="say-box"><b>🎤 領袖可以照讀</b>'+esc(g.say)+'</div><div class="watch-row"><div><b>👀 留意</b><br>'+esc(g.watch)+'</div><div class="safe"><b>🛡️ 安全</b><br>'+esc(g.safety)+'</div></div></div>';
+};
+Lead.parachuteSvg=function(mode){
+  var raised=mode==='open';
+  return '<div class="parachute-kit"><h3 style="margin:0;color:#1565c0">🌈 快樂傘動作圖</h3><div class="parachute-visual"><svg viewBox="0 0 520 205" role="img" aria-label="小朋友圍住快樂傘，一起揚起或放低"><path d="M70 70 Q260 '+(raised?'8':'125')+' 450 70 L425 102 Q260 '+(raised?'43':'159')+' 95 102 Z" fill="#ffca28" stroke="#e65100" stroke-width="5"/><path d="M95 101 Q260 '+(raised?'43':'160')+' 425 101" fill="none" stroke="#fff" stroke-width="4" stroke-dasharray="8 8"/>'+[105,150,195,240,285,330,375,420].map(function(x){return '<circle cx="'+x+'" cy="'+(raised?'141':'180')+'" r="11" fill="#43a047" stroke="#1b5e20" stroke-width="3"/><path d="M'+x+' '+(raised?'151':'190')+' v18 m-13 -8 h26 m-5 8 l-8 14 m8-14 l8 14" stroke="#1b5e20" stroke-width="4" stroke-linecap="round" fill="none"/>'}).join('')+'<path d="M260 183 V'+(raised?'119':'156')+'" stroke="#e65100" stroke-width="5" stroke-linecap="round"/><path d="M250 '+(raised?'130':'156')+' l10 -14 10 14" fill="none" stroke="#e65100" stroke-width="5"/><text x="260" y="29" text-anchor="middle" font-size="17" font-weight="700" fill="#795548">'+(raised?'一起向上 ↑':'慢慢向下 ↓')+'</text></svg></div><div class="para-caption">綠色小人＝小朋友位置　黃色傘邊＝雙手執住　橙色箭咀＝跟領袖數拍子</div><div class="para-safety"><span>🤲 執實傘邊</span><span>↔️ 留一隻手臂距離</span><span>🛑 聽到停就停</span></div></div>';
+};
 Lead.rerender=function(){var a=document.getElementById('kidsArea');if(a){a.innerHTML=Lead.screen(Lead.cur());Lead.after&&Lead.after()}};
 Lead.promiseBig=function(){
   document.getElementById('kidsArea').innerHTML=DATA.facts.promise.concat([DATA.facts.law]).map(function(l,i){
     return '<div class="songline" id="pb'+i+'" style="opacity:.25" onclick="this.style.opacity=1;Sfx.ding()">'+esc(l)+'</div>'}).join('')+
     '<div class="mute" style="text-align:center;font-size:.85rem">撳一句亮一句,一句一句跟讀</div>';
 };
-Lead.songTick=function(i){
-  Lead.songStop();var lines=DATA.facts.song;
-  Lead._songIv=setInterval(function(){
-    lines.forEach(function(_,j){var e=document.getElementById('sg'+j);if(e)e.classList.remove('on')});
-    var e=document.getElementById('sg'+i);if(!e){i=0;return Lead.songTick(0)}
-    e.classList.add('on');Sfx.tick();i=(i+1)%lines.length;
-  },2200);
+Lead.songHighlight=function(i){
+  DATA.facts.song.forEach(function(_,j){var e=document.getElementById('sg'+j);if(e)e.classList.toggle('on',j===i)});
 };
-Lead.songStop=function(){clearInterval(Lead._songIv)};
+Lead.songTick=function(){Music.play()};
+Lead.songStop=function(){Music.stop();clearInterval(Lead._songIv);Lead.songHighlight(-1)};
 Lead.roll=function(){
   var names=Lead._pool||[];var out=document.getElementById('rollOut');var n=0;
   var iv=setInterval(function(){out.textContent=names[Math.floor(Math.random()*names.length)];Sfx.pop();if(++n>14){clearInterval(iv);Sfx.ding()}},90);

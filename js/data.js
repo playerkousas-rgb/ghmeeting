@@ -9,7 +9,8 @@ DATA.facts={
   law_en:'A Grasshopper Scout does a good turn every day.',
   motto:'前進',slogan:'小童軍向前進',
   song:['小小童軍向前進、向前進、向前進','小小童軍向前進、前進不停。','Greeny, Greeny, Marchin\u2019 On','Marchin\u2019 On, Marchin\u2019 On','Greeny, Greeny, Marchin\u2019 On','Marchin\u2019 On Together'],
-  songNote:'寄調 London Bridge is Falling Down'
+  songNote:'寄調 London Bridge is Falling Down・APP 內置伴奏',
+  songHint:'先撳播放，領袖跟住黃色句子唱；第一次可只唱中文兩句。'
 };
 
 /* ---- 團員章 / 進步獎章 / 小草蜢獎章 ---- */
