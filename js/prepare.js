@@ -12,7 +12,11 @@ var Prepare={
       '<div style="margin:8px 0">'+cats.map(function(c){return '<span class="pill'+(Prepare.filter===c[0]?' on':'')+'" onclick="Prepare.f(\''+c[0]+'\')">'+c[1]+'</span>'}).join('')+'</div>';
     var list=TPLS.filter(function(t){return Prepare.filter==='all'||t.cat===Prepare.filter});
     list.forEach(function(t){
-      h+='<div class="mem" style="margin:10px 0"><h4>'+esc(t.n)+' <span class="tag">'+TPLS.catName[t.cat]+'</span></h4>'+
+      var mk=Track.meetMarks(t);
+      var chips=(Kit.rain[t.id]?'<span class="tag b" title="有室內後備版，落雨照玩">☔ 有後備版</span>':'')+
+        (mk.gh.length?'<span class="tag g" title="完場自動幫細個計數，唔使自己寫表">🦗 自動計 '+mk.gh.length+' 範疇</span>':'')+
+        (mk.badge.length?'<span class="tag g">🏅 自動剔 '+mk.badge.length+' 項</span>':'');
+      h+='<div class="mem" style="margin:10px 0"><h4>'+esc(t.n)+' <span class="tag">'+TPLS.catName[t.cat]+'</span> '+chips+'</h4>'+
         '<small class="mute">'+esc(t.theme)+'・建議'+t.mo+'・約'+Plan.lenOf(t)+'分鐘・'+t.stages.length+'個環節</small>'+
         '<div class="btns" style="margin:8px 0 0">'+
         '<button class="btn sm" onclick="Prepare.detail(\''+t.id+'\')">🧭 睇準備卡</button>'+
@@ -42,6 +46,7 @@ var Prepare={
       '<div class="guide-lead"><b>領袖先做</b>'+esc(g.lead)+'</div><div class="guide-steps">'+g.steps.map(function(x){return '<div class="guide-step"><span class="gnum">'+esc(x[0])+'</span><span class="gicon">'+x[1]+'</span><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div>'}).join('')+'</div>'+
       '<div class="say-box"><b>🎤 可以直接照講</b>'+esc(g.say)+'</div><div class="watch-row"><div><b>👀 睇住呢樣</b><br>'+esc(g.watch)+'</div><div class="safe"><b>🛡️ 安全</b><br>'+esc(g.safety)+'</div></div>'+
       ((Craft&&(Craft.match(s)||Craft.isCraft(s)))?Craft.mini(s):'')+Kit.ownerHtml(Prepare._detailId,i,s)+
+      '<div class="mark-row">'+(function(){var o=[];if(s.gh!==undefined)o.push('🦗 計入 '+DATA.ghDomains[s.gh].ic+' '+DATA.ghDomains[s.gh].n);if(s.badge)o.push('🏅 完場自動剔 '+DATA.badgeItems.filter(function(x){return x.k===s.badge})[0].t);return o.length?o.join('　'):'呢節唔使記數，玩就得'}())+'</div>'+
       '<details style="margin-top:9px"><summary>顯示完整玩法文字</summary><div class="box" style="margin-top:6px">'+esc(s.how||'')+'</div></details><div class="btns"><button class="btn sm gr" onclick="Prepare.detailStage(\''+esc(Prepare._detailId||'')+'\','+i+')">▶ 試用呢節</button></div></article>';
   },
   detailStage:function(id,i){
@@ -54,7 +59,9 @@ var Prepare={
       '<div class="btns" style="margin-top:12px">'+
         '<button class="btn gr" onclick="Modal.close();Lead.start(\''+t.id+'\')">▶ 由頭開始帶領</button>'+
         '<button class="btn" style="background:#2e7d32;color:#fff" onclick="PrintKit.openModal(\'lesson-plans\',\''+t.id+'\')">🖨️ 打印本集 A4 教案</button>'+
+        '<button class="btn ghost" style="background:#ede7f6;color:#4527a0;border-color:#b39ddb" onclick="PrintKit.openModal(\'meet-pack\',\''+t.id+'\')">🖨️ 印齊今場全套</button>'+
         '<button class="btn ghost" onclick="Prepare.shareTpl(\''+t.id+'\')">📤 分享準備卡</button>'+
+      (Kit.rain[t.id]?'<button class="btn ghost" style="background:#e3f2fd;border-color:#90caf9;color:#0d47a1" onclick="Kit.rainAsk(\''+t.id+'\')">☔ 落雨點算（睇後備版）</button>':'')+
       '</div>'+
       (function(){var cs=t.stages.filter(function(x){return Craft.isCraft(x)});
         return '<div class="attention" style="margin-top:12px"><b>開場前只做三件事</b><br>① 按下面物資清單執齊　② 預留活動位置　③ 撳「由頭開始帶領」，跟綠色領袖欄一步一步做。</div>'+

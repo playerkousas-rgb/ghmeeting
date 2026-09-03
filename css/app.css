@@ -1417,6 +1417,7 @@ button.lnk:hover{color:var(--ord)}
 .kit-h4{margin:0 0 6px;font-size:.84rem;color:var(--grd);letter-spacing:.3px}
 .kit-owner{margin-top:9px;border-top:1px dashed #cfe8cd;padding-top:8px}
 .kit-owner b{font-size:.8rem;color:var(--grd)}
+.mark-row{font-size:.72rem;color:var(--grd);background:#f1f8e9;border-radius:9px;padding:4px 8px;margin:7px 0 0;font-weight:700}
 .kit-note{font-size:.72rem;line-height:1.4;margin-top:4px}
 .owner-in{width:100%;margin-top:6px;font-size:.8rem;padding:7px 9px;border:1.5px solid var(--line);
   border-radius:10px;background:#fff;color:var(--ink);font-family:inherit}
@@ -1498,6 +1499,13 @@ button.lnk:hover{color:var(--ord)}
 .cert-sign{display:flex;justify-content:space-between;font-size:9pt;margin-top:26px;color:#5d4037}
 .cert-note{font-size:7.5pt;color:#999;margin-top:14px;border-top:1px dashed #ddd;padding-top:5px}
 .kit-sheet .p-sec-title{font-size:9.5pt}
+.kit-rain-list{display:grid;gap:5px;margin:6px 0}
+.krl-row{display:flex;justify-content:space-between;gap:8px;align-items:baseline;background:#f3f8ff;border:1px solid #d7e6fb;border-radius:11px;padding:6px 9px}
+.krl-row b{font-size:.8rem;color:#0d47a1}
+.krl-row small{font-size:.72rem;color:var(--mute);text-align:right}
+.kt-q{color:var(--grd)}
+.print-pack-note{font-size:9pt;font-weight:800;color:#4527a0;background:#ede7f6;border-radius:6px;padding:5px 8px;margin-bottom:6px}
+@media print{.print-pack-note{background:#fff;color:#000;border:1px solid #999}}
 @media(max-width:560px){
   .kit-grid{grid-template-columns:1fr}
   .kt-row{flex-direction:column;gap:2px}

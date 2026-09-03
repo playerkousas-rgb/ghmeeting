@@ -55,7 +55,7 @@ var Kit={
     water:{key:'water',n:'玩水／夏水禮安全檢查表',ic:'💦',when:/水槍|玩水|運水|泡泡|沖身|更衣/,
       items:['場地批准：確認場地准許玩水、有排水位、範圍內冇裸露插蘇','劃三線：遊戲區／補水區／休息區（用膠紙或雪糕筒）','地面防滑：走一遍濕位，出口鋪墊／乾毛巾','水壓：只用兒童水槍，唔准加壓型；唔准對住人面／眼射','人手：成人全程望住，1:4 為上限','每回合 2–3 分鐘就停—細個嘅失溫快','備換衫、毛巾、膠袋；頭髮長者束起','收水後：先點名再換衫（唔好濕身行入冷氣房）','電器／插蘇離水 2 米以上，樂器用電池版','備「後備乾活動」：玩法被取消時即轉（問答／快樂傘）']},
     award:{key:'award',n:'頒獎／典禮前檢查表',ic:'🏅',when:/頒獎|典禮|證書|嘉許|晋團|晉團/,
-      items:['獎章、證書按名單順序排好（一疊一格，叫名即攞）','上台路綫走一次：邊度企、面向邊度、影相喺邊','名單核對：出席／缺席、級別、姓名讀音（寫低讀音提示）','影相同意：確認家長同意書；唔同意就不影正面（或用後方／剪影）','講稿：每個名後加一句「佢做到××」（具體才有意義）','試音／試燈：麥克風、投影、伴奏先过一次','拍照位：光線面向窗、背景唔好太雜（會搶走張相）','時間控制：30 人頒獎 12 分鐘為上限，超過就分組','完場：即時喺 APP「記錄完成」剔數，唔好等返屋企先補','遺漏處理：缺席者另定日期補頒（不要「下次先」）']},
+      items:['獎章、證書按名單順序排好（一疊一格，叫名即攞）','上台路綫走一次：邊度企、面向邊度、影相喺邊','名單核對：出席／缺席、級別、姓名讀音（寫低讀音提示）','影相同意：確認家長同意書；唔同意就不影正面（或用後方／剪影）','講稿：每個名後加一句「佢做到××」（具體才有意義）','試音／試燈：麥克風、投影、伴奏先過一次','拍照位：光線面向窗、背景唔好太雜（會搶走張相）','時間控制：30 人頒獎 12 分鐘為上限，超過就分組','完場：即時喺 APP「記錄完成」剔數，唔好等返屋企先補','遺漏處理：缺席者另定日期補頒（唔好等「下次先」）']},
     craft:{key:'craft',n:'美勞／手工前檢查表',ic:'🎨',when:/美勞|手工|DIY|燈籠|揮春|相框|卡|畫|摺|剪/,
       items:['未做過都帶得：開會前撳「📚 跟我自學」睇成品圖＋逐步拆解（3 分鐘）；有多 5 分鐘就自己試做一個','工具測試：剪刀逐把試剪、切孔器試打一個孔','每人事先定量：物料一次派完，避免為輪流爭拗','尖利工具集中喺「大人一檔」，唔准離開','枱面鋪紙／報紙；濕布與膠袋放定（收尾快一倍）','定規矩：做完一步舉手；「停」嘅手勢示範一次','時間死線：宣布幾時收工，到點一律停手','未完成方案：預留膠紙—貼好帶返屋企繼續','影相：影作品＋作者，唔好影到其他團／途人正面','安全：顏料唔入口、貼牆位由領袖處理']}
   },
@@ -225,7 +225,7 @@ var Kit={
     if(!arr.length)return '';
     return '<div class="kit-tip"><div class="kt-h">📦 呢啲物資點備・每人幾多（撳一下就收埋）</div><button class="btn sm ghost kt-t" onclick="this.parentNode.classList.toggle(\'open\')">展開／收起</button><div class="kt-b">'+
       arr.map(function(m){var t=Kit.mats[Kit.norm(m)]||Kit.fuzzy(m);
-        return '<div class="kt-row"><b>'+esc(m)+'</b><div>・人手：'+esc(t.q)+(t.how?'<br>・備法：'+esc(t.how):'')+(t.sub?'<br>♻️ 冇就改用：'+esc(t.sub):'')+'</div></div>'}).join('')+
+        var q=Kit.qtyFor(m,t.q);return '<div class="kt-row"><b>'+esc(m)+'</b><div>・人手：'+esc(t.q)+(q?'<br><b class="kt-q">'+q+'</b>':'')+(t.how?'<br>・備法：'+esc(t.how):'')+(t.sub?'<br>♻️ 冇就改用：'+esc(t.sub):'')+'</div></div>'}).join('')+
       '</div></div>';
   },
   norm:function(m){return String(m||'').replace(/\s/g,'')},
@@ -260,7 +260,8 @@ var Kit={
       '<h3 style="margin-top:14px">📣 家長訊息範本（改一次，之後每次直接用）</h3>'+
       '<div class="mute" style="font-size:.82rem">大括號位會自動填你「旅團設定」嘅資料；撳「改內容」就改成你自己團嘅版本。</div>'+
       this.msgHtml()+
-      '<h3 style="margin-top:14px">⚖️ 團員章六項：去邊度教・點計數</h3>'+
+      (Object.keys(this.rain).length?'<h3 style="margin-top:14px">☔ 落雨／空氣差點算</h3>'+        '<div class="mute" style="font-size:.78rem">呢 '+Object.keys(this.rain).length+' 場戶外／玩水／運動會範本已有室內後備版（用現有環節砌好）—撳一下即存入「我嘅集會」。</div>'+        '<div class="kit-grid">'+Object.keys(this.rain).map(function(id){var t=(typeof dur==='function')?dur(id):null;
+          return '<button class="btn sm ghost" onclick="Kit.rainAsk(\''+id+'\')">☔ '+esc(t?t.n.replace(/^第\d+次・/,''):id)+'（'+Kit.rain[id].stages.length+' 節）</button>'}).join('')+'</div>':'')+      '<h3 style="margin-top:14px">⚖️ 團員章六項：去邊度教・點計數</h3>'+
       '<div class="kit-badge">'+this.badgeMap.map(function(b){
         return '<div class="kb-row"><b>'+esc(b.t)+'</b><small>📍 '+esc(b.where)+'</small><small>💡 '+esc(b.how)+'</small><button class="btn sm ghost" onclick="'+b.link+'">▶ 即刻開</button></div>'
       }).join('')+'</div>'+
@@ -268,6 +269,52 @@ var Kit={
       '<div class="kit-gh">'+this.ghMap.map(function(g){return '<div class="kg-row"><span>'+g.ic+'</span><div><b>'+esc(g.n)+'</b><small>建議體驗：'+esc(g.sug)+'</small><small class="mute">對照範本：'+esc(g.meet)+'</small></div></div>'}).join('')+'</div>'+
       '<div class="song-note" style="margin-top:12px"><b>'+this.photo+'</b></div>'+
       '</div>';
+  },
+  /* ============ ⑦ ☔ 落雨／污染版：唔使取消集會，轉個場照玩 ============ */
+  rain:{
+    t05:{note:'大會操遇雨／空氣質素欠佳：唔使取消—喺部內重排「集合—觀禮—分享」，氣勢靠儀式，唔靠場地。',
+      stages:['t02:0','t12:1','t12:2','t04:2','t04:3','t05:2','t02:4'],mins:60},
+    t14:{note:'公園/花展去唔到：大自然照樣喺課室入面—剪影估估、問答、執垃圾責任感一樣教到。',
+      stages:['t01:0','t14:1','g4:2','g4:3','t08:1','t10:3','t01:4'],mins:60},
+    t22:{note:'夏水禮改室內：玩水變體能節奏遊戲，濕身風險同更衣問題一併消失，開心程度唔減。',
+      stages:['t02:0','t13:1','t13:2','t13:3','t10:2','t13:4','t02:4'],mins:40},
+    t19:{note:'運動會遇雨：項目照做，跑道變枱邊—紅綠燈、捉草蜢、頒獎台一樣企得上。',
+      stages:['t19:0','t10:1','t10:3','t13:2','t19:3','t19:4'],mins:45}
+  },
+  rainMeet:function(tid){
+    var r=this.rain[tid];var t=(typeof dur==='function')?dur(tid):null;
+    if(!r||!t)return null;
+    var stages=r.stages.map(function(ref){
+      var p=ref.split(':');var src=(typeof dur==='function')?dur(p[0]):null;
+      var s=src&&src.stages[+p[1]];if(!s)return null;
+      s=JSON.parse(JSON.stringify(s));
+      if(/特備|戶外|水/.test(s.t||''))s.t='遊戲';
+      return s;
+    }).filter(function(x){return x});
+    return {id:'m'+Date.now(),n:'☔ '+t.n+'（室內版）',stages:stages,rainOf:tid};
+  },
+  rainAsk:function(tid){
+    var r=this.rain[tid];if(!r)return;
+    var tot=0;
+    var rows=r.stages.map(function(ref){
+      var p=ref.split(':');var t=(typeof dur==='function')?dur(p[0]):null;var s=t&&t.stages[+p[1]];
+      if(!s)return '';
+      tot+=(+s.m||0);
+      return '<div class="krl-row"><b>'+esc(s.n)+'</b><small>'+esc(s.t)+'・'+(+s.m||0)+'分鐘'+((s.mats&&s.mats.length)?'・'+esc(s.mats.join('、')):'・冇物資')+'</small></div>';
+    }).join('');
+    var h='<h3>☔ 落雨／空氣差點算</h3>';
+    h+='<div class="box" style="font-size:.85rem">'+esc(r.note)+'</div>';
+    h+='<div class="mute" style="font-size:.78rem;margin:8px 0">呢個室內版係用 APP 現有環節砌好（'+r.stages.length+' 節・約 '+tot+' 分鐘），唔使自己由零諗：</div>';
+    h+='<div class="kit-rain-list">'+rows+'</div>';
+    h+='<div class="btns" style="margin-top:10px"><button class="btn gr" onclick="Kit.rainSwap(\''+tid+'\')">➕ 砌好存入「我嘅集會」</button>';
+    h+='<button class="btn ghost" onclick="Modal.close()">唔使，我自己執</button></div>';
+    Modal.open(h);
+  },
+  rainSwap:function(tid){
+    var m=this.rainMeet(tid);if(!m){toast('呢場暫時冇後備版');return}
+    var my=Store.get('mymeets',[]);my.unshift(m);Store.set('mymeets',my);
+    Modal.close();Sfx.ding();toast('☔ 已存入「我嘅集會」—隨時帶得住');
+    if(typeof App!=='undefined'&&App.go){App.go('#meet');App.route()}
   },
   hubOpen:function(){Modal.open(Kit.hubHtml())},
   prepMsgFor:function(tid){Kit.msgOpen(Kit.ctxFor(tid))},
@@ -297,7 +344,33 @@ var Kit={
     var arr=(list||[]).filter(function(m){return Kit.mats[Kit.norm(m)]||Kit.fuzzy(m)});
     if(!arr.length)return '';
     return '<div class="p-mat-tips"><div class="p-tip-title">📦 人手・備法・後備</div>'+arr.map(function(m){var t=Kit.mats[Kit.norm(m)]||Kit.fuzzy(m);
-      return '<div class="p-mat-tip"><b>'+esc(m)+'</b>：'+esc(t.q)+(t.how?'　備法：'+esc(t.how):'')+(t.sub?'　後備：'+esc(t.sub):'')+'</div>'}).join('')+'</div>';
+      var q=Kit.qtyFor(m,t.q);
+      return '<div class="p-mat-tip"><b>'+esc(m)+'</b>：'+esc(t.q)+(q?'　【'+q+'】':'')+(t.how?'　備法：'+esc(t.how):'')+(t.sub?'　後備：'+esc(t.sub):'')+'</div>'}).join('')+'</div>';
+  },
+  /* 按名單人數換算（得「每人 X」呢類先計；計唔到就保持原文，唔扮聰明） */
+  qtyFor:function(m,q){
+    var n=(Store.get('members',[])||[]).length;
+    if(!n)return '';
+    var txt=String(q||'');
+    var U='張個只套盒份支條本對副块塊把頂片盞雙組粒節';
+    var per=txt.match(new RegExp('每人\\s*(\\d+)(?:\\s*[–\\-~]\\s*(\\d+))?\\s*(['+U+'])?'));
+    if(per){
+      var a=+per[1],b=per[2]?+per[2]:a,u=per[3]||'份';
+      return '本團 '+n+' 人 → '+(a===b?('約 '+(a*n)+' '+u):('約 '+(a*n)+'–'+(b*n)+' '+u));
+    }
+    var every=txt.match(new RegExp('每\\s*(\\d+)\\s*人\\s*(\\d+)(?:\\s*[–\\-~]\\s*(\\d+))?\\s*(['+U+'])?'));
+    if(every){
+      var g=+every[1],a2=+every[2],b2=every[3]?+every[3]:a2,u2=every[4]||'份';
+      var lo=Math.ceil(n*a2/g),hi=Math.ceil(n*b2/g);
+      return '本團 '+n+' 人 → 約 '+(lo===hi?lo:(lo+'–'+hi))+' '+u2;
+    }
+    var ratio=txt.match(new RegExp('(\\d+)\\s*(['+U+'])\\s*[\\/／]\\s*(\\d+)\\s*[–\\-~]\\s*(\\d+)\\s*人'));
+    if(ratio){
+      var k=+ratio[1],u3=ratio[2],g1=Math.min(+ratio[3],+ratio[4]),g2=Math.max(+ratio[3],+ratio[4]);
+      var q1=Math.ceil(n/g2)*k,q2=Math.ceil(n/g1)*k;
+      return '本團 '+n+' 人 → 約 '+(q1===q2?q1:(q1+'–'+q2))+' '+u3+'（每 '+g1+'–'+g2+' 人 '+k+' '+u3+'）';
+    }
+    return '';
   },
   matsTipTxt:function(list){
     var arr=(list||[]).filter(function(m){return Kit.mats[Kit.norm(m)]||Kit.fuzzy(m)});
@@ -317,6 +390,26 @@ var Kit={
       '<div class="kit-check modal-check"><ol class="kc-list">'+c.items.map(function(x,i){return '<li onclick="this.classList.toggle(\'on\')"><span class="kc-no">'+(i+1)+'</span>'+esc(x)+'</li>'}).join('')+'</ol></div>'+
       '<div class="btns"><button class="btn sm gr" onclick="Kit.copy(Kit.checkTxt(\''+c.n+'\'),this)">📋 複製清單（貼去領袖群）</button>'+
       '<button class="btn sm ghost" onclick="Modal.close();PrintKit.openModal(\'checklists\',\''+k+'\')">🖨️ 打印 A4</button></div>');
+  },
+  meetCheckKeys:function(t){
+    var out=[];((t&&t.stages)||[]).forEach(function(st){var c=Kit.checkFor(st);if(c&&out.indexOf(c.key)<0)out.push(c.key)});
+    return out;
+  },
+  printSheets:function(keys){
+    var self=this;
+    return (keys||[]).map(function(k){return self.printSheet(k)}).join('<div class="pbreak"></div>');
+  },
+  /* 今場全套：教案 + 相關檢查表 + 已填資料嘅家長通知（一疊印齊） */
+  printPack:function(tid){
+    var t=(typeof dur==='function')?dur(tid):null;if(!t)return this.printSheet();
+    var keys=this.meetCheckKeys(t);
+    var mats=(typeof matsOf==='function')?matsOf(t):[];
+    var h='';
+    if(keys.length)h+='<div class="pbreak"></div>'+this.printSheets(keys);
+    h+='<div class="pbreak"></div><div class="a4-sheet kit-sheet"><div class="print-header-simple"><span>小童軍訓練教材套包 10</span> <b>📣 家長通知（今場已填好）</b></div>'+      '<div class="p-note">用途：印出貼咭板／影相發群。空住嘅位（日期、聯絡人）即場填就得。</div>'+      this.msgs.slice(0,2).map(function(m){
+        return '<div class="print-section"><div class="p-sec-title">'+m.ic+' '+esc(m.n)+'</div><div class="p-para" style="white-space:pre-line">'+esc(Kit.fill(m.t,{theme:t.theme,items:mats.slice(0,2),extra:mats.slice(0,3).join('、')||'水同毛巾',date:(Store.get('plan',{rows:[]}).rows.find(function(r){return r.tid===t.id})||{}).date||''}))+'</div></div>'}).join('')+      '<div class="print-section"><div class="p-sec-title">🎒 執袋單（放落袋之前逐樣剔）</div><table class="print-table check-table"><tbody>'+      (mats.length?mats.map(function(m,i){var q=Kit.mats[Kit.norm(m)]||Kit.fuzzy(m);
+        return '<tr><td class="ck-box"></td><td><b>'+esc(m)+'</b>'+(q?'　'+esc(q.q):'')+(q&&q.sub?'<br><span style="font-size:7.5pt;color:#777">後備：'+esc(q.sub)+'</span>':'')+'</td></tr>'}).join(''):'<tr><td colspan="2">呢場冇額外物資</td></tr>')+      '</tbody></table></div>'+      '<div class="p-foot">旅團：'+esc((Store.get('settings',{})||{}).group||'____________')+'　集會：'+esc(t.n)+'　日期：____________　© 2026 Scout System</div></div>';
+    return h;
   },
   /* A4 打印：檢查表（全部場景一頁）或單頁 */
   printSheet:function(k){

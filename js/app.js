@@ -143,8 +143,35 @@ var App={
       '<div class="row2"><div><input type="text" id="stT" value="'+esc(s.time||'')+'" placeholder="例：9:15-10:15"></div><div><input type="text" id="stP" value="'+esc(s.place||'')+'" placeholder="例：旅團部地下球場"></div></div>'+
       '<label class="f">聯絡電話（只存喺你部機，用於家長訊息範本）</label><input type="text" id="stPh" value="'+esc(s.phone||'')+'" placeholder="例：9123 4567">'+
       '<div class="btns" style="margin-top:14px"><button class="btn blk" onclick="App.saveSettings()">儲存</button></div>'+
-      '<hr class="soft"><div class="mute" style="font-size:.78rem">🧹 重建年度行事曆會重設規劃表(唔影響團員資料):<br><button class="btn sm ghost" onclick="App.seedPlan(true);Modal.close();toast(\'已重建年度行事曆\')">重建行事曆</button> '+
+      '<hr class="soft"><div class="mute" style="font-size:.78rem">💾 <b>備份</b>：資料只存喺呢部裝置—換機/清理瀏覽器之前，save 一個 file 就唔會歸零。<br>'+      '<div class="btns" style="margin-top:6px"><button class="btn sm ghost" onclick="App.exportAll()">📦 匯出全部資料（一個 file）</button>'+      '<button class="btn sm ghost" onclick="document.getElementById(\'imF\').click()">📥 讀返一個備份</button>'+      '<input type="file" id="imF" accept="application/json,.json,text/plain" style="display:none" onchange="App.importAll(this)"></div>'+      '<div class="mute" style="font-size:.72rem;margin-top:5px">匯入會取代呢部裝置現有資料（名單＋規劃＋紀錄＋自製集會）。</div>'+      '<hr class="soft"><div class="mute" style="font-size:.78rem">🧹 重建年度行事曆會重設規劃表(唔影響團員資料):<br><button class="btn sm ghost" onclick="App.seedPlan(true);Modal.close();toast(\'已重建年度行事曆\')">重建行事曆</button> '+
       '<button class="btn sm ghost rd" style="color:#b71c1c;border-color:#e53935" onclick="if(confirm(\'清除所有本機資料(含團員/集會/規劃)?\')){localStorage.clear();location.reload()}">清除全部資料</button></div>');
+  },
+  exportAll:function(){
+    var keys=['settings','plan','members','recs','mymeets','owners','meetmeta','msgTpl'],data={app:'ghmeeting',ver:1,at:new Date().toISOString(),keys:{}};
+    keys.forEach(function(k){var v=Store.get(k,null);if(v!==null&&v!==undefined)data.keys[k]=v});
+    try{
+      var blob=new Blob([JSON.stringify(data,null,1)],{type:'application/json'});
+      var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+      a.download='小童軍集會助手-備份-'+new Date().toISOString().slice(0,10)+'.json';
+      document.body.appendChild(a);a.click();a.remove();
+      setTimeout(function(){URL.revokeObjectURL(a.href)},4000);
+      toast('已 save 咗一個備份 file ✓ 放去安全地方');
+    }catch(e){toast('export 唔到：'+e.message)}
+  },
+  importAll:function(inp){
+    var f=inp&&inp.files&&inp.files[0];if(!f)return;
+    var fr=new FileReader();
+    fr.onload=function(){
+      var d=null;try{d=JSON.parse(fr.result)}catch(e){}
+      if(!d||!d.keys){toast('呢個唔似備份 file ✗');inp.value='';return}
+      var ks=Object.keys(d.keys);
+      if(!confirm('讀入 '+ks.length+' 組資料（備份日期：'+String(d.at||'?').slice(0,10)+'）\n而家呢部機嘅名單／規劃／紀錄會被取代。繼續？')){inp.value='';return}
+      ks.forEach(function(k){Store.set(k,d.keys[k])});
+      toast('讀入咗 ✓ 重新整理');
+      setTimeout(function(){location.reload()},600);
+    };
+    fr.onerror=function(){toast('讀唔到個 file ✗')};
+    fr.readAsText(f);
   },
   saveSettings:function(){
     var s=Store.get('settings',{});

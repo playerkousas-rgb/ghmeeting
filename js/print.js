@@ -85,6 +85,15 @@ var PrintKit={
       render:function(k){return Kit.printSheet(k)}
     },
     {
+      id:'meet-pack',
+      cat:'plan',
+      ic:'🗂️',
+      n:'今場全套（教案＋檢查表＋家長通知＋執袋單）',
+      desc:'一疊印齊：本集 A4 教案、今場用得上嘅執行檢查表、已填好主題嘅家長通知、同埋放袋前逐樣剔嘅執袋單。開會前一晚一次過搞掂。',
+      pages:'A4 3–5 頁／集會',
+      render:function(tid){return PrintKit.renderMeetPack(tid)}
+    },
+    {
       id:'cert-sheet',
       cat:'admin',
       ic:'🏅',
@@ -207,6 +216,11 @@ var PrintKit={
      ========================================================================== */
 
   /* 1. 30次集會專屬備課教案 */
+  /* 11c. 今場全套：直接組裝（教案 + Kit 後段） */
+  renderMeetPack:function(tid){
+    return this.renderLessonPlan(tid)+Kit.printPack(tid);
+  },
+
   /* 11b. 嘉許狀：按名單一人一張（內部即時鼓勵版） */
   renderCertSheet:function(){
     var mem=Store.get('members',[]);
