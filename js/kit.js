@@ -151,7 +151,13 @@ var Kit={
     if(!tid)return '';
     return Kit.ownerRowHtml(tid,i,st);
   },
+  ctxFor:function(tid){
+    var t=(typeof dur==='function')?dur(tid):null;if(!t)return {};
+    var mats=(typeof matsOf==='function')?matsOf(t):[];
+    return {theme:t.theme||'',items:mats.slice(0,2),extra:mats.slice(0,3).join('、')||'水同毛巾就得'};
+  },
   msgOpen:function(ctx){
+    if(typeof ctx==='string')ctx=Kit.ctxFor(ctx);
     Kit._ctx=ctx||{};
     var note=Kit._ctx.theme?'<div class="attention" style="margin:8px 0"><b>已用今場資料預填</b>　主題：'+esc(Kit._ctx.theme)+(Kit._ctx.items&&Kit._ctx.items.length?'　・要帶：'+esc(Kit._ctx.items.join('、')):'')+'　（得返日期／聯絡人要改）</div>':'';
     Modal.open('<div class="card"><h2>📣 家長訊息範本</h2><div class="mute" style="font-size:.82rem">撳「📋 複製」即貼去 WhatsApp／群組。大括號位會自動填「設定 → 旅團設定」嘅時間、地點、電話；未填嘅會寫「請填」。</div>'+note+Kit.msgHtml()+'</div>');
@@ -264,11 +270,7 @@ var Kit={
       '</div>';
   },
   hubOpen:function(){Modal.open(Kit.hubHtml())},
-  prepMsgFor:function(tid){
-    var t=dur(tid)||{theme:'',stages:[]};
-    var mats=(typeof matsOf==='function')?matsOf(t):[];
-    Kit.msgOpen({theme:t.theme||'',items:mats.slice(0,2),extra:mats.slice(0,3).join('、')||'水同毛巾就得'});
-  },
+  prepMsgFor:function(tid){Kit.msgOpen(Kit.ctxFor(tid))},
   prepCheckPrint:function(tid){
     var t=dur(tid);if(!t)return;
     var c=Kit.checkFor(t.stages||[]);
