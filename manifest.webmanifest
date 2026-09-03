@@ -1,0 +1,16 @@
+{
+  "name": "小童軍集會助手 Grasshopper Hub",
+  "short_name": "草蜢助手",
+  "description": "由年度計劃到散會嗰刻:規劃、執集會、帶領、追蹤,小童軍團集會一條龍工具。",
+  "lang": "zh-HK",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fff7ec",
+  "theme_color": "#e65100",
+  "icons": [
+    {"src":"icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}
