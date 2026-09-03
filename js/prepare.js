@@ -41,6 +41,7 @@ var Prepare={
     return '<article class="brief-card"><div class="brief-head"><span class="brief-no">'+(i+1)+'</span><div><h3>'+esc(s.n)+'</h3><small>'+esc(s.t)+'・'+(+s.m||0)+' 分鐘</small></div></div>'+mats+visual+
       '<div class="guide-lead"><b>領袖先做</b>'+esc(g.lead)+'</div><div class="guide-steps">'+g.steps.map(function(x){return '<div class="guide-step"><span class="gnum">'+esc(x[0])+'</span><span class="gicon">'+x[1]+'</span><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div>'}).join('')+'</div>'+
       '<div class="say-box"><b>🎤 可以直接照講</b>'+esc(g.say)+'</div><div class="watch-row"><div><b>👀 睇住呢樣</b><br>'+esc(g.watch)+'</div><div class="safe"><b>🛡️ 安全</b><br>'+esc(g.safety)+'</div></div>'+
+      ((Craft&&(Craft.match(s)||Craft.isCraft(s)))?Craft.mini(s):'')+
       '<details style="margin-top:9px"><summary>顯示完整玩法文字</summary><div class="box" style="margin-top:6px">'+esc(s.how||'')+'</div></details><div class="btns"><button class="btn sm gr" onclick="Prepare.detailStage(\''+esc(Prepare._detailId||'')+'\','+i+')">▶ 試用呢節</button></div></article>';
   },
   detailStage:function(id,i){
@@ -55,7 +56,12 @@ var Prepare={
         '<button class="btn" style="background:#2e7d32;color:#fff" onclick="PrintKit.openModal(\'lesson-plans\',\''+t.id+'\')">🖨️ 打印本集 A4 教案</button>'+
         '<button class="btn ghost" onclick="Prepare.shareTpl(\''+t.id+'\')">📤 分享準備卡</button>'+
       '</div>'+
-      '<div class="attention" style="margin-top:12px"><b>開場前只做三件事</b><br>① 按下面物資清單執齊　② 預留活動位置　③ 撳「由頭開始帶領」，跟綠色領袖欄一步一步做。</div>'+
+      (function(){var cs=t.stages.filter(function(x){return Craft.isCraft(x)});
+        return '<div class="attention" style="margin-top:12px"><b>開場前只做三件事</b><br>① 按下面物資清單執齊　② 預留活動位置　③ 撳「由頭開始帶領」，跟綠色領袖欄一步一步做。</div>'+
+          (cs.length?'<div class="attention" style="margin-top:8px;background:#fff8ee;border-left-color:#f57c00"><b>🎨 今次有 '+cs.length+' 個手工環節'+(cs.some(function(x){return Craft.match(x)})?'，每樣都附自學卡':'')+'</b><br>'+
+          cs.map(function(x){var c=Craft.match(x);return c?'・'+c.ic+' <b>'+esc(x.n)+'</b> → <button class="lnk" onclick="Craft.open(\''+c.k+'\')">跟我自學</button>':'・🎨 <b>'+esc(x.n)+'</b> → <button class="lnk" onclick="Craft.open(\'any\')">萬用六步</button>'}).join('<br>')+
+          '<br><small class="mute">未做過都跟得住：睇成品示意圖＋逐步拆解，帶班時只示範頭兩步。</small></div>':'')
+      })()+
       '<div class="card" style="box-shadow:none;border:1px solid var(--line);padding:11px;margin:12px 0"><h4 style="margin:0;color:var(--ord)">🧺 物資總清單・逐項撳一下剔走</h4><div class="mats-bar">'+(mats.length?mats.map(function(m){return '<span class="pill" onclick="this.classList.toggle(\'on\')"><span class="dot"></span>'+esc(m)+'</span>'}).join(''):'<span class="mute">今次唔需要額外物資</span>')+'</div></div>'+
       '<h4 style="margin:14px 0 4px;color:var(--ord)">跟住呢條流程做</h4>'+t.stages.map(function(s,i){return Prepare.brief(s,i)}).join('')+
       '<div class="attention"><b>收尾</b><br>完成後返到帶領畫面最後一頁，撳「記錄完成＋記出席」，就唔使另外抄名單。</div></div>';

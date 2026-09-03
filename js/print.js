@@ -67,6 +67,15 @@ var PrintKit={
       render:function(){return PrintKit.renderNameTagSheet()}
     },
     {
+      id:'craft-coach',
+      cat:'worksheet',
+      ic:'🎨',
+      n:'手工自學卡（領袖版）・逐步圖解與後備版',
+      desc:'每樣手工一張 A4：成品標準、物資與備料、領袖自己先學嘅逐步拆解、最易錯位與補救、零失敗後備版。新領袖唔識做都帶得。',
+      pages:'A4 1頁／樣（可先睇總表再印單樣）',
+      render:function(ck){return Craft.printSheet(ck)}
+    },
+    {
       id:'goodturn-sheet',
       cat:'worksheet',
       ic:'📅',

@@ -342,6 +342,7 @@ Lead.scr={
   howto:function(st){
     var g=Guide.forStage(st);
     var mats=(st.mats||[]).length?'<div class="mats-bar" style="justify-content:center"><b>🧺 實物物資（選填）：</b>'+st.mats.map(function(m){return '<span class="pill">'+esc(m)+'</span>'}).join('')+'</div>':'';
+    var craft=(typeof Craft!=='undefined')?Craft.screenArt(st):'';
     return '<div class="digital-tool-bar"><b>💡 冇自備道具？</b> 唔使驚！撳呢度即轉 APP 內置免道具遊戲：'+
       '<div class="btns" style="justify-content:center;margin-top:6px">'+
         '<button class="btn sm" onclick="Lead.switchToGame(\'traffic\')">🚦 紅綠燈</button>'+
@@ -350,7 +351,7 @@ Lead.scr={
         '<button class="btn sm" onclick="Lead.switchToGame(\'guess\')">🔍 估估下</button>'+
         '<button class="btn sm" onclick="Lead.switchToGame(\'catch\')">🦗 捉草蜢</button>'+
       '</div></div>'+
-      '<div class="child-prompt">領袖先示範一次，小朋友跟住每一步做</div>'+Lead.guideHtml(g)+mats;
+      '<div class="child-prompt">領袖先示範一次，小朋友跟住每一步做</div>'+craft+Lead.guideHtml(g)+mats;
   },
 
   /* 🛡️ 身體地圖紅黃綠 (Safe from Harm 數碼道具) */

@@ -2,7 +2,7 @@
 var HB={
   tab:'core',
   html:function(){
-    var tabs=[['core','⚖️ 核心內容'],['badge','🏅 獎章制度'],['chute','🌈 快樂傘'],['sfh','🛡️ 保護自己'],['tips','💡 帶領貼士'],['about','ℹ️ 關於']];
+    var tabs=[['core','⚖️ 核心內容'],['craft','🎨 手工自學'],['badge','🏅 獎章制度'],['chute','🌈 快樂傘'],['sfh','🛡️ 保護自己'],['tips','💡 帶領貼士'],['about','ℹ️ 關於']];
     var h='<div class="card"><h2>📖 手冊</h2><div>'+tabs.map(function(t){return '<span class="pill'+(HB.tab===t[0]?' on':'')+'" onclick="HB.t(\''+t[0]+'\')">'+t[1]+'</span>'}).join('')+'</div></div>';
     h+=HB[HB.tab]();
     return h;
@@ -46,6 +46,25 @@ var HB={
       '<div class="btns"><button class="btn sm" onclick="HB.sfhGame()">👨‍⚖️ 即玩:對錯法庭(SFH篇)</button></div></div>';
   },
   sfhGame:function(){Lead.startGame('judge','對錯法庭 (保護自己篇)');},
+  craft:function(){
+    var rules=[
+      ['📱','開會前 3 分鐘','撳「跟我自學」睇完成品圖＋逐步拆解；唔使自己先整好一份帶去—成品圖 APP 畫俾你睇。'],
+      ['🧩','一次一個動作','「摺埋再剪」係兩個動作—拆到一句做得完，先至有人跟得到。'],
+      ['🙋','做完一步舉手','設檢查位，通過先做下一步；避免半班越做越亂。'],
+      ['🧑‍🤝‍🧑','大人一檔','打孔、大剪、熱溶膠、白膠水集中喺領袖位；小朋友只拿安全剪刀與貼紙。'],
+      ['🛟','零失敗後備','每樣手工都寫咗「做唔掂版」—卡咗好耐嘅人即刻轉，唔會喊住散會。'],
+      ['👏','收結一定要做','每人一句「我整咗××」＋大合照：完成感係收結帶嚟嘅，唔係靚仔帶嚟。']
+    ];
+    var h='<div class="card"><h2>🎨 手工自學：領袖先識做，先教到人</h2>';
+    h+='<div class="attention"><b>「先睇成品」對新領袖冇用—因為自己未做過。</b> 所以呢度每樣手工都有兩份教材：<b>俾小朋友睇嘅成品示意圖</b>（APP 畫出嚟，唔使你帶實物）＋<b>俾領袖自己睇嘅逐步拆解</b>（物資點備、一步步跟住做、最易錯喺邊、做唔掂有咩後備）。</div>';
+    h+='<div class="craft-rules">'+rules.map(function(x){return '<div class="cr-row"><span>'+x[0]+'</span><div><b>'+esc(x[1])+'</b><small>'+esc(x[2])+'</small></div></div>'}).join('')+'</div>';
+    h+='<h3 style="margin-top:14px">已附自學卡嘅手工（'+Craft.list().length+' 樣）</h3>';
+    h+='<div class="mute" style="font-size:.82rem">每樣都包括：成品示意圖・關鍵摺法圖解（部分）・逐步自學・帶班拆法・常錯補救・後備版・時間剪法・安全提示。自己加嘅活動用「萬用六步」一樣搞得掂。</div>';
+    h+=Craft.indexHtml();
+    h+='<div class="btns" style="margin-top:12px"><button class="btn sm gr" onclick="Craft.open(\'any\')">🧯 萬用六步（任何手工適用）</button><button class="btn sm" onclick="PrintKit.openModal(\'craft-coach\')">🖨️ 打印 A4 自學總表</button><button class="btn sm ghost" onclick="App.go(\'#play\')">🎮 去活動架揀手工</button></div>';
+    h+='</div>';
+    return h;
+  },
   tips:function(){
     return '<div class="card"><h2>💡 帶領貼士(4-7歲)</h2><div class="box">'+
       '<b>① 5-10分鐘一轉</b><br>幼兒專注力短,每個環節唔好過15分鐘,動靜交替:狂野遊戲後接靜態故事/靜息。<br><br>'+
