@@ -112,7 +112,39 @@ var Prepare={
       '<div class="btns" style="margin-top:12px"><button class="btn" onclick="Prepare.saveStage()">確定</button></div>');
   },
   scrList:function(cur){
-    var opts=[['howto','內容卡(預設)'],['chuteopen','快樂傘開會儀式'],['chuteclose','快樂傘散會儀式'],['promise','誓詞/規律大字'],['song','主題曲卡拉OK'],['roll','點名抽籤'],['chute','快樂傘玩法卡'],['quiz','問答擂台'],['judge','對錯法庭'],['guess','估估下剪影'],['memory','記憶配對'],['leader','領袖話'],['traffic','紅綠燈'],['catch','捉草蜢'],['rhythm','律動/節奏'],['breath','靜息呼吸'],['story','故事卡'],['howto','內容卡']];
+    var opts=[
+      ['howto','內容卡(預設)'],
+      ['bodycard','🛡️ 身體地圖紅黃綠(免實物卡)'],
+      ['recycle','♻️ 三色回收分類擂台(免實物垃圾)'],
+      ['task','🎯 任務抽籤機(善行/家務)'],
+      ['flags','🇭🇰 國旗與區旗敬禮'],
+      ['clean','🧼 洗手七步與計時歌'],
+      ['emotion','😊 情緒面面觀輪盤'],
+      ['transport','🚗 交通工具大圖鑑'],
+      ['foodrainbow','🌈 彩虹健康飲食盤'],
+      ['moon','🌕 中秋射月拋圈靶'],
+      ['bpstory','🏕️ 貝登堡故事繪本'],
+      ['scoutfamily','🌲 童軍大家庭地圖'],
+      ['badgego','🏅 獎章路線圖'],
+      ['scarf','🧣 整理領巾三步圖解'],
+      ['ghinfo','🦗 認識小草蜢圖鑑'],
+      ['chuteopen','快樂傘開會儀式'],
+      ['chuteclose','快樂傘散會儀式'],
+      ['promise','誓詞/規律大字'],
+      ['song','主題曲卡拉OK'],
+      ['roll','點名抽籤'],
+      ['chute','快樂傘玩法卡'],
+      ['quiz','問答擂台'],
+      ['judge','對錯法庭'],
+      ['guess','估估下剪影'],
+      ['memory','記憶配對'],
+      ['leader','領袖話'],
+      ['traffic','紅綠燈'],
+      ['catch','捉草蜢'],
+      ['rhythm','律動/節奏'],
+      ['breath','靜息呼吸'],
+      ['story','故事卡']
+    ];
     var seen={};return opts.filter(function(o){return seen[o[0]]?!1:seen[o[0]]=1}).map(function(o){return '<option value="'+o[0]+'"'+(cur===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('');
   },
   saveStage:function(){
