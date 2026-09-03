@@ -4,7 +4,7 @@ var Prepare={
   html:function(){
     var cats=[['all','全部'],['member','團員章'],['prog','進步'],['fest','特別'],['outdoor','戶外'],['gh','小草蜢'],['custom','自訂']];
     var h='<div class="card"><h2>🧩 帶領卡庫</h2><div class="mute" style="font-size:.83rem">'+TPLS.length+'張即用帶領卡。每張卡都拆成「先做咩、點樣示範、要講咩、要留意咩」；唔需要先讀完一大段文字。撳「睇準備卡」即刻跟住做。</div>'+
-      '<div style="margin:8px 0">'+cats.map(function(c){return '<span class="pill'+(Prepare.filter===c[0]?' on':'')+'" onclick="Prepare.f(\''+c[0]+'\')">'+c[1]+'</span>'}).join('')+'</div>';
+      '<div class="attention" style="margin-top:10px"><b>資深領袖想即場揀活動？</b> 去 <button class="btn sm" onclick="App.go(\'#play\')">🎮 遊戲／手工庫</button>，可以獨立開一個遊戲，唔使改年度流程。</div><div style="margin:8px 0">'+cats.map(function(c){return '<span class="pill'+(Prepare.filter===c[0]?' on':'')+'" onclick="Prepare.f(\''+c[0]+'\')">'+c[1]+'</span>'}).join('')+'</div>';
     var list=TPLS.filter(function(t){return Prepare.filter==='all'||t.cat===Prepare.filter});
     list.forEach(function(t){
       h+='<div class="mem" style="margin:10px 0"><h4>'+esc(t.n)+' <span class="tag">'+TPLS.catName[t.cat]+'</span></h4>'+

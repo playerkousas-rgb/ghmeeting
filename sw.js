@@ -1,6 +1,6 @@
 /* 小童軍集會助手 — Service Worker (offline first) © Scout System */
 var CACHE='ghub-v2-0-2';
-var ASSETS=['./','./index.html','./manifest.webmanifest','./css/app.css','./js/data.js','./js/guide.js','./js/tpls.js','./js/app.js','./js/prepare.js','./js/lead.js','./js/track.js','./js/handbook.js','./icons/icon-192.png','./icons/icon-512.png'];
+var ASSETS=['./','./index.html','./manifest.webmanifest','./css/app.css','./js/data.js','./js/guide.js','./js/tpls.js','./js/app.js','./js/prepare.js','./js/lead.js','./js/track.js','./js/handbook.js','./js/play.js','./icons/icon-192.png','./icons/icon-512.png'];
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(ASSETS)}).then(function(){return self.skipWaiting()}));
 });

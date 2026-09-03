@@ -17,12 +17,13 @@ var App={
   route:function(){
     var h=(location.hash||'#plan').slice(1).split('?')[0];
     if(document.body.contains(document.getElementById('leadroot'))&&!document.getElementById('leadroot').classList.contains('hidden'))Lead.exit(false);
-    var v={plan:'plan',meet:'meet',lead:'lead',track:'track',book:'book'}[h]||'plan';
+    var v={plan:'plan',meet:'meet',play:'play',lead:'lead',track:'track',book:'book'}[h]||'plan';
     App.view=v;
     document.querySelectorAll('#tabbar a').forEach(function(a){a.classList.toggle('on',a.dataset.tab===v)});
     var el=document.getElementById('view');
     if(v==='plan')el.innerHTML=Plan.html();
     if(v==='meet')el.innerHTML=Prepare.html();
+    if(v==='play')el.innerHTML=Play.html();
     if(v==='lead')el.innerHTML=Lead.html();
     if(v==='track')el.innerHTML=Track.html();
     if(v==='book')el.innerHTML=HB.html();
@@ -72,7 +73,7 @@ var Plan={
     var done=pl.rows.filter(function(r){return r.status==='done'}).length;
     var nextT=next?dur(next.tid):null;
     var h='<section class="ready-hero"><span class="eyebrow">🦗 '+esc(s.group)+'・今日帶領包</span><h1>拎起手機，就可以開始。</h1><p>唔使先讀完手冊。每個環節都有圖解、領袖口令、示範步驟和安全提示。</p>'+
-      '<div class="action-grid"><button class="btn primary" onclick="'+(nextT?"Lead.start('"+nextT.id+"',"+next.no+")":"Lead.start('t01')")+'">▶ '+(nextT?'帶領下次集會':'開始第一次帶領')+'</button><button class="btn ghost" onclick="App.go(\'#meet\')">🗂️ 揀帶領卡</button><button class="btn ghost" onclick="'+(mem.length?"App.go('#track')":"Track.add()")+'">'+(mem.length?'✓ 已有團員名單':'➕ 加團員')+'</button></div>'+
+      '<div class="action-grid"><button class="btn primary" onclick="'+(nextT?"Lead.start('"+nextT.id+"',"+next.no+")":"Lead.start('t01')")+'">▶ '+(nextT?'帶領下次集會':'開始第一次帶領')+'</button><button class="btn ghost" onclick="App.go(\'#play\')">🎮 揀遊戲／手工</button><button class="btn ghost" onclick="'+(mem.length?"App.go('#track')":"Track.add()")+'">'+(mem.length?'✓ 已有團員名單':'➕ 加團員')+'</button></div>'+
       (nextT?'<div class="next-strip"><span style="font-size:1.7rem">📅</span><div class="next-copy"><small>下一個未完成</small><b>'+esc(nextT.n)+'</b><small>'+esc(nextT.theme)+'・約 '+Plan.lenOf(nextT)+' 分鐘</small></div><button class="btn sm ghost" onclick="Prepare.detail(\''+nextT.id+'\')">先睇卡</button></div>':'<div class="attention" style="margin-top:12px"><b>🎉 全年流程完成</b><br>可以去「集會」揀一張卡，或者建立自己的集會。</div>')+
       '</section><div class="steps-banner"><div class="mini-step"><b>01・準備</b>睇物資清單，按圖示排好場地</div><div class="mini-step"><b>02・帶領</b>撳「▶」；小朋友畫面會自己走</div><div class="mini-step"><b>03・記錄</b>完場點出席，進度自動保存</div></div>'+
       '<div class="stat"><div class="s"><b>'+(pl.rows.length-done)+'</b>尚餘集會</div><div class="s"><b>'+done+'/'+pl.rows.length+'</b>已完成</div><div class="s"><b>'+mem.length+'</b>團員</div></div>';

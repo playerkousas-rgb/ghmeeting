@@ -75,6 +75,11 @@ var Lead={
     Lead.S={meet:{id:'chute-'+i,n:'快樂傘玩法卡・'+c.n,stages:[{t:'遊戲',n:c.n,m:10,screen:'chute',chuteIndex:i}]},idx:0,left:600,timerOn:false,no:0};
     Lead.open();
   },
+  startGame:function(screen,name){
+    var titles={leader:'領袖話',traffic:'紅綠燈',catch:'捉草蜢',memory:'記憶配對',quiz:'問答擂台',guess:'估估下',judge:'對錯法庭',rhythm:'節奏模仿',chute:'快樂傘玩法卡',story:'故事寶盒',roll:'音樂傳球點名'};
+    Lead.S={meet:{id:'game-'+screen,n:name||titles[screen]||'即玩活動',stages:[{t:'遊戲',n:name||titles[screen]||'即玩活動',m:10,screen:screen}]},idx:0,left:600,timerOn:false,no:0};
+    Lead.open();
+  },
   startMy:function(id){
     var m=Store.get('mymeets').find(function(x){return x.id===id});if(!m)return;
     Lead.S={meet:JSON.parse(JSON.stringify(m)),idx:0,left:(m.stages[0].m||5)*60,timerOn:false,no:0};
