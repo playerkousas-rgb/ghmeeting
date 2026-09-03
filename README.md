@@ -36,6 +36,5 @@ js/tpls.js                                  ← 30個集會範本
 js/app.js                                   ← 核心+規劃   js/prepare.js ← 集會庫+編排器
 js/lead.js                                  ← 帶領模式    js/track.js   ← 追蹤
 js/handbook.js                              ← 手冊
-legacy/grasshopper-kit-v1.html              ← v1 初稿(已歸檔,資產已移植)
 docs/positioning.md                         ← 產品定位文件
 ```
