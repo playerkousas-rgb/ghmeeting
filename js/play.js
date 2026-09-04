@@ -35,13 +35,18 @@ var Play={
   craftItems:function(){
     var out=[];
     TPLS.forEach(function(t){t.stages.forEach(function(s,i){
-      if(s.t==='美勞'||/DIY|名牌|燈籠|揮春|承諾卡|紙飛機|紙船|相框|彩繪|創作/.test(s.n))out.push({tid:t.id,si:i,ic:'🎨',n:s.n,meta:(s.m||10)+'分鐘・'+t.mo,d:s.how||'按準備卡示範一次，再讓小朋友自己完成。',mats:s.mats||[]});
+      if(!Craft.isCraft(s))return;
+      var c=Craft.match(s);
+      out.push({tid:t.id,si:i,ic:c?c.ic:'🎨',n:s.n,meta:(s.m||10)+'分鐘・'+t.mo,
+        d:c?('成品長咁樣：'+c.look):((s.how||'按準備卡示範一次，再讓小朋友自己完成。')),
+        mats:s.mats||[],ck:c?c.k:'',
+        coach:c?('📚 有圖解自學卡・'+c.learn.length+' 步拆解＋後備版'):'🧯 未有圖解・用萬用六步救火'});
     })});
     return out;
   },
   html:function(){
-    var h='<div class="card activity-hero"><span class="eyebrow">🎮 資深領袖活動架</span><h2>想玩咩，就揀咩。</h2><p class="mute"><b>毋須自備繁複道具</b>：APP 已內置全部數碼道具、問答、分類、抽籤機與遊戲畫面；撳一下就可以投影或開準備卡。</p><div class="activity-stat"><b>'+this.games.length+'</b><span>個即玩遊戲／數碼工具</span><b>'+this.craftItems().length+'</b><span>個手工活動</span><b>'+this.videos.length+'</b><span>條參考片</span></div></div>'+
-      '<div class="card"><div class="activity-tabs">'+[['all','全部'],['game','🎮 遊戲／工具'],['craft','🎨 手工'],['video','🎬 示範片']].map(function(x){return '<button class="pill '+(Play.tab===x[0]?'on':'')+'" onclick="Play.filterBy(\''+x[0]+'\')">'+x[1]+'</button>'}).join('')+'</div><input type="text" value="'+esc(this.q)+'" placeholder="🔎 搵活動，例如：回收、安全、交通、球、傘" oninput="Play.search(this.value)"><div id="playList" class="activity-grid">'+this.listHtml()+'</div></div>';
+    var h='<div class="card activity-hero"><span class="eyebrow">🎮 活動架・新舊領袖都用得</span><h2>想玩咩，就揀咩。</h2><p class="mute"><b>毋須自備繁複道具</b>：APP 已內置全部數碼道具、問答、分類、抽籤機與遊戲畫面；撳一下就可以投影或開準備卡。<br><b>手工唔使識做先帶得</b>：每樣手工都附「自學卡」—成品示意圖＋逐步拆解＋最易錯位＋萬用後備，領袖開會前 3 分鐘睇完就帶到。</p><div class="activity-stat"><b>'+this.games.length+'</b><span>個即玩遊戲／數碼工具</span><b>'+this.craftItems().length+'</b><span>個手工活動（附自學卡）</span><b>'+this.videos.length+'</b><span>條參考片</span><b>'+Craft.list().length+'</b><span>張手工自學卡</span></div></div>'+
+      '<div class="card"><div class="activity-tabs">'+[['all','全部'],['game','🎮 遊戲／工具'],['craft','🎨 手工'],['video','🎬 示範片']].map(function(x){return '<button class="pill '+(Play.tab===x[0]?'on':'')+'" onclick="Play.filterBy(\''+x[0]+'\')">'+x[1]+'</button>'}).join('')+'</div><input type="text" value="'+esc(this.q)+'" placeholder="🔎 搵活動，例如：回收、安全、交通、球、傘、燈籠、揮春" oninput="Play.search(this.value)"><div id="playList" class="activity-grid">'+this.listHtml()+'</div></div>';
     return h;
   },
   filterBy:function(t){this.tab=t;this.q='';App.route()},
@@ -54,16 +59,32 @@ var Play={
     var q=this.q.trim().toLowerCase();return q?all.filter(function(x){return (x.n+' '+(x.d||'')+' '+(x.meta||'')+' '+(x.src||'')).toLowerCase().indexOf(q)>=0}):all;
   },
   listHtml:function(){
-    var arr=this.items();if(!arr.length)return '<div class="empty">搵唔到呢類活動。試下其他字眼，或者撳「全部」。</div>';
-    return arr.map(function(x){
-      var action=x.kind==='game'?'<button class="btn sm gr" onclick="Lead.startGame(\''+x.id+'\',\''+esc(x.n)+'\')">▶ 即玩</button>':x.kind==='craft'?'<button class="btn sm" onclick="Play.craftDetail(\''+x.tid+'\','+x.si+')">🧭 睇步驟</button>':'<a class="btn sm ghost" href="'+x.url+'" target="_blank" rel="noopener">觀看 ↗</a>';
-      return '<article class="activity-card"><div class="activity-icon">'+x.ic+'</div><div class="activity-copy"><h3>'+esc(x.n)+'</h3><small>'+esc(x.meta||x.src||'需要上網')+'</small><p>'+esc(x.d)+'</p>'+(x.mats&&x.mats.length?'<div class="activity-mats">🧺 實物物資：'+esc(x.mats.join('、'))+'</div>':'')+'</div><div class="activity-action">'+action+'</div></article>';
-    }).join('');
+    var arr=this.items();
+    var cards=arr.length?arr.map(function(x){
+      var action=x.kind==='game'?'<button class="btn sm gr" onclick="Lead.startGame(\''+x.id+'\',\''+esc(x.n)+'\')">▶ 即玩</button>':x.kind==='craft'?'<div class="act-col"><button class="btn sm gr" onclick="'+(x.ck?('Craft.open(\''+x.ck+'\')'):('Play.craftAny('+x.tid+','+x.si+')'))+'">'+(x.ck?'📚 跟我自學':'🧯 萬用六步')+'</button><button class="btn sm ghost" onclick="Play.craftDetail(\''+x.tid+'\','+x.si+')">🧭 睇步驟卡</button></div>':'<a class="btn sm ghost" href="'+x.url+'" target="_blank" rel="noopener">觀看 ↗</a>';
+      return '<article class="activity-card'+(x.kind==='craft'&&x.ck?' has-coach':'')+'"><div class="activity-icon">'+x.ic+'</div><div class="activity-copy"><h3>'+esc(x.n)+'</h3><small>'+esc(x.meta||x.src||'需要上網')+'</small>'+(x.kind==='craft'?'<span class="coach-tag">'+x.coach+'</span>':'')+'<p>'+esc(x.d)+'</p>'+(x.mats&&x.mats.length?'<div class="activity-mats">🧺 實物物資：'+esc(x.mats.join('、'))+'</div>':'')+'</div><div class="activity-action">'+action+'</div></article>';
+    }).join(''):'<div class="empty">搵唔到呢類活動。試下其他字眼，或者撳「全部」。</div>';
+    return cards+this.coachHtml();
+  },
+  coachHtml:function(){
+    if(!(this.tab==='craft'||this.tab==='all'))return '';
+    var covered={};this.craftItems().forEach(function(x){if(x.ck)covered[x.ck]=1});
+    var q=this.q.trim().toLowerCase();
+    var arr=Craft.list().filter(function(c){return !covered[c.k]&&(!q||(c.n+' '+c.look+' '+(c.need||'')).toLowerCase().indexOf(q)>=0)});
+    if(!arr.length)return '';
+    return '<div class="coach-wrap"><h4>📚 手工自學卡庫・即揀即學（未排入集會都用得）</h4><div class="coach-grid">'+
+      arr.map(function(c){
+        return '<article class="activity-card has-coach"><div class="activity-icon">'+c.ic+'</div><div class="activity-copy"><h3>'+esc(c.n)+'</h3><small>自學卡・'+c.learn.length+' 步拆解＋後備版＋常錯補救</small><span class="coach-tag">🎨 有成品示意圖，唔使領袖識做</span><p>成品長咁樣：'+esc(c.look)+'</p></div><div class="activity-action"><button class="btn sm gr" onclick="Craft.open(\''+c.k+'\')">📚 跟我自學</button></div></article>'
+      }).join('')+'</div></div>';
   },
   craftDetail:function(tid,si){
-    var t=dur(tid);if(!t||!t.stages[si])return;Prepare._detailId=tid;
-    Modal.open('<div class="eyebrow">🎨 手工準備卡</div><h3>'+esc(t.stages[si].n)+'</h3><div class="mute">來自「'+esc(t.n)+'」・可單獨使用</div>'+
-      '<div class="btns" style="margin:6px 0 10px"><button class="btn sm" style="background:#2e7d32;color:#fff" onclick="Modal.close();App.go(\'#print\')">🖨️ 打開 A4 打印教材套包庫</button></div>'+
-      Prepare.brief(t.stages[si],si));
-  }
+
+    var t=dur(tid);if(!t||!t.stages[si])return;Prepare._detailId=tid;var st=t.stages[si],c=Craft.match(st);
+    Modal.open('<div class="eyebrow">🎨 手工準備卡</div><h3>'+esc(st.n)+'</h3><div class="mute">來自「'+esc(t.n)+'」・可單獨使用</div>'+
+      '<div class="attention" style="margin:8px 0"><b>未做過呢樣手工？</b> 先撳「跟我自學」—APP 有成品示意圖＋逐步拆解＋做唔掂嘅後備版；帶班時你只需要示範頭兩步。</div>'+
+      '<div class="btns" style="margin:6px 0 10px"><button class="btn sm gr" onclick="Modal.close();Craft.open(\''+(c?c.k:'any')+'\')">📚 跟我自學</button>'+
+      '<button class="btn sm" style="background:#2e7d32;color:#fff" onclick="Modal.close();App.go(\'#print\')">🖨️ A4 打印教材庫</button></div>'+
+      Prepare.brief(st,si));
+  },
+  craftAny:function(tid,si){var t=dur(tid);if(!t||!t.stages[si])return;Craft.open('any')}
 };

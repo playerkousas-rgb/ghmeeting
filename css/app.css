@@ -1286,3 +1286,260 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
 
 
 
+
+/* ==========================================================================
+   🎨 手工自學卡 (Craft Coach) — 領袖自己識做，先教到人
+   ========================================================================== */
+.craft-card{font-size:.9rem}
+.craft-head{display:flex;gap:10px;align-items:center;margin:2px 0 9px}
+.craft-head h3{margin:0;color:var(--ord)}
+.craft-ic{font-size:1.9rem;background:#fff3e0;border-radius:14px;padding:5px 9px;line-height:1.1}
+.craft-art{background:linear-gradient(180deg,#fffaf2,#fff);border:1px solid var(--line);border-radius:16px;padding:8px 8px 6px}
+.craft-art svg{width:100%;height:auto;display:block}
+.craft-look{font-size:.8rem;line-height:1.45;border-top:1px dashed var(--line);margin-top:6px;padding-top:6px}
+.craft-look b{display:block;color:var(--grd);font-size:.73rem;letter-spacing:.4px;margin-bottom:2px}
+.craft-block{margin:10px 0;background:#fffdf8;border:1px solid var(--line);border-radius:15px;padding:10px 11px}
+.craft-block h4{margin:0 0 7px;font-size:.78rem;color:var(--ord);letter-spacing:.4px}
+.craft-t{font-size:.83rem;line-height:1.5}
+.craft-prep{margin-top:7px;font-size:.8rem;background:#fff8e1;border-radius:10px;padding:7px 9px;line-height:1.45}
+.craft-prep b{display:block;color:#a06000;font-size:.73rem;letter-spacing:.4px}
+.craft-learn{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.craft-learn li{display:flex;gap:8px;background:#fff;border:1px solid #ffe6c7;border-radius:12px;padding:7px 9px;align-items:flex-start}
+.craft-learn li .cl-ic{font-size:1.2rem;line-height:1.2;flex:0 0 auto}
+.craft-learn b{font-size:.84rem;color:var(--ord)}
+.craft-learn div>span{font-size:.8rem;color:#5b4636;display:block;line-height:1.42}
+.craft-alt{margin-top:7px;font-size:.79rem;line-height:1.45;background:#eef7ee;border-radius:10px;padding:7px 9px}
+.craft-alt b{color:var(--grd);display:block;font-size:.73rem;letter-spacing:.4px}
+.craft-teach{display:grid;gap:6px;margin-bottom:8px}
+.ct-step{display:flex;gap:7px;align-items:flex-start;background:#f3f8f2;border-radius:11px;padding:7px 9px;font-size:.82rem;line-height:1.4}
+.ct-step small{display:block;font-size:.78rem;color:#4e5d4c;line-height:1.42;margin-top:1px}
+.ct-no{flex:0 0 auto;display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--grd);color:#fff;font-size:.72rem;font-weight:800;align-items:center;justify-content:center}
+.ct-ic{font-size:1.05rem;line-height:1.2}
+.craft-fail{display:grid;gap:6px;font-size:.8rem}
+.craft-fail>div{background:#fff;border-radius:10px;padding:6px 9px;border-left:3px solid var(--red);line-height:1.4}
+.craft-fail b{display:block;color:#b3261e}
+.craft-fail span{color:#5b4636;font-size:.78rem}
+.craft-two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.craft-two .craft-block{margin:0 0 8px}
+.craft-block.warn{background:#fff5f4;border-color:#f3c9c4}
+.craft-block.life{background:#f2f8ff;border-color:#cfe3f7}
+.craft-block.win{background:#f1f8e9;border-color:#c5e1a5}
+.craft-block.safe{background:#fff3f0;border-color:#ffcdbf}
+.craft-folds{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.craft-fold{position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 5px 5px;text-align:center}
+.craft-fold svg{width:100%;height:auto;display:block}
+.craft-fold small{font-size:.68rem;display:block;line-height:1.3;margin-top:2px}
+.cf-no{position:absolute;left:6px;top:5px;width:18px;height:18px;border-radius:50%;background:var(--or);color:#fff;font-size:.68rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+/* 準備卡／活動卡內嘅短版 */
+.craft-mini{display:flex;gap:9px;align-items:flex-start;background:#fff8ee;border:1.5px dashed #ffb74d;border-radius:14px;padding:9px;margin:9px 0}
+.cm-art{flex:0 0 96px}
+.cm-art svg{width:96px;height:auto;display:block;background:#fff;border-radius:10px}
+.cm-txt{flex:1;min-width:0}
+.cm-txt b{font-size:.84rem;color:var(--ord);display:block}
+.cm-txt small{font-size:.73rem;display:block;line-height:1.35}
+.cm-look{font-size:.73rem;color:#6d4c41;margin-top:3px;line-height:1.35}
+.craft-mini .btn{flex:0 0 auto;align-self:center}
+.craft-mini.none{background:#fff6f4;border-color:#ef9a9a;border-style:solid}
+.craft-mini.none .cm-ic{font-size:1.5rem}
+/* 投影（帶領畫面）用 */
+.craft-screen{max-width:780px;margin:6px auto 10px;background:#fff;border-radius:20px;padding:10px 12px;box-shadow:0 3px 14px rgba(80,40,0,.10)}
+.craft-screen .cs-art svg{width:100%;max-width:540px;display:block;margin:0 auto}
+.craft-screen .cs-cap{text-align:center;font-size:clamp(.9rem,2.4vw,1.15rem);margin-top:4px}
+.cs-tools{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:8px 0 2px}
+.cs-open{display:block;margin:6px auto 0}
+/* 手冊索引 */
+.craft-index{display:grid;gap:6px;margin-top:8px}
+.ci-row{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:13px;padding:8px 10px}
+.ci-ic{font-size:1.4rem;line-height:1.1}
+.ci-b{flex:1;min-width:0}
+.ci-b b{display:block;font-size:.85rem;color:var(--ord)}
+.ci-b small{font-size:.74rem;display:block;line-height:1.35}
+.craft-rules{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0}
+.cr-row{display:flex;gap:8px;background:#fff8ee;border-radius:12px;padding:8px 10px;align-items:flex-start}
+.cr-row>span{font-size:1.15rem;line-height:1.2}
+.cr-row b{display:block;font-size:.82rem;color:var(--ord)}
+.cr-row small{font-size:.75rem;line-height:1.38;display:block;color:#5d4037}
+/* 活動架卡片 */
+.coach-tag{display:inline-block;font-size:.7rem;font-weight:800;color:#1b5e20;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:999px;padding:2px 8px;margin:3px 0 4px}
+.activity-card.has-coach{border-color:#ffb74d;box-shadow:0 3px 14px rgba(230,81,0,.10)}
+.act-col{display:grid;gap:5px;justify-items:stretch}
+/* A4 打印版 */
+.craft-sheet .cs-print-art{border:1.5px solid #e0e0e0;border-radius:8px;padding:6px;margin:8px 0;background:#fffdfa}
+.craft-sheet .cs-print-art svg{width:100%;max-width:470px;display:block;margin:0 auto}
+.p-note{font-size:8.5pt;background:#fff8e1;border-left:3px solid #f57c00;padding:5px 8px;border-radius:4px;margin-bottom:8px;line-height:1.4}
+.p-para{font-size:9pt;line-height:1.45}
+.p-para.tiny{font-size:8pt}
+.p-foot{margin-top:10px;border-top:1px dashed #bbb;padding-top:5px;font-size:7.5pt;color:#666}
+.print-two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.p-folds{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.p-fold{border:1px solid #e0e0e0;border-radius:8px;padding:5px;text-align:center}
+.p-fold svg{width:100%;height:auto;display:block}
+.p-fold b{font-size:7.6pt;display:block;margin-top:3px;line-height:1.3}
+.craft-sheet table td{vertical-align:top}
+.craft-sheet .p-sec-title{font-size:9.5pt}
+@media(max-width:560px){
+  .craft-two{grid-template-columns:1fr}
+  .craft-rules{grid-template-columns:1fr}
+  .craft-mini{flex-wrap:wrap}
+  .cm-art{flex:0 0 84px}
+  .cm-art svg{width:84px}
+  .craft-folds{grid-template-columns:1fr 1fr 1fr;gap:4px}
+  .craft-learn div>span{font-size:.78rem}
+}
+@media print{
+  .craft-screen .cs-open{display:none}
+  .p-folds,.print-two{break-inside:avoid}
+  .craft-sheet .p-note{break-inside:avoid}
+  .craft-sheet .cs-print-art{border:1px solid #999;background:#fff}
+  .craft-sheet ol,.craft-sheet li{break-inside:avoid}
+}
+/* 自學卡庫（活動頁） */
+.coach-wrap{margin-top:14px;padding-top:12px;border-top:2px dashed var(--line)}
+.coach-wrap h4{margin:0 0 8px;font-size:.86rem;color:var(--grd);letter-spacing:.3px}
+.coach-grid{display:grid;gap:8px}
+.coach-grid .activity-card{background:linear-gradient(180deg,#f7fff5,#fff)}
+.act-col{min-width:132px}
+button.lnk{color:var(--grd);font-weight:800;text-decoration:underline;padding:0 2px;font-size:.85rem;cursor:pointer}
+button.lnk:hover{color:var(--ord)}
+/* ==========================================================================
+   🧰 Kit — 「叫你做 → 教你點做」補漏層（備料・檢查表・分工・訊息範本・嘉許狀）
+   ========================================================================== */
+.craft-refs{margin:10px 0;background:#f3f7ff;border:1px solid #d7e3fb;border-radius:15px;padding:10px 11px}
+.craft-refs h4{margin:0 0 7px;font-size:.78rem;color:#0d47a1;letter-spacing:.4px}
+.craft-refs .cr-list{display:grid;gap:6px}
+.craft-refs a{display:block;text-align:left;background:#fff;border:1px solid #cddffb;border-radius:11px;
+  padding:7px 9px;font-size:.78rem;color:#0d47a1;font-weight:700;line-height:1.35;text-decoration:none}
+.craft-refs a:active{background:#e8f1ff}
+.craft-refs small{display:block;margin-top:6px;font-size:.72rem;line-height:1.35}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+/* 準備卡底嘅預備包 */
+.kit-card{background:linear-gradient(180deg,#f6fff4,#fff);border:1.5px solid #cfe8cd!important}
+.kit-h4{margin:0 0 6px;font-size:.84rem;color:var(--grd);letter-spacing:.3px}
+.kit-owner{margin-top:9px;border-top:1px dashed #cfe8cd;padding-top:8px}
+.kit-owner b{font-size:.8rem;color:var(--grd)}
+.mark-row{font-size:.72rem;color:var(--grd);background:#f1f8e9;border-radius:9px;padding:4px 8px;margin:7px 0 0;font-weight:700}
+.kit-note{font-size:.72rem;line-height:1.4;margin-top:4px}
+.owner-in{width:100%;margin-top:6px;font-size:.8rem;padding:7px 9px;border:1.5px solid var(--line);
+  border-radius:10px;background:#fff;color:var(--ink);font-family:inherit}
+.owner-in:focus{outline:none;border-color:var(--gr)}
+/* 物資備料指引 */
+.kit-tip{margin-top:9px;background:#fffdf6;border:1px solid #f0e2c8;border-radius:13px;padding:9px 10px;position:relative}
+.kt-h{font-size:.8rem;font-weight:800;color:#8d6e63;padding-right:88px}
+.kt-t{position:absolute;right:8px;top:6px;font-size:.68rem;padding:3px 8px}
+.kt-b{display:none;margin-top:7px;font-size:.78rem;line-height:1.45}
+.kit-tip.open .kt-b,.kit-tip:hover .kt-b{display:block}
+.kt-row{display:flex;gap:7px;padding:5px 0;border-top:1px dashed #f0e2c8}
+.kt-row:first-child{border-top:none}
+.kt-row b{flex:0 0 78px;color:var(--ord);font-size:.79rem}
+.kt-row div{min-width:0;word-break:break-word}
+/* 執行檢查表 */
+.kit-check{margin:10px 0;background:#fff;border:1.5px solid var(--line);border-radius:15px;padding:10px 11px}
+.kc-h{display:flex;align-items:center;gap:7px;font-size:.84rem;font-weight:800;color:var(--ord);margin-bottom:6px}
+.kc-list{list-style:none;margin:0;padding:0;display:grid;gap:4px;counter-reset:kc}
+.kc-list li{display:flex;gap:7px;align-items:flex-start;font-size:.79rem;line-height:1.42;
+  padding:5px 7px;border-radius:10px;background:#fffaf2;cursor:pointer;transition:.12s}
+.kc-list li:active{transform:scale(.99)}
+.kc-no{flex:0 0 auto;width:19px;height:19px;border-radius:50%;border:1.5px solid var(--or);
+  color:var(--ord);font-size:.68rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+.kc-list li.on{background:#e8f5e9}
+.kc-list li.on .kc-no{background:var(--gr);border-color:var(--grd);color:#fff}
+.kc-list li.on{text-decoration:line-through;color:var(--mute)}
+.kc-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:7px;padding-top:7px;border-top:1px dashed var(--line)}
+.kc-foot small{font-size:.7rem}
+.modal-check{border:none;padding:0;background:none}
+/* 分工（逐節） */
+.owner-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:8px 0;font-size:.78rem;font-weight:700;color:var(--grd)}
+.owner-row .owner-in{flex:1;min-width:120px;margin:0}
+.owner-chips{display:flex;gap:5px;flex-wrap:wrap;width:100%}
+.owner-chips .pill{padding:3px 9px;font-size:.72rem}
+/* 手冊 hub */
+.kit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.kit-msg{background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 10px;margin:8px 0}
+.km-h{display:flex;align-items:center;gap:6px;font-size:.84rem;font-weight:800;color:var(--ord)}
+.km-b{font-size:.78rem;line-height:1.5;white-space:pre-wrap;background:#fffdf6;border-radius:10px;
+  padding:7px 9px;margin:6px 0;border:1px dashed var(--line);max-height:150px;overflow:auto}
+.kit-badge,.kit-gh{display:grid;gap:6px;margin-top:6px}
+.kb-row,.kg-row{display:flex;gap:8px;align-items:flex-start;background:#fff;border:1px solid var(--line);
+  border-radius:12px;padding:8px 10px;font-size:.78rem;flex-wrap:wrap}
+.kb-row b{color:var(--ord);flex:0 0 auto}
+.kb-row small,.kg-row small{display:block;color:#5d4037;line-height:1.4;font-size:.74rem}
+.kb-row .btn{margin-left:auto;flex:0 0 auto}
+.kg-row>span{font-size:1.25rem;line-height:1.1}
+.kg-row div{flex:1;min-width:0}
+.kg-row b{font-size:.8rem;color:var(--ord);display:block}
+/* 帶領畫面：負責人 + 檢查表 shortcut */
+.lead-top .tt{white-space:normal;line-height:1.2}
+.tt-who{display:inline-block;margin-left:8px;font-size:.68rem;font-weight:700;background:rgba(255,255,255,.22);
+  border-radius:99px;padding:2px 9px;vertical-align:middle}
+.cue-chk{font-size:.72rem!important}
+.badge-where{display:block;font-size:.7rem;color:#5d4037;line-height:1.36;margin:2px 0 1px 22px;font-weight:400}
+.tool-check{display:grid;gap:5px}
+.tc-row{display:flex;gap:7px;align-items:center;font-size:.76rem;background:#fff8ee;border-radius:10px;padding:6px 8px}
+.tc-row b{color:var(--ord);flex:1;min-width:0}
+.tc-row small{color:var(--mute);font-size:.7rem}
+/* A4：備料提示・檢查表・嘉許狀 */
+.p-mat-tips{margin-top:6px;border-top:1px dashed #ccc;padding-top:5px}
+.p-tip-title{font-size:8.5pt;font-weight:800;color:#6d4c41;margin-bottom:3px}
+.p-mat-tip{font-size:8pt;line-height:1.42;padding:2px 0;border-bottom:1px dotted #eee}
+.p-owner{font-size:8.5pt;text-align:center}
+.check-table td{font-size:9pt;padding:4px 6px}
+.ck-no{width:22px;text-align:center;color:#888;font-size:8pt}
+.ck-box{width:26px}
+.check-table .ck-box{border:1.2px solid #666;border-radius:3px;height:15px}
+.pbreak{page-break-after:always;break-after:page}
+.cert-sheet{display:block}
+.cert-box{border:3px double #b8860b;border-radius:10px;padding:26px 22px;text-align:center;background:#fffdf5}
+.cert-ic{font-size:26px}
+.cert-t{font-size:15pt;color:#8d6e63;margin:4px 0}
+.cert-sub{font-size:13pt;letter-spacing:8px;font-weight:800;color:#5d4037;margin:2px 0 14px}
+.cert-lead{font-size:9pt;color:#8d6e63;margin:8px 0 2px}
+.cert-name{font-size:22px;font-weight:800;border-bottom:1.5px solid #b8860b;display:inline-block;
+  padding:0 18px 3px;margin:2px 0 8px}
+.cert-quote{font-size:9pt;color:#a1887f;margin:12px 0;font-style:italic}
+.cert-sign{display:flex;justify-content:space-between;font-size:9pt;margin-top:26px;color:#5d4037}
+.cert-note{font-size:7.5pt;color:#999;margin-top:14px;border-top:1px dashed #ddd;padding-top:5px}
+.kit-sheet .p-sec-title{font-size:9.5pt}
+.kit-rain-list{display:grid;gap:5px;margin:6px 0}
+.krl-row{display:flex;justify-content:space-between;gap:8px;align-items:baseline;background:#f3f8ff;border:1px solid #d7e6fb;border-radius:11px;padding:6px 9px}
+.krl-row b{font-size:.8rem;color:#0d47a1}
+.krl-row small{font-size:.72rem;color:var(--mute);text-align:right}
+.kt-q{color:var(--grd)}
+.print-pack-note{font-size:9pt;font-weight:800;color:#4527a0;background:#ede7f6;border-radius:6px;padding:5px 8px;margin-bottom:6px}
+@media print{.print-pack-note{background:#fff;color:#000;border:1px solid #999}}
+@media(max-width:560px){
+  .kit-grid{grid-template-columns:1fr}
+  .kt-row{flex-direction:column;gap:2px}
+  .kt-row b{flex:none}
+  .kb-row .btn{margin-left:0}
+}
+@media print{
+  .kit-check,.kit-tip,.craft-refs{display:none}
+  .cert-box{break-inside:avoid}
+  .check-table tr{break-inside:avoid}
+  .p-mat-tips{break-inside:avoid}
+}
+
+/* ===== 留痕・日期・全站搜尋 ===== */
+.kit-date{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0 2px;padding:8px 10px;background:#fff8e1;border:1px solid #ffe082;border-radius:10px}
+.kit-date span{font-size:.82rem}
+.kit-date b{color:#6d4c41}
+.kit-date input[type=date]{width:auto;flex:0 0 auto;padding:5px 8px;font-size:.82rem;border:1px solid #d7ccc8;border-radius:8px;background:#fff}
+.kit-date small{flex:1 1 100%;line-height:1.4}
+.date-row{display:flex;gap:8px;align-items:center}
+.date-row input[type=date]{flex:1 1 auto;width:auto}
+.kc-prog{font-size:.78rem;background:#e8f5e9;color:#1b5e20;border-radius:999px;padding:2px 8px;margin-right:6px;display:inline-block}
+.kc-prog b{font-size:.86rem}
+.kc-left{margin:6px 0 0;padding:7px 9px;background:#fff3e0;border-left:3px solid #fb8c00;border-radius:0 8px 8px 0;font-size:.78rem;line-height:1.45;color:#4e342e}
+.srch input[type=search]{width:100%;box-sizing:border-box;margin:6px 0 10px;padding:10px 12px;font-size:.95rem;border:2px solid var(--ord,#8d6e63);border-radius:10px;background:#fff}
+.srch-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.srch-tip{font-size:.82rem;line-height:1.5}
+.srch-tip b{display:block;margin-bottom:6px}
+.srch-none{padding:14px 6px;text-align:center;font-size:.86rem;line-height:1.6}
+.srch-g{margin:10px 0 4px;font-size:.74rem;font-weight:800;color:#6d4c41;letter-spacing:.02em}
+.srch-out{max-height:56vh;overflow:auto;-webkit-overflow-scrolling:touch}
+.srch-row{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;box-sizing:border-box;text-align:left;background:#fafafa;border:1px solid #e0d6cf;border-radius:10px;padding:8px 10px;margin:0 0 6px;cursor:pointer;font:inherit}
+.srch-row:hover,.srch-row:active{background:#fff3e0;border-color:#ffb74d}
+.srch-t{font-size:.86rem;font-weight:800;color:var(--ink,#3e2723)}
+.srch-row small{font-size:.74rem;color:#6d4c41;line-height:1.35}
+.srch-go{align-self:flex-end;font-size:.72rem;font-weight:800;color:#2e7d32}
+@media (max-width:520px){.srch-out{max-height:50vh}.kit-date{gap:6px}}

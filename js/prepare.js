@@ -12,7 +12,11 @@ var Prepare={
       '<div style="margin:8px 0">'+cats.map(function(c){return '<span class="pill'+(Prepare.filter===c[0]?' on':'')+'" onclick="Prepare.f(\''+c[0]+'\')">'+c[1]+'</span>'}).join('')+'</div>';
     var list=TPLS.filter(function(t){return Prepare.filter==='all'||t.cat===Prepare.filter});
     list.forEach(function(t){
-      h+='<div class="mem" style="margin:10px 0"><h4>'+esc(t.n)+' <span class="tag">'+TPLS.catName[t.cat]+'</span></h4>'+
+      var mk=Track.meetMarks(t);
+      var chips=(Kit.rain[t.id]?'<span class="tag b" title="有室內後備版，落雨照玩">☔ 有後備版</span>':'')+
+        (mk.gh.length?'<span class="tag g" title="完場自動幫細個計數，唔使自己寫表">🦗 自動計 '+mk.gh.length+' 範疇</span>':'')+
+        (mk.badge.length?'<span class="tag g">🏅 自動剔 '+mk.badge.length+' 項</span>':'');
+      h+='<div class="mem" style="margin:10px 0"><h4>'+esc(t.n)+' <span class="tag">'+TPLS.catName[t.cat]+'</span> '+chips+'</h4>'+
         '<small class="mute">'+esc(t.theme)+'・建議'+t.mo+'・約'+Plan.lenOf(t)+'分鐘・'+t.stages.length+'個環節</small>'+
         '<div class="btns" style="margin:8px 0 0">'+
         '<button class="btn sm" onclick="Prepare.detail(\''+t.id+'\')">🧭 睇準備卡</button>'+
@@ -41,6 +45,8 @@ var Prepare={
     return '<article class="brief-card"><div class="brief-head"><span class="brief-no">'+(i+1)+'</span><div><h3>'+esc(s.n)+'</h3><small>'+esc(s.t)+'・'+(+s.m||0)+' 分鐘</small></div></div>'+mats+visual+
       '<div class="guide-lead"><b>領袖先做</b>'+esc(g.lead)+'</div><div class="guide-steps">'+g.steps.map(function(x){return '<div class="guide-step"><span class="gnum">'+esc(x[0])+'</span><span class="gicon">'+x[1]+'</span><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div>'}).join('')+'</div>'+
       '<div class="say-box"><b>🎤 可以直接照講</b>'+esc(g.say)+'</div><div class="watch-row"><div><b>👀 睇住呢樣</b><br>'+esc(g.watch)+'</div><div class="safe"><b>🛡️ 安全</b><br>'+esc(g.safety)+'</div></div>'+
+      ((Craft&&(Craft.match(s)||Craft.isCraft(s)))?Craft.mini(s):'')+Kit.ownerHtml(Prepare._detailId,i,s)+
+      '<div class="mark-row">'+(function(){var o=[];if(s.gh!==undefined)o.push('🦗 計入 '+DATA.ghDomains[s.gh].ic+' '+DATA.ghDomains[s.gh].n);if(s.badge)o.push('🏅 完場自動剔 '+DATA.badgeItems.filter(function(x){return x.k===s.badge})[0].t);return o.length?o.join('　'):'呢節唔使記數，玩就得'}())+'</div>'+
       '<details style="margin-top:9px"><summary>顯示完整玩法文字</summary><div class="box" style="margin-top:6px">'+esc(s.how||'')+'</div></details><div class="btns"><button class="btn sm gr" onclick="Prepare.detailStage(\''+esc(Prepare._detailId||'')+'\','+i+')">▶ 試用呢節</button></div></article>';
   },
   detailStage:function(id,i){
@@ -53,11 +59,19 @@ var Prepare={
       '<div class="btns" style="margin-top:12px">'+
         '<button class="btn gr" onclick="Modal.close();Lead.start(\''+t.id+'\')">▶ 由頭開始帶領</button>'+
         '<button class="btn" style="background:#2e7d32;color:#fff" onclick="PrintKit.openModal(\'lesson-plans\',\''+t.id+'\')">🖨️ 打印本集 A4 教案</button>'+
+        '<button class="btn ghost" style="background:#ede7f6;color:#4527a0;border-color:#b39ddb" onclick="PrintKit.openModal(\'meet-pack\',\''+t.id+'\')">🖨️ 印齊今場全套</button>'+
         '<button class="btn ghost" onclick="Prepare.shareTpl(\''+t.id+'\')">📤 分享準備卡</button>'+
+      (Kit.rain[t.id]?'<button class="btn ghost" style="background:#e3f2fd;border-color:#90caf9;color:#0d47a1" onclick="Kit.rainAsk(\''+t.id+'\')">☔ 落雨點算（睇後備版）</button>':'')+
       '</div>'+
-      '<div class="attention" style="margin-top:12px"><b>開場前只做三件事</b><br>① 按下面物資清單執齊　② 預留活動位置　③ 撳「由頭開始帶領」，跟綠色領袖欄一步一步做。</div>'+
+      (function(){var cs=t.stages.filter(function(x){return Craft.isCraft(x)});
+        return '<div class="attention" style="margin-top:12px"><b>開場前只做三件事</b><br>① 按下面物資清單執齊　② 預留活動位置　③ 撳「由頭開始帶領」，跟綠色領袖欄一步一步做。</div>'+
+          (cs.length?'<div class="attention" style="margin-top:8px;background:#fff8ee;border-left-color:#f57c00"><b>🎨 今次有 '+cs.length+' 個手工環節'+(cs.some(function(x){return Craft.match(x)})?'，每樣都附自學卡':'')+'</b><br>'+
+          cs.map(function(x){var c=Craft.match(x);return c?'・'+c.ic+' <b>'+esc(x.n)+'</b> → <button class="lnk" onclick="Craft.open(\''+c.k+'\')">跟我自學</button>':'・🎨 <b>'+esc(x.n)+'</b> → <button class="lnk" onclick="Craft.open(\'any\')">萬用六步</button>'}).join('<br>')+
+          '<br><small class="mute">未做過都跟得住：睇成品示意圖＋逐步拆解，帶班時只示範頭兩步。</small></div>':'')
+      })()+
       '<div class="card" style="box-shadow:none;border:1px solid var(--line);padding:11px;margin:12px 0"><h4 style="margin:0;color:var(--ord)">🧺 物資總清單・逐項撳一下剔走</h4><div class="mats-bar">'+(mats.length?mats.map(function(m){return '<span class="pill" onclick="this.classList.toggle(\'on\')"><span class="dot"></span>'+esc(m)+'</span>'}).join(''):'<span class="mute">今次唔需要額外物資</span>')+'</div></div>'+
-      '<h4 style="margin:14px 0 4px;color:var(--ord)">跟住呢條流程做</h4>'+t.stages.map(function(s,i){return Prepare.brief(s,i)}).join('')+
+      Kit.meetKitHtml(t)+
+      '<h4 style="margin:14px 0 4px;color:var(--ord)">跟住呢條流程做'+(Kit.leaderNames().length?'・撳環節下面嘅「負責領袖」分工':'')+'</h4>'+t.stages.map(function(s,i){return Prepare.brief(s,i)}).join('')+
       '<div class="attention"><b>收尾</b><br>完成後返到帶領畫面最後一頁，撳「記錄完成＋記出席」，就唔使另外抄名單。</div></div>';
     Modal.open(h);
   },
@@ -187,6 +201,11 @@ var Prepare={
     var lines=['🦗 '+t.n+'('+Plan.lenOf(t)+'分鐘)','主題:'+t.theme,''];
     t.stages.forEach(function(s,i){lines.push((i+1)+'. ['+s.m+'分鐘]['+s.t+'] '+s.n);if(s.how)lines.push('   '+s.how);if(s.mats&&s.mats.length)lines.push('   🧺 '+s.mats.join('、'))});
     var mats=matsOf(t);if(mats.length)lines.push('','🧺 物資總清單:'+mats.join('、'));
+    var tips=Kit.matsTipTxt(mats);if(tips)lines.push('','📦 備料提示:',tips);
+    var own=Kit.ownersOf(t);
+    if(own.some(function(x){return x}))lines.push('','👥 分工:',t.stages.map(function(s,i){return '  '+(i+1)+'. '+s.n+' → '+(own[i]||'未定')}).join('\n'));
+    var ck=Kit.checkFor(t.stages||[]);
+    if(ck)lines.push('','🧭 '+ck.n+'（出發前讀一次）',ck.items.map(function(x,i){return '  '+(i+1)+'. '+x}).join('\n'));
     lines.push('','— 分享自 小童軍集會助手 © Scout System');
     var txt=lines.join('\n');
     if(navigator.share)navigator.share({text:txt}).catch(function(){});

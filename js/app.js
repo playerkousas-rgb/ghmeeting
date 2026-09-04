@@ -47,6 +47,9 @@ var App={
         '<button class="btn sm ghost" onclick="App.startInstant(\'fitness\',40)">🏃 體能反應 (40分)</button>'+
         '<button class="btn sm gr" onclick="App.startInstant(\'general\',60)">✨ 60分鐘全能大集會</button>'+
       '</div></div>'+
+      '<div class="card" style="border:1.5px solid var(--line);padding:12px;margin:8px 0"><h4 style="margin:0 0 6px;color:var(--ord)">🧭 開會前點預備（叫你做 → 教你點做）</h4>'+
+        '<div class="mute" style="font-size:.78rem;margin-bottom:8px">物資每人幾多、場地檢查咩、家長訊息點寫、章項去邊度教—全部有清單同範本，唔使自己由零估。</div>'+        '<div class="quick-tools-row">'+
+        '<button class="btn sm" onclick="Modal.close();Kit.hubOpen()">🧰 點預備總覽</button>'+        '<button class="btn sm ghost" onclick="Modal.close();Kit.openCheckFor(dur(\''+(nextT?nextT.id:'t01')+'\'))">🧭 今場檢查表</button>'+        '<button class="btn sm ghost" onclick="Modal.close();Kit.msgOpen()">📣 家長訊息範本</button>'+        '</div></div>'+
       '<div class="card" style="border:1.5px solid var(--line);padding:12px;margin:8px 0"><h4 style="margin:0 0 6px;color:var(--ord)">🧰 隨手救急快鍵</h4><div class="quick-tools-row">'+
         '<button class="btn sm" onclick="Modal.close();Lead.quietQuick()">🤫 5秒安靜</button>'+
         '<button class="btn sm ghost" onclick="Sfx.whistle();toast(\'🎺 嗶————！集合！\')">🎺 吹哨</button>'+
@@ -135,14 +138,48 @@ var App={
       '<label class="f">旅團名稱</label><input type="text" id="stG" value="'+esc(s.group)+'" placeholder="例如:第123旅小童軍團">'+
       '<label class="f">開季月份</label><select id="stS">'+['1','2','3','4','5','6','7','8','9','10','11','12'].map(function(m){return '<option value="'+m+'"'+(s.start===m?' selected':'')+'>'+m+'月</option>'}).join('')+'</select>'+
       '<label class="f">恆常集會時長</label><select id="stD">'+['40','60','90','120','180'].map(function(d){return '<option value="'+d+'"'+(s.dur===d?' selected':'')+'>'+d+' 分鐘</option>'}).join('')+'</select>'+
+      '<label class="f">領袖名單（分工時可以直接揀名，用、分開）</label><input type="text" id="stL" value="'+esc(s.leaders||'')+'" placeholder="例：陳sir、Miss 王、Billie 師姐">'+
+      '<label class="f">恆常集合時間／地點（貼心：家长訊息範本會自動填呢兩格）</label>'+
+      '<div class="row2"><div><input type="text" id="stT" value="'+esc(s.time||'')+'" placeholder="例：9:15-10:15"></div><div><input type="text" id="stP" value="'+esc(s.place||'')+'" placeholder="例：旅團部地下球場"></div></div>'+
+      '<label class="f">聯絡電話（只存喺你部機，用於家長訊息範本）</label><input type="text" id="stPh" value="'+esc(s.phone||'')+'" placeholder="例：9123 4567">'+
       '<div class="btns" style="margin-top:14px"><button class="btn blk" onclick="App.saveSettings()">儲存</button></div>'+
-      '<hr class="soft"><div class="mute" style="font-size:.78rem">🧹 重建年度行事曆會重設規劃表(唔影響團員資料):<br><button class="btn sm ghost" onclick="App.seedPlan(true);Modal.close();toast(\'已重建年度行事曆\')">重建行事曆</button> '+
+      '<hr class="soft"><div class="mute" style="font-size:.78rem">💾 <b>備份</b>：資料只存喺呢部裝置—換機/清理瀏覽器之前，save 一個 file 就唔會歸零。<br>'+      '<div class="btns" style="margin-top:6px"><button class="btn sm ghost" onclick="App.exportAll()">📦 匯出全部資料（一個 file）</button>'+      '<button class="btn sm ghost" onclick="document.getElementById(\'imF\').click()">📥 讀返一個備份</button>'+      '<input type="file" id="imF" accept="application/json,.json,text/plain" style="display:none" onchange="App.importAll(this)"></div>'+      '<div class="mute" style="font-size:.72rem;margin-top:5px">匯入會取代呢部裝置現有資料（名單＋規劃＋紀錄＋自製集會）。</div>'+      '<hr class="soft"><div class="mute" style="font-size:.78rem">🧹 重建年度行事曆會重設規劃表(唔影響團員資料):<br><button class="btn sm ghost" onclick="App.seedPlan(true);Modal.close();toast(\'已重建年度行事曆\')">重建行事曆</button> '+
       '<button class="btn sm ghost rd" style="color:#b71c1c;border-color:#e53935" onclick="if(confirm(\'清除所有本機資料(含團員/集會/規劃)?\')){localStorage.clear();location.reload()}">清除全部資料</button></div>');
+  },
+  exportAll:function(){
+    var keys=['settings','plan','members','recs','mymeets','owners','meetmeta','msgTpl','checkins'],data={app:'ghmeeting',ver:1,at:new Date().toISOString(),keys:{}};
+    keys.forEach(function(k){var v=Store.get(k,null);if(v!==null&&v!==undefined)data.keys[k]=v});
+    try{
+      var blob=new Blob([JSON.stringify(data,null,1)],{type:'application/json'});
+      var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+      a.download='小童軍集會助手-備份-'+new Date().toISOString().slice(0,10)+'.json';
+      document.body.appendChild(a);a.click();a.remove();
+      setTimeout(function(){URL.revokeObjectURL(a.href)},4000);
+      toast('已 save 咗一個備份 file ✓ 放去安全地方');
+    }catch(e){toast('export 唔到：'+e.message)}
+  },
+  importAll:function(inp){
+    var f=inp&&inp.files&&inp.files[0];if(!f)return;
+    var fr=new FileReader();
+    fr.onload=function(){
+      var d=null;try{d=JSON.parse(fr.result)}catch(e){}
+      if(!d||!d.keys){toast('呢個唔似備份 file ✗');inp.value='';return}
+      var ks=Object.keys(d.keys);
+      if(!confirm('讀入 '+ks.length+' 組資料（備份日期：'+String(d.at||'?').slice(0,10)+'）\n而家呢部機嘅名單／規劃／紀錄會被取代。繼續？')){inp.value='';return}
+      ks.forEach(function(k){Store.set(k,d.keys[k])});
+      toast('讀入咗 ✓ 重新整理');
+      setTimeout(function(){location.reload()},600);
+    };
+    fr.onerror=function(){toast('讀唔到個 file ✗')};
+    fr.readAsText(f);
   },
   saveSettings:function(){
     var s=Store.get('settings',{});
     s.group=document.getElementById('stG').value||'我的旅團';
     s.start=document.getElementById('stS').value;s.dur=document.getElementById('stD').value;
+    s.leaders=(document.getElementById('stL').value||'').trim();
+    s.time=(document.getElementById('stT').value||'').trim();s.place=(document.getElementById('stP').value||'').trim();
+    s.phone=(document.getElementById('stPh').value||'').trim();
     Store.set('settings',s);Modal.close();App.route();toast('已儲存 ✓');
   },
   /* ---- 年度規劃種子(跟隨開季月份排22次) ---- */
@@ -182,6 +219,8 @@ var Plan={
         '<button class="pill" onclick="Lead.quickTool(\'wheel\')">🎲 點名抽籤</button>'+
         '<button class="pill" onclick="Lead.quickTool(\'score\')">🥇 計分板</button>'+
         '<button class="pill" onclick="Lead.quickTool(\'group\')">👥 分組機</button>'+
+        '<button class="pill" onclick="Kit.searchOpen()">🔍 全站搵嘢</button>'+
+        '<button class="pill" onclick="Kit.hubOpen()">🧰 點預備・檢查表</button>'+
       '</div>'+
       '</section><div class="steps-banner"><div class="mini-step"><b>01・即開</b>撳一下全螢幕帶領，免準備道具</div><div class="mini-step"><b>02・互動</b>小朋友睇螢幕玩遊戲，領袖睇講稿</div><div class="mini-step"><b>03・記出席</b>完場一鍵打卡，進度自動保存</div></div>'+
       '<div class="stat"><div class="s"><b>'+(pl.rows.length-done)+'</b>尚餘集會</div><div class="s"><b>'+done+'/'+pl.rows.length+'</b>已完成</div><div class="s"><b>'+mem.length+'</b>團員</div></div>';
@@ -201,7 +240,7 @@ var Plan={
     pl.rows.forEach(function(r){
       var t=dur(r.tid);if(!t)return;
       var st=r.status==='done'?'<span class="tag g">✓ 完成</span>':r.status==='skip'?'<span class="tag br">跳過</span>':'<span class="tag">未做</span>';
-      h+='<tr style="cursor:pointer;'+(r.status==='todo'?'':'opacity:.75')+'" onclick="Plan.rowAction('+r.no+')"><td><b>'+r.no+'</b><br><small class="mute">'+t.mo+'</small></td>'+
+      h+='<tr style="cursor:pointer;'+(r.status==='todo'?'':'opacity:.75')+'" onclick="Plan.rowAction('+r.no+')"><td><b>'+r.no+'</b><br><small class="mute">'+(r.date?esc(Kit.fmtDate(r.date))+'・'+esc(t.mo):esc(t.mo))+'</small></td>'+
         '<td><a href="#meet" onclick="event.preventDefault();event.stopPropagation();Prepare.detail(\''+t.id+'\')"><b>'+esc(t.n)+'</b></a><br><small class="mute">'+esc(t.theme)+'</small></td><td>'+st+'</td></tr>';
     });
     return h+'</div><div class="btns"><button class="btn sm ghost" onclick="Plan.markAllDone()">記低呢季完成晒</button></div>';
@@ -214,12 +253,20 @@ var Plan={
       '<button class="btn sm '+(r.status==='todo'?'':'ghost')+'" onclick="Plan.setRow('+no+',\'todo\')">未做</button>'+
       '<button class="btn sm gr '+(r.status==='done'?'':'ghost')+'" onclick="Plan.setRow('+no+',\'done\')">✓ 完成</button>'+
       '<button class="btn sm ghost" style="color:#4e342e" onclick="Plan.setRow('+no+',\'skip\')">跳過</button></div>'+
+      '<label class="f">📅 今場日期（低一次，之後家長訊息、星期、截止日全部自動填）</label>'+
+      '<div class="date-row"><input type="date" value="'+esc(r.date||'')+'" onchange="Plan.setDate('+no+',this.value)">'+(r.date?'<button class="btn sm ghost" onclick="Plan.setDate('+no+',\'\');Plan.rowAction('+no+')">清走</button>':'')+'</div>'+
       '<label class="f">改用其他範本</label><select onchange="Plan.swap('+no+',this.value)">'+
       TPLS.map(function(x){return '<option value="'+x.id+'"'+(x.id===r.tid?' selected':'')+'>'+esc(x.n)+'</option>'}).join('')+'</select>'+
       '<div class="btns" style="margin-top:12px"><button class="btn gr" onclick="Modal.close();Lead.start(\''+r.tid+'\','+no+')">▶ 帶領呢次</button></div>');
   },
   setRow:function(no,st){var pl=Store.get('plan');pl.rows.find(function(x){return x.no===no}).status=st;Store.set('plan',pl);
     if(st==='done')Track.attendPrompt(no);else{Modal.close();App.route()}},
+  setDate:function(no,v){
+    if(typeof Kit!=='undefined'&&Kit.setPlanDate){Kit.setPlanDate(no,v)}
+    else{var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});if(r){r.date=v||'';Store.set('plan',pl)}}
+    if(typeof App!=='undefined')App.route();
+    Modal.close();
+  },
   swap:function(no,tid){var pl=Store.get('plan');pl.rows.find(function(x){return x.no===no}).tid=tid;Store.set('plan',pl);toast('已換範本');Modal.close();App.route()},
   roadmap:function(){
     var mem=Store.get('members');

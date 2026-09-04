@@ -2,12 +2,19 @@
 var HB={
   tab:'core',
   html:function(){
-    var tabs=[['core','⚖️ 核心內容'],['badge','🏅 獎章制度'],['chute','🌈 快樂傘'],['sfh','🛡️ 保護自己'],['tips','💡 帶領貼士'],['about','ℹ️ 關於']];
+    var tabs=[['core','⚖️ 核心內容'],['craft','🎨 手工自學'],['kit','🧰 點預備'],['badge','🏅 獎章制度'],['chute','🌈 快樂傘'],['sfh','🛡️ 保護自己'],['tips','💡 帶領貼士'],['about','ℹ️ 關於']];
     var h='<div class="card"><h2>📖 手冊</h2><div>'+tabs.map(function(t){return '<span class="pill'+(HB.tab===t[0]?' on':'')+'" onclick="HB.t(\''+t[0]+'\')">'+t[1]+'</span>'}).join('')+'</div></div>';
     h+=HB[HB.tab]();
     return h;
   },
   t:function(x){HB.tab=x;App.route()},
+  kit:function(){
+    return '<div class="card"><h2>🧰 做之前點預備</h2><div class="mute" style="font-size:.84rem">呢篇係「叫你做 → 教你點做」：物資要備幾多、場地檢查咩、家長訊息點寫、章項去邊度教、頒獎點先唔亂。開會前一晚睇一次就夠。</div></div>'+
+      Kit.hubHtml()+
+      '<div class="card"><h3>🧺 執袋（開會前晚 10 分鐘版）</h3><div class="box">'+
+      '① 今場物資逐樣放落袋（用準備卡嗰個「剔走」清單）<br>② 後備版材料（已剪好／印好）另外一個膠袋<br>③ 大人工具：釘書機、切孔器、熱熔膠（貼低「領袖用」字句）<br>④ 名牌／咭套＋後備筆 2 支<br>⑤ 急救包、哨子、後備水樽<br>⑥ 手機充滿＋充電棒（投影用）<br><small class="mute">想紙本：「集會 → 撳張卡 → 🖨️ 打印本集 A4 教案」，檢查表會跟住印埋。</small></div></div>';
+  },
+
   core:function(){
     var f=DATA.facts;
     return '<div class="card"><h2>⚖️ 小童軍核心內容</h2>'+
@@ -46,6 +53,25 @@ var HB={
       '<div class="btns"><button class="btn sm" onclick="HB.sfhGame()">👨‍⚖️ 即玩:對錯法庭(SFH篇)</button></div></div>';
   },
   sfhGame:function(){Lead.startGame('judge','對錯法庭 (保護自己篇)');},
+  craft:function(){
+    var rules=[
+      ['📱','開會前 3 分鐘','撳「跟我自學」睇完成品圖＋逐步拆解；唔使自己先整好一份帶去—成品圖 APP 畫俾你睇。'],
+      ['🧩','一次一個動作','「摺埋再剪」係兩個動作—拆到一句做得完，先至有人跟得到。'],
+      ['🙋','做完一步舉手','設檢查位，通過先做下一步；避免半班越做越亂。'],
+      ['🧑‍🤝‍🧑','大人一檔','打孔、大剪、熱溶膠、白膠水集中喺領袖位；小朋友只拿安全剪刀與貼紙。'],
+      ['🛟','零失敗後備','每樣手工都寫咗「做唔掂版」—卡咗好耐嘅人即刻轉，唔會喊住散會。'],
+      ['👏','收結一定要做','每人一句「我整咗××」＋大合照：完成感係收結帶嚟嘅，唔係靚仔帶嚟。']
+    ];
+    var h='<div class="card"><h2>🎨 手工自學：領袖先識做，先教到人</h2>';
+    h+='<div class="attention"><b>「先睇成品」對新領袖冇用—因為自己未做過。</b> 所以呢度每樣手工都有兩份教材：<b>俾小朋友睇嘅成品示意圖</b>（APP 畫出嚟，唔使你帶實物）＋<b>俾領袖自己睇嘅逐步拆解</b>（物資點備、一步步跟住做、最易錯喺邊、做唔掂有咩後備）。</div>';
+    h+='<div class="craft-rules">'+rules.map(function(x){return '<div class="cr-row"><span>'+x[0]+'</span><div><b>'+esc(x[1])+'</b><small>'+esc(x[2])+'</small></div></div>'}).join('')+'</div>';
+    h+='<h3 style="margin-top:14px">已附自學卡嘅手工（'+Craft.list().length+' 樣）</h3>';
+    h+='<div class="mute" style="font-size:.82rem">每樣都包括：成品示意圖・關鍵摺法圖解（部分）・逐步自學・帶班拆法・常錯補救・後備版・時間剪法・安全提示。自己加嘅活動用「萬用六步」一樣搞得掂。</div>';
+    h+=Craft.indexHtml();
+    h+='<div class="btns" style="margin-top:12px"><button class="btn sm gr" onclick="Craft.open(\'any\')">🧯 萬用六步（任何手工適用）</button><button class="btn sm" onclick="PrintKit.openModal(\'craft-coach\')">🖨️ 打印 A4 自學總表</button><button class="btn sm ghost" onclick="App.go(\'#play\')">🎮 去活動架揀手工</button></div>';
+    h+='</div>';
+    return h;
+  },
   tips:function(){
     return '<div class="card"><h2>💡 帶領貼士(4-7歲)</h2><div class="box">'+
       '<b>① 5-10分鐘一轉</b><br>幼兒專注力短,每個環節唔好過15分鐘,動靜交替:狂野遊戲後接靜態故事/靜息。<br><br>'+
@@ -53,7 +79,8 @@ var HB={
       '<b>③ 儀式感係魔法</b><br>開會散會快樂傘、口號、敬禮,次次一樣——安全感+歸屬感就嚟自重複。<br><br>'+
       '<b>④ 人人有獎</b><br>計分遊戲記得輪流贏;讚具體行為:「你剛才讓位俾隊友,好嘢!」<br><br>'+
       '<b>⑤ 預備執輸</b><br>環節爛咗/唔啱玩?即刻轉後備:快樂傘一式、律動指令、靜息呼吸。<br><br>'+
-      '<b>⑥ 一句完場</b><br>散會前圍圈,每人講「今日最開心係……」,家長接得放心。</div></div>';
+      '<b>⑥ 一句完場</b><br>散會前圍圈,每人講「今日最開心係……」,家長接得放心。<br><br>'+
+      '<b>⑦ 影相同意（一次搞掂，一年唔使再問）</b><br>'+esc(Kit.photo.replace(/^📷\s*/,''))+'<br><small class="mute">想直接抄範本：去「🧰 點預備」→ 家長訊息範本。</small></div></div>';
   },
   about:function(){
     return '<div class="card"><h2>ℹ️ 關於</h2><div class="box">🦗 <b>小童軍集會助手 Grasshopper Hub</b><br>由年度計劃到散會嗰刻:規劃→執集會→帶領→追蹤。<br><br>'+

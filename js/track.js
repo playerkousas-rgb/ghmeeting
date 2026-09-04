@@ -21,18 +21,30 @@ var Track={
     return '<div class="mem"><h4>'+esc(m.n)+' <small class="mute">'+esc(m.bday||'')+'</small></h4>'+
       '<div class="progbar"><i style="width:'+memPct+'%"></i></div><small class="mute">團員章 '+memPct+'%・出席 '+Track.attCount(m)+' 次</small>'+
       '<div style="margin:8px 0 4px"><b style="font-size:.85rem">團員章</b></div>'+
-      DATA.badgeItems.map(function(b){return '<div class="chk" style="font-size:.8rem;padding:3px 0"><span class="dot'+(bi[b.k]?' on':'')+'" onclick="Track.tog('+i+',\''+b.k+'\')"></span>'+b.t+'</div>'}).join('')+
+      DATA.badgeItems.map(function(b){var inf=Kit.badgeInfo(b.k);var on=Track.itemDone(m,b.k);var auto=b.k==='attend';
+        return '<div class="chk" style="font-size:.8rem;padding:3px 0">'+(auto?'<span class="dot'+(on?' on':'')+'" title="出席自動計數，唔使自己剔"></span>':'<span class="dot'+(on?' on':'')+'" onclick="Track.tog('+i+',\''+b.k+'\')"></span>')+b.t+
+        (auto?'<small class="mute" style="margin-left:5px">'+Track.attCount(m)+'/4 次（自動）</small>':'')+
+        (on||!inf?'':'<small class="badge-where">📍 '+esc(inf.where)+(inf.link?' <button class="lnk" onclick="'+inf.link+'">▶ 即刻開</button>':'')+'</small>')+'</div>'}).join('')+
+      '<div class="mute" style="font-size:.72rem;margin:2px 0 0">👆 未剔嘅項會顯示「去邊度教・即刻開」；剔咗即當作過關（資料只存喺你部機）。</div>'+
       '<div style="margin:8px 0 4px"><b style="font-size:.85rem">進步獎章</b></div><div class="btns">'+
       DATA.steps.map(function(s,si){return '<span class="pill'+(step>si?' on':'')+'" onclick="Track.step('+i+','+(si+1)+')">'+s.n+'</span>'}).join('')+'</div>'+
       '<div style="margin:8px 0 4px"><b style="font-size:.85rem">🦗 小草蜢 '+ghDone+'/7</b></div>'+
-      DATA.ghDomains.map(function(d,gi){var c=m.gh&&m.gh[gi]||0;
+      DATA.ghDomains.map(function(d,gi){var c=m.gh&&m.gh[gi]||0;var g=Kit.ghMap[gi];
         return '<div class="chk" style="font-size:.8rem;padding:3px 0">'+d.ic+' '+d.n+' '+
+        (c?'':'<small class="badge-where">💡 '+(g?esc(g.sug):'')+'</small>')+
         '<span style="margin-left:auto">'+[0,1].map(function(x){return '<span class="dot'+(c>x?' on':'')+'" onclick="Track.gh('+i+','+gi+')"></span>'}).join('')+'</span></div>'}).join('')+
       '<div class="btns" style="margin-top:6px"><button class="btn sm ghost" onclick="Track.edit('+i+')">✏️</button>'+
       '<button class="btn sm ghost rd" style="color:#b71c1c;border-color:#e53935" onclick="Track.del('+i+')">🗑️</button></div></div>';
   },
   attCount:function(m){var recs=Store.get('recs',[]);return recs.filter(function(r){return (r.present||[]).indexOf(m.id)>=0}).length},
-  memberDone:function(m){var bi=m.badge||{};return DATA.badgeItems.every(function(b){return bi[b.k]})},
+  itemDone:function(m,k){if(k==='attend')return Track.attCount(m)>=4;var bi=m.badge||{};return !!bi[k]},
+  memberDone:function(m){return DATA.badgeItems.every(function(b){return Track.itemDone(m,b.k)})},
+  /* 今場會自動計入邊啲範疇／章項（環節有標記，唔使自己記） */
+  meetMarks:function(t){
+    var gh={},bd={};
+    ((t&&t.stages)||[]).forEach(function(s){if(s.gh!==undefined&&s.gh!==null)gh[s.gh]=1;if(s.badge)bd[s.badge]=1});
+    return {gh:Object.keys(gh).map(Number),badge:Object.keys(bd)};
+  },
   ghDone:function(m){return m.gh&&DATA.ghDomains.every(function(_,i){return (m.gh[i]||0)>=2})},
   tog:function(i,k){var mem=Store.get('members');mem[i].badge=mem[i].badge||{};mem[i].badge[k]=!mem[i].badge[k];Store.set('members',mem);Sfx.ding();App.route()},
   step:function(i,v){var mem=Store.get('members');mem[i].step=(mem[i].step===v?0:v);Store.set('members',mem);App.route()},
@@ -59,31 +71,44 @@ var Track={
   del:function(i){var mem=Store.get('members');if(confirm('移除 '+mem[i].n+'?')){mem.splice(i,1);Store.set('members',mem);App.route()}},
   /* ---- 出席 ---- */
   attendPrompt:function(no){
-    var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});var t=dur(r.tid);
+    var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});var t=dur(r.tid)||{stages:[]};
     var mem=Store.get('members');
     if(!mem.length){Modal.close();App.route();toast('集會已完成 ✓(未有名單,冇出席紀錄)');return}
     Modal.open('<h3>📝 第'+no+'次集會完成</h3><div class="mute" style="font-size:.85rem">'+esc(t.n)+'</div>'+
       '<label class="f">邊個有出席?(全體預設✓,撳一下取消)</label>'+
       mem.map(function(m,i){return '<div class="chk"><span class="dot on" id="at'+m.id+'" onclick="this.classList.toggle(\'on\')"></span>'+esc(m.n)+'</div>'}).join('')+
+      (function(){var mk=Track.meetMarks(t);
+        return (mk.gh.length?'<div class="attention" style="margin:8px 0"><b>🦗 今場玩完會自動計入</b> '+mk.gh.map(function(g){return DATA.ghDomains[g].ic+' '+DATA.ghDomains[g].n}).join('、')+'（每場每範疇加 1 次，2 次即完成）</div>':'')})()+
       '<label class="f">完成咗嘅團員章項目(會自動落入出席者度)</label>'+
       t.stages.filter(function(s){return s.badge}).map(function(s){return '<div class="chk"><span class="dot" id="bg'+s.badge+'" onclick="this.classList.toggle(\'on\')"></span>'+DATA.badgeItems.find(function(b){return b.k===s.badge}).t+'</div>'}).join('')+
       '<div class="btns" style="margin-top:12px"><button class="btn gr" onclick="Track.saveAttend('+no+')">✓ 儲存紀錄</button></div>');
   },
   saveAttend:function(no){
-    var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});var t=dur(r.tid);
+    var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});var t=dur(r.tid)||{stages:[]};
     var mem=Store.get('members');
     var present=mem.filter(function(m){var e=document.getElementById('at'+m.id);return e&&e.classList.contains('on')}).map(function(m){return m.id});
     var badges=t.stages.filter(function(s){return s.badge&&document.getElementById('bg'+s.badge)&&document.getElementById('bg'+s.badge).classList.contains('on')}).map(function(s){return s.badge});
-    mem.forEach(function(m){
-      if(present.indexOf(m.id)>=0){
-        m.badge=m.badge||{};badges.forEach(function(b){m.badge[b]=true});
-      }
+    /* 今場環節標咗 gh: 嘅範疇，一次過幫出席嘅團員計數（每場每範疇最多加 1） */
+    var marks=Track.meetMarks(t),ghs=marks.gh;
+    badges=badges.concat(marks.badge.filter(function(b){return badges.indexOf(b)<0}));
+    var wasDone=mem.map(Track.memberDone),wasGh=mem.map(Track.ghDone);
+    var recs=Store.get('recs',[]);
+    recs.push({no:no,tid:r.tid,date:new Date().toISOString().slice(0,10),present:present,badges:badges,gh:ghs});
+    Store.set('recs',recs);
+    mem.forEach(function(m,i){
+      if(present.indexOf(m.id)<0)return;
+      m.badge=m.badge||{};badges.forEach(function(b){m.badge[b]=true});
+      if(Track.attCount(m)>=4)m.badge.attend=true;
+      if(ghs.length){m.gh=m.gh||[];ghs.forEach(function(gi){m.gh[gi]=Math.min(2,(m.gh[gi]||0)+1)})}
     });
     Store.set('members',mem);
-    var recs=Store.get('recs',[]);
-    recs.push({no:no,tid:r.tid,date:new Date().toISOString().slice(0,10),present:present,badges:badges});
-    Store.set('recs',recs);
-    Modal.close();App.route();toast('已記錄:出席'+present.length+'人');
+    if(typeof Kit!=='undefined'&&Kit.ckClear)Kit.ckClear(t.id);
+    var newMem=mem.filter(function(m,i){return !wasDone[i]&&Track.memberDone(m)});
+    var newGh=mem.filter(function(m,i){return !wasGh[i]&&Track.ghDone(m)});
+    Modal.close();App.route();
+    if(newMem.length){Sfx.fanfare();toast('🎉 '+esc(newMem.map(function(m){return m.n}).slice(0,3).join('、'))+(newMem.length>1?' 等 '+newMem.length+' 位':'')+' 團員章齊晒！')}
+    else if(newGh.length){Sfx.fanfare();toast('🎉 '+newGh.length+' 位完成小草蜢七大範疇！')}
+    else toast('已記錄:出席'+present.length+'人'+(ghs.length?'・🦗 自動計入 '+ghs.length+' 個範疇':''));
   },
   records:function(){
     var recs=Store.get('recs',[]);var mem=Store.get('members');
@@ -100,7 +125,7 @@ var Track={
     if(!mem.length){toast('未有團員資料');return}
     var L=['🦗 小童軍進度報告('+new Date().toLocaleDateString('zh-HK')+')',''];
     mem.forEach(function(m){
-      var bi=m.badge||{};var items=DATA.badgeItems.map(function(b){return (bi[b.k]?'✓':'✗')+b.t}).join(' ');
+      var items=DATA.badgeItems.map(function(b){return (Track.itemDone(m,b.k)?'✓':'✗')+b.t}).join(' ');
       var step=m.step?DATA.steps[m.step-1].n:'未開始';
       var gh=m.gh?DATA.ghDomains.map(function(d,i){return d.n+':'+(m.gh[i]||0)+'/2'}).join(' '):'';
       L.push('◆ '+m.n+(Track.memberDone(m)?' [團員章✓]':'')+' | 出席'+Track.attCount(m)+'次 | 進步獎章:'+step);
