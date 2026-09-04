@@ -31,6 +31,33 @@ var PrintKit={
       render:function(){return PrintKit.renderRecycleCards()}
     },
     {
+      id:'floor-grid',
+      cat:'cards',
+      ic:'🦗',
+      n:'草蜢跳格・實體九宮格地貼＋玩法卡',
+      desc:'A4 九宮格地貼（1–9 號，可放大影印或直接逐格剪開貼地）＋玩法卡：限時跳格規則、秒數對照、分組計分方法、安全提醒與三種變化玩法。',
+      pages:'A4 2 頁（地貼＋玩法卡）',
+      render:function(){return PrintKit.renderFloorGrid()}
+    },
+    {
+      id:'corner-signs',
+      cat:'cards',
+      ic:'🅰️',
+      n:'實體遊戲場地圖卡（四角角牌・👍👎分邊・回收桶・月亮靶）',
+      desc:'一疊印齊實體遊戲要用嘅場地標記：A／B／C／D 四角搶答角牌、👍👎 對錯法庭分邊牌、三色回收桶標籤、中秋射月靶與投擲線牌。剪開貼牆／貼地即用。',
+      pages:'A4 2 頁（大標記裁切版）',
+      render:function(){return PrintKit.renderCornerSigns()}
+    },
+    {
+      id:'game-cards',
+      cat:'plan',
+      ic:'🎮',
+      n:'互動遊戲帶領卡（小朋友做乜・領袖撳乜・物資・安全）',
+      desc:'由 APP 遊戲庫自動生成：每個遊戲一張卡，寫明小朋友用身體做乜、領袖撳邊個掣、要乜物資場地、安全提醒。新領袖開會前睇一疊就帶到全場遊戲。',
+      pages:'A4 每頁 2 張卡（共約 10 頁）',
+      render:function(){return PrintKit.renderGameCards()}
+    },
+    {
       id:'task-cards',
       cat:'cards',
       ic:'🎯',
@@ -230,6 +257,104 @@ var PrintKit={
       var txt=items.length?('團員章進階：'+items.join('、')):'全年小童軍集會參與（出席 '+Track.attCount(m)+' 次）';
       return (i?'<div class="pbreak"></div>':'')+Kit.printCert(m.n,txt);
     }).join('');
+  },
+
+  /* 12a. 草蜢跳格：實體九宮格地貼 + 玩法卡 */
+  renderFloorGrid:function(){
+    var POS=['左上','中上','右上','左中','正中','右中','左下','中下','右下'];
+    return '<div class="a4-sheet floor-grid-sheet">'+
+      '<div class="print-header-simple"><span>小童軍訓練教材套包 11</span> <b>🦗 草蜢跳格・實體九宮格地貼（1–9 號）</b></div>'+
+      '<div class="print-cut-notice">✂️ 兩種用法：① 直接影印放大成 A3／A2，每格約 60×60 厘米貼地；② 沿虛線剪開 9 格，每格貼喺地上（格距 10 厘米）。號碼要同 APP 畫面一樣：由左上 1 數到右下 9。</div>'+
+      '<div class="floor-nine">'+[0,1,2,3,4,5,6,7,8].map(function(i){
+        return '<div class="fn-cell"><span class="fn-no">'+(i+1)+'</span><span class="fn-pos">'+POS[i]+'</span></div>'}).join('')+'</div>'+
+      '<div class="p-note" style="margin-top:10px">💡 冇打印機？用膠紙／粉筆喺地貼九個格，每格入面用馬克筆寫大號 1–9 就得（10 分鐘搞掂，玩完可以撕走）。</div>'+
+      '<div class="p-foot">旅團：____________　日期：____________　© 2026 Scout System</div>'+
+    '</div>'+
+    '<div class="pbreak"></div>'+
+    '<div class="a4-sheet floor-grid-sheet">'+
+      '<div class="print-header-simple"><span>小童軍訓練教材套包 11</span> <b>🦗 草蜢跳格・領袖玩法卡</b></div>'+
+      '<div class="print-section"><div class="p-sec-title">🧭 點樣帶（螢幕叫位・小朋友用腳跳）</div>'+
+        '<table class="print-table"><tbody>'+
+        '<tr><td class="ck-no">1</td><td><b>貼好九宮格</b>：每格約 60×60 厘米、格距 10 厘米；同螢幕一樣由左上 1 數到右下 9。</td></tr>'+
+        '<tr><td class="ck-no">2</td><td><b>領袖示範一次</b>：聽「幾號・邊個位」→ 跳上去 → 雙腳站定；其他人喺格外一齊數拍子。</td></tr>'+
+        '<tr><td class="ck-no">3</td><td><b>開 APP 叫格</b>：🎮活動 →「草蜢跳格」→ 揀每格限時（2–5 秒）同回合數 → 撳「▶ 叫格」。</td></tr>'+
+        '<tr><td class="ck-no">4</td><td><b>記分</b>：時間到撳「✓ 站到咗 +1」或「✗ 未去到」；分組玩就每格輪一隊。</td></tr>'+
+        '</tbody></table></div>'+
+      '<div class="print-section"><div class="p-sec-title">⏱️ 限時點揀（4–7 歲實測）</div>'+
+        '<table class="print-table"><tbody>'+
+        '<tr><td><b>5 秒</b></td><td>第一次玩、4 歲、或者場地大（格離起步位遠）</td></tr>'+
+        '<tr><td><b>3 秒</b></td><td>標準：玩過一輪之後用呢個</td></tr>'+
+        '<tr><td><b>2 秒</b></td><td>挑戰版：6–7 歲、已經熟晒先玩，唔好一開始就用</td></tr>'+
+        '</tbody></table></div>'+
+      '<div class="print-section"><div class="p-sec-title">🔀 三種變化（同一個九宮格玩成場）</div>'+
+        '<table class="print-table"><tbody>'+
+        '<tr><td><b>① 全體一齊跳</b></td><td>所有人一齊跳去叫到嘅格（唔計分，純消耗體力）—人多、場地細就用呢個。</td></tr>'+
+        '<tr><td><b>② 分組接力</b></td><td>每組派一人企起步線，叫格後跑去跳上；站到 +1，輪流落場。</td></tr>'+
+        '<tr><td><b>③ 草蜢指令版</b></td><td>叫格時加一個動作：「3 號・單腳企」「7 號・蹲低」「5 號・轉身」—聽指令先至跳。</td></tr>'+
+        '</tbody></table></div>'+
+      '<div class="print-section"><div class="p-sec-title">🛡️ 安全（貼地之前讀一次）</div>'+
+        '<div class="p-para">一次只一組入格；跳前睇清楚腳下；著波鞋、地面乾爽；聽到「停」即刻企定唔好再跳。地貼用美紋膠紙，撕走唔留膠；玩完即刻撕走，避免下次集會有人絆倒。開會前撳 APP「🧭 檢查表」→「🦗 地貼／體能遊戲前檢查表」逐項剔。</div></div>'+
+      '<div class="p-foot">旅團：____________　日期：____________　負責領袖：____________　© 2026 Scout System</div>'+
+    '</div>';
+  },
+
+  /* 12b. 實體遊戲場地圖卡：四角角牌・分邊牌・回收桶・月亮靶 */
+  renderCornerSigns:function(){
+    var signs=[
+      {c:'cc-a',ic:'A',s:'第 1 個角・貼牆',d:'問答擂台四角搶答'},
+      {c:'cc-b',ic:'B',s:'第 2 個角・貼牆',d:'問答擂台四角搶答'},
+      {c:'cc-c',ic:'C',s:'第 3 個角・貼牆',d:'問答擂台四角搶答'},
+      {c:'cc-d',ic:'D',s:'第 4 個角・貼牆',d:'問答擂台四角搶答'}
+    ];
+    return '<div class="a4-sheet corner-sheet">'+
+      '<div class="print-header-simple"><span>小童軍訓練教材套包 12</span> <b>🅰️ 四角搶答角牌（A／B／C／D）</b></div>'+
+      '<div class="print-cut-notice">✂️ 沿虛線剪開，貼喺禮堂四角（離地 1 米內，小朋友望到）。貼完行一次，确认四角都望得到、角與角之間有行人路。</div>'+
+      '<div class="cards-cut-grid col-2 big-sign">'+signs.map(function(x){
+        return '<div class="cut-card sign-card '+x.c+'"><div class="sign-letter">'+x.ic+'</div><div class="sign-sub">'+x.s+'</div></div>'}).join('')+'</div>'+
+      '<div class="p-note">玩法：領袖出題 → 小朋友行去自己揀嘅角企好 → 數 10 聲 → 領袖撳「✅ 揭曉答案」→ 企啱嘅全體拍手。冇打印機就用粉筆喺地寫 A B C D。</div>'+
+    '</div>'+
+    '<div class="pbreak"></div>'+
+    '<div class="a4-sheet corner-sheet">'+
+      '<div class="print-header-simple"><span>小童軍訓練教材套包 12</span> <b>👍👎 分邊牌・♻️ 回收桶標籤・🌕 射月靶</b></div>'+
+      '<div class="cards-cut-grid col-2 big-sign">'+
+        '<div class="cut-card sign-card sign-yes"><div class="sign-letter">👍</div><div class="sign-sub">啱・好行為（貼左邊牆）</div></div>'+
+        '<div class="cut-card sign-card sign-no"><div class="sign-letter">👎</div><div class="sign-sub">錯・唔應該（貼右邊牆）</div></div>'+
+        '<div class="cut-card sign-card sign-blue"><div class="sign-letter">🟦</div><div class="sign-sub">藍桶・廢紙</div></div>'+
+        '<div class="cut-card sign-card sign-yellow"><div class="sign-letter">🟨</div><div class="sign-sub">黃桶・金屬鋁罐</div></div>'+
+        '<div class="cut-card sign-card sign-green"><div class="sign-letter">🟩</div><div class="sign-sub">綠／啡桶・塑膠</div></div>'+
+        '<div class="cut-card sign-card sign-grey"><div class="sign-letter">⬛</div><div class="sign-sub">垃圾筒・不可回收</div></div>'+
+        '<div class="cut-card sign-card sign-moon"><div class="sign-letter">🌕</div><div class="sign-sub">射月靶・掛牆或放枱</div></div>'+
+        '<div class="cut-card sign-card sign-line"><div class="sign-letter">▬</div><div class="sign-sub">投擲線・貼地（腳留喺線後）</div></div>'+
+      '</div>'+
+      '<div class="p-note">👍👎 用法：讀出個案 → 小朋友行去自己覺得嗰邊 → 領袖撳「⚖️ 宣判」→ 請一位講點解。回收桶標籤貼喺真回收箱或紙箱上，四角各一個。射月靶掛牆，投擲線離靶 1.5–2 米。</div>'+
+      '<div class="p-foot">旅團：____________　日期：____________　© 2026 Scout System</div>'+
+    '</div>';
+  },
+
+  /* 12c. 互動遊戲帶領卡：由 Lead.playMeta 自動生成（同 APP 畫面同一份資料） */
+  renderGameCards:function(){
+    var keys=Object.keys(Lead.playMeta);
+    var half=Math.ceil(keys.length/2);
+    var card=function(k){
+      var m=Lead.playMeta[k];
+      return '<div class="play-print-card">'+
+        '<div class="ppc-h"><span class="ppc-ic">'+m.ic+'</span><b>'+esc(m.n)+'</b><span class="ppc-kind">'+esc(m.kind)+'</span></div>'+
+        '<div class="ppc-row"><b>🧒 小朋友做乜</b>'+esc(m.kids)+'</div>'+
+        '<div class="ppc-row"><b>🧑‍🏫 領袖撳乜</b>'+esc(m.lead)+'</div>'+
+        '<div class="ppc-row"><b>🧺 物資／場地</b>'+esc(m.mats)+'</div>'+
+        '<div class="ppc-row"><b>🛡️ 安全</b>'+esc(m.safe)+'</div>'+
+      '</div>';
+    };
+    var pages='';
+    for(var i=0;i<keys.length;i+=2){
+      pages+=(i?'<div class="pbreak"></div>':'')+
+        '<div class="a4-sheet game-card-sheet">'+
+        '<div class="print-header-simple"><span>小童軍訓練教材套包 13</span> <b>🎮 互動遊戲帶領卡（第 '+(Math.floor(i/2)+1)+' 頁）</b></div>'+
+        '<div class="print-cut-notice">✂️ 沿虛線剪開，每張一個遊戲。螢幕只係出題・叫位・計時・計分；遊戲本身係小朋友用身體玩。</div>'+
+        card(keys[i])+(keys[i+1]?card(keys[i+1]):'')+
+        '</div>';
+    }
+    return pages;
   },
 
   renderLessonPlan:function(tid){
