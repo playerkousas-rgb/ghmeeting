@@ -1644,3 +1644,97 @@ button.lnk:hover{color:var(--ord)}
 .play-print-card .ppc-kind{margin-left:auto;font-size:8pt;background:#eee;border-radius:8px;padding:2px 7px}
 .play-print-card .ppc-row{font-size:8.5pt;line-height:1.45;padding:2px 0}
 .play-print-card .ppc-row b{color:#2e7d32;margin-right:5px}
+
+/* ══ v2.8：📍 場地設置教學 ＋ 🧒 4–7 歲手工控場層 ══ */
+.vn-hint{margin:0 0 8px;background:#fffdf2;border:2px solid #ffd54a;border-left:8px solid #f2a81d;
+  border-radius:12px;padding:8px 10px;font-size:12.5px;line-height:1.55;color:#4a3600}
+.vn-hint b{color:#7a4d00}
+.vn-hint .lnk{margin-left:4px;font-size:11.5px}
+.lead-bar .vn-hint{margin:6px 10px 0;font-size:11.5px;border-radius:10px;padding:6px 8px}
+.lead-bar .cf-hint{background:#fff4fb;border-color:#f2a8d8;border-left-color:#d6469a;color:#5c1345}
+.lead-bar .cf-hint b{color:#8a1663}
+.vz,.vl,.vr,.vm-card{border-radius:14px;border:2px solid #e6e2d5;background:#fff;padding:10px 12px;margin:8px 0}
+.vz{background:#fbfaff;border-color:#ddd6f5}
+.vn-head{background:linear-gradient(135deg,#1b3a5c,#2f6ea8);color:#fff;border-radius:16px;padding:14px;margin:10px}
+.vn-head h3{margin:0 0 4px;font-size:17px}
+.vn-head p{margin:0;font-size:12.5px;opacity:.94;line-height:1.6}
+.vn-sec{background:#fff;border:2px solid #e6e2d5;border-radius:14px;padding:12px;margin:10px}
+.vn-sec h4{margin:0 0 8px;font-size:14.5px}
+.vn-sec .vn-sub{margin:0 0 8px;font-size:12px;color:#6b6252;line-height:1.55}
+.vz-row{display:grid;grid-template-columns:100px 1fr;gap:8px;padding:7px 0;border-top:1px dashed #e6e2d5;font-size:12.5px}
+.vz-row:first-child{border-top:none}
+.vz-row b{color:#2f4a8a}
+.vz-row small{display:block;color:#6b6252;line-height:1.5}
+.vz-bad{display:block;margin-top:3px;color:#a03020;font-size:11.5px}
+.vl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px}
+.vl-card{border:2px solid #e6e2d5;border-radius:12px;padding:8px;background:#fff}
+.vl-card svg{width:100%;height:auto;display:block;border-radius:8px;background:#fff}
+.vl-card b{display:block;font-size:12.5px;margin:4px 0 2px}
+.vl-card small{display:block;font-size:11px;color:#6b6252;line-height:1.5}
+.vl-card .vl-use{display:block;margin-top:4px;font-size:11px;color:#2f4a8a}
+.vtl{counter-reset:vstep}
+.vtl-i{display:grid;grid-template-columns:56px 1fr;gap:8px;padding:8px 0;border-top:1px dashed #e6e2d5}
+.vtl-i:first-child{border-top:none}
+.vtl-t{text-align:center;background:#eef5ff;border:2px solid #bcd4f5;border-radius:10px;
+  font-weight:800;color:#1b3a5c;font-size:12px;padding:6px 2px;line-height:1.3;align-self:start}
+.vtl-i b{font-size:13px}
+.vtl-i p{margin:2px 0;font-size:12px;line-height:1.6;color:#3b3527}
+.vtl-say{background:#fffaf0;border-left:4px solid #f2a81d;border-radius:6px;padding:4px 7px;
+  font-size:11.5px;color:#7a4d00;line-height:1.55}
+.vr-i{padding:8px 0;border-top:1px dashed #e6e2d5}
+.vr-i:first-child{border-top:none}
+.vr-i b{font-size:13px}
+.vr-i p{margin:3px 0;font-size:12px;line-height:1.6}
+.vr-do{color:#14603a}.vr-dont{color:#a03020}
+.vr-drill{background:#f2fbf6;border-left:4px solid #2f9e6a;border-radius:6px;padding:4px 7px;
+  font-size:11.5px;color:#14603a;line-height:1.55}
+.vm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px}
+.vm-i b{display:block;font-size:12.5px;margin-bottom:3px}
+.vm-i p{margin:0;font-size:11.8px;line-height:1.6;color:#3b3527}
+.vm-tag{display:inline-block;background:#eef5ff;border:1px solid #bcd4f5;border-radius:20px;
+  padding:1px 8px;font-size:10.5px;color:#1b3a5c;margin:0 4px 4px 0}
+.vx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px}
+.vx-i{background:#fff8f4;border:2px solid #f5cdb4;border-radius:12px;padding:8px}
+.vx-i b{display:block;font-size:12.5px;color:#8a3a10;margin-bottom:3px}
+.vx-i p{margin:0;font-size:11.8px;line-height:1.6}
+.vn-need b{color:#7a4d00}
+.vn-need .pill{background:#fff;border:1px solid #e6c766;color:#7a4d00;font-size:11px}
+.vn-print-btn{margin:6px 0 0}
+.venue-sheet .vz-row{font-size:8.4pt}
+.venue-sheet .vl-card svg{max-height:150px}
+/* 🧒 手工控場層 */
+.cf-ctrl{background:#fff4fb;border:2px solid #f2a8d8;border-radius:14px;padding:10px 12px;margin:10px 0}
+.cf-ctrl-t{font-weight:800;color:#8a1663;font-size:13.5px;margin-bottom:6px}
+.cf-ctrl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px}
+.cc-item{background:#fff;border:1px solid #f2c8e4;border-radius:10px;padding:7px 8px}
+.cc-item b{font-size:12.5px;color:#8a1663;display:block;margin-bottom:2px}
+.cc-item p{margin:0;font-size:11.6px;line-height:1.6;color:#3b3527}
+.cc-say{margin-top:4px;background:#fffaf0;border-left:4px solid #f2a81d;border-radius:6px;
+  padding:3px 6px;font-size:11.2px;color:#7a4d00;line-height:1.5}
+.cf-age{margin-top:10px;border-top:2px dashed #f2a8d8;padding-top:8px}
+.cf-age-t{font-weight:800;font-size:12.5px;color:#8a1663;margin-bottom:6px}
+.cf-age-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px}
+.cfa{border-radius:10px;padding:7px 9px;border:2px solid #e6e2d5;background:#fff}
+.cfa b{display:block;font-size:12.5px;margin-bottom:3px}
+.cfa ol{margin:0;padding-left:18px}
+.cfa li{font-size:11.6px;line-height:1.6;margin-bottom:2px}
+.cfa45{background:#eef7ff;border-color:#bcd4f5}
+.cfa45 b{color:#1b3a5c}
+.cfa67{background:#f2fbf6;border-color:#bfe6cd}
+.cfa67 b{color:#14603a}
+.cf-stop{margin-top:8px;background:#fffaf0;border-left:4px solid #f2a81d;border-radius:8px;
+  padding:6px 8px;font-size:11.8px;color:#7a4d00;line-height:1.9}
+.st-pill{display:inline-block;background:#fff;border:1px solid #e6c766;border-radius:20px;
+  padding:1px 8px;font-size:11px;margin:0 4px 2px 0}
+.cs-stop{margin:6px auto 0;max-width:760px;background:rgba(0,0,0,.35);border-radius:12px;
+  padding:7px 10px;font-size:15px;line-height:1.9;color:#fff}
+.cs-stop b{color:#ffd54a}
+.cs-stop .st-pill{background:rgba(255,255,255,.92);color:#7a4d00;border-color:#ffd54a;font-size:13px}
+.cm-ctrl{margin-top:5px;font-size:11.4px;line-height:1.55;color:#8a1663;
+  background:#fff4fb;border-left:4px solid #d6469a;border-radius:6px;padding:4px 7px}
+.cm-btns{display:flex;flex-direction:column;gap:5px;align-items:stretch}
+.craft-ctrl-sheet .print-table td{font-size:8.2pt}
+@media print{
+  .vn-hint,.cf-ctrl{break-inside:avoid}
+  .craft-ctrl-sheet .print-table tr{break-inside:avoid}
+}

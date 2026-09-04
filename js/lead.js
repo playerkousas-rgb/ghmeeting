@@ -295,6 +295,7 @@ var Lead={
        '</div>'+
        '<button class="lead-top-pill" onclick="Lead.quietQuick()" title="5秒安靜">🤫 安靜</button>'+
        '<button class="lead-top-pill" onclick="Sfx.whistle();toast(\'🎺 嗶————！集合！\')" title="吹哨">🎺 哨子</button>'+
+       '<button class="lead-top-pill" onclick="Venue.open()" title="場地設置：分區・界線・規矩">📍 場地</button>'+
        '<button class="lead-top-pill" onclick="Kit.openCheckFor(Lead.S.meet)" title="今場執行檢查表">🧭 檢查表</button>'+
        '<button class="lead-top-pill" onclick="Lead.addMiniGame()" title="加插遊戲">➕ 遊戲</button>'+
        '<button onclick="Lead.tools()" title="工具箱">🧰</button>'+
@@ -302,7 +303,7 @@ var Lead={
      '<div class="lead-stage" id="stageArea"><span class="stg-type">'+st.t+' ・ 環節 '+(S.idx+1)+'/'+S.meet.stages.length+'</span>'+
        '<h1>'+esc(st.n)+'</h1><div class="kids" id="kidsArea">'+Lead.screen(st)+'</div></div>'+
      '<div class="lead-bar"><div class="row"><div class="stagepill">'+pills+'</div></div>'+
-       '<div class="row"><div style="flex:1;min-width:0"><span class="cue-label">領袖而家做'+(function(){var c=Kit.checkFor(st);return c?' <button class="lnk cue-chk" onclick="Kit.openCheck(\''+c.key+'\',\''+((Lead.S.meet&&Lead.S.meet.id)||'')+'\')">'+c.ic+' '+esc(c.n)+'</button>':' <button class="lnk cue-chk" onclick="Kit.hubOpen()">🧰 點預備</button>'})()+'</span><div class="now">'+esc(g.lead)+'</div><div class="leader-action">'+esc(g.watch)+'</div><div class="script">🎤 '+(esc(st.script||g.say)||'—')+'</div></div>'+
+       '<div class="row"><div style="flex:1;min-width:0"><span class="cue-label">領袖而家做'+(function(){var c=Kit.checkFor(st);return c?' <button class="lnk cue-chk" onclick="Kit.openCheck(\''+c.key+'\',\''+((Lead.S.meet&&Lead.S.meet.id)||'')+'\')">'+c.ic+' '+esc(c.n)+'</button>':' <button class="lnk cue-chk" onclick="Kit.hubOpen()">🧰 點預備</button>'})()+'</span>'+(typeof Venue!=='undefined'?Venue.stageHint(st):'')+(typeof Craft!=='undefined'?Craft.ctrlHint(st):'')+'<div class="now">'+esc(g.lead)+'</div><div class="leader-action">'+esc(g.watch)+'</div><div class="script">🎤 '+(esc(st.script||g.say)||'—')+'</div></div>'+
        '<div class="timer" id="tmr" onclick="Lead.toggleTmr()">'+Lead.fmt(S.left)+'</div></div>'+
        '<div class="row"><button class="btn sm ghost" onclick="Lead.prev()" '+(S.idx?'':'disabled style="opacity:.4"')+'>◀ 上一個</button>'+
        '<button class="btn sm" onclick="Lead.toggleTmr()" id="tmrBtn">▶ 開始計時</button>'+
@@ -428,7 +429,8 @@ Lead.scr={
     var g=Guide.forStage(st);
     var mats=(st.mats||[]).length?'<div class="mats-bar" style="justify-content:center"><b>🧺 實物物資（選填）：</b>'+st.mats.map(function(m){return '<span class="pill">'+esc(m)+'</span>'}).join('')+'</div>':'';
     var craft=(typeof Craft!=='undefined')?Craft.screenArt(st):'';
-    return '<div class="digital-tool-bar"><b>💡 冇自備道具？</b> 唔使驚！呢啲遊戲用身體玩，螢幕只係幫你出題・叫位・計分：'+
+    var vn=(typeof Venue!=='undefined')?(Venue.stageHint(st)+(typeof Craft!=='undefined'?Craft.ctrlHint(st):'')):'';
+    return vn+'<div class="digital-tool-bar"><b>💡 冇自備道具？</b> 唔使驚！呢啲遊戲用身體玩，螢幕只係幫你出題・叫位・計分：'+
       '<div class="btns" style="justify-content:center;margin-top:6px">'+
         '<button class="btn sm" onclick="Lead.switchToGame(\'catch\')">🦗 草蜢跳格（九宮格）</button>'+
         '<button class="btn sm" onclick="Lead.switchToGame(\'traffic\')">🚦 紅綠燈</button>'+

@@ -620,6 +620,7 @@ var Craft={
       '<div class="craft-block"><h4>🎤 帶班時點拆（呢三步先係現場用）</h4>'+
         '<div class="craft-teach">'+c.teach.map(function(x){return '<div class="ct-step"><span class="ct-no">'+esc(x[0])+'</span><span class="ct-ic">'+x[1]+'</span><div><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div></div>'}).join('')+'</div>'+
         '<div class="say-box"><b>🗣️ 可以照讀</b>'+esc(c.say)+'</div></div>'+
+      this.ctrlHtml(c.k)+
       '<div class="craft-two">'+
         '<div class="craft-block warn"><h4>⚠️ 最易出事・即刻補救</h4><div class="craft-fail">'+c.fail.map(function(x){return '<div><b>'+esc(x[0])+'</b><span>→ '+esc(x[1])+'</span></div>'}).join('')+'</div></div>'+
         '<div class="craft-block life"><h4>🛟 真係做唔掂嘅後備</h4><div class="craft-t">'+esc(c.planb)+'</div><div class="craft-t"><b>⏱️ 時間點剪</b>'+esc(c.cut)+'</div></div>'+
@@ -628,7 +629,8 @@ var Craft={
         '<div class="craft-block win"><h4>👏 收結（最緊要呢五分鐘）</h4><div class="craft-t">'+esc(c.win)+'</div></div>'+
         '<div class="craft-block safe"><h4>🛡️ 安全</h4><div class="craft-t">'+esc(c.safe)+'</div></div>'+
       '</div>'+
-      (opts.plain?'':'<div class="btns" style="margin-top:12px"><button class="btn sm gr" onclick="Modal.close();PrintKit.openModal(\'craft-coach\',\''+c.k+'\')">🖨️ 打印呢張 A4 自學卡</button>'+(opts.inMeet?'<button class="btn sm" onclick="Craft.open(\''+c.k+'\')">📚 睇完整卡</button>':'')+'<button class="btn sm ghost" onclick="Modal.close();App.go(\'#book\');setTimeout(function(){HB.t(\'craft\')},60)">📖 手冊・手工篇</button></div>')+
+      (opts.plain?'':'<div class="btns" style="margin-top:12px"><button class="btn sm gr" onclick="Modal.close();PrintKit.openModal(\'craft-coach\',\''+c.k+'\')">🖨️ 打印呢張 A4 自學卡</button>'+
+        '<button class="btn sm" onclick="Modal.close();PrintKit.openModal(\'craft-ctrl\')">🧒 打印 4–7 歲控場卡</button>'+(opts.inMeet?'<button class="btn sm" onclick="Craft.open(\''+c.k+'\')">📚 睇完整卡</button>':'')+'<button class="btn sm ghost" onclick="Modal.close();App.go(\'#book\');setTimeout(function(){HB.t(\'craft\')},60)">📖 手冊・手工篇</button></div>')+
       '</div>';
     return g;
   },
@@ -643,8 +645,10 @@ var Craft={
     return '<div class="craft-mini"><span class="cm-art">'+this.svg(c.k)+'</span>'+
       '<div class="cm-txt"><b>'+c.ic+' 自學卡：'+esc(c.n)+'</b>'+
       '<small>成品示意圖＋'+c.learn.length+' 步拆解・'+c.fail.length+' 個常錯位・一個萬用後備。你未做過都跟得住。</small>'+
-      '<div class="cm-look">👀 '+esc(c.look)+'</div></div>'+
-      '<button class="btn sm gr" onclick="Craft.open(\''+c.k+'\')">📚 跟我自學</button></div>';
+      '<div class="cm-look">👀 '+esc(c.look)+'</div>'+
+      '<div class="cm-ctrl">🧒 <b>4–7 歲控場：</b>一人一格派料・一步一停（做完舉手）・要嘢舉手唔好起身・做完嘅人即刻加任務。你幫手嘅位：'+esc((this.kid[c.k]||this.kid.any).adult)+'</div></div>'+
+      '<div class="cm-btns"><button class="btn sm gr" onclick="Craft.open(\''+c.k+'\')">📚 跟我自學</button>'+
+      '<button class="btn sm" onclick="Modal.close();PrintKit.openModal(\'craft-ctrl\')">🧒 控場卡</button></div></div>';
   },
   /* 投影用：俾小朋友睇到成品（解決「先睇成品」但領袖冇成品） */
   screenArt:function(st){
@@ -652,6 +656,7 @@ var Craft={
     return '<div class="craft-screen"><div class="cs-art">'+this.svg(c.k)+'</div>'+
       '<div class="cs-cap">今日成品係咁樣：<b>'+esc(c.n)+'</b>・唔使一樣，做到呢個模樣就成功！</div>'+
       '<div class="cs-tools">'+['✂️ 只用安全剪刀','🙋 做完一步舉手','🎨 唔使一樣先最似自己'].map(function(x){return '<span class="pill">'+x+'</span>'}).join('')+'</div>'+
+      '<div class="cs-stop">⏸️ <b>一步一停：</b>'+((this.kid[c.k]||this.kid.any).stop).map(function(x,i){return '<span class="st-pill">'+(i+1)+'. '+x+'</span>'}).join('')+'</div>'+
       '<button class="btn sm gr cs-open" onclick="Craft.open(\''+c.k+'\')">📚 領袖自學卡（成品圖・逐步拆解・後備版）</button></div>';
   },
 
@@ -695,6 +700,173 @@ var Craft={
       '<div><div class="p-sec-title">🛟 後備・時間點剪</div><div class="p-para tiny">'+esc(c.planb)+'<br><b>剪時間：</b>'+esc(c.cut)+'</div></div></div>'+
       '<div class="print-two"><div><div class="p-sec-title">🎤 照讀口令</div><div class="p-para tiny">'+esc(c.say)+'</div></div>'+
       '<div><div class="p-sec-title">🛡️ 安全／👏 收結</div><div class="p-para tiny">'+esc(c.safe)+'<br>'+esc(c.win)+'</div></div></div>'+
+      '<div class="print-section"><div class="p-sec-title">🧒 4–7 歲控場（一次只講一個動作）</div><div class="p-para tiny">'+
+        this.ctrl.map(function(cc,i){return '<b>'+(i+1)+'. '+cc.t+'</b>：'+cc.d}).join('<br>')+'</div></div>'+
+      (function(){var kid=(Craft.kid[c.k]||Craft.kid.any);
+        return '<div class="print-section"><div class="p-sec-title">👶 年齡分工（'+kid.adult+'）</div><table class="print-table"><tbody>'+
+          '<tr><td style="width:14%"><b>4–5 歲</b><br>你做多啲</td><td style="font-size:8pt">'+kid.a45.map(function(x){return '・'+x}).join('<br>')+'</td></tr>'+
+          '<tr><td><b>6–7 歲</b><br>佢做多啲</td><td style="font-size:8pt">'+kid.a67.map(function(x){return '・'+x}).join('<br>')+'</td></tr>'+
+          '</tbody></table><div class="p-para tiny" style="margin-top:4px"><b>⏸️ 停頓位：</b>'+kid.stop.map(function(x,i){return (i+1)+'. '+x}).join('　')+'</div></div>'})()+
       '<div class="p-foot">© 2026 Scout System・非官方輔助工具・一切以香港童軍總會最新公佈為準</div></div>';
   }
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   🧒 4–7 歲控場層：小童軍真係乜都唔識，仲好難控制。
+   所以每张手工卡除咗「點做」，一定要有多一份「點管」：
+   派料法・一步一停・舉手先攞・快做完點算・喊唔肯做點算・收工。
+   ═══════════════════════════════════════════════════════════════════ */
+Craft.ctrl=[
+  {ic:'🪑',t:'開工前 3 分鐘・未派料先講',
+   d:'全部人坐好，「手放膝頭・望住我」。你舉起成品，由第一張枱行到最後一張枱，等每個人都近距離睇过一次。呢 3 分鐘係全場最重要嘅 3 分鐘：佢哋睇到成品先會肯做。',
+   say:'「今日我哋整呢個（舉起成品行一圈）。未叫開始，手唔好掂枱上嘅嘢。聽唔聽到？——手放膝頭。」'},
+  {ic:'🍱',t:'派料：一人一格，你派',
+   d:'材料開會前已經分好：一人一個紙碟／膠盒，入面就係佢嗰份。<b>千祈唔好將所有材料一次過倒落枱中間</b> — 一倒就一定搶、一定撕爛。工具（剪刀、膠水、顏料）放「大人一檔」，由你派。派完先至講第一步。',
+   say:'「呢碟係你嘅，其他人唔好掂。膠水喺我度，要嘅時候舉手。」'},
+  {ic:'✋',t:'一步一停：一次只講一個動作',
+   d:'4–7 歲聽唔到三句指令。講一步 →「做完嘅舉手」→ 你企高啲睇一圈 → 先至講下一步。停止訊號用「手離枱・望住我」，配一聲短 beep；練两次先至開始做。',
+   say:'「而家只做一件事：摺呢一條邊。做完嘅舉手等我。」'},
+  {ic:'🙋',t:'要嘢就舉手，唔准起身',
+   d:'要膠水／貼紙／多一張紙：舉手，你行過去。唔准起身、唔准隔籬枱攞。你行過去嗰陣順便睇佢做到邊，一次過幫 2–3 個。',
+   say:'「要膠水嘅舉手，我過嚟。起身去攞嘅，就要等最後。」'},
+  {ic:'⚡',t:'快做完嘅人：即刻加任務',
+   d:'佢一定快過你。做完嘅人唔好叫佢「等一等」— 等就係搞事嘅開始。即刻俾「加一任務」：加貼紙、畫背景、幫隔籬黐、將餘料執入膠盒。',
+   say:'「做完嘅做加一任務：喺背面畫你自己個名，再幫隔籬黐。」'},
+  {ic:'🥺',t:'喊／唔肯做：唔好迫',
+   d:'俾簡化版（貼紙版、掌印版、你黐好佢貼）；或者請佢做「小助手」（派貼紙、睇住膠水、幫你數數）。要靜就去冷靜位坐一坐，<b>唔好罰佢企喺人前</b>，越罰越嘈。返到座位即刻讚一件具體嘅事。',
+   say:'「唔想整都得，你幫我派貼紙好唔好？我而家好需要一個幫手。」'},
+  {ic:'⚔️',t:'搶嘢／爭執：即刻分兩份',
+   d:'即刻將材料分開，「呢份係你嘅、呢份係你嘅」，兩份都夠用。唔好問「邊個先開始」— 一問一定嘈。分完即刻俾佢哋做嘢，唔好長篇道理。',
+   say:'「一人一份，呢份係你嘅。而家一齊黐。」'},
+  {ic:'🧹',t:'收工 3 分鐘：手離枱・數五下',
+   d:'「手離枱」→ 數 5 下 → 逐枱收（唔好全班一齊湧去倒垃圾）。垃圾袋由你行一圈。未完成嘅放入「完成箱」，下次繼續 — 唔好同佢講「你未完成」。',
+   say:'「手離枱，一、二、三、四、五。第一張枱執好舉手，我先過嚟。」'}
+];
+/* 每个手工嘅年齡分工：4–5 歲你做多啲，6–7 歲佢做多啲 */
+Craft.kid={
+  lantern:{adult:'你剪利是封邊、你黐第一條邊、你穿繩同打結',
+    stop:['摺好四張（停）','黐成一個筒（停）','貼頂底（停）','穿繩由你做完'],
+    a45:['你剪好晒四張利是封，佢只負責黐貼紙／畫花','你黐第一條邊做示範，佢黐其餘三條','頂底圓片你黐好，佢負責揀色同指位','穿繩、打結一定由你做（繩同結對 4 歲太難）'],
+    a67:['佢自己黐四條邊，你只幫手按住','頂底圓片佢自己黐，你睇位','佢自己穿繩，你教打結嘅最後一拉','做完加一任務：畫燈籠花紋／寫自己個名']},
+  nametag:{adult:'你剪外型、你穿繩／別針、你寫名（佢寫唔到）',
+    stop:['揀色（停）','貼底（停）','畫／貼名（停）','穿繩由你做完'],
+    a45:['你剪好外型，佢貼貼紙做邊','名由你寫，佢負責喺上面畫自己','佢揀一條色帶，你幫佢穿','別針由你黐（4–5 歲唔好俾佢自己黐）'],
+    a67:['佢自己剪外型（用圓頭剪，你喺旁邊）','佢自己寫名，寫歪都唔好改','佢自己穿繩，你只教打結','加一任務：背面寫「我最鍾意…」一句']},
+  portrait:{adult:'你畫輪廓虛線、你黐毛線／碎布',
+    stop:['畫面型（停）','貼五官（停）','加頭髮（停）','寫名由你幫手'],
+    a45:['你畫好面型虛線，佢跟住塗色','五官用預剪貼紙，佢只負責貼','頭髮用毛線，你塗膠水佢放毛線','唔好要求「似」，似唔似都讚'],
+    a67:['佢自己畫面型（圓形就得）','佢自己畫五官，你只示範一次','頭髮可以畫或者貼毛線','加一任務：畫一樣自己最鍾意嘅嘢喺旁邊']},
+  card:{adult:'你對摺、你剪、你寫賀詞',
+    stop:['對摺（停）','貼前面（停）','裡面畫／寫（停）'],
+    a45:['你對摺好，佢貼貼紙做封面','裡面用掌印／指印畫，唔使畫畫','賀詞你寫，佢畫一個太陽','佢負責揀俾邊個'],
+    a67:['佢自己對摺','封面自己畫或者貼碎紙','裡面自己寫一句（寫歪都得）','加一任務：加一個立體小心形']},
+  popup:{adult:'你剪兩刀（ popup 結構）、你摺內頁',
+    stop:['對摺（停）','你剪兩刀（停）','推入去（停）','貼圖案（停）'],
+    a45:['剪同推入去做晒由你完成，佢只負責貼圖案','佢揀圖案、你黐','佢負責喺空白位畫花','唔好俾 4 歲用剪刀剪結構'],
+    a67:['你示範剪兩刀，佢自己剪（圓頭剪）','佢自己推入去，你幫手按實','佢自己貼圖案','加一任務：加第二層彈出']},
+  fu:{adult:'你摺紙、你黐邊、你寫「福」字示範',
+    stop:['摺成菱形（停）','貼邊（停）','寫字（停）','貼吊繩（停）'],
+    a45:['你摺好菱形，佢貼金邊貼紙','「福」字你用鉛筆寫淡，佢跟住塗','佢負責貼吊繩（你黐）','唔好要求字正，塗滿就讚'],
+    a67:['佢自己摺菱形','佢自己寫「福」字，寫歪唔好改','佢自己黐吊繩','加一任務：加一句新年說話']},
+  egg:{adult:'你吹蛋／準備蛋殼、你控制顏料份量',
+    stop:['揀底色（停）','塗底色（停・等乾）','畫花紋（停）','放蛋托（停）'],
+    a45:['用紙蛋／膠蛋代替真蛋（唔會碎）','佢用大筆塗底色，一次一色','花紋用貼紙，唔使畫','你控制顏料份量（一碟一色，少少就得）'],
+    a67:['真蛋殼可以用（你吹好、洗淨、瀝乾）','佢自己塗底色＋畫花紋','可以用棉花棒點畫','加一任務：幫自己個蛋改個名']},
+  junk:{adult:'你剪紙盒開口、你用熱膠／強力膠',
+    stop:['揀盒（停）','貼大件（停）','加細節（停）','加名（停）'],
+    a45:['你剪好開口，佢貼紙／貼貼紙做外皮','大件由你用膠黐，佢指位','細節（掣、輪）用貼紙','唔好俾 4 歲掂剪刀剪紙盒（紙盒厚，會滑）'],
+    a67:['佢自己剪紙盒（你按住）','佢自己黐大件（白膠漿）','細節自己加','加一任務：幫機械人改個名同講一句佢識做咩']},
+  frame:{adult:'你黐四條雪糕棒做框、你黐吊繩',
+    stop:['排四條（停）','黐角（停）','貼裝飾（停）','你黐吊繩'],
+    a45:['你黐好框，佢貼裝飾','佢用貼紙／碎紙鋪滿','相由你放入去','吊繩你黐'],
+    a67:['佢自己黐四條（白膠漿，要等）','佢自己貼裝飾','佢自己放相','加一任務：背面寫一句送俾邊個']},
+  plane:{adult:'你摺第一、二摺（對摺＋尖角）',
+    stop:['對摺（停）','摺尖角（停）','摺翼（停）','試飛（停）'],
+    a45:['你摺好晒，佢負責畫機身','試飛由你掟，佢執','一次只俾一架喺手（多咗會互掟）','試飛區要清空，掟向牆唔好掟向人'],
+    a67:['佢自己摺，你只幫手按實摺痕','佢自己試飛','教佢調整翼：飛唔直就摺少少','加一任務：飛完量遠幾多個地磚']},
+  boat:{adult:'你摺第一摺、你控制水位',
+    stop:['對摺（停）','摺角（停）','拉開（停）','試浮（停）'],
+    a45:['你摺好，佢負責畫帆／貼貼紙','試浮用淺盤，水由你倒','一人一次試（唔好一齊倒水）','枱面鋪報紙，濕咗即刻抹'],
+    a67:['佢自己摺','佢自己試浮','教佢點解會浮：摺實、唔入水','加一任務：加一個紙人上船睇沉唔沉']},
+  mask:{adult:'你剪眼窿、你穿繩',
+    stop:['揀底色（停）','塗色（停・等乾）','你剪眼窿（停）','穿繩（停）'],
+    a45:['你剪好眼窿，佢塗色','裝飾用貼紙／碎紙','繩由你穿同打結','唔好用橡筋（勒到面），用紙繩或者紙帶'],
+    a67:['佢自己塗色＋裝飾','眼窿你剪（剪眼窿唔好俾小朋友做）','佢自己穿紙繩','加一任務：幫自己個面具改個名同講一句口頭禪']},
+  mural:{adult:'你貼長卷、你劃分每人一格',
+    stop:['分格（停）','畫自己嗰格（停）','加連接（停）','一齊睇（停）'],
+    a45:['你貼好長卷，劃好每人一格','佢只畫自己嗰格（界線要係實物：膠紙）','一人一格先至唔會爭','你負責將各格連成一個故事'],
+    a67:['佢自己畫一格','可以同人合作畫連接位','加一任務：講一句自己畫咗咩','一齊行一次睇晒全卷']},
+  promise:{adult:'你寫承诺、你黐打卡格',
+    stop:['揀一件善行（停）','貼格（停）','寫名（停）','貼雪櫃（停）'],
+    a45:['善行由你講三個選項俾佢揀','格由你黐好，佢貼貼紙','名你寫','返屋企貼雪櫃，家長負責打卡'],
+    a67:['佢自己講一件想做嘅善行','佢自己黐格','佢自己寫名','加一任務：畫一個自己做到嘅表情']},
+  any:{adult:'你示範頭兩步、你控制工具',
+    stop:['示範（停）','第一步（停）','第二步（停）','收工（停）'],
+    a45:['你開會前自己做過一次，影 4 張步驟相','現場只教一個動作','俾簡化版（貼紙／掌印）','唔好即場學即場教'],
+    a67:['佢跟你示範做一次','之後自己完成','加一任務：加一樣自己嘅嘢','坦白講「我哋一齊學」，唔好扮識']},
+  decor:{adult:'你分碎紙／貼紙、你控制膠水',
+    stop:['揀主題（停）','貼大塊（停）','加碎紙（停）','貼上牆（停）'],
+    a45:['碎紙由你分好一份一份','佢只負責貼','膠水用膠棒（唔好用液體膠）','貼上牆由你做'],
+    a67:['佢自己撕碎紙','自己貼','可以加摺紙元素','加一任務：幫成個主題改個名']}
+};
+Craft.ctrlHtml=function(k){
+  var kid=this.kid[k]||this.kid.any;
+  var h='<div class="cf-ctrl"><div class="cf-ctrl-t">🧒 4–7 歲控場法（一次一個動作・唔使佢聽得明三句）</div><div class="cf-ctrl-grid">'+
+    this.ctrl.map(function(c){
+      return '<div class="cc-item"><b>'+c.ic+' '+c.t+'</b><p>'+c.d+'</p><div class="cc-say">🎤 '+c.say+'</div></div>';
+    }).join('')+'</div>'+
+    '<div class="cf-age"><div class="cf-age-t">👶 呢樣嘢嘅年齡分工（'+kid.adult+'）</div>'+
+    '<div class="cf-age-2"><div class="cfa cfa45"><b>4–5 歲：你做多啲</b><ol>'+
+      kid.a45.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ol></div>'+
+    '<div class="cfa cfa67"><b>6–7 歲：佢做多啲</b><ol>'+
+      kid.a67.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ol></div></div>'+
+    '<div class="cf-stop">⏸️ <b>一步一停嘅停頓位：</b>'+kid.stop.map(function(x,i){return '<span class="st-pill">'+(i+1)+'. '+x+'</span>'}).join('')+'</div>'+
+    '</div></div>';
+  return h;
+};
+/* 控場版 A4：手工卡背面（貼喺枱邊，開工前睇一次） */
+Craft.controlSheet=function(){
+  var h='<div class="a4-sheet craft-ctrl-sheet"><div class="print-header-simple"><span>小童軍訓練教材套包 09-B</span> <b>🧒 4–7 歲手工控場卡・貼枱邊用</b></div>'+
+    '<div class="print-section"><div class="p-sec-title">🎯 一句講晒</div><div class="p-para">小童軍唔係「唔聽話」，係<b>聽唔到三句指令</b>。所以手工唔靠講，靠<b>派料法＋一步一停＋舉手先攞</b>。你企得高、睇得到全場，比任何口令都有用。</div></div>'+
+    '<table class="print-table"><tbody>'+
+    this.ctrl.map(function(c,i){
+      return '<tr><td style="width:6%"><b>'+(i+1)+'</b></td><td style="width:22%"><b>'+c.ic+' '+c.t+'</b></td>'+
+        '<td style="font-size:8.2pt">'+c.d+'</td></tr>'+
+        '<tr><td></td><td colspan="2" style="font-size:8.2pt;background:#fffaf0">🎤 照讀：'+c.say+'</td></tr>';
+    }).join('')+'</tbody></table>'+
+    '<div class="print-section"><div class="p-sec-title">🚫 五樣一定唔好做</div><div class="p-para">'+
+      '① 唔好將所有材料一次過倒落枱（一倒就搶）<br>'+
+      '② 唔好一次講三步（佢只做得到一步）<br>'+
+      '③ 唔好叫做完嘅人「等一等」（等就搞事）<br>'+
+      '④ 唔好罰人企喺人前（越罰越嘈）<br>'+
+      '⑤ 唔好問「邊個先開始」（一問一定嘈，即刻分兩份）</div></div>'+
+    '<div class="print-section"><div class="p-sec-title">🛡️ 紅線（安全）</div><div class="p-para">'+
+      '剪刀由大人揸（圓頭剪都要喺旁邊）・行路唔好揸剪刀・材料唔好放入口・膠水唔好塗上手・顏料一碟一色少少份量・橡筋唔好用嚟做面具帶（用紙繩）・枱面鋪報紙。</div></div>'+
+    '<div class="print-section"><div class="p-sec-title">⏱️ 30 分鐘手工時間表</div><div class="p-para">'+
+      '0–3 分：手放膝頭・舉成品行一圈・定停止訊號<br>'+
+      '3–6 分：派料（一人一格）・工具放「大人一檔」<br>'+
+      '6–22 分：一步一停，每步 2–4 分鐘；你巡場，一次幫 2–3 個<br>'+
+      '22–27 分：加一任務（做完嘅人）・簡化版（唔肯做嘅人）<br>'+
+      '27–30 分：「手離枱」數五下・逐枱收・完成箱・影一張大合照</div></div>'+
+    '<div class="p-foot">© 2026 Scout System・非官方輔助工具・一切以香港童軍總會最新公佈為準</div></div>';
+  return h;
+};
+/* 手工總表加入控場一欄 */
+Craft.ctrlTable=function(){
+  var self=this;
+  return '<div class="print-section"><div class="p-sec-title">👶 各手工嘅年齡分工速查</div><table class="print-table"><thead><tr><th style="width:16%">手工</th><th style="width:24%">你幫手做嘅位</th><th style="width:30%">4–5 歲（你做多啲）</th><th style="width:30%">6–7 歲（佢做多啲）</th></tr></thead><tbody>'+
+    this.list().map(function(c){
+      var kid=self.kid[c.k]||self.kid.any;
+      return '<tr><td><b>'+c.ic+' '+c.n+'</b></td><td style="font-size:7.6pt">'+kid.adult+'</td>'+
+        '<td style="font-size:7.4pt">'+kid.a45.slice(0,3).map(function(x){return '・'+x}).join('<br>')+'</td>'+
+        '<td style="font-size:7.4pt">'+kid.a67.slice(0,3).map(function(x){return '・'+x}).join('<br>')+'</td></tr>';
+    }).join('')+'</tbody></table></div>';
+};
+
+/* 領袖欄／帶領畫面用嘅一句控場提示（4–7 歲） */
+Craft.ctrlHint=function(st){
+  var c=this.match(st);if(!c)return '';
+  var kid=this.kid[c.k]||this.kid.any;
+  return '<div class="vn-hint cf-hint">🧒 <b>4–7 歲控場：</b>一人一格派料・一步一停（做完舉手）・要嘢舉手唔好起身・做完嘅人即刻加任務・唔肯做俾簡化版。'+
+    '<b>你幫手嘅位：</b>'+esc(kid.adult)+'。 <button class="lnk" onclick="Craft.open(\''+c.k+'\')">📚 完整控場卡</button></div>';
 };

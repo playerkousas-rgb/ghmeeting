@@ -31,6 +31,15 @@ var PrintKit={
       render:function(){return PrintKit.renderRecycleCards()}
     },
     {
+      id:'venue',
+      cat:'plan',
+      ic:'📍',
+      n:'場地設置卡（六分區・30 分鐘時間表・五條規矩・救急）',
+      desc:'第一次去新場地／新領袖未試過設場用：六個分區貼邊・幾大・最易錯，開場前 30 分鐘逐步清單（連散場），開會前 3 分鐘照讀嘅五條規矩，人數分組對策，八個現場救急做法。',
+      pages:'A4 2 頁（到場跟住剔）',
+      render:function(){return Venue.printSheet()}
+    },
+    {
       id:'floor-grid',
       cat:'cards',
       ic:'🦗',
@@ -92,6 +101,15 @@ var PrintKit={
       desc:'第1次集會破冰必備：名牌裁切框、小草蜢圖鑑框與自畫像畫紙。',
       pages:'A4 1頁 (4人份名牌/自畫像)',
       render:function(){return PrintKit.renderNameTagSheet()}
+    },
+    {
+      id:'craft-ctrl',
+      cat:'coach',
+      ic:'🧒',
+      n:'4–7 歲手工控場卡（派料・一步一停・加任務・收工）＋15 個手工年齡分工速查',
+      desc:'小童軍唔係唔聽話，係聽唔到三句指令。呢張卡貼喺枱邊：開工前 3 分鐘點做、一人一格點派料、一步一停嘅停止訊號、做完嘅人點安置、喊唔肯做點處理、爭執點拆、收工 3 分鐘；仲有五樣一定唔好做、安全紅線、30 分鐘手工時間表，同 15 個手工嘅 4–5 歲／6–7 歲分工速查。',
+      pages:'A4 2 頁（貼枱邊・開工前睇一次）',
+      render:function(){return Craft.controlSheet()+Craft.ctrlTable()}
     },
     {
       id:'craft-coach',

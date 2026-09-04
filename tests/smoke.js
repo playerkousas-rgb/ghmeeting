@@ -65,7 +65,7 @@ const sandbox={
 };
 sandbox.window=sandbox;sandbox.globalThis=sandbox;
 const ctx=vm.createContext(sandbox);
-const order=['data.js','guide.js','craft.js','tpls.js','app.js','prepare.js','print.js','lead.js','track.js','handbook.js','play.js','kit.js'];
+const order=['data.js','guide.js','craft.js','tpls.js','app.js','prepare.js','print.js','lead.js','track.js','handbook.js','play.js','kit.js','venue.js'];
 for(const f of order){
   vm.runInContext(fs.readFileSync(path.join(__dirname,'..','js',f),'utf8'),ctx,{filename:'js/'+f});
 }
@@ -278,6 +278,82 @@ try{
   Lead.start(allT[0].id,1);
   ok('⑨ Lead.start() 開到帶領模式',/lead-top/.test(documentStub.getElementById('leadroot').innerHTML));
 }catch(e){ok('⑨ Lead.start() 開到帶領模式',false,e.message)}
+
+/* ⑩ 📍 場地設置層：每個需要設場嘅環節都要計得出步驟 */
+const V=G.Venue;
+ok('⑩ Venue 模組載入（分區/佈置/時間表/規矩/救急）',
+  !!V&&V.zones.length===6&&V.layouts.length===5&&V.timeline.length===9&&V.rules.length===5&&V.crowd.length===4&&V.fix.length===8,
+  V?('zones='+V.zones.length+' layouts='+V.layouts.length+' timeline='+V.timeline.length+' rules='+V.rules.length):'Venue undefined');
+const vCatch=V.needFor({n:'草蜢跳格',how:'九宮格'});
+ok('⑩ 捉草蜢→九宮格設置步驟（60×60・格距・起步線）',
+  /60×60/.test(vCatch.setup.join(''))&&/起步線/.test(vCatch.setup.join(''))&&vCatch.print==='floor-grid',JSON.stringify(vCatch));
+const vPara=V.needFor({n:'開心快樂傘',how:'揚傘'});
+ok('⑩ 快樂傘→淨空直徑＋天花檢查',/淨空直徑/.test(vPara.setup.join(''))&&/天花/.test(vPara.setup.join('')));
+const vCraft=V.needFor({n:'整紙燈籠',t:'手工',mats:['利是封']});
+ok('⑩ 手工→四人一枱＋報紙＋大人一檔',/四人一枱|4 人一枱|四人/.test(vCraft.setup.join(''))&&/大人一檔/.test(vCraft.setup.join('')),vCraft.setup.join(' / '));
+const vQuiz=V.needFor({n:'問答擂台',script:'一齊搶答',screen:'quiz'});
+ok('⑩ 搶答（關鍵字只喺 script）都計到角牌',vQuiz.setup.length>0&&/角牌/.test(vQuiz.setup.join('')),JSON.stringify(vQuiz.setup));
+ok('⑩ Venue.html() 教學頁渲染（六分區・時間表・規矩・救急）',
+  /分區/.test(V.html())&&/開場前/.test(V.html())&&/規矩/.test(V.html())&&/救急/.test(V.html()));
+ok('⑩ Venue.printSheet() 出到 A4',V.printSheet().length>2000&&/venue-sheet/.test(V.printSheet()));
+ok('⑩ Venue.meetHtml(範本) 計出今場要設乜（分區＋設置清單）',/vn-meet/.test(V.meetHtml(allT[0]))&&/集合圈/.test(V.meetHtml(allT[0])));
+ok('⑩ Venue.stageHint(九宮格環節) 有提示',/vn-hint/.test(V.stageHint({n:'草蜢跳格',how:'九宮格'})));
+ok('⑩ Kit.checks.venue 到場設場檢查表 10 項',(G.Kit.checks.venue.items||[]).length===10);
+
+/* ⑪ 🧒 4–7 歲手工控場層 */
+const C=G.Craft;
+ok('⑪ Craft.ctrl 八招控場（派料・一步一停・舉手・加任務・喊・爭執・收工）',
+  (C.ctrl||[]).length===8&&/一人一格/.test(C.ctrl[1].t)&&/一步一停/.test(C.ctrl[2].t)&&/加一任務/.test(C.ctrl[4].d)&&/手離枱/.test(C.ctrl[7].d),
+  'ctrl='+(C.ctrl||[]).length);
+const noKid=C.list().filter(function(x){var k=(C.kid||{})[x.k];return !k||!(k.a45||[]).length||!(k.a67||[]).length||!k.adult||!(k.stop||[]).length});
+ok('⑪ 15 個手工全部有 4–5／6–7 歲分工＋你幫手嘅位',noKid.length===0&&Object.keys(C.kid).length>=16,
+  '缺：'+(noKid.map(function(x){return x.k}).join(',')||'無')+'｜kid keys='+Object.keys(C.kid).length);
+ok('⑪ ctrlHtml 出到兩欄年齡分工＋停頓位',
+  /4–5 歲：你做多啲/.test(C.ctrlHtml('lantern'))&&/6–7 歲：佢做多啲/.test(C.ctrlHtml('lantern'))&&/一步一停嘅停頓位/.test(C.ctrlHtml('lantern')));
+ok('⑪ controlSheet A4 有「五樣一定唔好做」＋30 分鐘時間表',
+  /五樣一定唔好做/.test(C.controlSheet())&&/30 分鐘手工時間表/.test(C.controlSheet())&&/紅線/.test(C.controlSheet()));
+ok('⑪ ctrlTable 速查表 15 行',(C.ctrlTable().match(/<tr>/g)||[]).length===C.list().length+1,
+  'tr='+(C.ctrlTable().match(/<tr>/g)||[]).length);
+ok('⑪ 手工自學卡 html() 已含控場層',/4–7 歲控場法/.test(C.html('lantern'))&&/craft-ctrl/.test(C.html('lantern')));
+const craftSt={t:'手工',n:'整紙燈籠',mats:['利是封']};
+ok('⑪ mini()／ctrlHint() 都帶控場提示',
+  /4–7 歲控場/.test(C.mini(craftSt))&&/你幫手嘅位/.test(C.ctrlHint(craftSt)));
+ok('⑪ screenArt() 投影加咗一步一停停頓位',/一步一停/.test(C.screenArt(craftSt)));
+ok('⑪ printSheet() 手工 A4 已加控場＋年齡分工',
+  /4–7 歲控場/.test(C.printSheet('lantern'))&&/年齡分工/.test(C.printSheet('lantern')));
+
+/* ⑫ 誓詞帶讀指引（原本三條落去萬用兜底） */
+const pledgeSt=[['t07',1],['block',null]];
+const g07=G.Guide.forStage(allT.find(function(t){return t.id==='t07'}).stages[1]);
+ok('⑫ 誓詞・規律・口號有專屬帶讀指引（一句一句讀）',
+  /我讀一句/.test(g07.lead)&&(g07.steps||[]).length===3&&/企好/.test(g07.steps[0][2]),g07.lead.slice(0,30));
+
+/* ⑬ 打印套包新增兩份（場地設置卡・控場卡） */
+const kits=G.PrintKit.kits;
+const kV=kits.filter(function(k){return k.id==='venue'})[0];
+const kC=kits.filter(function(k){return k.id==='craft-ctrl'})[0];
+ok('⑬ PrintKit 有「場地設置卡」並且 render 到',!!kV&&kV.render().length>2000,kV?('len='+kV.render().length):'missing');
+ok('⑬ PrintKit 有「4–7 歲控場卡」並且 render 到',!!kC&&kC.render().length>2000,kC?('len='+kC.render().length):'missing');
+
+/* ⑬b 新層已接駁到實際入口（唔係淨係有函數） */
+ok('⑬ 手冊分頁列有「📍 場地設置」',/\['venue','📍 場地設置'\]/.test(fs.readFileSync(path.join(__dirname,'..','js','handbook.js'),'utf8')));
+ok('⑬ 手冊 HB.venue() 渲染到教學頁',G.HB.venue().length>5000&&/分區/.test(G.HB.venue()));
+ok('⑬ 準備卡 Kit.meetKitHtml(t01) 已含場地段',/vn-meet/.test(G.Kit.meetKitHtml(allT[0])));
+ok('⑬ 準備卡 Kit.meetKitHtml(t03) 計出投擲線＋角牌',
+  /投擲線/.test(G.Kit.meetKitHtml(allT.filter(function(t){return t.id==='t03'})[0]))&&/角牌/.test(G.Kit.meetKitHtml(allT.filter(function(t){return t.id==='t03'})[0])));
+ok('⑬ 檢查表工具箱列到「到場設場檢查表」',/到場設場檢查表/.test(G.Kit.checkToolHtml(allT[0])));
+ok('⑬ 搜尋「場地」「控場」都搵到新內容',/場地設置/.test(G.Kit.searchHtml('場地'))&&/控場/.test(G.Kit.searchHtml('控場')));
+try{
+  Lead.start('t03',1);
+  var _lr=documentStub.getElementById('leadroot').innerHTML;
+  ok('⑬ 帶領模式頂欄有「📍 場地」按鈕・領袖欄有場地提示',
+    /📍 場地/.test(_lr)&&/vn-hint/.test(_lr),'leadroot len='+_lr.length);
+}catch(e){ok('⑬ 帶領模式頂欄有「📍 場地」按鈕',false,e.message)}
+
+/* ⑭ 內容質素：唔好殘留 markdown 記號／簡體字 */
+const srcTxt=['js/venue.js','js/craft.js','js/kit.js','js/guide.js'].map(function(f){return fs.readFileSync(path.join(__dirname,'..',f),'utf8')});
+const stars=srcTxt.filter(function(t){return /\*\*/.test(t)}).length;
+ok('⑭ 新增內容冇殘留 ** markdown 記號（esc 過會變星號）',stars===0,'有星號嘅檔案數='+stars);
 
 /* ============ 結果 ============ */
 console.log('\n✅ 通過 '+pass+' 項');

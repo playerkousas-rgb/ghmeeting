@@ -2,7 +2,7 @@
 var HB={
   tab:'core',
   html:function(){
-    var tabs=[['core','⚖️ 核心內容'],['craft','🎨 手工自學'],['kit','🧰 點預備'],['games','🎮 遊戲帶領'],['badge','🏅 獎章制度'],['chute','🌈 快樂傘'],['sfh','🛡️ 保護自己'],['tips','💡 帶領貼士'],['about','ℹ️ 關於']];
+    var tabs=[['core','⚖️ 核心內容'],['craft','🎨 手工自學'],['kit','🧰 點預備'],['venue','📍 場地設置'],['games','🎮 遊戲帶領'],['badge','🏅 獎章制度'],['chute','🌈 快樂傘'],['sfh','🛡️ 保護自己'],['tips','💡 帶領貼士'],['about','ℹ️ 關於']];
     var h='<div class="card"><h2>📖 手冊</h2><div>'+tabs.map(function(t){return '<span class="pill'+(HB.tab===t[0]?' on':'')+'" onclick="HB.t(\''+t[0]+'\')">'+t[1]+'</span>'}).join('')+'</div></div>';
     h+=HB[HB.tab]();
     return h;
@@ -15,6 +15,8 @@ var HB={
       '① 今場物資逐樣放落袋（用準備卡嗰個「剔走」清單）<br>② 後備版材料（已剪好／印好）另外一個膠袋<br>③ 大人工具：釘書機、切孔器、熱熔膠（貼低「領袖用」字句）<br>④ 名牌／咭套＋後備筆 2 支<br>⑤ 急救包、哨子、後備水樽<br>⑥ 手機充滿＋充電棒（投影用）<br><small class="mute">想紙本：「集會 → 撳張卡 → 🖨️ 打印本集 A4 教案」，檢查表會跟住印埋。</small></div></div>';
   },
 
+  /* 📍 場地設置：新手由零開始 */
+  venue:function(){return Venue.html()},
   /* 🎮 遊戲帶領總表：小朋友做乜・領袖撳乜・物資・安全（同 APP 帶領畫面同一份資料） */
   games:function(){
     var keys=Object.keys(Lead.playMeta);
