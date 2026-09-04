@@ -2,7 +2,7 @@
 var HB={
   tab:'core',
   html:function(){
-    var tabs=[['core','⚖️ 核心內容'],['craft','🎨 手工自學'],['kit','🧰 點預備'],['badge','🏅 獎章制度'],['chute','🌈 快樂傘'],['sfh','🛡️ 保護自己'],['tips','💡 帶領貼士'],['about','ℹ️ 關於']];
+    var tabs=[['core','⚖️ 核心內容'],['craft','🎨 手工自學'],['kit','🧰 點預備'],['venue','📍 場地設置'],['games','🎮 遊戲帶領'],['badge','🏅 獎章制度'],['chute','🌈 快樂傘'],['sfh','🛡️ 保護自己'],['tips','💡 帶領貼士'],['about','ℹ️ 關於']];
     var h='<div class="card"><h2>📖 手冊</h2><div>'+tabs.map(function(t){return '<span class="pill'+(HB.tab===t[0]?' on':'')+'" onclick="HB.t(\''+t[0]+'\')">'+t[1]+'</span>'}).join('')+'</div></div>';
     h+=HB[HB.tab]();
     return h;
@@ -15,6 +15,45 @@ var HB={
       '① 今場物資逐樣放落袋（用準備卡嗰個「剔走」清單）<br>② 後備版材料（已剪好／印好）另外一個膠袋<br>③ 大人工具：釘書機、切孔器、熱熔膠（貼低「領袖用」字句）<br>④ 名牌／咭套＋後備筆 2 支<br>⑤ 急救包、哨子、後備水樽<br>⑥ 手機充滿＋充電棒（投影用）<br><small class="mute">想紙本：「集會 → 撳張卡 → 🖨️ 打印本集 A4 教案」，檢查表會跟住印埋。</small></div></div>';
   },
 
+  /* 📍 場地設置：新手由零開始 */
+  venue:function(){return Venue.html()},
+  /* 🎮 遊戲帶領總表：小朋友做乜・領袖撳乜・物資・安全（同 APP 帶領畫面同一份資料） */
+  games:function(){
+    var keys=Object.keys(Lead.playMeta);
+    var phys=keys.filter(function(k){return Lead.playMeta[k].kind==='實體互動'});
+    var body=keys.filter(function(k){return Lead.playMeta[k].kind==='教學＋肢體'});
+    var tool=keys.filter(function(k){return Lead.playMeta[k].kind!=='實體互動'&&Lead.playMeta[k].kind!=='教學＋肢體'});
+    var rows=function(arr){
+      return arr.map(function(k){
+        var m=Lead.playMeta[k];
+        return '<div class="gcard"><div class="gc-h">'+m.ic+' <b>'+esc(m.n)+'</b><span class="tag">'+esc(m.kind)+'</span></div>'+
+          '<div class="gc-row"><b>🧒 小朋友</b>'+esc(m.kids)+'</div>'+
+          '<div class="gc-row"><b>🧑‍🏫 領袖</b>'+esc(m.lead)+'</div>'+
+          '<div class="gc-row"><b>🧺 物資</b>'+esc(m.mats)+'</div>'+
+          '<div class="gc-row"><b>🛡️ 安全</b>'+esc(m.safe)+'</div>'+
+          '<div class="btns"><button class="btn sm gr" onclick="Lead.startGame(\''+k+'\',\''+esc(m.n)+'\')">▶ 即開</button>'+
+          (m.print?'<button class="btn sm ghost" onclick="PrintKit.openModal(\''+m.print+'\')">🖨️ 印教具</button>':'')+'</div></div>';
+      }).join('');
+    };
+    return '<div class="card"><h2>🎮 遊戲帶領總表：螢幕點用，小朋友點玩</h2>'+
+      '<div class="attention"><b>我哋唔係打電子 GAME。</b>呢個 APP 嘅螢幕只係幫你<b>出題・叫位・計時・計分・播拍子</b>；遊戲本身係小朋友喺場內用身體玩。'+
+      '十幾個小朋友唔使圍住一部機搶住撳—佢哋嘅手應該喺隊友手上、地上、傘邊。<br>'+
+      '<b>新領袖點用：</b>開會前睇呢一頁，揀 2–3 個遊戲 → 撳「🖨️ 印教具」印地貼／角牌 → 當日撳「▶ 即開」跟住畫面嘅「🧭 點樣帶」卡做就得。</div>'+
+      '<div class="box" style="font-size:.86rem">📊 遊戲庫：'+keys.length+' 個活動—<b>'+phys.length+' 個實體走位／跳動遊戲</b>・'+body.length+' 個教學＋肢體・'+tool.length+' 個領袖工具／教學畫面。全部都有「小朋友做乜・領袖撳乜・物資・安全」四項。</div></div>'+
+      '<div class="card"><h3>🧒 實體互動遊戲（小朋友落場玩）</h3><div class="mute" style="font-size:.82rem">呢啲遊戲小朋友要郁身體：跳格、行角、分邊、拋球、圍圈傳球、揚傘。螢幕由領袖操作。</div>'+
+      '<div class="gcards">'+rows(phys)+'</div></div>'+
+      '<div class="card"><h3>🖐️ 教學＋肢體（睇住畫面一齊做）</h3><div class="mute" style="font-size:.82rem">領袖撳住講，全體跟住做動作／答問題—唔使逐個上機。</div>'+
+      '<div class="gcards">'+rows(body)+'</div></div>'+
+      '<div class="card"><h3>🧑‍🏫 領袖工具・教學畫面</h3><div class="mute" style="font-size:.82rem">抽籤、故事、呼吸、圖鑑—領袖操作，全場一齊參與。</div>'+
+      '<div class="gcards">'+rows(tool)+'</div></div>'+
+      '<div class="card"><h3>🖨️ 想做實體教具？</h3><div class="box" style="font-size:.86rem">'+
+      '・<b>九宮格地貼</b>：草蜢跳格用（A4 九格，可放大或直接貼地）＋玩法卡<br>'+
+      '・<b>場地圖卡</b>：A／B／C／D 四角角牌・👍👎 分邊牌・三色回收桶標籤・射月靶與投擲線<br>'+
+      '・<b>互動遊戲帶領卡</b>：每個遊戲一張 A4，寫晒小朋友做乜・領袖撳乜・物資・安全<br>'+
+      '・<b>地貼／體能遊戲前檢查表</b>：10 項逐項剔（清場・地面・地貼・界線・鞋襪・分組・停手口令・距離・計時・水）</div>'+
+      '<div class="btns" style="margin-top:8px"><button class="btn sm gr" onclick="App.go(\'#print\')">🖨️ 去教材打印中心</button>'+
+      '<button class="btn sm ghost" onclick="Kit.openCheck(\'floor\')">🧭 地貼／體能遊戲檢查表</button></div></div>';
+  },
   core:function(){
     var f=DATA.facts;
     return '<div class="card"><h2>⚖️ 小童軍核心內容</h2>'+
@@ -24,7 +63,7 @@ var HB={
       '<div class="mem"><h4>🏔️ 銘言</h4><div class="big" style="font-size:1.3rem">'+f.motto+'</div></div></div>'+
       '<div class="mem" style="margin:10px 0"><h4>🎵 主題曲 Greeny Marchin\u2019 On <span class="tag">'+f.songNote+'</span></h4>'+
       f.song.map(function(l,i){return '<div style="font-size:1.1rem;font-weight:700"><span class="tag">'+(i+1)+'</span>'+esc(l)+'</div>'}).join('')+
-      '<div class="song-note" style="margin-top:8px"><b>新領袖唔識旋律？</b> 去帶領畫面按「播放伴奏」，APP 會用寄調 London Bridge 的旋律帶住唱；先聽一次，再逐句唱。</div><div class="btns" style="margin-top:8px"><button class="btn sm" onclick="Lead.startStage(\'t02\',1)">▶ 直接開卡拉OK</button></div></div>'+
+      '<div class="song-note" style="margin-top:8px"><b>新領袖唔識旋律？</b> 去帶領畫面撳「▶ 播放伴奏」：APP 會即時彈出寄調 London Bridge 嘅旋律（C 調・4/4・句尾拖長・句與句之間換氣・有和弦托底），先數 4 拍先入，跟住黃色句子唱。可以揀慢／中／快三種速度—第一次帶用「慢」。</div><div class="btns" style="margin-top:8px"><button class="btn sm" onclick="Lead.startStage(\'t02\',1)">▶ 直接開卡拉OK</button></div></div>'+
       '<div class="mem" style="margin:10px 0"><h4>🦗 支部小檔案</h4><div class="box">・年齡:4至7歲(8歲生日自動結束小童軍身分)<br>・特色:不設考驗,透過遊戲、唱歌、故事、律動、美勞學習<br>・目標:德智體群美靈平衡・認識自己、快樂同行<br>・團:最少6人、最多36人;領袖比例最好1:6<br>・快樂傘(PARABALLOON)係支部標誌,用於開會散會儀式</div></div></div>';
   },
   badge:function(){

@@ -2,28 +2,28 @@
 var Play={
   tab:'all',q:'',
   games:[
-    {id:'traffic',ic:'🚦',n:'紅綠燈',meta:'數碼工具・5–10分鐘',d:'綠燈行、黃燈慢動作、紅燈定格；支援手動及自動隨機轉燈。'},
-    {id:'leader',ic:'🙋',n:'領袖話',meta:'數碼工具・5–10分鐘',d:'有「領袖話」才做動作；沒有就是陷阱。全新14種肢體指令。'},
-    {id:'catch',ic:'🦗',n:'捉草蜢',meta:'投影互動・30秒',d:'草蜢彈出就撳；限時鬥反應，畫面自動計分，支援重玩。'},
-    {id:'bodycard',ic:'🛡️',n:'身體地圖紅黃綠',meta:'數碼互動・10分鐘',d:'免紙卡互動！點擊身體各部位，學習紅黃綠身體界線與保護自己。'},
-    {id:'recycle',ic:'♻️',n:'三色回收分類擂台',meta:'數碼互動・10分鐘',d:'免實物垃圾！物品彈出，小朋友搶按藍/黃/綠/垃圾筒搶分！'},
-    {id:'task',ic:'🎯',n:'任務抽籤機',meta:'數碼工具・5分鐘',d:'轉動輪盤抽取日行一善與家務挑戰，回家實踐打卡。'},
+    {id:'traffic',ic:'🚦',n:'紅綠燈',meta:'實體跑動・5–10分鐘',d:'綠燈行、黃燈慢動作、紅燈定格；領袖手動或自動轉燈，唔使任何物資。'},
+    {id:'leader',ic:'🙋',n:'領袖話',meta:'實體反應・5–10分鐘',d:'有「領袖話」先至做動作；冇講就係陷阱。14 種肢體指令由領袖撳出。'},
+    {id:'catch',ic:'🦗',n:'草蜢跳格・實體九宮格',meta:'實體地貼・8–12分鐘',d:'地上貼 3×3 九宮格，螢幕叫「幾號・邊個位」，小朋友限時跳上去；秒數、回合、分組計分都自定。'},
+    {id:'bodycard',ic:'🛡️',n:'身體地圖紅黃綠',meta:'教學＋肢體・10分鐘',d:'領袖撳部位講解，全場用手勢答：綠＝擊掌・黃＝雙手交叉・紅＝大聲「唔好！」'},
+    {id:'recycle',ic:'♻️',n:'三色回收・四角分桶',meta:'實體走位・10分鐘',d:'四角貼桶標籤，螢幕出物件，小朋友行去嗰個角企好，領袖先至揭曉。'},
+    {id:'task',ic:'🎯',n:'任務抽籤機・日行一善',meta:'領袖工具・5分鐘',d:'領袖轉輪盤抽任務，全體讀出＋講一句「我幾時做」，返屋企實踐打卡。'},
     {id:'flags',ic:'🇭🇰',n:'國旗與區旗敬禮',meta:'數碼儀式・8分鐘',d:'全螢幕旗幟展示與口令引導，配備響號敬禮音效。'},
-    {id:'emotion',ic:'😊',n:'情緒面面觀',meta:'數碼互動・10分鐘',d:'喜怒哀樂表情輪盤，引導幼兒表達感受與關心隊友。'},
-    {id:'clean',ic:'🧼',n:'洗手七步好寶寶',meta:'數碼互動・8分鐘',d:'七步洗手圖解與 20 秒洗手歌計時倒數，養成衛生習慣。'},
-    {id:'quiz',ic:'🏆',n:'問答擂台',meta:'投影互動・10分鐘',d:'隨機題目、按答案揭曉；誓詞、安全、大自然和善行都有。'},
-    {id:'memory',ic:'🃏',n:'記憶配對',meta:'投影互動・10分鐘',d:'輪流揭兩張圖卡，配對成功就全體拍手，具備通關慶祝。'},
-    {id:'guess',ic:'🔍',n:'估估下',meta:'投影互動・8分鐘',d:'先看黑色剪影，逐步給提示，最後揭盅。'},
-    {id:'judge',ic:'👍',n:'對錯法庭',meta:'全體投票・10分鐘',d:'舉手判斷善行或保護自己的情景，即時顯示解析。'},
-    {id:'transport',ic:'🚗',n:'交通工具大圖鑑',meta:'數碼互動・8分鐘',d:'香港常見交通工具圖鑑、乘車安全與緊急求助常識。'},
-    {id:'foodrainbow',ic:'🌈',n:'彩虹健康飲食盤',meta:'數碼互動・10分鐘',d:'五色健康食物盤，點擊發現營養好處，建立健康飲食習慣。'},
-    {id:'moon',ic:'🌕',n:'中秋射月拋圈數碼靶',meta:'數碼互動・8分鐘',d:'螢幕發光月亮靶心，投擲軟球或點擊命中，計分慶祝。'},
-    {id:'rhythm',ic:'🎵',n:'節奏模仿',meta:'數碼工具・8分鐘',d:'畫面逐個亮出拍手、腳步和動作，全體跟住做。'},
-    {id:'bpstory',ic:'🏕️',n:'貝登堡故事繪本',meta:'數碼繪本・8分鐘',d:'四頁精美圖解故事卡，輕鬆講解童軍起源與左握禮。'},
-    {id:'scoutfamily',ic:'🌲',n:'童軍大家庭地圖',meta:'數碼圖解・8分鐘',d:'小童軍到幼童軍五大支部年齡、徽章與銘言發展樹。'},
+    {id:'emotion',ic:'😊',n:'情緒面面觀・表情操',meta:'教學＋肢體・10分鐘',d:'領袖抽一個表情，全體一齊扮，再講一句「我幾時會咁」＋一個平復方法。'},
+    {id:'clean',ic:'🧼',n:'洗手七步好寶寶',meta:'教學＋肢體・8分鐘',d:'20 秒計時自動逐步推進，全體徒手跟住搓；想慢教就用「◀／▶」逐步行。'},
+    {id:'quiz',ic:'🏆',n:'問答擂台・四角搶答',meta:'實體走位・10分鐘',d:'四角貼 A／B／C／D 角牌，小朋友行去自己揀嘅角，領袖揭曉＋記分。'},
+    {id:'memory',ic:'🃏',n:'記憶配對・口講位置',meta:'實體互動・10分鐘',d:'卡有編號，小朋友用口講「第 3 張同第 8 張」，領袖揭卡；配對成功全體拍手。'},
+    {id:'guess',ic:'🔍',n:'估估下（剪影）',meta:'教學＋搶答・8分鐘',d:'先看黑色剪影，小朋友舉手搶答，領袖再俾提示或揭盅。'},
+    {id:'judge',ic:'👍',n:'對錯法庭・左右分邊',meta:'實體走位・10分鐘',d:'左右貼 👍／👎，小朋友用腳表態行去嗰邊，領袖宣判＋請一位講原因。'},
+    {id:'transport',ic:'🚗',n:'交通工具大圖鑑',meta:'教學＋肢體・8分鐘',d:'領袖逐個講，小朋友扮一次（揸巴士、搭船、讓座）＋講一句安全守則。'},
+    {id:'foodrainbow',ic:'🌈',n:'彩虹健康飲食盤',meta:'教學＋肢體・10分鐘',d:'領袖揭一種顏色，小朋友講一樣嗰色嘅食物＋扮「食落肚」，數齊五色就拍手。'},
+    {id:'moon',ic:'🌕',n:'中秋射月・真實投擲',meta:'實體投擲・8分鐘',d:'貼投擲線，輪流拋泡棉球向月亮靶；螢幕做靶同計分板，中冇中由領袖撳。'},
+    {id:'rhythm',ic:'🎵',n:'節奏模仿・跟拍子',meta:'實體律動・8分鐘',d:'APP 出真實拍子聲（可揀 80／100／120 BPM），領袖做一次，全體跟住做。'},
+    {id:'bpstory',ic:'🏕️',n:'貝登堡故事繪本',meta:'教學畫面・8分鐘',d:'四頁圖解故事卡，領袖翻頁講；講到左握禮即請小朋友伸左手握一次。'},
+    {id:'scoutfamily',ic:'🌲',n:'童軍大家庭地圖',meta:'教學畫面・8分鐘',d:'領袖逐個支部講：小童軍到樂行童軍嘅年齡、徽章與銘言。'},
     {id:'chute',ic:'🌈',n:'快樂傘玩法卡',meta:'快樂傘・10分鐘',d:'抽一式，畫面有位置圖、步驟、口令和安全提示。'},
     {id:'story',ic:'📖',n:'故事寶盒',meta:'無需物資・8分鐘',d:'抽故事種子，領袖照住開場提示講，再問一條問題。'},
-    {id:'roll',ic:'🎤',n:'音樂傳球點名',meta:'軟身球・5分鐘',d:'有音樂就傳；冇音樂由領袖拍手，停拍就停球抽名。'}
+    {id:'roll',ic:'🎤',n:'音樂傳球點名',meta:'實體圍圈・5分鐘',d:'圍圈傳軟球，領袖停拍／撳「停球」，持球嗰位講名同一樣鍾意嘅嘢。'}
   ],
   videos:[
     {ic:'🎵',n:'London Bridge Is Falling Down・歌詞版',src:'Super Simple Songs',d:'主題曲寄調的旋律示範。集會前領袖先聽兩次，再回 APP 播放內置伴奏。',url:'https://www.youtube.com/watch?v=ROCxUzgr2PE'},
@@ -45,7 +45,9 @@ var Play={
     return out;
   },
   html:function(){
-    var h='<div class="card activity-hero"><span class="eyebrow">🎮 活動架・新舊領袖都用得</span><h2>想玩咩，就揀咩。</h2><p class="mute"><b>毋須自備繁複道具</b>：APP 已內置全部數碼道具、問答、分類、抽籤機與遊戲畫面；撳一下就可以投影或開準備卡。<br><b>手工唔使識做先帶得</b>：每樣手工都附「自學卡」—成品示意圖＋逐步拆解＋最易錯位＋萬用後備，領袖開會前 3 分鐘睇完就帶到。</p><div class="activity-stat"><b>'+this.games.length+'</b><span>個即玩遊戲／數碼工具</span><b>'+this.craftItems().length+'</b><span>個手工活動（附自學卡）</span><b>'+this.videos.length+'</b><span>條參考片</span><b>'+Craft.list().length+'</b><span>張手工自學卡</span></div></div>'+
+    var h='<div class="card activity-hero"><span class="eyebrow">🎮 活動架・新舊領袖都用得</span><h2>想玩咩，就揀咩。</h2>'+
+      '<p class="mute"><b>我哋唔係打電子 GAME。</b>螢幕只係幫你<b>出題・叫位・計時・計分</b>；遊戲本身係小朋友喺場內用身體玩（跳格、行角、分邊、拋球、跟拍子），領袖撳掣，十幾個小朋友唔使搶住掂螢幕。<br><b>冇道具都玩到</b>：大部分遊戲只需要膠紙／粉筆貼地，或者連貼都唔使。<b>手工唔使識做先帶得</b>：每樣手工都附「自學卡」—成品示意圖＋逐步拆解＋最易錯位＋萬用後備。</p>'+
+      '<div class="activity-stat"><b>'+this.games.length+'</b><span>個即玩遊戲／數碼工具</span><b>'+this.craftItems().length+'</b><span>個手工活動（附自學卡）</span><b>'+this.videos.length+'</b><span>條參考片</span><b>'+Craft.list().length+'</b><span>張手工自學卡</span></div></div>'+
       '<div class="card"><div class="activity-tabs">'+[['all','全部'],['game','🎮 遊戲／工具'],['craft','🎨 手工'],['video','🎬 示範片']].map(function(x){return '<button class="pill '+(Play.tab===x[0]?'on':'')+'" onclick="Play.filterBy(\''+x[0]+'\')">'+x[1]+'</button>'}).join('')+'</div><input type="text" value="'+esc(this.q)+'" placeholder="🔎 搵活動，例如：回收、安全、交通、球、傘、燈籠、揮春" oninput="Play.search(this.value)"><div id="playList" class="activity-grid">'+this.listHtml()+'</div></div>';
     return h;
   },
@@ -62,7 +64,9 @@ var Play={
     var arr=this.items();
     var cards=arr.length?arr.map(function(x){
       var action=x.kind==='game'?'<button class="btn sm gr" onclick="Lead.startGame(\''+x.id+'\',\''+esc(x.n)+'\')">▶ 即玩</button>':x.kind==='craft'?'<div class="act-col"><button class="btn sm gr" onclick="'+(x.ck?('Craft.open(\''+x.ck+'\')'):('Play.craftAny('+x.tid+','+x.si+')'))+'">'+(x.ck?'📚 跟我自學':'🧯 萬用六步')+'</button><button class="btn sm ghost" onclick="Play.craftDetail(\''+x.tid+'\','+x.si+')">🧭 睇步驟卡</button></div>':'<a class="btn sm ghost" href="'+x.url+'" target="_blank" rel="noopener">觀看 ↗</a>';
-      return '<article class="activity-card'+(x.kind==='craft'&&x.ck?' has-coach':'')+'"><div class="activity-icon">'+x.ic+'</div><div class="activity-copy"><h3>'+esc(x.n)+'</h3><small>'+esc(x.meta||x.src||'需要上網')+'</small>'+(x.kind==='craft'?'<span class="coach-tag">'+x.coach+'</span>':'')+'<p>'+esc(x.d)+'</p>'+(x.mats&&x.mats.length?'<div class="activity-mats">🧺 實物物資：'+esc(x.mats.join('、'))+'</div>':'')+'</div><div class="activity-action">'+action+'</div></article>';
+      var pm=(x.kind==='game'&&window.Lead&&Lead.playMeta)?Lead.playMeta[x.id]:null;
+      var ktag=pm?'<span class="coach-tag '+(pm.kind==='實體互動'?'tag-play':'tag-tool')+'">'+(pm.kind==='實體互動'?'🧒 小朋友身體落場玩':pm.kind==='教學＋肢體'?'🧒 睇住做＋肢體':pm.kind==='領袖工具'?'🧑‍🏫 領袖操作・全場跟住做':'🧑‍🏫 領袖帶領')+'</span>':'';
+      return '<article class="activity-card'+(x.kind==='craft'&&x.ck?' has-coach':'')+'"><div class="activity-icon">'+x.ic+'</div><div class="activity-copy"><h3>'+esc(x.n)+'</h3><small>'+esc(x.meta||x.src||'需要上網')+'</small>'+(x.kind==='craft'?'<span class="coach-tag">'+x.coach+'</span>':ktag)+'<p>'+esc(x.d)+'</p>'+(pm?'<div class="activity-mats">🧺 '+esc(pm.mats)+'</div>':(x.mats&&x.mats.length?'<div class="activity-mats">🧺 實物物資：'+esc(x.mats.join('、'))+'</div>':''))+'</div><div class="activity-action">'+action+'</div></article>';
     }).join(''):'<div class="empty">搵唔到呢類活動。試下其他字眼，或者撳「全部」。</div>';
     return cards+this.coachHtml();
   },
