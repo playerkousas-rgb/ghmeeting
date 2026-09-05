@@ -788,7 +788,7 @@ Lead.scr={
     var c=DATA.chute[idx];
     var g=Guide.chute(c);
     return '<div class="qa-q">'+c.ic+' '+c.n+' <span class="tag">'+c.tag+'</span></div>'+
-      Lead.parachuteSvg('open')+Lead.guideHtml(g)+
+      ((typeof Img!=='undefined')?Img.chuteFig(c.n):'')+Lead.parachuteSvg('open')+Lead.guideHtml(g)+
       '<div class="btns" style="justify-content:center"><button class="btn sm" onclick="Lead.nextChute()">🔀 抽另一式</button></div>'+
       Lead.playCard('chute');
   },
