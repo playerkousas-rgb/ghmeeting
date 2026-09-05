@@ -6,6 +6,13 @@
 var Img={
   /* 內置後備：chute 用回 Lead.parachuteSvg */
   reg:{'chute-top':{fb:'chute'},'chute-steps':{fb:'chute'}},
+  /* 遊戲 → 「點玩一眼圖」（實體遊戲先至有） */
+  games:{catch:'g-grid',quiz:'g-corners',judge:'g-corners',recycle:'g-corners',memory:'g-corners',
+         traffic:'g-traffic',roll:'g-ball'},
+  gameFig:function(screen){
+    var k=this.games[screen];if(!k)return '';
+    return this.fig(k,screen,'點玩一眼圖：睇圖就知小朋友點排、點玩');
+  },
   _fb:{},
   vid:function(kw,label){
     if(!kw)return '';

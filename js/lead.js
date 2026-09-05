@@ -443,7 +443,10 @@ var Lead={
   screen:function(st){
     Lead.after=null;var k=st.screen||(st.t==='唱遊'?'song':'howto');
     if(k!=='song')Music.stop();
-    var fn=Lead.scr[k]||Lead.scr.howto;return fn(st);
+    var fn=Lead.scr[k]||Lead.scr.howto;
+    var out=fn(st);
+    if(typeof Img!=='undefined'&&Img.gameFig)out=Img.gameFig(k)+out;
+    return out;
   }
 };
 
