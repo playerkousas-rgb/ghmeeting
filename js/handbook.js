@@ -107,7 +107,7 @@ var HB={
     h+='<div class="attention"><b>兩疊紙，分清楚：</b>「✂️ 即用紙」係小朋友用嘅（印完即剪，紙上冇說明）；「📚 自學卡」係你自己睇嘅說明書。</div>';
     h+='<div class="craft-rules">'+rules.map(function(x){return '<div class="cr-row"><span>'+x[0]+'</span><div><b>'+esc(x[1])+'</b><small>'+esc(x[2])+'</small></div></div>'}).join('')+'</div>';
     h+='<h3 style="margin-top:14px">已附自學卡嘅手工（'+Craft.list().length+' 樣）</h3>';
-    h+='<div class="mute" style="font-size:.82rem">每樣都包括：成品示意圖・關鍵摺法圖解（部分）・逐步自學・帶班拆法・常錯補救・後備版・時間剪法・安全提示。自己加嘅活動用「萬用六步」一樣搞得掂。</div>';
+    h+='<div class="mute" style="font-size:.82rem">每樣有：成品圖・摺法圖解・逐步自學・帶班拆法・補救・後備版。自己加嘅活動用「萬用六步」都得。</div>';
     h+=Craft.indexHtml();
     h+='<h3 style="margin-top:14px">✂️ 即用紙（小朋友用・印完即剪）</h3>';
     h+='<div class="mute" style="font-size:.82rem">剪線・摺線・描紅・塗色格，一張紙一件事。</div>';

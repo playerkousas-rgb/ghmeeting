@@ -9,7 +9,7 @@ var Img={
   /* 遊戲 → 「點玩一眼圖」（實體遊戲先至有） */
   games:{catch:'g-grid',quiz:'g-corners',judge:'g-corners',recycle:'g-corners',memory:'g-corners',
          traffic:'g-traffic',roll:'g-ball',leader:'g-leader',rhythm:'g-leader',moon:'g-throw',
-         clean:'g-wash',bodycard:'g-body',flags:'g-salute',emotion:'g-faces'},
+         clean:'g-wash',bodycard:'g-body',flags:'g-salute',emotion:'g-faces',foodrainbow:'g-food'},
   gameFig:function(screen){
     var k=this.games[screen];if(!k)return '';
     return this.fig(k,screen,'點玩？睇圖就識帶');
