@@ -2,25 +2,90 @@
 /* 目標：開會前一晚，一個按鈕印齊 → 執袋 → 第二日拎起就用。
    兩疊紙分得清清楚楚：領袖套包＝說明／流程／清單；小朋友套包＝印完即剪即摺即用，紙上冇說明書。 */
 var Pack={
-  /* ---------- 套包內容清單（可剔：印乜唔印乜） ---------- */
+  /* ---------- 套包內容：預設只印三樣必要嘅紙，其餘全部喺 APP 內睇（慳紙） ---------- */
+  /* print:1 = 預設印（紙先至做到嘅嘢：小朋友剪摺、貼地、領袖手揸一頁流程）
+     print:0 = 預設唔印，撳「📱 APP 睇」即用（可以剔返開嚟印） */
   PARTS:[
-    {k:'cover',  ic:'📋', n:'今場一覽＋程序表', who:'lead', d:'時間・環節・照讀一句'},
-    {k:'bag',    ic:'🧺', n:'執袋單（已計人手）', who:'lead', d:'每人幾多・冇就改用乜'},
-    {k:'cards',  ic:'🃏', n:'環節帶領卡', who:'lead', d:'剪開手揸・一節一張'},
-    {k:'craftc', ic:'📚', n:'手工領袖自學卡', who:'lead', d:'你自己先學做（說明書）', cond:1},
-    {k:'venue',  ic:'📍', n:'今場設場清單', who:'lead', d:'貼邊・界線・幾大', cond:1},
-    {k:'notice', ic:'📣', n:'家長通知（已填好）', who:'lead', d:'日期・主題・要帶嘢'},
-    {k:'check',  ic:'🧭', n:'今場檢查表', who:'lead', d:'逐項剔・完成先開隊', cond:1},
-    {k:'cert',   ic:'🏅', n:'嘉許狀', who:'lead', d:'按名單一人一張', cond:1, off:1},
-    {k:'kid',    ic:'✂️', n:'小朋友即用紙', who:'kid', d:'印完即剪・每人一份', per:1},
-    {k:'floor',  ic:'🦗', n:'場地貼紙', who:'kid', d:'九宮格／角牌・貼地即用', cond:1}
+    {k:'kid',    ic:'✂️', n:'小朋友即用紙', who:'kid', print:1, per:1, d:'印完即剪・每人一份', app:'kid', at:'📱 手機睇樣'},
+    {k:'floor',  ic:'🦗', n:'場地貼紙', who:'kid', print:1, cond:1, d:'九宮格／角牌・貼地即用', app:'floor', at:'📱 投影設場'},
+    {k:'cover',  ic:'📋', n:'今場程序表（1 頁）', who:'lead', print:1, d:'時間＋照讀一句・手揸一頁就夠'},
+    {k:'bag',    ic:'🧺', n:'執袋單', who:'lead', print:0, d:'APP 內剔住執・已計人手', app:'bag'},
+    {k:'cards',  ic:'🃏', n:'環節帶領卡', who:'lead', print:0, d:'跟綠色領袖欄就得', app:'cards'},
+    {k:'craftc', ic:'📚', n:'手工自學卡', who:'lead', print:0, cond:1, d:'開會前 3 分鐘喺 APP 睇', app:'craftc'},
+    {k:'venue',  ic:'📍', n:'設場清單', who:'lead', print:0, cond:1, d:'到場 30 分鐘逐項剔', app:'venue'},
+    {k:'check',  ic:'🧭', n:'檢查表', who:'lead', print:0, cond:1, d:'APP 內剔・剔咗會記住', app:'check'},
+    {k:'notice', ic:'📣', n:'家長通知', who:'lead', print:0, d:'一撳複製貼 WhatsApp', app:'notice'},
+    {k:'cert',   ic:'🏅', n:'嘉許狀', who:'lead', print:0, cond:1, d:'完場先印・按名單一人一張', app:'cert'}
   ],
+  /* 唔使印嘅嘢 → APP 內邊度睇 */
+  appView:function(k){
+    var cur=Pack.meet(),m=cur.m;
+    if(k==='kid'){
+      var ls=Pack.kidPicks(m);
+      if(!ls.length){toast('呢場冇小朋友紙');return}
+      Modal.open('<div class="eyebrow">✂️ 小朋友即用紙</div><h3>手機睇樣</h3>'+
+        '<div class="mute" style="font-size:.82rem">印之前先睇清楚張紙。要剪要摺，始終要印出嚟。</div>'+
+        ls.map(function(x){return '<div class="pk-prev">'+x.ic+' '+esc(x.n)+Sheets.one(x.kind,x.k)+'</div>'}).join(''));
+      return;
+    }
+    if(k==='floor')return PrintKit.openModal('floor-grid');
+    if(k==='bag')return Pack.bagModal();
+    if(k==='cards'){Modal.close();Prepare._detailId=cur.tid;Prepare.detail(cur.tid);return}
+    if(k==='craftc'){
+      var cs=Sheets.forMeet(m).filter(function(x){return x.kind==='craft'});
+      if(!cs.length){toast('呢場冇手工環節');return}
+      if(cs.length===1){Modal.close();Craft.open(Sheets.craftFor({n:cs[0].stage})||cs[0].k);return}
+      Modal.open('<h3>📚 手工自學卡</h3><div class="mute" style="font-size:.82rem">揀一樣，開會前 3 分鐘睇完就帶得。</div>'+
+        '<div class="kit-grid" style="margin-top:8px">'+cs.map(function(x){
+          return '<button class="btn sm gr" onclick="Modal.close();Craft.open(\''+x.k+'\')">'+x.ic+' '+esc(x.n)+'</button>'}).join('')+'</div>');
+      return;
+    }
+    if(k==='venue')return Venue.open();
+    if(k==='check')return Kit.openCheckFor(m);
+    if(k==='notice')return Kit.msgOpen(Kit.ctxFor(cur.tid));
+    if(k==='cert')return PrintKit.openModal('cert-sheet');
+  },
+  /* 執袋單（APP 內剔，唔使印）：剔咗記住，完場自動清 */
+  bagTick:function(tid){var a=Store.get('bagtick',{})||{};return a[tid||'']||[]},
+  bagSet:function(tid,on){var a=Store.get('bagtick',{})||{};if(on&&on.length)a[tid]=on.slice();else delete a[tid];Store.set('bagtick',a)},
+  bagToggle:function(i){
+    var tid=Pack.meet().tid,on=Pack.bagTick(tid),p=on.indexOf(i);
+    if(p<0)on.push(i);else on.splice(p,1);
+    Pack.bagSet(tid,on);
+    var el=document.getElementById('bagRow'+i);
+    if(el)el.className='kt-row'+(p<0?' on':'');
+    var pb=document.getElementById('bagProg');
+    if(pb)pb.innerHTML=Pack.bagProg(tid);
+    if(p<0&&on.length===matsOf(Pack.meet().m).length){Sfx.ding();toast('✅ 執齊晒 — 可以出發')}
+  },
+  bagProg:function(tid){
+    var n=matsOf(Pack.meet().m).length,on=Pack.bagTick(tid).length;
+    return '<b>'+on+'/'+n+'</b>'+(n-on?('・未執 '+(n-on)+' 樣'):'・執齊晒 ✅');
+  },
+  bagModal:function(){
+    var m=Pack.meet().m,tid=Pack.meet().tid,mats=matsOf(m),on=Pack.bagTick(tid);
+    var rows=mats.length?mats.map(function(x,i){
+      var t=Kit.mats[Kit.norm(x)]||Kit.fuzzy(x),q=t?Kit.qtyFor(x,t.q):'';
+      return '<div class="kt-row'+(on.indexOf(i)>=0?' on':'')+'" id="bagRow'+i+'" onclick="Pack.bagToggle('+i+')">'+
+        '<b>'+esc(x)+'</b><div>・人手：'+esc(t?t.q:'按實際人數')+(q?'<br><b class="kt-q">'+esc(q)+'</b>':'')+
+        (t&&t.how?'<br>・備法：'+esc(t.how):'')+(t&&t.sub?'<br>♻️ 冇就改用：'+esc(t.sub):'')+'</div></div>';
+    }).join(''):'<div class="mute">呢場唔使額外物資 — 帶部手機就夠。</div>';
+    Modal.open('<div class="eyebrow">🧺 執袋單・'+esc(m.n)+'</div><h3>逐樣剔，剔咗會記住</h3>'+
+      '<div class="kc-prog" id="bagProg">'+Pack.bagProg(tid)+'</div>'+
+      '<div class="kit-tip open" style="margin-top:8px"><div class="kt-b" style="display:block">'+rows+'</div></div>'+
+      '<div class="print-section" style="margin-top:10px"><div class="p-sec-title" style="font-size:.8rem">🎒 每次都要帶</div>'+
+      '<div class="box" style="font-size:.8rem">手機／平板（充電）・哨子・急救包＋濕紙巾・名單紙本（含家長電話）・水・膠紙＋剪刀（大人用）</div></div>'+
+      '<div class="btns"><button class="btn sm" onclick="Kit.copy(Kit.matsTipTxt(matsOf(Pack.meet().m)),this)">📋 複製清單</button>'+
+      (on.length?'<button class="btn sm ghost" onclick="Pack.bagSet(Pack.meet().tid,[]);Pack.bagModal()">🧽 清重剔</button>':'')+
+      '<button class="btn sm ghost" onclick="Modal.close();Pack.setPart(\'bag\',1);toast(\'已加入列印\')">🖨️ 我都想印</button></div>');
+  },
   copies:function(){
     var n=Store.get('packcopies',0);
     if(n)return n;
     var mem=Store.get('members',[])||[];
-    return mem.length||12;
+    return mem.length||1;   /* 未填名單就印 1 份做樣版，唔好白白印 12 份 */
   },
+  hasRoster:function(){return (Store.get('members',[])||[]).length>0},
   setCopies:function(v){Store.set('packcopies',Math.max(1,Math.min(40,+v||1)));Pack.route()},
   route:function(){if(App.view==='pack')App.route()},
 
@@ -48,7 +113,7 @@ var Pack={
   sel:function(){
     var id=Pack.meet().tid,a=Store.get('packsel',{})||{},ch=0;
     if(!a[id])a[id]={};
-    Pack.PARTS.forEach(function(p){if(a[id][p.k]===undefined){a[id][p.k]=p.off?0:1;ch=1}});
+    Pack.PARTS.forEach(function(p){if(a[id][p.k]===undefined){a[id][p.k]=p.print?1:0;ch=1}});
     if(ch)Store.set('packsel',a);
     return a[id];
   },
@@ -84,48 +149,77 @@ var Pack={
   },
   mins:function(m){return (m.stages||[]).reduce(function(a,s){return a+(+s.m||0)},0)},
 
+  /* ═════════════ 取代官方套包：官方有嘅我哋有，官方冇嘅我哋都有 ═════════════
+     官方《小童軍團集會套包》內容＝集會程序＋物資表＋教學參考（發展署旅團支援組）。
+     呢度逐項對照，寫明我哋點樣做到／做得更多，目標係新領袖唔使再開官方 PDF。 */
+  COVER:[
+    ['📄 22 次集會程序表','30 場範本・150 個環節，每節有時間・照讀一句・三步・安全','可調動・順延・補場・改分鐘，改完即刻存入「我嘅集會」'],
+    ['🧺 物資表','47 項物資逐項寫明每人幾多・點備・冇就改用乜','按你團人數自動換算（「本團 12 人 → 約 24 張」）'],
+    ['📖 教學參考（含 YouTube 連結）','每環節有圖解・照讀口令・成品示意圖，全部內置','離線都用得；集會中途唔使跳出去搵片'],
+    ['🖨️ 紙模型／圖紙','15 樣手工有「✂️ 即用紙」（A4 實際尺寸，印完即剪）','另有領袖自學卡：未做過都跟得住'],
+    ['📅 年度行事曆','首年 22 次已排好＋節日對齊','42 個月路線圖：團員章→進步獎章四步→小草蜢七範疇，唔會做完第一年斷'],
+    ['—（官方冇）','當日投影帶領：計時・講稿・主題曲伴奏・遊戲畫面','領袖欄「而家做咩」，新領袖照住撳就帶完 60 分鐘'],
+    ['—（官方冇）','團員進度追蹤：出席＋章項自動剔數','唔使再靠記憶／Excel 知邊個差幾多'],
+    ['—（官方冇）','家長通知範本・檢查表・設場教學・現場救急','一撳複製／逐項剔，全部本機儲存'],
+    ['—（官方冇）','⚡ 臨時集會：揀個主題即砌一場','套包照印、畫面照帶']
+  ],
+  coverHtml:function(){
+    return '<div class="pk-cover"><table class="tbl"><tr><th>官方套包</th><th>呢個 APP</th><th>我哋多咗</th></tr>'+
+      Pack.COVER.map(function(r){
+        return '<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td class="pkc-more">'+esc(r[2])+'</td></tr>'}).join('')+
+      '</table><small class="mute">非官方輔助工具；訓練綱要與獎章要求以香港童軍總會公佈為準。</small></div>';
+  },
+
   /* ═════════════ 頁面（首頁 = 集會套包） ═════════════ */
   html:function(){
     var cur=Pack.meet(),m=cur.m,sel=Pack.sel();
     var kids=Sheets.forMeet(m),fl=Sheets.floorFor(m),cp=Pack.copies();
-    var leadPages=Pack.pages('lead',m),kidPages=Sheets.pagesOf(m,fl.length?cp:cp);
+    var leadPages=Pack.pages('lead',m),kidPages=Pack.pages('kid',m);
+    var printN=leadPages+kidPages;
+    var appN=Pack.PARTS.filter(function(p){return !sel[p.k]&&p.app}).length;
     var h='';
-    /* 頂：今場 + 兩個大掣（字要少） */
     h+='<section class="pk-hero">'+
       '<span class="eyebrow">📦 集會套包</span>'+
       '<h1>'+esc(m.n)+'</h1>'+
       '<div class="pk-meta">'+esc(Pack.dateLine(m))+' ｜ '+Pack.mins(m)+' 分鐘 ｜ '+m.stages.length+' 個環節 ｜ '+(Store.get('members',[])||[]).length+' 人</div>'+
       '<div class="pk-big">'+
-        '<button class="btn primary xl" onclick="Pack.open(\'lead\')">🧑‍🏫 印領袖套包<small>'+leadPages+' 頁</small></button>'+
         (kidPages
-          ?'<button class="btn gr xl" onclick="Pack.open(\'kid\')">🧒 印小朋友紙<small>'+kidPages+' 頁（'+(kids.length||fl.length)+' 款 × '+cp+' 份）</small></button>'
+          ?'<button class="btn gr xl" onclick="Pack.open(\'kid\')">🧒 印小朋友紙<small>'+kidPages+' 頁（'+Pack.kidPicks(m).length+' 款 × '+cp+' 份）</small></button>'
           :'<button class="btn xl" disabled style="background:#eee;color:#999;box-shadow:none">🧒 呢場冇小朋友紙<small>全部環節用螢幕／身體玩</small></button>')+
-        '<button class="btn ghost" onclick="Pack.lead()">▶ 即開帶領</button>'+
+        '<button class="btn primary xl" onclick="Pack.open(\'lead\')">🧑‍🏫 印領袖套包<small>'+leadPages+' 頁</small></button>'+
+        '<button class="btn ghost" onclick="Pack.lead()">▶ 即開帶領（APP 幫你帶）</button>'+
       '</div>'+
-      (kids.length?'<div class="pk-list">✂️ '+kids.map(function(x){return esc(x.n)}).join('・')+'　×'+cp+' 份</div>':'')+
-      '<div class="pk-3"><b>1</b> 印齊兩疊紙<b>2</b> 照執袋單執袋<b>3</b> 到場跟程序表帶</div>'+
+      (Pack.kidPicks(m).length?'<div class="pk-list">✂️ '+Pack.kidPicks(m).map(function(x){return esc(x.n)}).join('・')+'　×'+cp+' 份</div>':'')+
+      '<div class="pk-eco">🌱 淨係印 <b>'+printN+' 頁</b>：小朋友剪摺紙＋貼地標記＋領袖一頁流程。其餘 '+appN+' 樣喺 APP 睇，唔使印。</div>'+
+      '<div class="pk-3"><b>1</b> 印小朋友紙<b>2</b> APP 剔住執袋<b>3</b> 到場撳「即開帶領」</div>'+
     '</section>';
-    /* 套包內容 */
-    h+='<div class="card"><h2>套包入面有乜 <span class="tag">剔走就唔印</span></h2>'+
+    /* 套包內容：印 or APP 睇 */
+    h+='<div class="card"><h2>套包入面有乜 <span class="tag">只印必要嘅</span></h2>'+
       '<div class="pk-parts">'+Pack.PARTS.map(function(p){
         var show=1;
         if(p.cond){
-          if(p.k==='craftc'||p.k==='kid')show=kids.length?1:(p.k==='kid'?1:0);
+          if(p.k==='craftc')show=kids.filter(function(x){return x.kind==='craft'}).length?1:0;
           if(p.k==='venue')show=Pack.venueNeeds(m).length?1:0;
           if(p.k==='check')show=Pack.checkKeys(m).length?1:0;
           if(p.k==='floor')show=fl.length?1:0;
           if(p.k==='cert')show=(Store.get('members',[])||[]).length?1:0;
         }
         if(!show)return '';
-        var cnt=p.k==='kid'?(kids.length+' 款'):p.k==='cards'?(m.stages.length+' 張'):p.k==='craftc'?(kids.filter(function(x){return x.kind==='craft'}).length+' 張'):'';
-        return '<button class="pk-part'+(sel[p.k]?' on':'')+'" onclick="Pack.toggle(\''+p.k+'\')">'+
-          '<span class="pp-ic">'+p.ic+'</span><b>'+esc(p.n)+'</b><small>'+esc(p.d)+(cnt?'・'+cnt:'')+'</small>'+
-          '<span class="pp-ck">'+(sel[p.k]?'✓':'')+'</span></button>';
+        var cnt=p.k==='kid'?(kids.length+' 款'):p.k==='cards'?(m.stages.length+' 節'):p.k==='craftc'?(kids.filter(function(x){return x.kind==='craft'}).length+' 張'):'';
+        return '<div class="pk-part'+(sel[p.k]?' on':'')+'">'+
+          '<button class="pp-main" onclick="Pack.toggle(\''+p.k+'\')">'+
+            '<span class="pp-ic">'+p.ic+'</span><b>'+esc(p.n)+'</b><small>'+esc(p.d)+(cnt?'・'+cnt:'')+'</small>'+
+            '<span class="pp-ck">'+(sel[p.k]?'🖨':'')+'</span></button>'+
+          (p.app?'<button class="pp-app" onclick="Pack.appView(\''+p.k+'\')">'+(p.at||'📱 APP 睇')+'</button>':'')+
+        '</div>';
       }).join('')+'</div>'+
-      (kids.length?'':'<div class="attention" style="margin-top:8px">呢場冇手工／工作紙環節 — 小朋友紙嗰疊會係空白，可以唔印。</div>')+
-      '<label class="f">🧒 小朋友紙印幾份（每人一份）</label>'+
+      (kids.length?'':'<div class="attention" style="margin-top:8px">呢場冇手工／工作紙環節 — 小朋友紙嗰疊空白，可以唔印。</div>')+
+      (kids.length?'<label class="f">✂️ 呢場要印邊幾款（剔走就唔印）</label>'+
+        '<div class="pk-kids">'+kids.map(function(x){
+          return '<button class="pill'+(Pack.kidOn(x.k)?' on':'')+'" onclick="Pack.toggleKid(\''+x.k+'\')">'+x.ic+' '+esc(x.n)+'</button>'}).join('')+'</div>':'')+
+      '<label class="f">🧒 印幾份</label>'+
       '<div class="pk-cp"><input type="number" min="1" max="40" value="'+cp+'" onchange="Pack.setCopies(this.value)">'+
-      '<span class="mute">份・一撳就自動印夠人數，唔使逐次印</span></div>'+
+      '<span class="mute">份・'+(Pack.hasRoster()?'已跟你團名單人數':'未填名單 — 去「🏅 追蹤」加名單就自動印夠人數')+'</span></div>'+
     '</div>';
     /* 換一場 */
     h+='<div class="card"><h2>換一場集會</h2><div class="pk-pick">'+
@@ -137,8 +231,7 @@ var Pack={
           return '<button class="pill'+(cur.mine&&cur.tid===mm.id?' on':'')+'" onclick="Pack.pick(\'my\',\''+mm.id+'\')">'+esc(mm.n)+'</button>'}).join('')+'</div>':'')+
       '</div></div>';
     /* 臨時集會（資深領袖） */
-    h+='<div class="card"><h2>⚡ 臨時集會 <span class="tag">唔使排期・即刻出套包</span></h2>'+
-      '<div class="mute" style="font-size:.82rem">臨時頂位／加場：揀個主題，套包同一樣印得到。</div>'+
+    h+='<div class="card"><h2>⚡ 臨時集會 <span class="tag">唔使排期</span></h2>'+
       '<div class="pk-inst">'+Pack.INST.map(function(x){
         return '<button class="btn sm ghost" onclick="Pack.instant(\''+x.k+'\','+x.mins+')">'+x.ic+' '+esc(x.n)+'（'+x.mins+'分）</button>'}).join('')+'</div></div>';
     /* 臨時工具 */
@@ -150,7 +243,9 @@ var Pack={
       '<button class="btn sm ghost" onclick="PrintKit.openModal(\'craft-ctrl\')">🧒 手工控場卡</button>'+
       '<button class="btn sm ghost" onclick="PrintKit.openModal(\'sfh-cards\')">🛡️ 身體界線卡</button>'+
       '</div></div>';
-    /* 年度行事曆（收埋，唔使讀） */
+    /* 對照官方（收埋） */
+    h+='<details class="card pk-cal"><summary>🆚 仲使唔使睇官方套包？</summary>'+Pack.coverHtml()+'</details>';
+    /* 年度行事曆（收埋） */
     var pl=Store.get('plan',{rows:[]})||{rows:[]};
     h+='<details class="card pk-cal"><summary>📅 年度行事曆（'+(pl.rows||[]).length+' 次）</summary>'+
       ((pl.rows||[]).length?Plan.calendar(pl):'<div class="mute">未排行事曆 — 去「📅 規劃」撳「重建行事曆」。</div>')+'</details>';
@@ -358,8 +453,23 @@ var Pack={
     fl.forEach(function(x){h+=(h?'<div class="pbreak"></div>':'')+Sheets.one('floor',x.k)});
     return h;
   },
+  /* 小朋友紙逐款揀：呢場要邊幾款先印邊幾款（護照／名牌可以下次先印） */
+  kidSel:function(tid){var a=Store.get('packkid',{})||{};return a[tid||'']||null},
+  kidOn:function(k){var sel=Pack.kidSel(Pack.meet().tid);return !sel||sel.indexOf(k)>=0},
+  kidPicks:function(m){
+    var all=Sheets.forMeet(m),sel=Pack.kidSel(m.id);
+    return sel?all.filter(function(x){return sel.indexOf(x.k)>=0}):all;
+  },
+  toggleKid:function(k){
+    var tid=Pack.meet().tid,all=Sheets.forMeet(Pack.meet().m).map(function(x){return x.k});
+    var sel=Pack.kidSel(tid)||all.slice();
+    var p=sel.indexOf(k);if(p<0)sel.push(k);else sel.splice(p,1);
+    var a=Store.get('packkid',{})||{};
+    if(sel.length>=all.length)delete a[tid];else a[tid]=sel;
+    Store.set('packkid',a);Pack.route();
+  },
   kidSheets:function(m,copies){
-    var list=Sheets.forMeet(m),n=Math.max(1,Math.min(40,+copies||1)),h='',i,j;
+    var list=Pack.kidPicks(m),n=Math.max(1,Math.min(40,+copies||1)),h='',i,j;
     for(i=0;i<n;i++)for(j=0;j<list.length;j++){
       h+=(h?'<div class="pbreak"></div>':'')+Sheets.one(list[j].kind,list[j].k);
     }
@@ -381,7 +491,7 @@ var Pack={
       if(Pack.want('check',all))n+=Pack.checkKeys(m).length;
       if(Pack.want('cert',all))n+=Math.max(1,(Store.get('members',[])||[]).length);
     }else{
-      if(Pack.want('kid',all))n+=Sheets.forMeet(m).length*Pack.copies();
+      if(Pack.want('kid',all))n+=Pack.kidPicks(m).length*Pack.copies();
       if(Pack.want('floor',all))n+=Sheets.floorFor(m).length;
     }
     return n;

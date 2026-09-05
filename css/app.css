@@ -1827,3 +1827,40 @@ button.lnk:hover{color:var(--ord)}
 }
 .pk-list{margin-top:8px;font-size:.76rem;color:#8a6a45;font-weight:700;line-height:1.4}
 .pk-big .btn[disabled]{cursor:default}
+
+/* ---- 📦 套包 v2：只印必要嘅紙，其餘喺 APP 睇 ---- */
+.pk-eco{margin-top:10px;padding:8px 10px;background:#f1f8e9;border-radius:12px;
+  font-size:.78rem;color:#33691e;line-height:1.45}
+.pk-eco b{font-size:.95rem}
+.pk-part{display:flex;flex-direction:column;background:#fff;border:1.5px solid var(--line);
+  border-radius:13px;overflow:hidden;transition:.12s}
+.pk-part.on{border-color:var(--gr);background:#f4fbf2}
+.pk-part .pp-main{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:1px;
+  background:none;border:none;padding:9px 10px 7px;text-align:left;font-family:inherit;cursor:pointer;width:100%}
+.pk-part .pp-ic{font-size:1.05rem;line-height:1.2}
+.pk-part .pp-main b{font-size:.86rem;color:var(--ink)}
+.pk-part .pp-main small{font-size:.72rem;color:var(--mute);line-height:1.35}
+.pk-part .pp-ck{position:absolute;right:8px;top:7px;min-width:20px;height:20px;border-radius:99px;
+  border:1.5px solid var(--line);color:var(--ord);font-size:.66rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;padding:0 4px}
+.pk-part.on .pp-ck{background:var(--gr);border-color:var(--grd);color:#fff}
+.pk-part .pp-app{border:none;border-top:1px dashed var(--line);background:#fbfbfb;color:var(--blue);
+  font-family:inherit;font-size:.74rem;font-weight:800;padding:6px 10px;cursor:pointer;text-align:left}
+.pk-part .pp-app:active{background:#eef4ff}
+.pk-part.on .pp-app{border-top-color:#cfe8cd}
+/* 執袋單（APP 內剔） */
+.kt-row.on{background:#e8f5e9;border-radius:8px}
+.kt-row.on b{text-decoration:line-through;opacity:.6}
+.kt-q{color:#e65100}
+.kit-tip .kt-b .kt-row{cursor:pointer}
+/* 對照官方套包 */
+.pk-cover{margin-top:8px}
+.pk-cover .tbl{font-size:.78rem}
+.pk-cover .tbl td{padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4}
+.pk-cover .tbl td:first-child{color:var(--mute);width:24%}
+.pk-cover .pkc-more{color:var(--grd);font-weight:700}
+.pk-cover small{display:block;margin-top:6px;font-size:.7rem}
+.pk-kids{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
+.pk-kids .pill{font-size:.76rem;padding:4px 10px}
+.pk-prev{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);font-size:.8rem;font-weight:800}
+.pk-prev svg{display:block;margin:6px auto 0;max-width:100%;height:auto}

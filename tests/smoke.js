@@ -362,8 +362,9 @@ const pkMeet=PK.meet();
 ok('⑮ 預設攞到行事曆下一場',!!pkMeet&&!!pkMeet.m&&pkMeet.m.stages.length>0,pkMeet&&pkMeet.m&&pkMeet.m.n);
 const pkHtml=PK.html();
 ok('⑮ 套包頁出到兩個大掣（領袖套包／小朋友紙）',/印領袖套包/.test(pkHtml)&&/印小朋友紙/.test(pkHtml));
-ok('⑮ 套包頁字少：整頁正文少過 1400 字',pkHtml.replace(/<[^>]+>/g,'').replace(/\s/g,'').length<1400,
-  'len='+pkHtml.replace(/<[^>]+>/g,'').replace(/\s/g,'').length);
+/* 計「一開就見到」嘅字：收埋喺 <details> 入面嘅唔計 */
+const pkSeen=pkHtml.replace(/<details[\s\S]*?<\/details>/g,'').replace(/<[^>]+>/g,'').replace(/\s/g,'');
+ok('⑮ 套包頁字少：一開見到嘅正文少過 1200 字',pkSeen.length<1200,'len='+pkSeen.length);
 ok('⑮ 有「臨時集會」入口（資深領袖即用）',/臨時集會/.test(pkHtml)&&PK.INST.length===6,'inst='+PK.INST.length);
 ok('⑮ 有「一撳就印嘅工具」',/一撳就印嘅工具/.test(pkHtml));
 /* 領袖套包內容 */
@@ -474,12 +475,43 @@ ok('⑮ 即興集會砌得到（有環節＋物資）',inst.stages.length>=5&&in
 ok('⑮ App.startInstant 用返同一份定義',/Pack\.instantMeet/.test(fs.readFileSync(path.join(__dirname,'..','js','app.js'),'utf8')));
 ok('⑮ 即興集會都出到套包',PK.sheets('lead',inst,1).length>4000);
 /* 剔走項目就唔印 */
+/* 環保：預設只印必要嘅紙（小朋友紙・貼地標記・領袖一頁流程），其餘喺 APP 睇 */
+/* 模擬瀏覽器開機（App.init 會做呢兩樣），否則 Pack.route() 重繪會炸 */
+if(!G.Store.get('settings'))G.Store.set('settings',{group:'測試旅團',start:'9',dur:'60',startDate:''});
+if(!G.Store.get('plan'))G.App.seedPlan();
 G.Store.set('packsel',{});
-PK.setPart('bag',0);PK.setPart('cards',0);
+const dflt=PK.sel();
+const mustPrint=['kid','floor','cover'];
+const offByDefault=PK.PARTS.filter(function(p){return p.print}).map(function(p){return p.k});
+eq('⑮ 預設只印三樣',offByDefault.slice().sort(),mustPrint.slice().sort());
+ok('⑮ 唔印嘅項目全部有「APP 睇」入口（唔會冇咗）',
+  PK.PARTS.filter(function(p){return !p.print&&!p.app}).length===0,
+  PK.PARTS.filter(function(p){return !p.print&&!p.app}).map(function(p){return p.k}).join(','));
+ok('⑮ 預設領袖套包淨係 1 頁',PK.pages('lead',pkMeet.m,0)===1,'pages='+PK.pages('lead',pkMeet.m,0));
 const slim=PK.sheets('lead',pkMeet.m,0);
-ok('⑮ 剔走嘅項目唔會印（其餘照印）',
-  !/執袋單/.test(slim)&&!/class="pk-card"/.test(slim)&&/pack-run/.test(slim)&&/家長通知/.test(slim),'len='+slim.length);
-PK.setPart('bag',1);PK.setPart('cards',1);
+ok('⑮ 預設領袖紙只有程序表（執袋單／帶領卡／通知都唔印）',
+  /pack-run/.test(slim)&&!/執袋單/.test(slim)&&!/class="pk-card"/.test(slim)&&!/家長通知/.test(slim),'len='+slim.length);
+PK.setPart('notice',1);
+ok('⑮ 想要先至印：剔開家長通知就出到',/家長通知/.test(PK.sheets('lead',pkMeet.m,0)));
+PK.setPart('notice',0);
+ok('⑮ 套包頁講明印幾頁＋慳幾多',/淨係印/.test(pkHtml)&&/其餘/.test(pkHtml)&&/🌱/.test(pkHtml));
+ok('⑮ 冇名單時預設印 1 份（唔好白白印 12 份）',PK.copies()===1,'copies='+PK.copies());
+/* 小朋友紙逐款揀 */
+var kAll=PK.kidPicks(pkMeet.m);
+ok('⑮ 預設全部款都印',kAll.length===G.Sheets.forMeet(pkMeet.m).length,'款='+kAll.length);
+const pBefore=PK.pages('kid',pkMeet.m,0);
+PK.toggleKid(kAll[0].k);
+ok('⑮ 剔走一款就少印一款',PK.kidPicks(pkMeet.m).length===kAll.length-1&&PK.pages('kid',pkMeet.m,0)<pBefore,
+  pBefore+'→'+PK.pages('kid',pkMeet.m,0));
+ok('⑮ 剔走嗰款唔會出紙',PK.sheets('kid',pkMeet.m,0).indexOf('data-k="'+kAll[0].k+'"')<0);
+PK.toggleKid(kAll[0].k);
+eq('⑮ 剔晒所有款等同「全部印」（唔會卡死）',PK.kidPicks(pkMeet.m).length,kAll.length);
+G.Store.set('members',[{n:'陳大文'},{n:'李小明'},{n:'黃小美'}]);
+G.Store.set('packcopies',0);
+eq('⑮ 有名單就跟人數印',PK.copies(),3);
+G.Store.set('members',[]);
+ok('⑮ 對照官方套包表（取代官方）',PK.COVER.length>=8&&/官方冇/.test(JSON.stringify(PK.COVER))&&/仲使唔使睇官方套包/.test(pkHtml),
+  'rows='+PK.COVER.length);
 
 /* ============ 結果 ============ */
 console.log('\n✅ 通過 '+pass+' 項');

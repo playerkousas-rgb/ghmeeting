@@ -26,13 +26,61 @@ s.window=s;const c=vm.createContext(s);
 const {App,HB,Play,Prepare,PrintKit,Pack,Kit,TPLS}=s;
 App.init();
 let fails=[];
+/* tag 平衡檢查：多咗／少咗一個 </div> 都會令成個版面散晒 */
+function tagBalance(html){
+  let d=0;
+  html.replace(/<(\/?)(div|section|article|details|table|tbody|thead|tr|td|th|button|small|b|h1|h2|h3|h4|span)\b[^>]*>/g,function(all,close){
+    if(/\/$>$/.test(all))return all;
+    d+= close?-1:1;
+    return all;
+  });
+  return d;
+}
 ['#pack','#plan','#meet','#play','#track','#book','#print'].forEach(h=>{
   s.location.hash=h;
   try{App.route();const out=els.get('view').innerHTML;
     if(!out||out.length<200)fails.push(h+' 內容太短 '+out.length);
+    const bal=tagBalance(out);
+    if(bal!==0)fails.push(h+' tag 唔平衡（差 '+bal+' 個）');
     else console.log('view',h,'ok',out.length);
   }catch(e){fails.push(h+' → '+e.message)}
 });
+/* 新手機／清空咗資料都要開到（即開即用底線） */
+Object.keys(s.localStorage).forEach(k=>s.localStorage.removeItem(k));
+['#pack','#plan','#meet','#play','#track','#book','#print'].forEach(h=>{
+  s.location.hash=h;
+  try{App.route();const out=els.get('view').innerHTML;
+    if(!out||out.length<200)fails.push('清空資料後 '+h+' 開唔到（'+out.length+' 字）');
+    if(tagBalance(out)!==0)fails.push('清空資料後 '+h+' tag 唔平衡');
+  }catch(e){fails.push('清空資料後 '+h+' → '+e.message)}
+});
+console.log('冷啟動（localStorage 清空）7 個分頁 ok');
+
+/* 「其餘喺 APP 睇」唔可以係死掣：每個唔印嘅項目都要真係開到嘢出嚟 */
+App.init();
+s.location.hash='#pack';App.route();
+const cur=Pack.meet();
+let appOk=0;
+Pack.PARTS.filter(p=>p.app).forEach(p=>{
+  const mEl=s.document.getElementById('modal'),vEl=s.document.getElementById('view');
+  mEl.innerHTML='';vEl.innerHTML='';
+  let err=null;
+  try{Pack.appView(p.k)}catch(e){err=e.message}
+  const out=mEl.innerHTML||vEl.innerHTML;
+  if(err)fails.push('📱 '+p.k+' 開唔到：'+err);
+  else if(out.length<150)fails.push('📱 '+p.k+' 開到但冇內容（'+out.length+' 字）');
+  else if(tagBalance(out)!==0)fails.push('📱 '+p.k+' tag 唔平衡');
+  else {appOk++;console.log('📱 APP 睇',p.k,'ok',out.length)}
+});
+if(appOk!==Pack.PARTS.filter(p=>p.app).length)fails.push('📱 有項目未能喺 APP 打開（'+appOk+'/'+Pack.PARTS.filter(p=>p.app).length+'）');
+/* 逐款揀小朋友紙 */
+const picks0=Pack.kidPicks(cur.m).length,k0=Pack.kidPicks(cur.m)[0].k;
+Pack.toggleKid(k0);
+if(Pack.kidPicks(cur.m).length!==picks0-1)fails.push('小朋友紙逐款揀唔得');
+if(Pack.sheets('kid',cur.m,0).indexOf('data-k="'+k0+'"')>=0)fails.push('剔走嗰款仲印緊');
+Pack.toggleKid(k0);
+if(Pack.kidPicks(cur.m).length!==picks0)fails.push('剔返佢之後款數唔返嚟');
+console.log('小朋友紙逐款揀 ok（'+picks0+' 款）');
 // 手冊每個分頁
 ['core','craft','kit','venue','games','badge','chute','sfh','tips','about'].forEach(t=>{
   try{HB.tab=t;const h=HB.html();if(h.length<500)fails.push('HB.'+t+' 太短')}catch(e){fails.push('HB.'+t+' → '+e.message)}

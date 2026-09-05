@@ -123,6 +123,12 @@ var App={
     Store.set('settings',s);Modal.close();App.route();toast('已儲存 ✓');
   },
   /* ---- 年度規劃種子(跟隨開季月份排22次) ---- */
+  /* localStorage 被清空／舊版本留低嘅殘缺資料都要開到 APP */
+  plan:function(){
+    var p=Store.get('plan');
+    if(!p||!p.rows){App.seedPlan();p=Store.get('plan')||{rows:[]}}
+    return p;
+  },
   seedPlan:function(force){
     if(Store.get('plan')&&!force)return;
     var rows=TPLS.filter(function(t){return t.cat!=='gh'&&t.cat!=='custom'}).map(function(t,i){
@@ -143,7 +149,8 @@ var Modal={
 /* ================= 規劃 Plan ================= */
 var Plan={
   html:function(){
-    var s=Store.get('settings'),pl=Store.get('plan'),mem=Store.get('members');
+    var s=Store.get('settings')||{group:'我的旅團'},mem=Store.get('members')||[];
+    var pl=App.plan();
     var next=pl.rows.find(function(r){return r.status==='todo'});
     var done=pl.rows.filter(function(r){return r.status==='done'}).length;
     var nextT=next?dur(next.tid):null;
@@ -186,9 +193,9 @@ var Plan={
     });
     return h+'</div><div class="btns"><button class="btn sm ghost" onclick="Plan.markAllDone()">記低呢季完成晒</button></div>';
   },
-  markAllDone:function(){var pl=Store.get('plan');if(confirm('將所有未完成集會標記為完成?')){pl.rows.forEach(function(r){r.status='done'});Store.set('plan',pl);App.route()}},
+  markAllDone:function(){var pl=App.plan();if(confirm('將所有未完成集會標記為完成?')){pl.rows.forEach(function(r){r.status='done'});Store.set('plan',pl);App.route()}},
   rowAction:function(no){
-    var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});var t=dur(r.tid);
+    var pl=App.plan();var r=pl.rows.find(function(x){return x.no===no});var t=dur(r.tid);
     Modal.open('<h3>第'+no+'次集會</h3><b>'+esc(t.n)+'</b><div class="mute" style="font-size:.85rem">'+esc(t.theme)+'</div>'+
       '<label class="f">狀態</label><div class="btns">'+
       '<button class="btn sm '+(r.status==='todo'?'':'ghost')+'" onclick="Plan.setRow('+no+',\'todo\')">未做</button>'+
@@ -200,17 +207,17 @@ var Plan={
       TPLS.map(function(x){return '<option value="'+x.id+'"'+(x.id===r.tid?' selected':'')+'>'+esc(x.n)+'</option>'}).join('')+'</select>'+
       '<div class="btns" style="margin-top:12px"><button class="btn gr" onclick="Modal.close();Lead.start(\''+r.tid+'\','+no+')">▶ 帶領呢次</button></div>');
   },
-  setRow:function(no,st){var pl=Store.get('plan');pl.rows.find(function(x){return x.no===no}).status=st;Store.set('plan',pl);
+  setRow:function(no,st){var pl=App.plan();pl.rows.find(function(x){return x.no===no}).status=st;Store.set('plan',pl);
     if(st==='done')Track.attendPrompt(no);else{Modal.close();App.route()}},
   setDate:function(no,v){
     if(typeof Kit!=='undefined'&&Kit.setPlanDate){Kit.setPlanDate(no,v)}
-    else{var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});if(r){r.date=v||'';Store.set('plan',pl)}}
+    else{var pl=App.plan();var r=pl.rows.find(function(x){return x.no===no});if(r){r.date=v||'';Store.set('plan',pl)}}
     if(typeof App!=='undefined')App.route();
     Modal.close();
   },
-  swap:function(no,tid){var pl=Store.get('plan');pl.rows.find(function(x){return x.no===no}).tid=tid;Store.set('plan',pl);toast('已換範本');Modal.close();App.route()},
+  swap:function(no,tid){var pl=App.plan();pl.rows.find(function(x){return x.no===no}).tid=tid;Store.set('plan',pl);toast('已換範本');Modal.close();App.route()},
   roadmap:function(){
-    var mem=Store.get('members');
+    var mem=Store.get('members')||[];
     var avgStep=mem.length?Math.round(mem.reduce(function(a,m){return a+(m.step||0)},0)/mem.length):0;
     var stops=[
       {t:'👑 團員章',d:'參加4次集會+完成基本常識(唱主題歌/揚動快樂傘/整理領巾)、誓詞規律口號、保護自己',mo:'第1–2個月',ok:mem.length&&mem.every(function(m){return Track.memberDone(m)})},
