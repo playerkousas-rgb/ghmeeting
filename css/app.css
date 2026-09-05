@@ -79,6 +79,10 @@ hr.soft{border:none;border-top:1.5px dashed var(--line);margin:12px 0}
   overflow:auto;padding:16px 16px calc(20px + env(safe-area-inset-bottom));animation:up .22s ease}
 @keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
 @media(min-width:600px){#modal{align-items:center}.sheet{border-radius:22px}}
+/* 桌面開詳細唔好縮成細細個：加闊加高 */
+@media(min-width:900px){#modal .sheet{max-width:960px;width:94vw;max-height:92dvh}
+  #modal .sheet .craft-art{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start}}
+@media(min-width:1200px){#modal .sheet{max-width:1080px}}
 .sheet h3{color:var(--ord)}
 .sheet .x{float:right;font-size:1.2rem;padding:4px 10px;color:var(--mute)}
 /* =========== 帶領模式 =========== */

@@ -457,7 +457,7 @@ Lead.scr={
     var mats=(st.mats||[]).length?'<div class="mats-bar" style="justify-content:center"><b>🧺 實物物資（選填）：</b>'+st.mats.map(function(m){return '<span class="pill">'+esc(m)+'</span>'}).join('')+'</div>':'';
     var craft=(typeof Craft!=='undefined')?Craft.screenArt(st):'';
     var vn=(typeof Venue!=='undefined')?(Venue.stageHint(st)+(typeof Craft!=='undefined'?Craft.ctrlHint(st):'')):'';
-    return vn+'<div class="digital-tool-bar"><b>💡 冇自備道具？</b> 唔使驚！呢啲遊戲用身體玩，螢幕只係幫你出題・叫位・計分：'+
+    return vn+'<div class="digital-tool-bar"><b>💡 冇道具？</b> 用身體玩，螢幕幫你出題・叫位・計分：'+
       '<div class="btns" style="justify-content:center;margin-top:6px">'+
         '<button class="btn sm" onclick="Lead.switchToGame(\'catch\')">🦗 草蜢跳格（九宮格）</button>'+
         '<button class="btn sm" onclick="Lead.switchToGame(\'traffic\')">🚦 紅綠燈</button>'+
@@ -465,7 +465,7 @@ Lead.scr={
         '<button class="btn sm" onclick="Lead.switchToGame(\'quiz\')">🏆 四角搶答</button>'+
         '<button class="btn sm" onclick="Lead.switchToGame(\'guess\')">🔍 估估下</button>'+
       '</div></div>'+
-      '<div class="child-prompt">領袖先示範一次，小朋友跟住每一步做</div>'+craft+Lead.guideHtml(g)+mats+
+      '<div class="child-prompt">你先做一次，小朋友跟住做</div>'+craft+Lead.guideHtml(g)+mats+
       ((typeof Img!=='undefined')?'<div class="btns" style="justify-content:center;margin-top:6px">'+Img.vid(st.n)+'</div>':'');
   },
 
@@ -768,7 +768,7 @@ Lead.scr={
     return '<div class="big" style="font-size:1.3rem;color:var(--mute)">🎵 '+esc(meta.title)+'・卡拉OK</div>'+
       '<div class="song-note"><b>唔使搵 YouTube：</b>'+esc(sk==='theme'?(DATA.facts.songHint||'按播放，跟住黃色句子唱。'):'按播放，跟住句子唱。')+
       ' APP 會即時彈出「'+esc(meta.title)+'」旋律：'+esc(meta.note)+
-      '—句尾拖長、句與句之間換氣、有和弦托底，同真歌嘅節奏一樣。</div>'+
+      '—節奏同真歌一樣，跟住唱就得。</div>'+
       lines.map(function(l,i){return '<div class="songline" id="sg'+i+'">'+esc(l)+'</div>'}).join('')+
       '<div class="song-tools">'+
         '<button class="btn gr" onclick="Lead.songTick(0)">▶ 播放伴奏+卡拉OK</button>'+
