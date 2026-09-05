@@ -69,7 +69,7 @@ stages:[
 {id:'t09',n:'第9次・聖誕派對',cat:'fest',mo:'12月',len:60,theme:'聖誕・分享快樂',
 stages:[
  {t:'儀式',n:'開心快樂傘(開會)',m:5,mats:['快樂傘'],how:'齊唸口號揚傘開會。',script:'「聖誕快樂!Ho Ho Ho!」',screen:'chuteopen'},
- {t:'唱遊',n:'聖誕歌Sing Along',m:8,how:'唱Jingle Bells等,伴奏齊唱。',script:'「Jingle bells, jingle bells… 一齊唱!」',screen:'song'},
+ {t:'唱遊',n:'聖誕歌Sing Along',m:8,how:'唱Jingle Bells等,伴奏齊唱。',script:'「Jingle bells, jingle bells… 一齊唱!」',screen:'song',song:'jingle'},
  {t:'遊戲',n:'紅綠燈(聖誕定格版)',m:12,how:'綠燈行、黃燈慢動作、紅燈定格做聖誕老人動作！',script:'「綠燈!……紅燈!……定格做聖誕老人!」',screen:'traffic'},
  {t:'美勞',n:'聖誕卡DIY',m:20,mats:['卡紙','顏色筆','貼紙'],how:'整聖誕卡送俾屋企人或朋友,寫/畫祝福。',script:'「邊個想送俾邊個?整好嘅同大家講祝福語!」',screen:'howto',gh:4},
  {t:'遊戲',n:'問答擂台:聖誕知識',m:10,how:'問答擂台搶答聖誕與友愛小常識。',script:'「聖誕老人住喺邊度?一齊搶答!」',screen:'quiz'},
@@ -86,7 +86,7 @@ stages:[
 {id:'t11',n:'第11次・農曆新年:迎春接福',cat:'fest',mo:'1-2月',len:60,theme:'農曆新年・傳統文化',
 stages:[
  {t:'儀式',n:'開心快樂傘(開會)',m:5,mats:['快樂傘'],how:'齊唸口號揚傘開會。',script:'「恭喜發財!」',screen:'chuteopen'},
- {t:'唱遊',n:'新年歌+拜年動作',m:8,how:'唱新年好,學拱手、鞠躬拜年禮。',script:'「一齊拱手:恭喜恭喜!」',screen:'song'},
+ {t:'唱遊',n:'新年歌+拜年動作',m:8,how:'唱新年好,學拱手、鞠躬拜年禮。',script:'「一齊拱手:恭喜恭喜!」',screen:'song',song:'newyear'},
  {t:'美勞',n:'寫「福」字/揮春',m:20,mats:['紅紙','毛筆/馬克筆'],how:'寫福字/畫年畫,講「福到」(倒轉貼)典故。',script:'「福字點解倒轉貼?福——到——!」',screen:'howto',gh:5},
  {t:'遊戲',n:'任務抽籤機:新春善行',m:10,how:'抽取新年期間的孝順與善行任務。',script:'「抽中邊個新年任務?主動同長輩講新年祝福!」',screen:'task'},
  {t:'遊戲',n:'節奏模仿(新春版)',m:12,how:'APP 出拍子聲(100 BPM),領袖做一次,全體跟住拍。',script:'「新春鼓聲響起——跟住拍!」',screen:'rhythm'},

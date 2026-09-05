@@ -609,7 +609,7 @@ var Craft={
     var c=this.byKey(k)||this.byKey('any');
     var g='<div class="craft-card'+(opts.plain?' plain':'')+'">'+
       '<div class="craft-head"><span class="craft-ic">'+c.ic+'</span><div><h3>'+esc(c.n)+'</h3><small class="mute">領袖自學卡・開會前 3 分鐘睇完就帶得</small></div></div>'+
-      '<div class="craft-art">'+this.svg(c.k)+'<div class="craft-look"><b>👀 成品長咁樣（唔使你帶實物）</b>'+esc(c.look)+'</div></div>'+
+      '<div class="craft-art">'+((typeof Img!=='undefined')?Img.fig('c-'+c.k,c.n,'',this.svg(c.k)):this.svg(c.k))+'<div class="craft-look"><b>👀 成品長咁樣（唔使你帶實物）</b>'+esc(c.look)+'</div></div>'+
       (this.folds[c.k]?'<div class="craft-block"><h4>🔑 關鍵三步圖解</h4>'+this.foldSvg(c.k)+'</div>':'')+
       '<div class="craft-block"><h4>🧺 物資・每人幾多</h4><div class="craft-t">'+esc(c.need)+'</div>'+
         '<div class="craft-prep"><b>⏱️ 開會前備料</b>'+esc(c.prep)+'</div></div>'+
@@ -629,7 +629,8 @@ var Craft={
         '<div class="craft-block win"><h4>👏 收結（最緊要呢五分鐘）</h4><div class="craft-t">'+esc(c.win)+'</div></div>'+
         '<div class="craft-block safe"><h4>🛡️ 安全</h4><div class="craft-t">'+esc(c.safe)+'</div></div>'+
       '</div>'+
-      (opts.plain?'':'<div class="btns" style="margin-top:12px"><button class="btn sm gr" onclick="Modal.close();PrintKit.openModal(\'craft-coach\',\''+c.k+'\')">🖨️ 打印呢張 A4 自學卡</button>'+
+      (opts.plain?'':'<div class="btns" style="margin-top:12px"><button class="btn sm gr" onclick="Modal.close();PrintKit.openModal(\'craft-ready\',\''+c.k+'\')">✂️ 印小朋友即用紙（即剪即用）</button>'+
+        '<button class="btn sm" onclick="Modal.close();PrintKit.openModal(\'craft-coach\',\''+c.k+'\')">📚 印領袖自學卡</button>'+
         '<button class="btn sm" onclick="Modal.close();PrintKit.openModal(\'craft-ctrl\')">🧒 打印 4–7 歲控場卡</button>'+(opts.inMeet?'<button class="btn sm" onclick="Craft.open(\''+c.k+'\')">📚 睇完整卡</button>':'')+'<button class="btn sm ghost" onclick="Modal.close();App.go(\'#book\');setTimeout(function(){HB.t(\'craft\')},60)">📖 手冊・手工篇</button></div>')+
       '</div>';
     return g;
@@ -648,6 +649,7 @@ var Craft={
       '<div class="cm-look">👀 '+esc(c.look)+'</div>'+
       '<div class="cm-ctrl">🧒 <b>4–7 歲控場：</b>一人一格派料・一步一停（做完舉手）・要嘢舉手唔好起身・做完嘅人即刻加任務。你幫手嘅位：'+esc((this.kid[c.k]||this.kid.any).adult)+'</div></div>'+
       '<div class="cm-btns"><button class="btn sm gr" onclick="Craft.open(\''+c.k+'\')">📚 跟我自學</button>'+
+      (Sheets.craft[c.k]?'<button class="btn sm" onclick="PrintKit.openModal(\'craft-ready\',\''+c.k+'\')">✂️ 印即用紙</button>':'')+
       '<button class="btn sm" onclick="Modal.close();PrintKit.openModal(\'craft-ctrl\')">🧒 控場卡</button></div></div>';
   },
   /* 投影用：俾小朋友睇到成品（解決「先睇成品」但領袖冇成品） */

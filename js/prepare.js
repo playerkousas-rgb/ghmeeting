@@ -5,10 +5,9 @@ var Prepare={
     var cats=[['all','全部'],['member','團員章'],['prog','進步'],['fest','特別'],['outdoor','戶外'],['gh','小草蜢'],['custom','自訂']];
     var h='<div class="card">'+
       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">'+
-        '<div><h2>🧩 帶領卡庫</h2><div class="mute" style="font-size:.83rem">'+TPLS.length+'張即用帶領卡。拆解成「先做咩、點樣示範、要講咩、要留意咩」。</div></div>'+
-        '<button class="btn sm" onclick="App.go(\'#print\')" style="background:#2e7d32;color:#fff">🖨️ A4 打印教材套包庫 ↗</button>'+
+        '<div><h2>🧩 帶領卡庫</h2><div class="mute" style="font-size:.83rem">'+TPLS.length+' 張即用帶領卡。</div></div>'+
+        '<button class="btn sm" onclick="App.go(\'#pack\')" style="background:#2e7d32;color:#fff">📦 集會套包 ↗</button>'+
       '</div>'+
-      '<div class="attention" style="margin-top:10px"><b>用心準備實體物資？</b> 撳右上角「🖨️ A4 打印教材套包庫」或每張卡底部的「🖨️ 打印教案」，可直接列印出紙本教案、實體圖卡與工作紙！</div>'+
       '<div style="margin:8px 0">'+cats.map(function(c){return '<span class="pill'+(Prepare.filter===c[0]?' on':'')+'" onclick="Prepare.f(\''+c[0]+'\')">'+c[1]+'</span>'}).join('')+'</div>';
     var list=TPLS.filter(function(t){return Prepare.filter==='all'||t.cat===Prepare.filter});
     list.forEach(function(t){
@@ -58,13 +57,13 @@ var Prepare={
     var h='<div class="ready-detail"><div class="eyebrow">🧭 領袖準備卡・'+esc(t.mo)+'</div><h3>'+esc(t.n)+'</h3><div class="mute" style="font-size:.85rem">'+esc(t.theme)+'・約 <b>'+Plan.lenOf(t)+' 分鐘</b>・'+t.stages.length+' 個小步驟</div>'+
       '<div class="btns" style="margin-top:12px">'+
         '<button class="btn gr" onclick="Modal.close();Lead.start(\''+t.id+'\')">▶ 由頭開始帶領</button>'+
-        '<button class="btn" style="background:#2e7d32;color:#fff" onclick="PrintKit.openModal(\'lesson-plans\',\''+t.id+'\')">🖨️ 打印本集 A4 教案</button>'+
-        '<button class="btn ghost" style="background:#ede7f6;color:#4527a0;border-color:#b39ddb" onclick="PrintKit.openModal(\'meet-pack\',\''+t.id+'\')">🖨️ 印齊今場全套</button>'+
+        '<button class="btn" style="background:#2e7d32;color:#fff" onclick="Modal.close();Pack.pick(\'tpl\',\''+t.id+'\')">📦 印齊今場套包</button>'+
+        '<button class="btn ghost" style="background:#ede7f6;color:#4527a0;border-color:#b39ddb" onclick="PrintKit.openModal(\'lesson-plans\',\''+t.id+'\')">🖨️ 只印教案</button>'+
         '<button class="btn ghost" onclick="Prepare.shareTpl(\''+t.id+'\')">📤 分享準備卡</button>'+
       (Kit.rain[t.id]?'<button class="btn ghost" style="background:#e3f2fd;border-color:#90caf9;color:#0d47a1" onclick="Kit.rainAsk(\''+t.id+'\')">☔ 落雨點算（睇後備版）</button>':'')+
       '</div>'+
       (function(){var cs=t.stages.filter(function(x){return Craft.isCraft(x)});
-        return '<div class="attention" style="margin-top:12px"><b>開場前只做三件事</b><br>① 按下面物資清單執齊　② 預留活動位置　③ 撳「由頭開始帶領」，跟綠色領袖欄一步一步做。</div>'+
+        return '<div class="attention" style="margin-top:12px"><b>開場前三件事</b>：① 照執袋單執齊　② 預留活動位置　③ 撳「由頭開始帶領」跟綠色欄做。</div>'+
           (cs.length?'<div class="attention" style="margin-top:8px;background:#fff8ee;border-left-color:#f57c00"><b>🎨 今次有 '+cs.length+' 個手工環節'+(cs.some(function(x){return Craft.match(x)})?'，每樣都附自學卡':'')+'</b><br>'+
           cs.map(function(x){var c=Craft.match(x);return c?'・'+c.ic+' <b>'+esc(x.n)+'</b> → <button class="lnk" onclick="Craft.open(\''+c.k+'\')">跟我自學</button>':'・🎨 <b>'+esc(x.n)+'</b> → <button class="lnk" onclick="Craft.open(\'any\')">萬用六步</button>'}).join('<br>')+
           '<br><small class="mute">未做過都跟得住：睇成品示意圖＋逐步拆解，帶班時只示範頭兩步。</small></div>':'')
