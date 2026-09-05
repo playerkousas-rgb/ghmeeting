@@ -25,7 +25,7 @@ var Img={
     if(fbHtml)this._fb[key]=fbHtml;
     var e=typeof esc==='function'?esc:(function(x){return x});
     return '<figure class="fig">'+
-      '<img loading="lazy" src="img/'+key+'.jpg" alt="'+e(alt||'')+'" '+
+      '<img loading="lazy" src="img/'+key+'.avif" alt="'+e(alt||'')+'" '+
       'onerror="Img.swap(this,\''+key+'\')">'+
       (caption?'<figcaption>'+e(caption)+'</figcaption>':'')+
       '</figure>';
