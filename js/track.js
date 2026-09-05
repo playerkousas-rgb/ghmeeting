@@ -2,7 +2,7 @@
 var Track={
   html:function(){
     var mem=Store.get('members');
-    var h='<div class="card"><h2>🏅 追蹤</h2><div class="mute" style="font-size:.85rem">邊個團員章過咗幾多關、進步獎章去到第幾步、小草蜢七範疇體驗進度——唔使再靠記憶。資料只存喺你部裝置。</div>'+
+    var h='<div class="card"><h2>🏅 記錄（追蹤進度）</h2><div class="mute" style="font-size:.85rem">邊個團員章過咗幾多關、進步獎章去到第幾步、小草蜢七範疇體驗進度——唔使再靠記憶。資料只存喺你部裝置。</div>'+
       '<div class="btns" style="margin-top:10px"><button class="btn" onclick="Track.add()">➕ 加團員</button>'+
       '<button class="btn ghost" onclick="Track.export()">📤 匯出報告</button></div>'+
       '<div class="stat" style="margin-top:8px"><div class="s"><b>'+mem.length+'</b>團員</div>'+

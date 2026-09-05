@@ -87,7 +87,7 @@ var Play={
     Modal.open('<div class="eyebrow">🎨 手工準備卡</div><h3>'+esc(st.n)+'</h3><div class="mute">來自「'+esc(t.n)+'」・可單獨使用</div>'+
       '<div class="attention" style="margin:8px 0"><b>未做過呢樣手工？</b> 先撳「跟我自學」—APP 有成品示意圖＋逐步拆解＋做唔掂嘅後備版；帶班時你只需要示範頭兩步。</div>'+
       '<div class="btns" style="margin:6px 0 10px"><button class="btn sm gr" onclick="Modal.close();Craft.open(\''+(c?c.k:'any')+'\')">📚 跟我自學</button>'+
-      '<button class="btn sm" style="background:#2e7d32;color:#fff" onclick="Modal.close();App.go(\'#print\')">🖨️ A4 打印教材庫</button></div>'+
+      '<button class="btn sm" style="background:#2e7d32;color:#fff" onclick="Modal.close();App.go(\'#print\')">✂️ 去圖紙庫打印</button></div>'+
       Prepare.brief(st,si));
   },
   craftAny:function(tid,si){var t=dur(tid);if(!t||!t.stages[si])return;Craft.open('any')}

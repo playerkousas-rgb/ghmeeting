@@ -9,6 +9,11 @@
   "orientation": "any",
   "background_color": "#fff7ec",
   "theme_color": "#e65100",
+  "shortcuts": [
+    {"name":"✂️ 圖紙（印教材）","short_name":"圖紙","url":"./index.html#print"},
+    {"name":"🖨️ 印齊今場（教案＋圖紙）","short_name":"印齊今場","url":"./index.html#pack"},
+    {"name":"▶️ 即開帶領","short_name":"帶領","url":"./index.html#lead"}
+  ],
   "icons": [
     {"src":"icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
     {"src":"icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}

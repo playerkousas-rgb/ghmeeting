@@ -26,7 +26,7 @@ var Kit={
     '隧道':{q:'每組 1 條',how:'出口兩邊要有人望住',sub:'兩張枱對拼＋布蓋、紙箱拆開接成長筒（效果一樣、仲似秘密基地）'},
     '旅巾':{q:'每人 1 條（檢查巾圈 size）',how:'預先逐條試摺一次，知邊啲巾圈太緊要剪返',sub:'用方巾／大手帕代替練習'},
     '獎章':{q:'按名單數量＋2 個後備',how:'開會前按名單順序排喺盒/枱（叫名先至唔使搵）',sub:'冇獎章：用打印嘉許狀先頒，獎章稍後補（本 APP 可打印）'},
-    '證書':{q:'每人 1 份',how:'官方證書要經旅團向總部申請，一般需時數星期—所以現場用打印嘉許狀先颁',sub:'🖨️ 教材庫「小童軍嘉許狀」即刻打印填名頒發'},
+    '證書':{q:'每人 1 份',how:'官方證書要經旅團向總部申請，一般需時數星期—所以現場用打印嘉許狀先颁',sub:'🖨️ 工具箱「✂️ 圖紙」→「小童軍嘉許狀」即刻打印填名頒發'},
     '急救包':{q:'1 個／小隊（戶外必須）',how:'檢查有無：膠布、無菌紗、生理鹽水、唔放針線、剪刀',sub:'向旅團借；出發前確認負責人識用'},
     '名單':{q:'紙本 1 份＋手機 1 份',how:'出發前印一次（含緊急聯絡人、過敏、服食藥物）',sub:'用 APP「🏅追蹤」截圖離線睇；完全冇網都要有紙本'},
     '飲用水':{q:'每人 500 毫升＋每組備 1 支後備',how:'天氣熱加電解質；標名避免飲錯',sub:'確認場地方有飲水機；冇就減短活動時間'},
@@ -466,18 +466,20 @@ var Kit={
     Object.keys(this.checks).forEach(function(k){var c=Kit.checks[k];
       push('🧭 執行檢查表',c.ic+' '+c.n,c.items.length+' 項可剔・逐項講清點樣檢查',c.n+' '+c.items.join(' '),"Modal.close();Kit.openCheck('"+k+"')");
     });
-    push('📦 集會套包','今場套包：一撳印齊所有教材','領袖套包＋小朋友即用紙','套包 打印 印齊 教材 即用紙 執袋單 程序表 帶領卡 家長通知 pack',
+    push('📦 集會套包','今場套包：一撳印齊所有教材','領袖教案＋小朋友圖紙（一疊過）','套包 打印 印齊 教材 圖紙 即用紙 教案 執袋單 程序表 帶領卡 家長通知 pack',
       "Modal.close();App.go('#pack')",'📦 開');
+    push('✂️ 圖紙庫','所有圖紙・場地圖卡・教案・海報','24 份教材分四類，第一格就係今場要用嗰啲','圖紙 圖 紙 教材庫 印 打印 列印 worksheet print 圖卡 海報 教案',
+      "Modal.close();App.go('#print')",'✂️ 開');
     push('📦 集會套包','⚡ 臨時集會（揀主題即出套包）','資深領袖臨時頂位用','臨時 加場 頂位 即興 隨手 開會',
       "Modal.close();App.go('#pack')",'📦 開');
     ((typeof Sheets!=='undefined'&&Sheets.craft)?Object.keys(Sheets.craft):[]).forEach(function(k){
       var c=Sheets.craft[k];
-      push('✂️ 即用紙',c.n,c.tip||'印完即剪即用',[c.n,c.tip||'','即用紙 剪 摺 塗色 工作紙'].join(' '),
+      push('✂️ 圖紙（即用紙）',c.n,c.tip||'印完即剪即用',[c.n,c.tip||'','圖紙 即用紙 剪 摺 塗色 工作紙'].join(' '),
         "Modal.close();PrintKit.openModal('craft-ready','"+k+"')",'🖨️ 印');
     });
     ((typeof Sheets!=='undefined'&&Sheets.ws)?Object.keys(Sheets.ws):[]).forEach(function(k){
       var w=Sheets.ws[k];
-      push('✂️ 即用紙',w.n,'按環節自動配',[w.n,'工作紙 即用紙'].join(' '),
+      push('✂️ 圖紙（即用紙）',w.n,'按環節自動配',[w.n,'圖紙 工作紙 即用紙'].join(' '),
         "Modal.close();PrintKit.openModal('craft-ready','ws:"+k+"')",'🖨️ 印');
     });
     ((typeof PrintKit!=='undefined'&&PrintKit.kits)?PrintKit.kits:[]).forEach(function(p){
@@ -528,7 +530,7 @@ var Kit={
     var s=String(q||'').trim();
     if(!s){
       return '<div class="srch-tip"><b>撳下面任何一個，即刻跳去可以用嗰度</b><div class="srch-chips">'+
-        ['燈籠','玩水','頒獎','物料','落雨','唱歌','名牌','回收','故事','靜息','傘','大雨'].map(function(x){
+        ['圖紙','燈籠','玩水','頒獎','物料','落雨','唱歌','名牌','回收','故事','靜息','傘'].map(function(x){
           return '<button class="pill" onclick="Kit.searchType2(this)">'+esc(x)+'</button>'}).join('')+'</div>'+
         '<small class="mute">搜到：30 張集會范本、15 張手工自學卡、物資點備、四張檢查表、A4 教材包、即玩遊戲、章項、手冊分頁。</small></div>';
     }

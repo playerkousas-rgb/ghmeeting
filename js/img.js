@@ -7,7 +7,8 @@ var Img={
   /* 內置後備：chute 用回 Lead.parachuteSvg */
   reg:{'chute-top':{fb:'chute'},'chute-steps':{fb:'chute'}},
   /* 遊戲 → 「點玩一眼圖」（實體遊戲先至有） */
-  games:{catch:'g-grid',quiz:'g-corners',judge:'g-corners',recycle:'g-corners',memory:'g-corners',
+  /* 一個遊戲一張圖：圖同玩法一定要對得上（四角搶答＝A/B/C/D 角牌，分邊＝👍👎，回收＝三色桶） */
+  games:{catch:'g-grid',quiz:'g-corners',judge:'g-judge',recycle:'g-recycle',
          traffic:'g-traffic',roll:'g-ball',leader:'g-leader',rhythm:'g-leader',moon:'g-throw',
          clean:'g-wash',bodycard:'g-body',flags:'g-salute',emotion:'g-faces',foodrainbow:'g-food'},
   /* 快樂傘16式 → 動作型態一眼圖 */

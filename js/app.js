@@ -19,7 +19,8 @@ var App={
     if(document.body.contains(document.getElementById('leadroot'))&&!document.getElementById('leadroot').classList.contains('hidden'))Lead.exit(false);
     var v={pack:'pack',plan:'plan',meet:'meet',play:'play',lead:'lead',track:'track',book:'book',print:'print'}[h]||'pack';
     App.view=v;
-    document.querySelectorAll('#tabbar a').forEach(function(a){a.classList.toggle('on',a.dataset.tab===v)});
+    /* 🅰️ 上方新手四步 ＋ 🅱️ 下方工具箱：兩條 bar 都要著返正確嗰格 */
+    document.querySelectorAll('#tabbar a, #topnav a').forEach(function(a){a.classList.toggle('on',a.dataset.tab===v)});
     var el=document.getElementById('view');
     if(v==='pack')el.innerHTML=Pack.html();
     if(v==='plan')el.innerHTML=Plan.html();
