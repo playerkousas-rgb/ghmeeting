@@ -462,7 +462,8 @@ Lead.scr={
         '<button class="btn sm" onclick="Lead.switchToGame(\'quiz\')">🏆 四角搶答</button>'+
         '<button class="btn sm" onclick="Lead.switchToGame(\'guess\')">🔍 估估下</button>'+
       '</div></div>'+
-      '<div class="child-prompt">領袖先示範一次，小朋友跟住每一步做</div>'+craft+Lead.guideHtml(g)+mats;
+      '<div class="child-prompt">領袖先示範一次，小朋友跟住每一步做</div>'+craft+Lead.guideHtml(g)+mats+
+      ((typeof Img!=='undefined')?'<div class="btns" style="justify-content:center;margin-top:6px">'+Img.vid(st.n)+'</div>':'');
   },
 
   /* 🛡️ 身體地圖紅黃綠 (Safe from Harm 數碼道具) */

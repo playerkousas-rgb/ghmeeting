@@ -609,7 +609,7 @@ var Craft={
     var c=this.byKey(k)||this.byKey('any');
     var g='<div class="craft-card'+(opts.plain?' plain':'')+'">'+
       '<div class="craft-head"><span class="craft-ic">'+c.ic+'</span><div><h3>'+esc(c.n)+'</h3><small class="mute">領袖自學卡・開會前 3 分鐘睇完就帶得</small></div></div>'+
-      '<div class="craft-art">'+this.svg(c.k)+'<div class="craft-look"><b>👀 成品長咁樣（唔使你帶實物）</b>'+esc(c.look)+'</div></div>'+
+      '<div class="craft-art">'+((typeof Img!=='undefined')?Img.fig('c-'+c.k,c.n,'',this.svg(c.k)):this.svg(c.k))+'<div class="craft-look"><b>👀 成品長咁樣（唔使你帶實物）</b>'+esc(c.look)+'</div></div>'+
       (this.folds[c.k]?'<div class="craft-block"><h4>🔑 關鍵三步圖解</h4>'+this.foldSvg(c.k)+'</div>':'')+
       '<div class="craft-block"><h4>🧺 物資・每人幾多</h4><div class="craft-t">'+esc(c.need)+'</div>'+
         '<div class="craft-prep"><b>⏱️ 開會前備料</b>'+esc(c.prep)+'</div></div>'+
