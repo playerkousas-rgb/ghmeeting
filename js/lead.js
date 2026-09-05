@@ -109,6 +109,15 @@ var Music={
   lines:[13,11,7,6,7,4],
   /* 每 4 拍（1 小節）一個和弦：C = C-E-G、G = G-B-D（同鋼琴版伴奏一樣） */
   bars:['C','C','G','C','C','C','G','C','C','C','G','C','C','C','G','C'],
+  /* 曲庫載入器：每首換走 song/lines/bars，卡拉OK 跟實 */
+  SONGBOOK:null,cur:'theme',
+  load:function(k){
+    var hit=this.SONGBOOK&&this.SONGBOOK[k];
+    this.cur=hit?k:'theme';
+    var s=hit||this.SONGBOOK.theme;
+    this.song=s.song;this.lines=s.lines;this.bars=s.bars;
+    return s;
+  },
   CH:{C:[130.81,164.81,196],G:[98,123.47,146.83]},
   beat:function(){return 60/this.bpm},
   /* 將樂譜變成時間表：每個音幾時響、響幾耐、屬第幾句；順便計出每小節起始時間（和弦用） */
@@ -198,6 +207,21 @@ var Music={
     stop:function(){this.on=false;if(this.tid)clearInterval(this.tid);this.tid=null;Lead.metroBeat(-1,0)}
   }
 };
+/* 曲庫：主題曲（London Bridge 寄調）・Jingle Bells・新年好，全部公開領域旋律 */
+Music.SONGBOOK={
+  theme:{title:'小童軍主題曲',note:'寄調 London Bridge is Falling Down・C 調・4/4',song:Music.song,lines:Music.lines,bars:Music.bars,lyrics:null},
+  jingle:{title:'Jingle Bells（鈴兒響叮噹）',note:'C 調・4/4・公開領域・副歌',
+    lyrics:['Jingle bells, jingle bells, jingle all the way','Oh what fun it is to ride in a one-horse open sleigh'],
+    lines:[11,15],bars:['C','C','C','C','F','C','G','G'],
+    song:[[330,1],[330,1],[330,2],[330,1],[330,1],[330,2],[330,1],[392,1],[262,1],[294,1],[330,4],
+          [349,1],[349,1],[349,1.5],[349,.5],[349,1],[330,1],[330,1],[330,.5],[330,.5],[330,1],[294,1],[294,1],[330,1],[294,2],[392,2]]},
+  newyear:{title:'新年好',note:'C 調・4/4・公開領域',
+    lyrics:['新年好呀，新年好呀，祝福大家新年好','我們唱歌，我們跳舞，祝福大家新年好'],
+    lines:[15,15],bars:['C','C','C','G','G','C','C','G'],
+    song:[[262,1],[262,1],[262,1],[392,1],[330,1],[330,1],[330,1],[262,1],[262,1],[330,1],[392,1],[392,1],[349,1],[330,1],[294,2],
+          [294,1],[330,1],[349,1],[349,1],[330,1],[294,1],[330,1],[262,1],[262,1],[330,1],[392,1],[392,1],[349,1],[330,1],[294,2]]}
+};
+Music.SONGBOOK.theme.lyrics=DATA.facts.song;
 
 var Lead={
   S:null,tmr:null,
@@ -730,13 +754,16 @@ Lead.scr={
     var g=Guide.forStage({screen:'chuteclose'});
     return '<div class="big">🌈 快樂傘散會・跟圖做</div>'+Lead.parachuteSvg('close')+Lead.guideHtml(g)+'<div class="huge" style="font-size:clamp(2rem,8vw,4.5rem)">「小童軍——向前進!」</div>';
   },
-  song:function(){
-    Music.stop();var lines=DATA.facts.song;
+  song:function(st){
+    Music.stop();
+    var sk=(st&&st.song)||'theme';
+    var meta=Music.load(sk);
+    var lines=meta.lyrics||DATA.facts.song;
     Lead.after=function(){};
     var g=Guide.forStage({t:'唱遊',screen:'song'});
-    return '<div class="big" style="font-size:1.3rem;color:var(--mute)">🎵 小童軍主題曲・卡拉OK</div>'+
-      '<div class="song-note"><b>唔使搵 YouTube：</b>'+esc(DATA.facts.songHint||'按播放，跟住黃色句子唱。')+
-      ' APP 會即時彈出寄調 London Bridge 嘅旋律：'+esc(DATA.facts.songNote)+
+    return '<div class="big" style="font-size:1.3rem;color:var(--mute)">🎵 '+esc(meta.title)+'・卡拉OK</div>'+
+      '<div class="song-note"><b>唔使搵 YouTube：</b>'+esc(sk==='theme'?(DATA.facts.songHint||'按播放，跟住黃色句子唱。'):'按播放，跟住句子唱。')+
+      ' APP 會即時彈出「'+esc(meta.title)+'」旋律：'+esc(meta.note)+
       '—句尾拖長、句與句之間換氣、有和弦托底，同真歌嘅節奏一樣。</div>'+
       lines.map(function(l,i){return '<div class="songline" id="sg'+i+'">'+esc(l)+'</div>'}).join('')+
       '<div class="song-tools">'+

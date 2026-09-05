@@ -21,7 +21,7 @@ const s={console,
     this.createGain=()=>({gain:{value:0,setValueAtTime(){},linearRampToValueAtTime(){},exponentialRampToValueAtTime(){}},connect(){},disconnect(){}});
     this.resume=()=>{};}};
 s.window=s;const c=vm.createContext(s);
-['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','prepare.js','print.js','pack.js','lead.js','track.js','handbook.js','play.js','kit.js','venue.js']
+['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js']
   .forEach(f=>vm.runInContext(fs.readFileSync(path.join(__dirname,'..','js',f),'utf8'),c,{filename:f}));
 const {App,HB,Play,Prepare,PrintKit,Pack,Kit,TPLS}=s;
 App.init();

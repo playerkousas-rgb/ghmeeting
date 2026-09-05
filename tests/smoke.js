@@ -65,7 +65,7 @@ const sandbox={
 };
 sandbox.window=sandbox;sandbox.globalThis=sandbox;
 const ctx=vm.createContext(sandbox);
-const order=['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','prepare.js','print.js','pack.js','lead.js','track.js','handbook.js','play.js','kit.js','venue.js'];
+const order=['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js'];
 for(const f of order){
   vm.runInContext(fs.readFileSync(path.join(__dirname,'..','js',f),'utf8'),ctx,{filename:'js/'+f});
 }
@@ -512,6 +512,20 @@ eq('⑮ 有名單就跟人數印',PK.copies(),3);
 G.Store.set('members',[]);
 ok('⑮ 對照官方套包表（取代官方）',PK.COVER.length>=8&&/官方冇/.test(JSON.stringify(PK.COVER))&&/仲使唔使睇官方套包/.test(pkHtml),
   'rows='+PK.COVER.length);
+
+/* 曲庫：每首唱遊歌都要有啱節奏嘅伴奏 */
+eq('⑮ 曲庫有三首歌',Object.keys(Music.SONGBOOK).length,3);
+['theme','jingle','newyear'].forEach(function(k){
+  var sb=Music.SONGBOOK[k];
+  var beats=sb.song.reduce(function(a,x){return a+x[1]},0);
+  var linesN=sb.lines.reduce(function(a,b){return a+b},0);
+  ok('⑮ '+k+' 音數等於 lines 總和',linesN===sb.song.length,'notes='+sb.song.length+' lines='+linesN);
+  ok('⑮ '+k+' 拍數係 4 嘅倍數',beats%4===0,'beats='+beats);
+});
+Music.load('jingle');
+ok('⑮ 載入 jingle 後跟住換',Music.cur==='jingle'&&Music.song===Music.SONGBOOK.jingle.song);
+Music.load('theme');
+ok('⑮ 載入返 theme',Music.cur==='theme');
 
 /* ============ 結果 ============ */
 console.log('\n✅ 通過 '+pass+' 項');

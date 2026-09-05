@@ -1,6 +1,6 @@
 /* 小童軍集會助手 — Service Worker (offline first) © Scout System */
-var CACHE='ghub-v3-1-0';
-var ASSETS=['./','./index.html','./manifest.webmanifest','./css/app.css','./js/data.js','./js/guide.js','./js/craft.js','./js/sheets.js','./js/tpls.js','./js/app.js','./js/prepare.js','./js/print.js','./js/pack.js','./js/lead.js','./js/track.js','./js/handbook.js','./js/play.js','./js/kit.js','./js/venue.js','./icons/icon-192.png','./icons/icon-512.png'];
+var CACHE='ghub-v3-2-0';
+var ASSETS=['./','./index.html','./manifest.webmanifest','./css/app.css','./js/data.js','./js/guide.js','./js/craft.js','./js/sheets.js','./js/tpls.js','./js/app.js','./js/prepare.js','./js/print.js','./js/pack.js','./js/lead.js','./js/img.js','./js/track.js','./js/handbook.js','./js/play.js','./js/kit.js','./js/venue.js','./icons/icon-192.png','./icons/icon-512.png','./img/chute-top.jpg','./img/chute-steps.jpg'];
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(ASSETS)}).then(function(){return self.skipWaiting()}));
 });

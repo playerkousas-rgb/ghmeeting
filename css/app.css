@@ -1864,3 +1864,9 @@ button.lnk:hover{color:var(--ord)}
 .pk-kids .pill{font-size:.76rem;padding:4px 10px}
 .pk-prev{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);font-size:.8rem;font-weight:800}
 .pk-prev svg{display:block;margin:6px auto 0;max-width:100%;height:auto}
+
+/* ---- 真圖優先：figure 圖解 ---- */
+figure.fig{margin:10px 0;background:#fff;border:1.5px solid var(--line);border-radius:13px;
+  overflow:hidden;padding:0}
+figure.fig img{display:block;width:100%;height:auto;max-height:340px;object-fit:contain;background:#fafafa}
+figure.fig figcaption{font-size:.76rem;color:var(--mute);padding:7px 10px;border-top:1px dashed var(--line);line-height:1.45}

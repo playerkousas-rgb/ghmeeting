@@ -76,7 +76,9 @@ var HB={
       '<div class="grid2" style="margin-top:8px">'+DATA.ghDomains.map(function(d){return '<div class="mem"><h4>'+d.ic+' '+d.n+'</h4><small class="mute">2項體驗</small></div>'}).join('')+'</div></div>';
   },
   chute:function(){
-    return '<div class="card"><h2>🌈 快樂傘：先學基本動作，再揀玩法</h2><div class="mute" style="font-size:.83rem">新領袖唔需要靠估。先看下面動作圖，開會／散會照做；之後每次只揀一式遊戲。安全優先：揸實傘邊・留一隻手臂距離・傘面唔企人。</div>'+Lead.parachuteSvg('open')+
+    return '<div class="card"><h2>🌈 快樂傘：先學基本動作，再揀玩法</h2><div class="mute" style="font-size:.83rem">新領袖唔需要靠估。先看圖，開會／散會照做；之後每次只揀一式遊戲。安全優先：揸實傘邊・留一隻手臂距離・傘面唔企人。</div>'+
+      Img.fig('chute-top','小朋友圍住快樂傘，雙手執實傘邊','俯瞰：圍成一圈、雙手執實傘邊，領袖喺圈外打手勢號令')+
+      Img.fig('chute-steps','快樂傘三步：執傘預備、一齊揚高、蒙古包','① 執實傘邊預備 ② 數「一、二、三」一齊揚高 ③ 踏前趴低變蒙古包')+Lead.parachuteSvg('open')+
       '<div class="attention"><b>開會口令</b> 「面向傘、跪低、執實」→ 一、二、三揚傘。<br><b>散會口令</b> 「停、口號、慢慢放低」→ 傘落到膝頭才整理。</div>'+
       '<h3 style="margin-top:16px">16式玩法卡</h3><div class="grid2" style="margin-top:8px">'+DATA.chute.map(function(c,i){
         return '<div class="mem"><h4>'+c.ic+' '+c.n+' <span class="tag">'+c.tag+'</span></h4><div class="box" style="font-size:.85rem">'+esc(c.h)+'</div><small class="mute">💡 '+esc(c.t)+'</small><div class="btns"><button class="btn sm gr" onclick="Lead.startChute('+i+')">▶ 開圖卡</button></div></div>'}).join('')+'</div></div>';
