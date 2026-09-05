@@ -45,8 +45,8 @@ var Play={
     return out;
   },
   html:function(){
-    var h='<div class="card activity-hero"><span class="eyebrow">🎮 活動架・新舊領袖都用得</span><h2>想玩咩，就揀咩。</h2>'+
-      '<p class="mute"><b>我哋唔係打電子 GAME。</b>螢幕只係幫你<b>出題・叫位・計時・計分</b>；遊戲本身係小朋友喺場內用身體玩（跳格、行角、分邊、拋球、跟拍子），領袖撳掣，十幾個小朋友唔使搶住掂螢幕。<br><b>冇道具都玩到</b>：大部分遊戲只需要膠紙／粉筆貼地，或者連貼都唔使。<b>手工唔使識做先帶得</b>：每樣手工都附「自學卡」—成品示意圖＋逐步拆解＋最易錯位＋萬用後備。</p>'+
+    var h='<div class="card activity-hero"><span class="eyebrow">🎮 活動架</span><h2>想玩咩，就揀咩。</h2>'+
+      '<p class="mute">螢幕只做<b>出題・叫位・計時・計分</b>，小朋友用身體玩。手工有「✂️ 即用紙」＋「📚 自學卡」。臨時開會：<button class="lnk" onclick="App.go(\'#pack\')">📦 集會套包</button>。</p>'+
       '<div class="activity-stat"><b>'+this.games.length+'</b><span>個即玩遊戲／數碼工具</span><b>'+this.craftItems().length+'</b><span>個手工活動（附自學卡）</span><b>'+this.videos.length+'</b><span>條參考片</span><b>'+Craft.list().length+'</b><span>張手工自學卡</span></div></div>'+
       '<div class="card"><div class="activity-tabs">'+[['all','全部'],['game','🎮 遊戲／工具'],['craft','🎨 手工'],['video','🎬 示範片']].map(function(x){return '<button class="pill '+(Play.tab===x[0]?'on':'')+'" onclick="Play.filterBy(\''+x[0]+'\')">'+x[1]+'</button>'}).join('')+'</div><input type="text" value="'+esc(this.q)+'" placeholder="🔎 搵活動，例如：回收、安全、交通、球、傘、燈籠、揮春" oninput="Play.search(this.value)"><div id="playList" class="activity-grid">'+this.listHtml()+'</div></div>';
     return h;

@@ -17,7 +17,7 @@ var PrintKit={
       cat:'cards',
       ic:'🛡️',
       n:'身體界線紅黃綠圖卡套包 (Safe from Harm)',
-      desc:'4張紅黃綠標誌卡 + 8張身體部位指示卡 + 6張情景求助卡，剪開即可用。',
+      desc:'紅黃綠標誌卡＋情景求助卡，剪開即用。',
       pages:'A4 2頁 (雙面/剪裁版)',
       render:function(){return PrintKit.renderSfhCards()}
     },
@@ -26,7 +26,7 @@ var PrintKit={
       cat:'cards',
       ic:'♻️',
       n:'三色回收分類圖卡套包 (24件物品實物卡)',
-      desc:'藍黃綠三色桶標誌卡 + 18張常見垃圾圖卡，剪裁後進行分組接力賽。',
+      desc:'三色桶標誌＋12 件物品卡，剪開玩分類。',
       pages:'A4 2頁 (分類卡+桶標誌)',
       render:function(){return PrintKit.renderRecycleCards()}
     },
@@ -35,7 +35,7 @@ var PrintKit={
       cat:'plan',
       ic:'📍',
       n:'場地設置卡（六分區・30 分鐘時間表・五條規矩・救急）',
-      desc:'第一次去新場地／新領袖未試過設場用：六個分區貼邊・幾大・最易錯，開場前 30 分鐘逐步清單（連散場），開會前 3 分鐘照讀嘅五條規矩，人數分組對策，八個現場救急做法。',
+      desc:'新場地／新領袖用：六分區・30 分鐘清單・五條規矩・救急。',
       pages:'A4 2 頁（到場跟住剔）',
       render:function(){return Venue.printSheet()}
     },
@@ -44,16 +44,25 @@ var PrintKit={
       cat:'cards',
       ic:'🦗',
       n:'草蜢跳格・實體九宮格地貼＋玩法卡',
-      desc:'A4 九宮格地貼（1–9 號，可放大影印或直接逐格剪開貼地）＋玩法卡：限時跳格規則、秒數對照、分組計分方法、安全提醒與三種變化玩法。',
+      desc:'九宮格地貼（1–9 號）＋領袖玩法卡。',
       pages:'A4 2 頁（地貼＋玩法卡）',
       render:function(){return PrintKit.renderFloorGrid()}
+    },
+    {
+      id:'craft-ready',
+      cat:'worksheet',
+      ic:'✂️',
+      n:'手工即用紙（印完即剪即用・紙上冇說明）',
+      desc:'15 樣手工嘅小朋友用紙：剪線、摺線、描紅、塗色格。領袖說明喺另一疊。',
+      pages:'A4 1 頁／樣（可整套或單張）',
+      render:function(k){return Sheets.printSheet(k)}
     },
     {
       id:'corner-signs',
       cat:'cards',
       ic:'🅰️',
       n:'實體遊戲場地圖卡（四角角牌・👍👎分邊・回收桶・月亮靶）',
-      desc:'一疊印齊實體遊戲要用嘅場地標記：A／B／C／D 四角搶答角牌、👍👎 對錯法庭分邊牌、三色回收桶標籤、中秋射月靶與投擲線牌。剪開貼牆／貼地即用。',
+      desc:'四角角牌・👍👎 分邊牌・回收桶・射月靶，貼牆即用。',
       pages:'A4 2 頁（大標記裁切版）',
       render:function(){return PrintKit.renderCornerSigns()}
     },
@@ -62,7 +71,7 @@ var PrintKit={
       cat:'plan',
       ic:'🎮',
       n:'互動遊戲帶領卡（小朋友做乜・領袖撳乜・物資・安全）',
-      desc:'由 APP 遊戲庫自動生成：每個遊戲一張卡，寫明小朋友用身體做乜、領袖撳邊個掣、要乜物資場地、安全提醒。新領袖開會前睇一疊就帶到全場遊戲。',
+      desc:'每個遊戲一張卡：小朋友做乜・領袖撳乜・物資・安全。',
       pages:'A4 每頁 2 張卡（共約 10 頁）',
       render:function(){return PrintKit.renderGameCards()}
     },
@@ -107,7 +116,7 @@ var PrintKit={
       cat:'coach',
       ic:'🧒',
       n:'4–7 歲手工控場卡（派料・一步一停・加任務・收工）＋15 個手工年齡分工速查',
-      desc:'小童軍唔係唔聽話，係聽唔到三句指令。呢張卡貼喺枱邊：開工前 3 分鐘點做、一人一格點派料、一步一停嘅停止訊號、做完嘅人點安置、喊唔肯做點處理、爭執點拆、收工 3 分鐘；仲有五樣一定唔好做、安全紅線、30 分鐘手工時間表，同 15 個手工嘅 4–5 歲／6–7 歲分工速查。',
+      desc:'貼枱邊：派料・一步一停・加任務・收工，附年齡分工。',
       pages:'A4 2 頁（貼枱邊・開工前睇一次）',
       render:function(){return Craft.controlSheet()+Craft.ctrlTable()}
     },
@@ -116,7 +125,7 @@ var PrintKit={
       cat:'worksheet',
       ic:'🎨',
       n:'手工自學卡（領袖版）・逐步圖解與後備版',
-      desc:'每樣手工一張 A4：成品標準、物資與備料、領袖自己先學嘅逐步拆解、最易錯位與補救、零失敗後備版。新領袖唔識做都帶得。',
+      desc:'領袖版說明書：逐步拆解・最易錯位・後備版。（小朋友紙另印）',
       pages:'A4 1頁／樣（可先睇總表再印單樣）',
       render:function(ck){return Craft.printSheet(ck)}
     },
@@ -125,25 +134,34 @@ var PrintKit={
       cat:'plan',
       ic:'🧭',
       n:'集會執行檢查表（戶外・玩水・頒獎・美勞）',
-      desc:'將「檢查場地、執齊物資」呢類口號變返逐項可剔清單：戶外出發前 10 項、玩水安全 10 項、頒獎典禮 10 項、美勞前 10 項，附影相私隱四句。',
+      desc:'戶外・玩水・頒獎・美勞・地貼，逐項可剔。',
       pages:'A4 1–4 頁（全套或單張）',
       render:function(k){return Kit.printSheet(k)}
     },
     {
       id:'meet-pack',
       cat:'plan',
-      ic:'🗂️',
-      n:'今場全套（教案＋檢查表＋家長通知＋執袋單）',
-      desc:'一疊印齊：本集 A4 教案、今場用得上嘅執行檢查表、已填好主題嘅家長通知、同埋放袋前逐樣剔嘅執袋單。開會前一晚一次過搞掂。',
-      pages:'A4 3–5 頁／集會',
-      render:function(tid){return PrintKit.renderMeetPack(tid)}
+      ic:'📦',
+      n:'今場領袖套包（一疊印齊）',
+      desc:'程序表・執袋單・帶領卡・手工說明・設場・家長通知・檢查表。',
+      pages:'A4 5–12 頁／集會',
+      render:function(tid){return Pack.sheets('lead',dur(tid||'t01'),1)}
+    },
+    {
+      id:'kid-pack',
+      cat:'worksheet',
+      ic:'🧒',
+      n:'今場小朋友即用紙（每人一份・印完即用）',
+      desc:'按今場環節自動配紙，一次印夠人數。紙上冇說明，剪完就用。',
+      pages:'A4 每人 1–3 頁 × 人數',
+      render:function(tid){return Pack.sheets('kid',dur(tid||'t01'),1)}
     },
     {
       id:'cert-sheet',
       cat:'admin',
       ic:'🏅',
       n:'嘉許狀（即時頒發版・自動按名單出）',
-      desc:'跟團員名單一人一張，內容自動填咗嘅團員章項目；無名單就出空白版即場寫。官方獎章證書仍需按旅團程序向總部申請。',
+      desc:'按名單一人一張（官方證書仍需向總部申請）。',
       pages:'A4 1 頁／人',
       render:function(){return PrintKit.renderCertSheet()}
     },
@@ -207,9 +225,9 @@ var PrintKit={
     var cats=[['all','全部教材'],['plan','📋 備課教案'],['cards','✂️ 實體圖卡'],['worksheet','📝 工作紙/手工'],['admin','📊 行政海報']];
     var filtered=PrintKit.tab==='all'?PrintKit.kits:PrintKit.kits.filter(function(k){return k.cat===PrintKit.tab});
     var h='<div class="card printable-hero">'+
-      '<span class="eyebrow">🖨️ 教材套包打印中心</span>'+
-      '<h2>用心備課・一鍵打印實體教材</h2>'+
-      '<p class="mute">為用心準備實體集會的領袖提供<b>標準 A4 格式教材套包</b>：教案講稿、活動圖卡、工作紙、承諾卡與行政簽到表。撳一下「🖨️ 列印」即自動排版排妥，直接出 PDF 或打印機！</p>'+
+      '<span class="eyebrow">🖨️ 教材庫</span>'+
+      '<h2>揀一樣，即刻印。</h2>'+
+      '<p class="mute">想印齊今場全部嘢？去 <button class="lnk" onclick="App.go(\'#pack\')">📦 集會套包</button> 一撳就有。呢度係單件教材。</p>'+
       '<div class="activity-tabs" style="margin-top:12px">'+
         cats.map(function(c){return '<button class="pill '+(PrintKit.tab===c[0]?'on':'')+'" onclick="PrintKit.setTab(\''+c[0]+'\')">'+c[1]+'</button>'}).join('')+
       '</div>'+
@@ -278,16 +296,18 @@ var PrintKit={
   },
 
   /* 12a. 草蜢跳格：實體九宮格地貼 + 玩法卡 */
-  renderFloorGrid:function(){
+  renderFloorGrid:function(useOnly){
     var POS=['左上','中上','右上','左中','正中','右中','左下','中下','右下'];
-    return '<div class="a4-sheet floor-grid-sheet">'+
+    var head='<div class="a4-sheet floor-grid-sheet">'+
       '<div class="print-header-simple"><span>小童軍訓練教材套包 11</span> <b>🦗 草蜢跳格・實體九宮格地貼（1–9 號）</b></div>'+
       '<div class="print-cut-notice">✂️ 兩種用法：① 直接影印放大成 A3／A2，每格約 60×60 厘米貼地；② 沿虛線剪開 9 格，每格貼喺地上（格距 10 厘米）。號碼要同 APP 畫面一樣：由左上 1 數到右下 9。</div>'+
       '<div class="floor-nine">'+[0,1,2,3,4,5,6,7,8].map(function(i){
         return '<div class="fn-cell"><span class="fn-no">'+(i+1)+'</span><span class="fn-pos">'+POS[i]+'</span></div>'}).join('')+'</div>'+
       '<div class="p-note" style="margin-top:10px">💡 冇打印機？用膠紙／粉筆喺地貼九個格，每格入面用馬克筆寫大號 1–9 就得（10 分鐘搞掂，玩完可以撕走）。</div>'+
       '<div class="p-foot">旅團：____________　日期：____________　© 2026 Scout System</div>'+
-    '</div>'+
+    '</div>';
+    if(useOnly)return head;
+    return head+
     '<div class="pbreak"></div>'+
     '<div class="a4-sheet floor-grid-sheet">'+
       '<div class="print-header-simple"><span>小童軍訓練教材套包 11</span> <b>🦗 草蜢跳格・領袖玩法卡</b></div>'+

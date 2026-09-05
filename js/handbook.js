@@ -9,7 +9,7 @@ var HB={
   },
   t:function(x){HB.tab=x;App.route()},
   kit:function(){
-    return '<div class="card"><h2>🧰 做之前點預備</h2><div class="mute" style="font-size:.84rem">呢篇係「叫你做 → 教你點做」：物資要備幾多、場地檢查咩、家長訊息點寫、章項去邊度教、頒獎點先唔亂。開會前一晚睇一次就夠。</div></div>'+
+    return '<div class="card"><h2>🧰 做之前點預備</h2><div class="mute" style="font-size:.84rem">物資幾多・場地查乜・家長訊息・章項去邊教。想一次過印齊：去 <button class="lnk" onclick="App.go(\'#pack\')">📦 集會套包</button>。</div></div>'+
       Kit.hubHtml()+
       '<div class="card"><h3>🧺 執袋（開會前晚 10 分鐘版）</h3><div class="box">'+
       '① 今場物資逐樣放落袋（用準備卡嗰個「剔走」清單）<br>② 後備版材料（已剪好／印好）另外一個膠袋<br>③ 大人工具：釘書機、切孔器、熱熔膠（貼低「領袖用」字句）<br>④ 名牌／咭套＋後備筆 2 支<br>⑤ 急救包、哨子、後備水樽<br>⑥ 手機充滿＋充電棒（投影用）<br><small class="mute">想紙本：「集會 → 撳張卡 → 🖨️ 打印本集 A4 教案」，檢查表會跟住印埋。</small></div></div>';
@@ -102,12 +102,15 @@ var HB={
       ['👏','收結一定要做','每人一句「我整咗××」＋大合照：完成感係收結帶嚟嘅，唔係靚仔帶嚟。']
     ];
     var h='<div class="card"><h2>🎨 手工自學：領袖先識做，先教到人</h2>';
-    h+='<div class="attention"><b>「先睇成品」對新領袖冇用—因為自己未做過。</b> 所以呢度每樣手工都有兩份教材：<b>俾小朋友睇嘅成品示意圖</b>（APP 畫出嚟，唔使你帶實物）＋<b>俾領袖自己睇嘅逐步拆解</b>（物資點備、一步步跟住做、最易錯喺邊、做唔掂有咩後備）。</div>';
+    h+='<div class="attention"><b>兩疊紙，分清楚：</b>「✂️ 即用紙」係小朋友用嘅（印完即剪，紙上冇說明）；「📚 自學卡」係你自己睇嘅說明書。</div>';
     h+='<div class="craft-rules">'+rules.map(function(x){return '<div class="cr-row"><span>'+x[0]+'</span><div><b>'+esc(x[1])+'</b><small>'+esc(x[2])+'</small></div></div>'}).join('')+'</div>';
     h+='<h3 style="margin-top:14px">已附自學卡嘅手工（'+Craft.list().length+' 樣）</h3>';
     h+='<div class="mute" style="font-size:.82rem">每樣都包括：成品示意圖・關鍵摺法圖解（部分）・逐步自學・帶班拆法・常錯補救・後備版・時間剪法・安全提示。自己加嘅活動用「萬用六步」一樣搞得掂。</div>';
     h+=Craft.indexHtml();
-    h+='<div class="btns" style="margin-top:12px"><button class="btn sm gr" onclick="Craft.open(\'any\')">🧯 萬用六步（任何手工適用）</button><button class="btn sm" onclick="PrintKit.openModal(\'craft-coach\')">🖨️ 打印 A4 自學總表</button><button class="btn sm ghost" onclick="App.go(\'#play\')">🎮 去活動架揀手工</button></div>';
+    h+='<h3 style="margin-top:14px">✂️ 即用紙（小朋友用・印完即剪）</h3>';
+    h+='<div class="mute" style="font-size:.82rem">剪線・摺線・描紅・塗色格，一張紙一件事。</div>';
+    h+=Sheets.listHtml();
+    h+='<div class="btns" style="margin-top:12px"><button class="btn sm gr" onclick="App.go(\'#pack\')">📦 印齊今場套包</button><button class="btn sm" onclick="PrintKit.openModal(\'craft-coach\')">🖨️ 自學卡總表</button><button class="btn sm ghost" onclick="Craft.open(\'any\')">🧯 萬用六步</button></div>';
     h+='</div>';
     return h;
   },

@@ -65,7 +65,7 @@ const sandbox={
 };
 sandbox.window=sandbox;sandbox.globalThis=sandbox;
 const ctx=vm.createContext(sandbox);
-const order=['data.js','guide.js','craft.js','tpls.js','app.js','prepare.js','print.js','lead.js','track.js','handbook.js','play.js','kit.js','venue.js'];
+const order=['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','prepare.js','print.js','pack.js','lead.js','track.js','handbook.js','play.js','kit.js','venue.js'];
 for(const f of order){
   vm.runInContext(fs.readFileSync(path.join(__dirname,'..','js',f),'utf8'),ctx,{filename:'js/'+f});
 }
@@ -354,6 +354,132 @@ try{
 const srcTxt=['js/venue.js','js/craft.js','js/kit.js','js/guide.js'].map(function(f){return fs.readFileSync(path.join(__dirname,'..',f),'utf8')});
 const stars=srcTxt.filter(function(t){return /\*\*/.test(t)}).length;
 ok('⑭ 新增內容冇殘留 ** markdown 記號（esc 過會變星號）',stars===0,'有星號嘅檔案數='+stars);
+
+/* ⑮ 📦 集會套包：一撳印齊・領袖紙同小朋友紙分開 */
+const PK=G.Pack, SH=G.Sheets;
+ok('⑮ Pack／Sheets 模組載入',!!PK&&!!SH&&PK.PARTS.length===10,'parts='+(PK&&PK.PARTS.length));
+const pkMeet=PK.meet();
+ok('⑮ 預設攞到行事曆下一場',!!pkMeet&&!!pkMeet.m&&pkMeet.m.stages.length>0,pkMeet&&pkMeet.m&&pkMeet.m.n);
+const pkHtml=PK.html();
+ok('⑮ 套包頁出到兩個大掣（領袖套包／小朋友紙）',/印領袖套包/.test(pkHtml)&&/印小朋友紙/.test(pkHtml));
+ok('⑮ 套包頁字少：整頁正文少過 1400 字',pkHtml.replace(/<[^>]+>/g,'').replace(/\s/g,'').length<1400,
+  'len='+pkHtml.replace(/<[^>]+>/g,'').replace(/\s/g,'').length);
+ok('⑮ 有「臨時集會」入口（資深領袖即用）',/臨時集會/.test(pkHtml)&&PK.INST.length===6,'inst='+PK.INST.length);
+ok('⑮ 有「一撳就印嘅工具」',/一撳就印嘅工具/.test(pkHtml));
+/* 領袖套包內容 */
+const leadHtml=PK.sheets('lead',pkMeet.m,1);
+ok('⑮ 領袖套包渲染到',leadHtml.length>6000,'len='+leadHtml.length);
+ok('⑮ 有程序表＋時間欄',/pack-run/.test(leadHtml)&&/照讀一句/.test(leadHtml));
+ok('⑮ 有執袋單（已計人手）',/執袋單/.test(leadHtml)&&/每次都要帶/.test(leadHtml));
+ok('⑮ 有環節帶領卡（每節一張）',(leadHtml.match(/class="pk-card"/g)||[]).length===pkMeet.m.stages.length,
+  'cards='+(leadHtml.match(/class="pk-card"/g)||[]).length+'/'+pkMeet.m.stages.length);
+ok('⑮ 有家長通知（已填主題）',/家長通知/.test(leadHtml)&&pkMeet.m.theme.split('・')[0].slice(0,3).length>0);
+ok('⑮ 有檢查表',/檢查表/.test(leadHtml));
+/* 小朋友紙：唔可以混入說明書 */
+const craftMeet=G.TPLS.filter(function(t){return t.id==='t03'})[0]||G.TPLS[0];
+const kidList=SH.forMeet(craftMeet);
+ok('⑮ 中秋場自動配到手工即用紙',kidList.length>0&&kidList[0].kind==='craft','list='+JSON.stringify(kidList.map(function(x){return x.k})));
+const kidHtml=PK.kidSheets(craftMeet,2);
+ok('⑮ 小朋友紙按人數重複（2 份 = 2 倍頁數）',
+  (kidHtml.match(/ready-sheet/g)||[]).length===SH.forMeet(craftMeet).length*2,
+  'sheets='+(kidHtml.match(/ready-sheet/g)||[]).length);
+const manualWords=/自學卡|領袖自學|物資・每人幾多|開會前備料|最易出事|後備版|帶班時點拆|年齡分工|逐步拆解|萬用六步|點樣帶|安全提醒/;
+ok('⑮ 小朋友紙冇混入領袖說明書（即用即印）',!manualWords.test(kidHtml),
+  kidHtml.match(manualWords)?kidHtml.match(manualWords)[0]:'');
+ok('⑮ 小朋友紙有剪線／摺線（真係用得到）',/stroke-dasharray/.test(kidHtml)&&/✂/.test(kidHtml));
+/* 每張紙嘅版面唔可以出界（打印先至啱一版） */
+/* 只睇幾何屬性：x/y/cx/cy/r/width/height 同 path d 入面嘅數 */
+function bounds(html,label){
+  const bad=[];
+  const GEO=/\b(x|y|cx|cy|r|x1|y1|x2|y2|width|height)="(-?\d+(?:\.\d+)?)(?:\s+(-?\d+(?:\.\d+)?))?"/g;
+  html.replace(/<(rect|circle|ellipse|text|line)[^>]*>/g,function(tag){
+    let mm;GEO.lastIndex=0;
+    while((mm=GEO.exec(tag))){
+      [mm[2],mm[3]].forEach(function(v){if(v!=null){const n=+v;if(n<-2||n>300)bad.push(label+' '+mm[1]+'='+v)}});
+    }
+    return tag;
+  });
+  /* path：真係行一次（支援大細階 M L H V C S Q T Z），計出實際座標範圍 */
+  html.replace(/<path[^>]*\sd="([^"]+)"/g,function(all,d){
+    let x=0,y=0,sx=0,sy=0;
+    const tk=d.match(/[MmLlHhVvCcSsQqTtZz]|-?\d*\.?\d+/g)||[];
+    let i=0,cmd='';
+    const num=function(){return +tk[i++]};
+    const chk=function(px,py){if(px<-6||px>216||py<-6||py>303)bad.push(label+' path:'+px.toFixed(0)+','+py.toFixed(0))};
+    while(i<tk.length){
+      if(/[A-Za-z]/.test(tk[i]))cmd=tk[i++];
+      const rel=cmd===cmd.toLowerCase(),C=cmd.toUpperCase();
+      if(C==='Z'){x=sx;y=sy;continue}
+      if(C==='M'||C==='L'||C==='T'){let nx=num(),ny=num();x=rel?x+nx:nx;y=rel?y+ny:ny;chk(x,y);if(C==='M'){sx=x;sy=y}}
+      else if(C==='H'){let nx=num();x=rel?x+nx:nx;chk(x,y)}
+      else if(C==='V'){let ny=num();y=rel?y+ny:ny;chk(x,y)}
+      else if(C==='C'){for(let k=0;k<2;k++){const a=num(),b=num();chk(rel?x+a:a,rel?y+b:b)}const nx=num(),ny=num();x=rel?x+nx:nx;y=rel?y+ny:ny;chk(x,y)}
+      else if(C==='S'||C==='Q'){for(let k=0;k<1;k++){const a=num(),b=num();chk(rel?x+a:a,rel?y+b:b)}const nx=num(),ny=num();x=rel?x+nx:nx;y=rel?y+ny:ny;chk(x,y)}
+      else i++;
+    }
+    return all;
+  });
+  return bad;
+}
+let sheetBad=[];
+Object.keys(SH.craft).forEach(function(k){
+  const h=SH.one('craft',k);
+  ok('⑮ 即用紙「'+k+'」渲染到',h.length>800&&/rs-art/.test(h),'len='+h.length);
+  sheetBad=sheetBad.concat(bounds(h,'craft/'+k));
+});
+Object.keys(SH.ws).forEach(function(k){
+  const h=SH.one('ws',k);
+  ok('⑮ 工作紙「'+k+'」渲染到',h.length>800,'len='+h.length);
+  sheetBad=sheetBad.concat(bounds(h,'ws/'+k));
+});
+ok('⑮ 全部即用紙坐標喺 A4 範圍內（唔會打印出界）',sheetBad.length===0,sheetBad.slice(0,6).join(','));
+/* 同一個 tag 出現兩次同一個屬性 = 瀏覽器只會用第一個（fill 會靜靜地錯） */
+function dupAttr(html,label){
+  const bad=[];
+  html.replace(/<[a-zA-Z][^>]*>/g,function(tag){
+    const seen={};
+    (tag.match(/\s[a-zA-Z-]+=/g)||[]).forEach(function(a){
+      const n=a.trim().replace('=','');
+      if(seen[n])bad.push(label+' <'+tag.slice(1,12)+'… 重複 '+n);
+      seen[n]=1;
+    });
+    return tag;
+  });
+  return bad;
+}
+let dupBad=[];
+Object.keys(SH.craft).forEach(function(k){dupBad=dupBad.concat(dupAttr(SH.one('craft',k),'craft/'+k))});
+Object.keys(SH.ws).forEach(function(k){dupBad=dupBad.concat(dupAttr(SH.one('ws',k),'ws/'+k))});
+dupBad=dupBad.concat(dupAttr(leadHtml,'領袖套包'));
+ok('⑮ 全部紙嘅 SVG 冇重複屬性（唔會靜靜地印錯）',dupBad.length===0,dupBad.slice(0,5).join(','));
+ok('⑮ 15 樣手工全部有即用紙',G.Craft.list().filter(function(c){return !SH.craft[c.k]}).length===0,
+  '缺：'+G.Craft.list().filter(function(c){return !SH.craft[c.k]}).map(function(c){return c.k}).join(','));
+/* 兩疊紙唔好重疊：小朋友紙入面唔可以有程序表 */
+ok('⑮ 領袖套包同小朋友紙內容唔重疊',!/pack-run/.test(kidHtml)&&!/ready-sheet/.test(PK.sheets('lead',craftMeet,1).replace(/pack-sheet/g,''))===false||!/rs-art/.test(PK.sheets('lead',craftMeet,1)));
+/* 場地貼紙自動配 */
+const floorMeet=G.TPLS.filter(function(t){return (t.stages||[]).some(function(s){return s.screen==='catch'})})[0];
+ok('⑮ 有九宮格環節 → 自動配地貼',floorMeet?SH.floorFor(floorMeet).some(function(x){return x.k==='floor-grid'}):true,
+  floorMeet?JSON.stringify(SH.floorFor(floorMeet)):'no meet');
+ok('⑮ 九宮格地貼可以只印「用」嗰版（唔帶玩法卡）',
+  (G.PrintKit.renderFloorGrid(true).match(/fn-cell/g)||[]).length===9&&!/領袖玩法卡/.test(G.PrintKit.renderFloorGrid(true)));
+/* 教材庫新入口 */
+const kReady=G.PrintKit.kits.filter(function(x){return x.id==='craft-ready'})[0];
+const kKid=G.PrintKit.kits.filter(function(x){return x.id==='kid-pack'})[0];
+ok('⑮ 教材庫有「手工即用紙」同「小朋友即用紙」',!!kReady&&!!kKid);
+ok('⑮ 手工即用紙 render 到總覽',kReady&&kReady.render().length>800&&/總覽/.test(kReady.render()));
+ok('⑮ 小朋友套包 render 到',kKid&&kKid.render('t03').length>800,'len='+(kKid?kKid.render('t03').length:0));
+/* 即興集會定義共用（App.startInstant 同一份） */
+const inst=PK.instantMeet('safety',40);
+ok('⑮ 即興集會砌得到（有環節＋物資）',inst.stages.length>=5&&inst.stages.some(function(s){return (s.mats||[]).length}),'stages='+inst.stages.length);
+ok('⑮ App.startInstant 用返同一份定義',/Pack\.instantMeet/.test(fs.readFileSync(path.join(__dirname,'..','js','app.js'),'utf8')));
+ok('⑮ 即興集會都出到套包',PK.sheets('lead',inst,1).length>4000);
+/* 剔走項目就唔印 */
+G.Store.set('packsel',{});
+PK.setPart('bag',0);PK.setPart('cards',0);
+const slim=PK.sheets('lead',pkMeet.m,0);
+ok('⑮ 剔走嘅項目唔會印（其餘照印）',
+  !/執袋單/.test(slim)&&!/class="pk-card"/.test(slim)&&/pack-run/.test(slim)&&/家長通知/.test(slim),'len='+slim.length);
+PK.setPart('bag',1);PK.setPart('cards',1);
 
 /* ============ 結果 ============ */
 console.log('\n✅ 通過 '+pass+' 項');

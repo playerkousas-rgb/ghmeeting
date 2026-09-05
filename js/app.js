@@ -5,7 +5,7 @@ var Store={
   del:function(k){localStorage.removeItem('gh_'+k)}
 };
 var App={
-  view:'plan',
+  view:'pack',
   init:function(){
     if(!Store.get('settings'))Store.set('settings',{group:'我的旅團',start:'9',dur:'60',startDate:''});
     if(!Store.get('plan'))App.seedPlan();
@@ -17,10 +17,11 @@ var App={
   route:function(){
     var h=(location.hash||'#plan').slice(1).split('?')[0];
     if(document.body.contains(document.getElementById('leadroot'))&&!document.getElementById('leadroot').classList.contains('hidden'))Lead.exit(false);
-    var v={plan:'plan',meet:'meet',play:'play',lead:'lead',track:'track',book:'book',print:'print'}[h]||'plan';
+    var v={pack:'pack',plan:'plan',meet:'meet',play:'play',lead:'lead',track:'track',book:'book',print:'print'}[h]||'pack';
     App.view=v;
     document.querySelectorAll('#tabbar a').forEach(function(a){a.classList.toggle('on',a.dataset.tab===v)});
     var el=document.getElementById('view');
+    if(v==='pack')el.innerHTML=Pack.html();
     if(v==='plan')el.innerHTML=Plan.html();
     if(v==='meet')el.innerHTML=Prepare.html();
     if(v==='play')el.innerHTML=Play.html();
@@ -36,7 +37,8 @@ var App={
     var pl=Store.get('plan',{rows:[]});
     var next=pl.rows.find(function(r){return r.status==='todo'});
     var nextT=next?dur(next.tid):dur('t01');
-    var h='<div class="quick-hub-header"><span class="eyebrow">⚡ 一APP在手・集會隨手</span><h3>即刻開會・零物資救急</h3><p class="mute" style="font-size:.83rem">全數碼內置教具、伴奏、計分與遊戲，拎起手機隨時出發！</p></div>'+
+    var h='<div class="quick-hub-header"><span class="eyebrow">⚡ 隨手開會</span><h3>即刻開會・零物資</h3></div>'+
+      '<div class="card" style="background:#fff4e6;border:2px solid #ffd9a8;padding:12px;margin:8px 0"><b style="color:var(--ord)">📦 想印齊今場教材？</b><div class="btns" style="margin:6px 0 0"><button class="btn blk" onclick="Modal.close();App.go(\'#pack\')">📦 去集會套包（一撳印齊）</button></div></div>'+
       (nextT?'<div class="card" style="background:#f1f8e9;border:2px solid #81c784;padding:12px;margin:8px 0"><div style="font-size:.78rem;font-weight:800;color:var(--grd)">📅 推薦：今日進度集會</div><h4 style="margin:4px 0;font-size:1.1rem;color:var(--ink)">'+esc(nextT.n)+'</h4><div class="mute" style="font-size:.8rem">'+esc(nextT.theme)+'・約 '+Plan.lenOf(nextT)+' 分鐘</div><div class="btns" style="margin-top:8px"><button class="btn gr blk" onclick="Modal.close();Lead.start(\''+nextT.id+'\','+(next?next.no:1)+')">▶ 即刻全螢幕帶領</button></div></div>':'')+
       '<div class="card" style="border:1.5px solid var(--line);padding:12px;margin:8px 0"><h4 style="margin:0 0 6px;color:var(--ord)">🎲 零準備即興集會（100% 數碼免道具）</h4><div class="mute" style="font-size:.78rem;margin-bottom:8px">領袖臨時頂位？撳一下自動組合 6 個流暢環節，即開即玩：</div>'+
       '<div class="grid2">'+
@@ -47,8 +49,7 @@ var App={
         '<button class="btn sm ghost" onclick="App.startInstant(\'fitness\',40)">🏃 體能反應 (40分)</button>'+
         '<button class="btn sm gr" onclick="App.startInstant(\'general\',60)">✨ 60分鐘全能大集會</button>'+
       '</div></div>'+
-      '<div class="card" style="border:1.5px solid var(--line);padding:12px;margin:8px 0"><h4 style="margin:0 0 6px;color:var(--ord)">🧭 開會前點預備（叫你做 → 教你點做）</h4>'+
-        '<div class="mute" style="font-size:.78rem;margin-bottom:8px">物資每人幾多、場地檢查咩、家長訊息點寫、章項去邊度教—全部有清單同範本，唔使自己由零估。</div>'+        '<div class="quick-tools-row">'+
+      '<div class="card" style="border:1.5px solid var(--line);padding:12px;margin:8px 0"><h4 style="margin:0 0 6px;color:var(--ord)">🧭 開會前點預備</h4>'+        '<div class="quick-tools-row">'+
         '<button class="btn sm" onclick="Modal.close();Kit.hubOpen()">🧰 點預備總覽</button>'+        '<button class="btn sm ghost" onclick="Modal.close();Kit.openCheckFor(dur(\''+(nextT?nextT.id:'t01')+'\'))">🧭 今場檢查表</button>'+        '<button class="btn sm ghost" onclick="Modal.close();Kit.msgOpen()">📣 家長訊息範本</button>'+        '</div></div>'+
       '<div class="card" style="border:1.5px solid var(--line);padding:12px;margin:8px 0"><h4 style="margin:0 0 6px;color:var(--ord)">🧰 隨手救急快鍵</h4><div class="quick-tools-row">'+
         '<button class="btn sm" onclick="Modal.close();Lead.quietQuick()">🤫 5秒安靜</button>'+
@@ -63,71 +64,10 @@ var App={
   },
   startInstant:function(theme, mins){
     Modal.close();
-    var meets={
-      general:{
-        n:'即興・歡樂綜合數碼集會 ('+mins+'分鐘)',theme:'破冰認識・主題曲・小草蜢互動・反應遊戲',
-        stages:[
-          {t:'儀式',n:'開心快樂傘(開會)',m:5,how:'齊唸口號「小童軍向前進」揚傘開會。',script:'「全體預備——小童軍向前進！」',screen:'chuteopen'},
-          {t:'唱遊',n:'學唱小童軍主題曲',m:mins===60?10:7,how:'跟隨畫面伴奏逐句齊唱並做動作。',script:'「小小童軍向前進——舉高雙手！」',screen:'song'},
-          {t:'課程',n:'認識小草蜢與大自然',m:10,how:'領袖講圖鑑，全體即刻蹲低扮草蜢跳一次。',script:'「小草蜢跳得高、天天向上，好似小童軍一樣！」',screen:'ghinfo'},
-          {t:'遊戲',n:'草蜢跳格(實體九宮格)',m:8,how:'地上九宮格：螢幕叫位，小朋友限時跳上去。',script:'「聽到幾號就跳上去！三、二、一—跳！」',screen:'catch',mats:['九宮格地貼']},
-          mins===60?{t:'遊戲',n:'領袖話(體能版)',m:10,how:'聽領袖指令做動作，訓練聽力與專注。',script:'「領袖話——摸摸膝頭！」',screen:'leader'}:null,
-          {t:'靜息',n:'靜息深呼吸',m:3,how:'跟隨畫面圓圈緩慢深呼吸。',script:'「吸氣——呼氣——放鬆全身。」',screen:'breath'},
-          {t:'儀式',n:'開心快樂傘(散會)',m:mins===60?5:4,how:'齊唸口號散會。',script:'「今日集會完滿結束！小童軍——向前進！」',screen:'chuteclose'}
-        ].filter(Boolean)
-      },
-      safety:{
-        n:'即興・自我保護與安全 ('+mins+'分鐘)',theme:'身體界線・紅黃綠燈・安全求助',
-        stages:[
-          {t:'儀式',n:'開心快樂傘(開會)',m:5,how:'齊唸口號揚傘開會。',script:'「今日我哋學識保護自己！」',screen:'chuteopen'},
-          {t:'課程',n:'身體地圖紅黃綠',m:12,how:'領袖撳部位講解，全場用手勢答紅黃綠，大聲練習講「唔好」。',script:'「你嘅身體屬於你！紅色部位唔可以隨便掂！」',screen:'bodycard'},
-          {t:'遊戲',n:'對錯法庭(保護篇・左右分邊)',m:mins===60?12:10,how:'小朋友行去 👍／👎 嗰邊表態，領袖宣判＋講解。',script:'「呢件事啱定錯？行去你嗰邊——宣判！」',screen:'judge',mats:['角牌']},
-          mins===60?{t:'唱遊',n:'小童軍主題曲',m:8,how:'伴奏齊唱主題曲。',script:'「小童軍愛護自己、日行一善！」',screen:'song'}:null,
-          {t:'遊戲',n:'紅綠燈(交通安全版)',m:mins===60?10:8,how:'綠燈行、紅燈停，學習安全守則。',script:'「綠燈行——紅燈停！」',screen:'traffic'},
-          {t:'靜息',n:'靜息深呼吸',m:3,how:'深呼吸冷靜放鬆。',script:'「吸氣——呼氣。」',screen:'breath'},
-          {t:'儀式',n:'開心快樂傘(散會)',m:4,how:'齊唸口號散會。',script:'「記住：有事搵信任大人求助！散會！」',screen:'chuteclose'}
-        ].filter(Boolean)
-      },
-      health:{
-        n:'即興・健康生活好幫手 ('+mins+'分鐘)',theme:'洗手七步・彩虹飲食・家務挑戰',
-        stages:[
-          {t:'儀式',n:'開心快樂傘(開會)',m:5,how:'齊唸口號揚傘開會。',script:'「今日做個健康清潔好寶寶！」',screen:'chuteopen'},
-          {t:'課程',n:'洗手七步好寶寶',m:10,how:'跟隨七步洗手圖解與 20 秒倒數計時歌做洗手操。',script:'「內外夾弓大立腕——細菌全走開！」',screen:'clean'},
-          {t:'課程',n:'彩虹健康飲食盤',m:mins===60?12:10,how:'領袖揭顏色，小朋友講一樣嗰色嘅食物＋扮食落肚。',script:'「多食彩虹食物，身體健康！」',screen:'foodrainbow'},
-          {t:'遊戲',n:'任務抽籤機(家務善行)',m:8,how:'轉動抽籤機抽取今日日行一善家務。',script:'「抽中邊個家務任務？返屋企實踐！」',screen:'task'},
-          mins===60?{t:'遊戲',n:'節奏模仿律動',m:10,how:'APP 出拍子聲，領袖做一次，全體跟住做。',script:'「聽住拍子—拍手、踏步、草蜢跳！」',screen:'rhythm'}:null,
-          {t:'靜息',n:'靜息深呼吸',m:3,how:'深呼吸放鬆。',script:'「吸氣——呼氣。」',screen:'breath'},
-          {t:'儀式',n:'開心快樂傘(散會)',m:4,how:'齊唸口號散會。',script:'「日行一善由屋企開始！散會！」',screen:'chuteclose'}
-        ].filter(Boolean)
-      },
-      nature:{
-        n:'即興・環保與大自然 ('+mins+'分鐘)',theme:'三色回收・動植物常識・愛護地球',
-        stages:[
-          {t:'儀式',n:'開心快樂傘(開會)',m:5,how:'齊唸口號揚傘開會。',script:'「地球病咗，等小童軍救佢！」',screen:'chuteopen'},
-          {t:'課程',n:'三色回收・四角分桶',m:12,how:'四角貼桶標籤，小朋友行去嗰個角，領袖揭曉。',script:'「鋁罐去邊個桶？行去嗰個角企好！」',screen:'recycle',mats:['角牌']},
-          {t:'遊戲',n:'問答擂台(四角搶答)',m:10,how:'四角貼 A/B/C/D，小朋友行去自己揀嘅角。',script:'「覺得係 A 就行去 A 角！」',screen:'quiz',mats:['角牌']},
-          {t:'遊戲',n:'估估下(動植物剪影)',m:mins===60?10:8,how:'剪影猜動物植物。',script:'「呢個識飛嘅係咩生物？」',screen:'guess'},
-          mins===60?{t:'遊戲',n:'草蜢跳格(大自然版)',m:8,how:'地上九宮格跳格；叫位時加一個草蜢動作。',script:'「3 號・單腳企！跳！」',screen:'catch',mats:['九宮格地貼']}:null,
-          {t:'靜息',n:'靜息深呼吸',m:3,how:'放鬆呼吸。',script:'「吸氣——呼氣。」',screen:'breath'},
-          {t:'儀式',n:'開心快樂傘(散會)',m:4,how:'齊唸口號散會。',script:'「愛護大自然！散會！」',screen:'chuteclose'}
-        ].filter(Boolean)
-      },
-      fitness:{
-        n:'即興・體能與反應大冒險 ('+mins+'分鐘)',theme:'肢體律動・紅綠燈・速度反應',
-        stages:[
-          {t:'儀式',n:'開心快樂傘(開會)',m:5,how:'齊唸口號揚傘開會。',script:'「今日動起來！」',screen:'chuteopen'},
-          {t:'遊戲',n:'紅綠燈(衝刺版)',m:10,how:'紅燈停綠燈跑，訓練心肺與反應。',script:'「綠燈行——紅燈停！」',screen:'traffic'},
-          {t:'遊戲',n:'領袖話(大動作版)',m:10,how:'單腳企、摸腳尖、草蜢跳。',script:'「領袖話——草蜢跳五下！」',screen:'leader'},
-          {t:'遊戲',n:'草蜢跳格(分組接力)',m:8,how:'分組輪流跳格，每格限時 3 秒，領袖記分。',script:'「下一組準備——跳！」',screen:'catch',mats:['九宮格地貼']},
-          mins===60?{t:'遊戲',n:'記憶配對(運動版)',m:10,how:'翻牌配對訓練記憶力。',script:'「記住圖案位置！」',screen:'memory'}:null,
-          {t:'靜息',n:'靜息深呼吸+拉筋',m:3,how:'跟隨圓圈深呼吸放鬆肌肉。',script:'「吸——呼——」',screen:'breath'},
-          {t:'儀式',n:'開心快樂傘(散會)',m:4,how:'齊唸口號散會。',script:'「個個都係運動家！散會！」',screen:'chuteclose'}
-        ].filter(Boolean)
-      }
-    };
-    var t=meets[theme]||meets.general;
+    var t=(typeof Pack!=='undefined')?Pack.instantMeet(theme,mins):null;
+    if(!t)return;
     Lead.cleanupTimers();
-    Lead.S={meet:JSON.parse(JSON.stringify(t)),idx:0,left:(t.stages[0].m||5)*60,timerOn:false,no:0};
+    Lead.S={meet:t,idx:0,left:(t.stages[0].m||5)*60,timerOn:false,no:0};
     Lead.open();
     toast('⚡ 已啟動「'+t.n+'」！');
   },
@@ -207,10 +147,10 @@ var Plan={
     var next=pl.rows.find(function(r){return r.status==='todo'});
     var done=pl.rows.filter(function(r){return r.status==='done'}).length;
     var nextT=next?dur(next.tid):null;
-    var h='<section class="ready-hero"><span class="eyebrow">🦗 '+esc(s.group)+'・一APP在手 集會隨手</span><h1>拎起手機，集會即開即玩。</h1><p><b>100% 內置數碼道具與互動</b>：零物資準備、免印刷、免剪貼！開會口號、主題曲伴奏、互動教學、遊戲擂台與出席記錄，一機全包。<b>用心準備實體？</b> 亦可一鍵打印 A4 教材套包！</p>'+
-      '<div class="action-grid"><button class="btn primary" onclick="'+(nextT?"Lead.start('"+nextT.id+"',"+next.no+")":"Lead.start('t01')")+'">⚡ '+(nextT?'隨手帶領第'+next.no+'次集會':'開始第1次集會')+'</button>'+
-      '<button class="btn ghost" onclick="App.quickHub()">🎲 隨手開會面板</button>'+
-      '<button class="btn ghost" onclick="App.go(\'#print\')" style="background:#e8f5e9;color:#1b5e20;border-color:#81c784">🖨️ A4 打印教材套包</button></div>'+
+    var h='<section class="ready-hero"><span class="eyebrow">🦗 '+esc(s.group)+'</span><h1>拎起手機就帶到。</h1><p>數碼道具全內置。想印紙？去 <button class="lnk" onclick="App.go(\'#pack\')">📦 集會套包</button>。</p>'+
+      '<div class="action-grid"><button class="btn primary" onclick="'+(nextT?"Lead.start('"+nextT.id+"',"+next.no+")":"Lead.start('t01')")+'">⚡ '+(nextT?'帶第'+next.no+'次集會':'開始第1次集會')+'</button>'+
+      '<button class="btn ghost" onclick="App.go(\'#pack\')">📦 集會套包</button>'+
+      '<button class="btn ghost" onclick="App.quickHub()">🎲 隨手開會</button></div>'+
       (nextT?'<div class="next-strip"><span style="font-size:1.7rem">📅</span><div class="next-copy"><small>今日進度推薦</small><b>'+esc(nextT.n)+'</b><small>'+esc(nextT.theme)+'・約 '+Plan.lenOf(nextT)+' 分鐘</small></div><button class="btn sm gr" onclick="Lead.start(\''+nextT.id+'\','+next.no+')">▶ 即開</button></div>':'<div class="attention" style="margin-top:12px"><b>🎉 全年流程完成</b><br>可以去「集會」揀一張卡，或者隨時點擊「隨手開會面板」即興帶領。</div>')+
       '<div class="quick-tools-strip"><span style="font-size:.78rem;font-weight:800;color:var(--ord);display:block;margin-bottom:4px">🧰 現場隨手救急快鍵：</span>'+
         '<button class="pill" onclick="Lead.quietQuick()">🤫 5秒安靜</button>'+
@@ -222,10 +162,10 @@ var Plan={
         '<button class="pill" onclick="Kit.searchOpen()">🔍 全站搵嘢</button>'+
         '<button class="pill" onclick="Kit.hubOpen()">🧰 點預備・檢查表</button>'+
       '</div>'+
-      '</section><div class="steps-banner"><div class="mini-step"><b>01・即開</b>撳一下全螢幕帶領，免準備道具</div><div class="mini-step"><b>02・互動</b>小朋友睇螢幕玩遊戲，領袖睇講稿</div><div class="mini-step"><b>03・記出席</b>完場一鍵打卡，進度自動保存</div></div>'+
+      '</section><div class="steps-banner"><div class="mini-step"><b>01</b>印套包</div><div class="mini-step"><b>02</b>全螢幕帶領</div><div class="mini-step"><b>03</b>完場記出席</div></div>'+
       '<div class="stat"><div class="s"><b>'+(pl.rows.length-done)+'</b>尚餘集會</div><div class="s"><b>'+done+'/'+pl.rows.length+'</b>已完成</div><div class="s"><b>'+mem.length+'</b>團員</div></div>';
     h+='<div class="card"><h2>🗓️ 年度行事曆 <span class="tag">'+done+'/'+pl.rows.length+' 完成</span></h2>'+
-      '<div class="mute" style="font-size:.82rem;margin-bottom:8px">已按小童軍成長節奏排好：先熟習團生活，再逐步加入生活技能、合作、戶外和節日活動。撳任何一格可以換卡、標記完成或直接開始。</div>'+
+      '<div class="mute" style="font-size:.82rem;margin-bottom:8px">撳任何一格：換卡・記完成・即刻帶。</div>'+
       Plan.calendar(pl)+'</div>';
     h+='<div class="card"><h2>🗺️ 42個月完整路線圖</h2><div class="mute" style="font-size:.82rem">團員章 → 四級進步獎章(約22個月)→ 小草蜢獎章(7範疇×2體驗)→ 晉團幼童軍</div>'+Plan.roadmap()+'</div>';
     h+='<div class="card"><h2>🦗 小草蜢歷險(6歲起)</h2><div class="mute" style="font-size:.82rem;margin-bottom:8px">七大範疇各完成2項體驗=小草蜢獎章。app 已為每個範疇預備一次集會範本。</div><div class="grid2">'+
@@ -236,6 +176,7 @@ var Plan={
   },
   lenOf:function(t){return (t.stages||[]).reduce(function(a,s){return a+(+s.m||0)},0)},
   calendar:function(pl){
+    pl=pl||{rows:[]};if(!pl.rows)pl.rows=[];
     var h='<div class="tbl"><tr><th>#</th><th>集會</th><th>狀態</th></tr>';
     pl.rows.forEach(function(r){
       var t=dur(r.tid);if(!t)return;

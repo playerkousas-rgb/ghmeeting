@@ -402,7 +402,7 @@ var Kit={
     var cmd=r?('Kit.setPlanDate('+r.no+',this.value)'):("Kit.setDate('"+safe+"',this.value)");
     return '<div class="kit-date"><span>📅 今場日期：<b>'+(cur?esc(Kit.fmtDate(cur)):'未訂')+'</b></span>'+
       '<input type="date" value="'+esc(cur||'')+'" onchange="'+cmd+'">'+
-      '<small class="mute">低咗呢格，家長訊息嘅日期、星期、「之前一日話我知」就全部自動啱'+(r?('（行事曆撳第'+r.no+'格都改到）'):'（呢張范本未排進行事曆，所以低咗喺呢度）')+'</small></div>';
+      '<small class="mute">低一次：家長通知嘅日期・星期・「之前一日話我知」自動啱。</small></div>';
   },
   /* ============ ⑨ 檢查表留痕：剔咗就記住，完場自動清（唔使驚撳錯、驚中途走開） ============ */
   ckKey:function(mid,k){return (mid||'misc')+'|'+k},
@@ -465,6 +465,20 @@ var Kit={
     });
     Object.keys(this.checks).forEach(function(k){var c=Kit.checks[k];
       push('🧭 執行檢查表',c.ic+' '+c.n,c.items.length+' 項可剔・逐項講清點樣檢查',c.n+' '+c.items.join(' '),"Modal.close();Kit.openCheck('"+k+"')");
+    });
+    push('📦 集會套包','今場套包：一撳印齊所有教材','領袖套包＋小朋友即用紙','套包 打印 印齊 教材 即用紙 執袋單 程序表 帶領卡 家長通知 pack',
+      "Modal.close();App.go('#pack')",'📦 開');
+    push('📦 集會套包','⚡ 臨時集會（揀主題即出套包）','資深領袖臨時頂位用','臨時 加場 頂位 即興 隨手 開會',
+      "Modal.close();App.go('#pack')",'📦 開');
+    ((typeof Sheets!=='undefined'&&Sheets.craft)?Object.keys(Sheets.craft):[]).forEach(function(k){
+      var c=Sheets.craft[k];
+      push('✂️ 即用紙',c.n,c.tip||'印完即剪即用',[c.n,c.tip||'','即用紙 剪 摺 塗色 工作紙'].join(' '),
+        "Modal.close();PrintKit.openModal('craft-ready','"+k+"')",'🖨️ 印');
+    });
+    ((typeof Sheets!=='undefined'&&Sheets.ws)?Object.keys(Sheets.ws):[]).forEach(function(k){
+      var w=Sheets.ws[k];
+      push('✂️ 即用紙',w.n,'按環節自動配',[w.n,'工作紙 即用紙'].join(' '),
+        "Modal.close();PrintKit.openModal('craft-ready','ws:"+k+"')",'🖨️ 印');
     });
     ((typeof PrintKit!=='undefined'&&PrintKit.kits)?PrintKit.kits:[]).forEach(function(p){
       push('🖨️ A4 教材包',p.ic+' '+p.n,String(p.desc||'').slice(0,48),[p.n,p.desc,p.pages].join(' '),"Modal.close();App.go('#print');setTimeout(function(){PrintKit.openModal('"+p.id+"')},90)");
