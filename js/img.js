@@ -11,9 +11,7 @@ var Img={
          traffic:'g-traffic',roll:'g-ball',leader:'g-leader',rhythm:'g-leader',moon:'g-throw',
          clean:'g-wash',bodycard:'g-body',flags:'g-salute',emotion:'g-faces',foodrainbow:'g-food'},
   /* 快樂傘16式 → 動作型態一眼圖 */
-  chute:{'大海浪':'z-wave','颱風嚟啦':'z-wave','蒙古包':'z-dome','鶴立雞群':'z-dome','大泡泡':'z-dome',
-    '換位跑':'z-run','大風吹':'z-run','荷葉跳':'z-run','過山洞':'z-tunnel','漁網捉魚':'z-net',
-    '生日蛋糕':'z-ball','同心合力':'z-ball','尋寶':'z-shoes','旋轉木馬':'z-walk','升降旗':'z-raise','無聲傘':'z-raise'},
+  chute:{'大海浪':'z1-wave','颱風嚟啦':'z2-typhoon','蒙古包':'z3-yurt','大泡泡':'z4-bubble','換位跑':'z5-swap','過山洞':'z6-tunnel','漁網捉魚':'z7-net','荷葉跳':'z8-jump','無聲傘':'z9-quiet','升降旗':'z10-flag','旋轉木馬':'z11-merry','生日蛋糕':'z12-cake','尋寶':'z13-shoes','大風吹':'z14-wind','鶴立雞群':'z15-pole','同心合力':'z16-team'},
   chuteFig:function(n){
     var k=this.chute[n];if(!k)return '';
     var fb=(typeof Lead!=='undefined'&&Lead.parachuteSvg)?Lead.parachuteSvg('open'):undefined;
