@@ -65,7 +65,7 @@ const sandbox={
 };
 sandbox.window=sandbox;sandbox.globalThis=sandbox;
 const ctx=vm.createContext(sandbox);
-const order=['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js'];
+const order=['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','flow.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js'];
 for(const f of order){
   vm.runInContext(fs.readFileSync(path.join(__dirname,'..','js',f),'utf8'),ctx,{filename:'js/'+f});
 }
@@ -361,7 +361,7 @@ ok('⑮ Pack／Sheets 模組載入',!!PK&&!!SH&&PK.PARTS.length===10,'parts='+(P
 const pkMeet=PK.meet();
 ok('⑮ 預設攞到行事曆下一場',!!pkMeet&&!!pkMeet.m&&pkMeet.m.stages.length>0,pkMeet&&pkMeet.m&&pkMeet.m.n);
 const pkHtml=PK.html();
-ok('⑮ 套包頁出到兩個大掣（領袖套包／小朋友紙）',/印領袖套包/.test(pkHtml)&&/印小朋友紙/.test(pkHtml));
+ok('⑮ 套包頁出到三個大掣（印齊今場／淨印圖紙／淨印教案）',/印齊今場/.test(pkHtml)&&/淨印小朋友圖紙/.test(pkHtml)&&/淨印領袖教案/.test(pkHtml));
 /* 計「一開就見到」嘅字：收埋喺 <details> 入面嘅唔計 */
 const pkSeen=pkHtml.replace(/<details[\s\S]*?<\/details>/g,'').replace(/<[^>]+>/g,'').replace(/\s/g,'');
 ok('⑮ 套包頁字少：一開見到嘅正文少過 1200 字',pkSeen.length<1200,'len='+pkSeen.length);
@@ -526,6 +526,74 @@ Music.load('jingle');
 ok('⑮ 載入 jingle 後跟住換',Music.cur==='jingle'&&Music.song===Music.SONGBOOK.jingle.song);
 Music.load('theme');
 ok('⑮ 載入返 theme',Music.cur==='theme');
+
+/* ⑯ 導航重組：上方 4 個新手掣 ＋ 下方 4 個工具掣（電話放得曬） */
+const idxHtml=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+const topNav=(idxHtml.match(/<nav id="topnav"[\s\S]*?<\/nav>/)||[''])[0];
+const botNav=(idxHtml.match(/<nav id="tabbar"[\s\S]*?<\/nav>/)||[''])[0];
+const topLinks=(topNav.match(/<a /g)||[]).length, botLinks=(botNav.match(/<a /g)||[]).length;
+ok('⑯ 上方最多 4 個掣',topLinks>0&&topLinks<=4,'top='+topLinks);
+ok('⑯ 下方最多 4 個掣',botLinks>0&&botLinks<=4,'bottom='+botLinks);
+ok('⑯ 上下方分開兩類（🅰️ 新手四步／🅱️ 工具箱）',/🅰️/.test(topNav)&&/🅱️/.test(botNav));
+const navTabs=(idxHtml.match(/data-tab="([a-z]+)"/g)||[]).map(function(x){return x.replace(/[^a-z]/g,'').replace('datatab','')});
+['pack','plan','meet','play','lead','track','book','print'].forEach(function(v){
+  ok('⑯ 「'+v+'」有入口（唔會有孤兒分頁）',navTabs.indexOf(v)>=0,navTabs.join(','));
+});
+ok('⑯ 兩條 bar 都會著燈',/#tabbar a, #topnav a/.test(fs.readFileSync(path.join(__dirname,'..','js','app.js'),'utf8')));
+ok('⑯ 上方係入口唔係步驟（冇 1234 編號扮流程）',!/<i>[1-9]<\/i>/.test(topNav),topNav.replace(/\s+/g,' ').slice(0,120));
+
+/* ⑯b 🧭 step by step：揀咗集會之後一步步帶到散會（唔靠上面粒掣扮流程） */
+const FL=G.Flow;
+ok('⑯b 有嚮導模組同底部條位',!!FL&&/id="flowbar"/.test(idxHtml)&&/js\/flow\.js/.test(idxHtml));
+ok('⑯b 一場集會由頭到尾 6 步',FL.STEPS.length===6&&FL.STEPS[0].k==='pick'&&FL.STEPS[FL.STEPS.length-1].k==='rec',
+  FL.STEPS.map(function(x){return x.k}).join('→'));
+ok('⑯b 每步都有「做乜・點解・撳邊個掣」',FL.STEPS.every(function(x){return x.n&&x.why&&x.btn&&x.go}));
+G.Store.set('flow',null);
+ok('⑯b 預設唔會騷擾（未開就冇條 bar）',!FL.on()&&FL.barHtml().length>0);
+FL.start();
+eq('⑯b 開咗之後由第 1 步「揀集會」開始',FL.cur().k,'pick');
+PK.pick('tpl','t03',3);
+eq('⑯b 揀咗集會就自動跳去第 2 步「印教材」',FL.cur().k,'print');
+PK.open('all');
+eq('⑯b 印完就自動跳去第 3 步「執袋」',FL.cur().k,'bag');
+FL.mark('bag');FL.mark('venue');
+eq('⑯b 剔完設場就到「帶領」',FL.cur().k,'lead');
+FL.mark('lead');FL.mark('rec');
+ok('⑯b 做齊 6 步＝散會（條 bar 出完成訊息）',FL.cur()===null&&/散會/.test(FL.barHtml()),'done='+FL.doneCount());
+FL.reset();
+eq('⑯b 下一場可以重頭再嚟',FL.cur().k,'pick');
+ok('⑯b 「揀集會」頁有嚮導入口',/帶我由頭做到尾|嚮導行緊/.test(G.Plan.html()));
+FL.quit();
+ok('⑯b 撳✕ 之後唔會再彈出嚟',!FL.on());
+
+/* ⑰ 圖紙搵得返：教案入面有圖紙清單・一疊過印教案＋圖紙 */
+const lp=G.PrintKit.renderLessonPlan('t03');
+ok('⑰ 教案有「今場圖紙清單」',/今場圖紙清單/.test(lp),'len='+lp.length);
+const meetAll=G.PrintKit.kits.filter(function(k){return k.id==='meet-all'})[0];
+ok('⑰ 教材庫有「教案＋圖紙一疊過」',!!meetAll);
+const craftT=G.TPLS.filter(function(t){return G.Sheets.forMeet(t).length>0})[0];
+const allStack=PK.sheets('all',craftT,1);
+ok('⑰ 一疊過＝教案＋分隔頁＋圖紙',/pack-run/.test(allStack)&&/pk-divider/.test(allStack)&&/rs-art/.test(allStack),'len='+allStack.length);
+ok('⑰ 分隔頁講明下面係圖紙',/以下係「小朋友圖紙」/.test(allStack));
+eq('⑰ 一疊過頁數＝教案＋1 分隔頁＋圖紙',PK.pages('all',craftT,1),PK.pages('lead',craftT,1)+1+PK.pages('kid',craftT,1));
+ok('⑰ 套包頁講到圖紙喺邊',/今場圖紙/.test(pkHtml));
+ok('⑰ 圖紙庫（教材庫）第一屏就有今場圖紙',/今場/.test(G.PrintKit.html())&&/印齊今場/.test(G.PrintKit.html()));
+const pkCats=G.PrintKit.kits.map(function(k){return k.cat});
+ok('⑰ 教材分四類，冇孤兒類',pkCats.every(function(c){return ['kid','floor','lead','admin'].indexOf(c)>=0}),
+  Array.from(new Set(pkCats)).join(','));
+
+/* ⑱ 圖同玩法要夾：每個有圖嘅遊戲，張圖要對得住玩法 */
+const imgMap=G.Img.games;
+const gameFiles=Object.keys(imgMap).map(function(k){return imgMap[k]});
+gameFiles.forEach(function(f){
+  ok('⑱ 圖檔存在 '+f,fs.existsSync(path.join(__dirname,'..','img',f+'.avif')));
+});
+ok('⑱ 四角搶答／分邊／回收各有自己張圖（唔再共用一張）',
+  imgMap.quiz!==imgMap.judge&&imgMap.judge!==imgMap.recycle&&imgMap.quiz!==imgMap.recycle,
+  imgMap.quiz+'/'+imgMap.judge+'/'+imgMap.recycle);
+ok('⑱ 記憶配對唔會亂配一張四角圖',!imgMap.memory);
+ok('⑱ 新圖有入 sw 快取',/g-judge\.avif/.test(fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8'))&&
+  /g-recycle\.avif/.test(fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8')));
 
 /* ============ 結果 ============ */
 console.log('\n✅ 通過 '+pass+' 項');

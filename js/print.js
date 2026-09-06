@@ -5,7 +5,7 @@ var PrintKit={
   kits:[
     {
       id:'lesson-plans',
-      cat:'plan',
+      cat:'lead',
       ic:'📋',
       n:'30次集會完整 A4 備課教案包',
       desc:'含時程表、物資清單、領袖講稿、動作圖解、安全注意事項與點名表。',
@@ -14,7 +14,7 @@ var PrintKit={
     },
     {
       id:'sfh-cards',
-      cat:'cards',
+      cat:'floor',
       ic:'🛡️',
       n:'身體界線紅黃綠圖卡套包 (Safe from Harm)',
       desc:'紅黃綠標誌卡＋情景求助卡，剪開即用。',
@@ -23,7 +23,7 @@ var PrintKit={
     },
     {
       id:'recycle-cards',
-      cat:'cards',
+      cat:'floor',
       ic:'♻️',
       n:'三色回收分類圖卡套包 (24件物品實物卡)',
       desc:'三色桶標誌＋12 件物品卡，剪開玩分類。',
@@ -32,7 +32,7 @@ var PrintKit={
     },
     {
       id:'venue',
-      cat:'plan',
+      cat:'lead',
       ic:'📍',
       n:'場地設置卡（六分區・30 分鐘時間表・五條規矩・救急）',
       desc:'新場地／新領袖用：六分區・30 分鐘清單・五條規矩・救急。',
@@ -41,7 +41,7 @@ var PrintKit={
     },
     {
       id:'floor-grid',
-      cat:'cards',
+      cat:'floor',
       ic:'🦗',
       n:'草蜢跳格・實體九宮格地貼＋玩法卡',
       desc:'九宮格地貼（1–9 號）＋領袖玩法卡。',
@@ -50,7 +50,7 @@ var PrintKit={
     },
     {
       id:'craft-ready',
-      cat:'worksheet',
+      cat:'kid',
       ic:'✂️',
       n:'手工即用紙（印完即剪即用・紙上冇說明）',
       desc:'15 樣手工嘅小朋友用紙：剪線、摺線、描紅、塗色格。領袖說明喺另一疊。',
@@ -59,7 +59,7 @@ var PrintKit={
     },
     {
       id:'corner-signs',
-      cat:'cards',
+      cat:'floor',
       ic:'🅰️',
       n:'實體遊戲場地圖卡（四角角牌・👍👎分邊・回收桶・月亮靶）',
       desc:'四角角牌・👍👎 分邊牌・回收桶・射月靶，貼牆即用。',
@@ -68,7 +68,7 @@ var PrintKit={
     },
     {
       id:'game-cards',
-      cat:'plan',
+      cat:'lead',
       ic:'🎮',
       n:'互動遊戲帶領卡（小朋友做乜・領袖撳乜・物資・安全）',
       desc:'每個遊戲一張卡：小朋友做乜・領袖撳乜・物資・安全。',
@@ -77,7 +77,7 @@ var PrintKit={
     },
     {
       id:'task-cards',
-      cat:'cards',
+      cat:'floor',
       ic:'🎯',
       n:'小童軍日行一善／家務任務抽籤卡',
       desc:'12張精美善行與家務任務卡，帶回家實踐日行一善。',
@@ -86,7 +86,7 @@ var PrintKit={
     },
     {
       id:'emotion-cards',
-      cat:'cards',
+      cat:'floor',
       ic:'😊',
       n:'幼兒情緒面面觀表情卡與平復指南',
       desc:'喜怒哀樂大圖卡 + 幼兒情緒平復四部曲指南。',
@@ -95,7 +95,7 @@ var PrintKit={
     },
     {
       id:'transport-cards',
-      cat:'cards',
+      cat:'floor',
       ic:'🚌',
       n:'交通工具與社區安全常識圖卡',
       desc:'香港雙層巴士、港鐵、電車、救護車圖卡 + 乘車安全三守則。',
@@ -104,7 +104,7 @@ var PrintKit={
     },
     {
       id:'nametag-sheet',
-      cat:'worksheet',
+      cat:'kid',
       ic:'🏷️',
       n:'我是誰・自畫像與名牌底紙',
       desc:'第1次集會破冰必備：名牌裁切框、小草蜢圖鑑框與自畫像畫紙。',
@@ -113,7 +113,7 @@ var PrintKit={
     },
     {
       id:'craft-ctrl',
-      cat:'coach',
+      cat:'lead',
       ic:'🧒',
       n:'4–7 歲手工控場卡（派料・一步一停・加任務・收工）＋15 個手工年齡分工速查',
       desc:'貼枱邊：派料・一步一停・加任務・收工，附年齡分工。',
@@ -122,7 +122,7 @@ var PrintKit={
     },
     {
       id:'craft-coach',
-      cat:'worksheet',
+      cat:'lead',
       ic:'🎨',
       n:'手工自學卡（領袖版）・逐步圖解與後備版',
       desc:'領袖版說明書：逐步拆解・最易錯位・後備版。（小朋友紙另印）',
@@ -131,7 +131,7 @@ var PrintKit={
     },
     {
       id:'checklists',
-      cat:'plan',
+      cat:'lead',
       ic:'🧭',
       n:'集會執行檢查表（戶外・玩水・頒獎・美勞）',
       desc:'戶外・玩水・頒獎・美勞・地貼，逐項可剔。',
@@ -140,7 +140,7 @@ var PrintKit={
     },
     {
       id:'meet-pack',
-      cat:'plan',
+      cat:'lead',
       ic:'📦',
       n:'今場領袖套包（一疊印齊）',
       desc:'程序表・執袋單・帶領卡・手工說明・設場・家長通知・檢查表。',
@@ -149,12 +149,21 @@ var PrintKit={
     },
     {
       id:'kid-pack',
-      cat:'worksheet',
+      cat:'kid',
       ic:'🧒',
-      n:'今場小朋友即用紙（每人一份・印完即用）',
+      n:'今場小朋友圖紙（每人一份・印完即用）',
       desc:'按今場環節自動配紙，一次印夠人數。紙上冇說明，剪完就用。',
       pages:'A4 每人 1–3 頁 × 人數',
       render:function(tid){return Pack.sheets('kid',dur(tid||'t01'),1)}
+    },
+    {
+      id:'meet-all',
+      cat:'lead',
+      ic:'🖨️',
+      n:'今場全套：領袖教案 ＋ 小朋友圖紙（一疊過印）',
+      desc:'教案打頭陣，中間有分隔頁，圖紙跟喺後面 — 印完唔使再周圍搵圖紙。',
+      pages:'A4 6–20 頁／集會',
+      render:function(tid){return Pack.sheets('all',dur(tid||'t01'),1)}
     },
     {
       id:'cert-sheet',
@@ -167,7 +176,7 @@ var PrintKit={
     },
     {
       id:'goodturn-sheet',
-      cat:'worksheet',
+      cat:'kid',
       ic:'📅',
       n:'小童軍日行一善雪櫃打卡承諾卡',
       desc:'7天家務善行記錄表，附家長簽名蓋印欄，完成可貼在雪櫃。',
@@ -176,7 +185,7 @@ var PrintKit={
     },
     {
       id:'rainbow-placemat',
-      cat:'worksheet',
+      cat:'kid',
       ic:'🍽️',
       n:'五色彩虹健康飲食餐盤底紙',
       desc:'紅橙綠白紫五色餐盤分區，可供幼兒貼食物小貼紙或繪畫。',
@@ -185,7 +194,7 @@ var PrintKit={
     },
     {
       id:'gh-passport',
-      cat:'worksheet',
+      cat:'kid',
       ic:'🦗',
       n:'小草蜢歷險七大範疇印章護照',
       desc:'A4 對摺護照，收錄戶外、運動、創新等七大範疇印章打卡格。',
@@ -222,12 +231,15 @@ var PrintKit={
   ],
 
   html:function(){
-    var cats=[['all','全部教材'],['plan','📋 備課教案'],['cards','✂️ 實體圖卡'],['worksheet','📝 工作紙/手工'],['admin','📊 行政海報']];
-    var filtered=PrintKit.tab==='all'?PrintKit.kits:PrintKit.kits.filter(function(k){return k.cat===PrintKit.tab});
+    var cats=[['all','全部'],['kid','✂️ 小朋友圖紙'],['floor','🅰️ 場地圖卡'],['lead','📋 領袖教案'],['admin','📊 行政海報']];
+    var order={kid:0,floor:1,lead:2,admin:3};
+    var filtered=(PrintKit.tab==='all'?PrintKit.kits.slice():PrintKit.kits.filter(function(k){return k.cat===PrintKit.tab}))
+      .sort(function(a,b){return (order[a.cat]||9)-(order[b.cat]||9)});
     var h='<div class="card printable-hero">'+
-      '<span class="eyebrow">🖨️ 教材庫</span>'+
-      '<h2>揀一樣，即刻印。</h2>'+
-      '<p class="mute">想印齊今場全部嘢？去 <button class="lnk" onclick="App.go(\'#pack\')">📦 集會套包</button> 一撳就有。呢度係單件教材。</p>'+
+      '<span class="eyebrow">✂️ 圖紙 ‧ 教材庫</span>'+
+      '<h2>所有印得出嚟嘅嘢，全部喺呢度。</h2>'+
+      '<p class="mute">圖紙＝小朋友剪／摺／塗嗰啲紙　｜　場地圖卡＝貼地貼牆嗰啲　｜　教案＝領袖手揸嗰疊。</p>'+
+      PrintKit.nowHtml()+
       '<div class="activity-tabs" style="margin-top:12px">'+
         cats.map(function(c){return '<button class="pill '+(PrintKit.tab===c[0]?'on':'')+'" onclick="PrintKit.setTab(\''+c[0]+'\')">'+c[1]+'</button>'}).join('')+
       '</div>'+
@@ -248,6 +260,22 @@ var PrintKit={
       }).join('')+
     '</div>';
     return h;
+  },
+
+  /* 「今場要用嘅圖紙」——最常搵嘅嘢擺喺最前，唔使喺 24 格入面撈 */
+  nowHtml:function(){
+    if(typeof Pack==='undefined')return '';
+    var cur=Pack.meet(),m=cur.m,ls=Pack.sheetList(m);
+    return '<div class="pk-now"><div class="pn-h">📌 今場：<b>'+esc(m.n)+'</b></div>'+
+      (ls.length
+        ?'<div class="pw-list">'+ls.map(function(x){return '<span class="pw-i">'+x.ic+' '+esc(x.n)+'<i>'+esc(x.cp)+'</i></span>'}).join('')+'</div>'
+        :'<div class="mute" style="font-size:.82rem">呢場唔使圖紙（全部環節用螢幕／身體玩）— 印教案就夠。</div>')+
+      '<div class="btns" style="margin-bottom:0">'+
+        '<button class="btn sm" onclick="Pack.open(\'all\')">🖨️ 印齊今場（教案＋圖紙）</button>'+
+        (ls.length?'<button class="btn sm gr" onclick="Pack.open(\'kid\')">✂️ 淨印今場圖紙</button>':'')+
+        '<button class="btn sm ghost" onclick="Pack.open(\'lead\')">📋 淨印教案</button>'+
+        '<button class="btn sm ghost" onclick="App.go(\'#pack\')">📦 換一場／改份數</button>'+
+      '</div></div>';
   },
 
   setTab:function(t){
@@ -437,6 +465,9 @@ var PrintKit={
         '</table>'+
       '</div>'+
 
+      /* 教案唔可以印完就算：邊幾張圖紙要跟埋印，喺呢度列清楚 */
+      (typeof Pack!=='undefined'?Pack.sheetIndexPrint(t):'')+
+
       '<div class="print-footer-grid">'+
         '<div class="p-sign-box">主領領袖簽署：_________________</div>'+
         '<div class="p-sign-box">副領袖／家長義工：_________________</div>'+
@@ -445,7 +476,6 @@ var PrintKit={
     '</div>';
     return h;
   },
-
   /* 2. 身體界線紅黃綠圖卡套包 (Safe from Harm) */
   renderSfhCards:function(){
     return '<div class="a4-sheet sfh-print-sheet">'+

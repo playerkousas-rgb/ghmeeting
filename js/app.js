@@ -19,7 +19,8 @@ var App={
     if(document.body.contains(document.getElementById('leadroot'))&&!document.getElementById('leadroot').classList.contains('hidden'))Lead.exit(false);
     var v={pack:'pack',plan:'plan',meet:'meet',play:'play',lead:'lead',track:'track',book:'book',print:'print'}[h]||'pack';
     App.view=v;
-    document.querySelectorAll('#tabbar a').forEach(function(a){a.classList.toggle('on',a.dataset.tab===v)});
+    /* 🅰️ 上方新手四步 ＋ 🅱️ 下方工具箱：兩條 bar 都要著返正確嗰格 */
+    document.querySelectorAll('#tabbar a, #topnav a').forEach(function(a){a.classList.toggle('on',a.dataset.tab===v)});
     var el=document.getElementById('view');
     if(v==='pack')el.innerHTML=Pack.html();
     if(v==='plan')el.innerHTML=Plan.html();
@@ -29,6 +30,7 @@ var App={
     if(v==='track')el.innerHTML=Track.html();
     if(v==='book')el.innerHTML=HB.html();
     if(v==='print')el.innerHTML=PrintKit.html();
+    if(typeof Flow!=='undefined')Flow.render();   /* 🧭 嚮導條跟住畫面更新 */
     scrollTo(0,0);
   },
   go:function(h){location.hash=h},
@@ -169,7 +171,7 @@ var Plan={
         '<button class="pill" onclick="Kit.searchOpen()">🔍 全站搵嘢</button>'+
         '<button class="pill" onclick="Kit.hubOpen()">🧰 點預備・檢查表</button>'+
       '</div>'+
-      '</section><div class="steps-banner"><div class="mini-step"><b>01</b>印套包</div><div class="mini-step"><b>02</b>全螢幕帶領</div><div class="mini-step"><b>03</b>完場記出席</div></div>'+
+      '</section>'+(typeof Flow!=='undefined'?Flow.inviteHtml():'')+
       '<div class="stat"><div class="s"><b>'+(pl.rows.length-done)+'</b>尚餘集會</div><div class="s"><b>'+done+'/'+pl.rows.length+'</b>已完成</div><div class="s"><b>'+mem.length+'</b>團員</div></div>';
     h+='<div class="card"><h2>🗓️ 年度行事曆 <span class="tag">'+done+'/'+pl.rows.length+' 完成</span></h2>'+
       '<div class="mute" style="font-size:.82rem;margin-bottom:8px">撳任何一格：換卡・記完成・即刻帶。</div>'+
@@ -205,7 +207,8 @@ var Plan={
       '<div class="date-row"><input type="date" value="'+esc(r.date||'')+'" onchange="Plan.setDate('+no+',this.value)">'+(r.date?'<button class="btn sm ghost" onclick="Plan.setDate('+no+',\'\');Plan.rowAction('+no+')">清走</button>':'')+'</div>'+
       '<label class="f">改用其他範本</label><select onchange="Plan.swap('+no+',this.value)">'+
       TPLS.map(function(x){return '<option value="'+x.id+'"'+(x.id===r.tid?' selected':'')+'>'+esc(x.n)+'</option>'}).join('')+'</select>'+
-      '<div class="btns" style="margin-top:12px"><button class="btn gr" onclick="Modal.close();Lead.start(\''+r.tid+'\','+no+')">▶ 帶領呢次</button></div>');
+      '<div class="btns" style="margin-top:12px"><button class="btn" onclick="Modal.close();Pack.pick(\'tpl\',\''+r.tid+'\','+no+');App.go(\'#pack\')">📦 就揀呢場（跟住去印教材）</button>'+
+      '<button class="btn gr" onclick="Modal.close();Lead.start(\''+r.tid+'\','+no+')">▶ 帶領呢次</button></div>');
   },
   setRow:function(no,st){var pl=App.plan();pl.rows.find(function(x){return x.no===no}).status=st;Store.set('plan',pl);
     if(st==='done')Track.attendPrompt(no);else{Modal.close();App.route()}},

@@ -58,10 +58,19 @@ var Prepare={
       '<div class="btns" style="margin-top:12px">'+
         '<button class="btn gr" onclick="Modal.close();Lead.start(\''+t.id+'\')">▶ 由頭開始帶領</button>'+
         '<button class="btn" style="background:#2e7d32;color:#fff" onclick="Modal.close();Pack.pick(\'tpl\',\''+t.id+'\')">📦 印齊今場套包</button>'+
-        '<button class="btn ghost" style="background:#ede7f6;color:#4527a0;border-color:#b39ddb" onclick="PrintKit.openModal(\'lesson-plans\',\''+t.id+'\')">🖨️ 只印教案</button>'+
         '<button class="btn ghost" onclick="Prepare.shareTpl(\''+t.id+'\')">📤 分享準備卡</button>'+
       (Kit.rain[t.id]?'<button class="btn ghost" style="background:#e3f2fd;border-color:#90caf9;color:#0d47a1" onclick="Kit.rainAsk(\''+t.id+'\')">☔ 落雨點算（睇後備版）</button>':'')+
       '</div>'+
+      /* 印邊樣講到明：教案同圖紙唔會分開失蹤 */
+      '<div class="pk-where"><b>🖨️ 想即刻印？</b>'+
+        (function(){var ls=Pack.sheetList(t);
+          return ls.length?'<div class="pw-list">'+ls.map(function(x){return '<span class="pw-i">'+x.ic+' '+esc(x.n)+'</span>'}).join('')+'</div>'
+            :'<div class="pw-hint">呢場冇圖紙，印教案就夠。</div>'})()+
+        '<div class="btns" style="margin-bottom:0">'+
+          '<button class="btn sm" onclick="PrintKit.openModal(\'meet-all\',\''+t.id+'\')">🖨️ 教案＋圖紙（一疊過）</button>'+
+          '<button class="btn sm ghost" onclick="PrintKit.openModal(\'lesson-plans\',\''+t.id+'\')">📋 只印教案</button>'+
+          '<button class="btn sm gr" onclick="PrintKit.openModal(\'kid-pack\',\''+t.id+'\')">✂️ 只印圖紙</button>'+
+        '</div></div>'+
       (function(){var cs=t.stages.filter(function(x){return Craft.isCraft(x)});
         return '<div class="attention" style="margin-top:12px"><b>開場前三件事</b>：① 照執袋單執齊　② 預留活動位置　③ 撳「由頭開始帶領」跟綠色欄做。</div>'+
           (cs.length?'<div class="attention" style="margin-top:8px;background:#fff8ee;border-left-color:#f57c00"><b>🎨 今次有 '+cs.length+' 個手工環節'+(cs.some(function(x){return Craft.match(x)})?'，每樣都附自學卡':'')+'</b><br>'+

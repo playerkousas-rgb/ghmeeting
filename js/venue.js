@@ -298,7 +298,8 @@ var Venue={
       '<div class="card"><h3>⑤ 幾多人點玩</h3>'+this.crowdHtml()+'</div>'+
       '<div class="card"><h3>⑥ 現場救急</h3>'+this.fixHtml()+'</div>';
   },
-  open:function(){Modal.open('<div class="eyebrow">📍 場地設置</div>'+this.html())},
+  open:function(){
+    if(typeof Flow!=='undefined')Flow.mark('venue',1);Modal.open('<div class="eyebrow">📍 場地設置</div>'+this.html())},
   /* A4 打印 */
   printSheet:function(){
     return '<div class="a4-sheet venue-sheet">'+
