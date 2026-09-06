@@ -268,6 +268,7 @@ var Lead={
     var t=dur(id);if(!t)return;
     Lead.cleanupTimers();
     Lead.S={meet:JSON.parse(JSON.stringify(t)),idx:0,left:(t.stages[0].m||5)*60,timerOn:false,no:no||0};
+    if(typeof Flow!=='undefined'){Flow.mark('venue',1);Flow.mark('lead',1)}
     Lead.open();
   },
   startStage:function(id,i){
@@ -292,6 +293,7 @@ var Lead={
     var m=Store.get('mymeets').find(function(x){return x.id===id});if(!m)return;
     Lead.cleanupTimers();
     Lead.S={meet:JSON.parse(JSON.stringify(m)),idx:0,left:(m.stages[0].m||5)*60,timerOn:false,no:0};
+    if(typeof Flow!=='undefined'){Flow.mark('venue',1);Flow.mark('lead',1)}
     Lead.open();
   },
   open:function(){
@@ -309,6 +311,25 @@ var Lead={
     if(reroute!==false)App.route();
   },
   cur:function(){return Lead.S.meet.stages[Lead.S.idx]},
+  /* 呢一節要用邊張小朋友圖紙（冇就 null）——帶緊集會臨時想再印一張都搵得返 */
+  sheetNow:function(){
+    if(typeof Sheets==='undefined'||!Lead.S||!Lead.S.meet)return null;
+    var st=Lead.cur();if(!st)return null;
+    var ck=Sheets.craftFor(st);
+    if(ck)return {kind:'craft',k:ck,n:(Sheets.craft[ck]||{}).n||'手工即用紙'};
+    var wk=Sheets.wsFor(st);
+    if(wk)return {kind:'ws',k:wk,n:Sheets.ws[wk].n};
+    return null;
+  },
+  openSheet:function(){
+    var x=Lead.sheetNow();
+    if(!x){toast('呢節唔使圖紙');return}
+    Modal.open('<div class="print-preview-modal">'+
+      '<div class="print-preview-top"><div><h3>✂️ '+esc(x.n)+'</h3>'+
+        '<small class="mute">呢節用嘅小朋友圖紙・A4 實際尺寸・印完即剪</small></div>'+
+      '<div class="btns"><button class="btn gr" onclick="PrintKit.triggerPrint()">🖨️ 即刻列印 / 存 PDF</button></div></div>'+
+      '<div class="print-sheet-wrapper" id="printableArea">'+Sheets.one(x.kind,x.k)+'</div></div>');
+  },
   render:function(){
     var S=Lead.S,st=Lead.cur(),g=Guide.forStage(st);
     var pills=S.meet.stages.map(function(x,i){return '<i class="'+(i<S.idx?'done':i===S.idx?'on':'')+'"></i>'}).join('');
@@ -321,6 +342,7 @@ var Lead={
        '<button class="lead-top-pill" onclick="Sfx.whistle();toast(\'🎺 嗶————！集合！\')" title="吹哨">🎺 哨子</button>'+
        '<button class="lead-top-pill" onclick="Venue.open()" title="場地設置：分區・界線・規矩">📍 場地</button>'+
        '<button class="lead-top-pill" onclick="Kit.openCheckFor(Lead.S.meet)" title="今場執行檢查表">🧭 檢查表</button>'+
+       (Lead.sheetNow()?'<button class="lead-top-pill" onclick="Lead.openSheet()" title="呢節用嘅小朋友圖紙">✂️ 圖紙</button>':'')+
        '<button class="lead-top-pill" onclick="Lead.addMiniGame()" title="加插遊戲">➕ 遊戲</button>'+
        '<button onclick="Lead.tools()" title="工具箱">🧰</button>'+
        '<button onclick="Lead.fs()" title="全螢幕">🖥️</button></div>'+

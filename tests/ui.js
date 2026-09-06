@@ -21,7 +21,7 @@ const s={console,
     this.createGain=()=>({gain:{value:0,setValueAtTime(){},linearRampToValueAtTime(){},exponentialRampToValueAtTime(){}},connect(){},disconnect(){}});
     this.resume=()=>{};}};
 s.window=s;const c=vm.createContext(s);
-['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js']
+['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','flow.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js']
   .forEach(f=>vm.runInContext(fs.readFileSync(path.join(__dirname,'..','js',f),'utf8'),c,{filename:f}));
 const {App,HB,Play,Prepare,PrintKit,Pack,Kit,TPLS}=s;
 App.init();
@@ -108,6 +108,7 @@ console.log('30 templates ok');
 try{App.quickHub();console.log('quickHub ok',els.get('modal').innerHTML.length)}catch(e){fails.push('quickHub → '+e.message)}
 try{Kit.searchOpen();const r=Kit.searchHtml('套包');if(!/集會套包/.test(r))fails.push('搜尋「套包」搵唔到');
   const r2=Kit.searchHtml('燈籠 即用紙');if(!/即用紙/.test(r2))fails.push('搜尋「即用紙」搵唔到');
+  const r3=Kit.searchHtml('圖紙');if(!/圖紙/.test(r3))fails.push('搜尋「圖紙」搵唔到');
   console.log('search ok')}catch(e){fails.push('search → '+e.message)}
 // 臨時集會
 try{Pack.instant('safety',40);console.log('instant ok ->',Pack.meet().m.n)}catch(e){fails.push('instant → '+e.message)}
