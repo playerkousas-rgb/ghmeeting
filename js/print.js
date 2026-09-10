@@ -236,7 +236,7 @@ var PrintKit={
     var filtered=(PrintKit.tab==='all'?PrintKit.kits.slice():PrintKit.kits.filter(function(k){return k.cat===PrintKit.tab}))
       .sort(function(a,b){return (order[a.cat]||9)-(order[b.cat]||9)});
     var h='<div class="card printable-hero">'+
-      '<span class="eyebrow">✂️ 圖紙 ‧ 教材庫</span>'+
+      '<span class="eyebrow">✂️ 工作紙 ‧ 圖紙 ‧ 教材庫</span>'+
       '<h2>所有印得出嚟嘅嘢，全部喺呢度。</h2>'+
       '<p class="mute">圖紙＝小朋友剪／摺／塗嗰啲紙　｜　場地圖卡＝貼地貼牆嗰啲　｜　教案＝領袖手揸嗰疊。</p>'+
       PrintKit.nowHtml()+

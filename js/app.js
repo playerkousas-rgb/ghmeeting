@@ -17,9 +17,10 @@ var App={
   route:function(){
     var h=(location.hash||'#plan').slice(1).split('?')[0];
     if(document.body.contains(document.getElementById('leadroot'))&&!document.getElementById('leadroot').classList.contains('hidden'))Lead.exit(false);
-    var v={pack:'pack',plan:'plan',meet:'meet',play:'play',lead:'lead',track:'track',book:'book',print:'print'}[h]||'pack';
+    var v={pack:'pack',plan:'plan',meet:'meet',play:'play',lead:'lead',track:'track',book:'book',print:'print',
+           chute:'chute',song:'song',tools:'tools'}[h]||'pack';
     App.view=v;
-    /* 🅰️ 上方新手四步 ＋ 🅱️ 下方工具箱：兩條 bar 都要著返正確嗰格 */
+    /* 🅰️ 上方集會五步 ＋ 🅱️ 下方工具箱五格：兩條 bar 都要著返正確嗰格 */
     document.querySelectorAll('#tabbar a, #topnav a').forEach(function(a){a.classList.toggle('on',a.dataset.tab===v)});
     var el=document.getElementById('view');
     if(v==='pack')el.innerHTML=Pack.html();
@@ -30,6 +31,10 @@ var App={
     if(v==='track')el.innerHTML=Track.html();
     if(v==='book')el.innerHTML=HB.html();
     if(v==='print')el.innerHTML=PrintKit.html();
+    /* 🅱️ 工具箱三格：唔使準備，即開即用 */
+    if(v==='chute')el.innerHTML=Chute.html();
+    if(v==='song')el.innerHTML=Song.html();
+    if(v==='tools')el.innerHTML=Tools.html();
     if(typeof Flow!=='undefined')Flow.render();   /* 🧭 嚮導條跟住畫面更新 */
     scrollTo(0,0);
   },

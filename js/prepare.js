@@ -5,7 +5,7 @@ var Prepare={
     var cats=[['all','全部'],['member','團員章'],['prog','進步'],['fest','特別'],['outdoor','戶外'],['gh','小草蜢'],['custom','自訂']];
     var h='<div class="card">'+
       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">'+
-        '<div><h2>🧩 帶領卡庫</h2><div class="mute" style="font-size:.83rem">'+TPLS.length+' 張即用帶領卡。</div></div>'+
+        '<div><h2>🧩 定流程・帶領卡庫</h2><div class="mute" style="font-size:.83rem">'+TPLS.length+' 張即用帶領卡：照用一張，或者砌自己嘅流程（定好先去印教材）。</div></div>'+
         '<button class="btn sm" onclick="App.go(\'#pack\')" style="background:#2e7d32;color:#fff">📦 集會套包 ↗</button>'+
       '</div>'+
       '<div style="margin:8px 0">'+cats.map(function(c){return '<span class="pill'+(Prepare.filter===c[0]?' on':'')+'" onclick="Prepare.f(\''+c[0]+'\')">'+c[1]+'</span>'}).join('')+'</div>';

@@ -65,7 +65,7 @@ const sandbox={
 };
 sandbox.window=sandbox;sandbox.globalThis=sandbox;
 const ctx=vm.createContext(sandbox);
-const order=['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','flow.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js'];
+const order=['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','flow.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js','chute.js','song.js','tools.js'];
 for(const f of order){
   vm.runInContext(fs.readFileSync(path.join(__dirname,'..','js',f),'utf8'),ctx,{filename:'js/'+f});
 }
@@ -527,20 +527,27 @@ ok('⑮ 載入 jingle 後跟住換',Music.cur==='jingle'&&Music.song===Music.SON
 Music.load('theme');
 ok('⑮ 載入返 theme',Music.cur==='theme');
 
-/* ⑯ 導航重組：上方 4 個新手掣 ＋ 下方 4 個工具掣（電話放得曬） */
+/* ⑯ 導航重組：🅰️ 上方 5 個集會掣（要準備）＋ 🅱️ 下方 5 個工具箱掣（即開即用） */
 const idxHtml=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 const topNav=(idxHtml.match(/<nav id="topnav"[\s\S]*?<\/nav>/)||[''])[0];
 const botNav=(idxHtml.match(/<nav id="tabbar"[\s\S]*?<\/nav>/)||[''])[0];
+const topBar=(idxHtml.match(/<div class="topbtns">[\s\S]*?<\/div>/)||[''])[0];
 const topLinks=(topNav.match(/<a /g)||[]).length, botLinks=(botNav.match(/<a /g)||[]).length;
-ok('⑯ 上方最多 4 個掣',topLinks>0&&topLinks<=4,'top='+topLinks);
-ok('⑯ 下方最多 4 個掣',botLinks>0&&botLinks<=4,'bottom='+botLinks);
-ok('⑯ 上下方分開兩類（🅰️ 新手四步／🅱️ 工具箱）',/🅰️/.test(topNav)&&/🅱️/.test(botNav));
+ok('⑯ 上方 5 個集會掣',topLinks===5,'top='+topLinks);
+ok('⑯ 下方 5 個工具箱掣',botLinks===5,'bottom='+botLinks);
+ok('⑯ 上下方分開兩類（🅰️ 集會要準備／🅱️ 工具箱即開即用）',/🅰️/.test(topNav)&&/🅱️/.test(botNav));
+ok('⑯ 上方＝集會五步（揀・定・印・帶・記）',['plan','meet','pack','lead','track'].every(function(v){return topNav.indexOf('data-tab="'+v+'"')>=0}));
+ok('⑯ 下方＝工具箱（工作紙・活動・快樂傘・唱歌・快鍵）',
+  ['print','play','chute','song','tools'].every(function(v){return botNav.indexOf('data-tab="'+v+'"')>=0}));
 const navTabs=(idxHtml.match(/data-tab="([a-z]+)"/g)||[]).map(function(x){return x.replace(/[^a-z]/g,'').replace('datatab','')});
-['pack','plan','meet','play','lead','track','book','print'].forEach(function(v){
+['pack','plan','meet','play','lead','track','print','chute','song','tools'].forEach(function(v){
   ok('⑯ 「'+v+'」有入口（唔會有孤兒分頁）',navTabs.indexOf(v)>=0,navTabs.join(','));
 });
+ok('⑯ 📖 手冊有入口（放喺頂欄，唔佔導航格）',/#book/.test(topBar),topBar.replace(/\s+/g,' ').slice(0,120));
 ok('⑯ 兩條 bar 都會著燈',/#tabbar a, #topnav a/.test(fs.readFileSync(path.join(__dirname,'..','js','app.js'),'utf8')));
 ok('⑯ 上方係入口唔係步驟（冇 1234 編號扮流程）',!/<i>[1-9]<\/i>/.test(topNav),topNav.replace(/\s+/g,' ').slice(0,120));
+ok('⑯ 三格工具箱都有 js 檔',['chute','song','tools'].every(function(f){
+  return /<script src="js\//.test(idxHtml)&&idxHtml.indexOf('js/'+f+'.js')>=0}));
 
 /* ⑯b 🧭 step by step：揀咗集會之後一步步帶到散會（唔靠上面粒掣扮流程） */
 const FL=G.Flow;
@@ -594,6 +601,56 @@ ok('⑱ 四角搶答／分邊／回收各有自己張圖（唔再共用一張）
 ok('⑱ 記憶配對唔會亂配一張四角圖',!imgMap.memory);
 ok('⑱ 新圖有入 sw 快取',/g-judge\.avif/.test(fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8'))&&
   /g-recycle\.avif/.test(fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8')));
+
+/* ⑲ 🅱️ 工具箱三格（快樂傘・唱歌・快鍵）：即開即用，唔使事前準備 */
+const CH=G.Chute, SG=G.Song, TL=G.Tools;
+ok('⑲ 三格工具箱都有模組同頁面',!!CH&&!!SG&&!!TL&&typeof CH.html==='function'&&typeof SG.html==='function'&&typeof TL.html==='function');
+const chuteHtml=CH.html(), songHtml=SG.html(), toolsHtml=TL.html();
+[['快樂傘',chuteHtml],['唱歌',songHtml],['快鍵',toolsHtml]].forEach(function(x){
+  ok('⑲ '+x[0]+' 頁有內容',x[1].length>1500,'len='+x[1].length);
+  ok('⑲ '+x[0]+' 頁有「一撳即開」大掣',(x[1].match(/tk-btn/g)||[]).length>=4,(x[1].match(/tk-btn/g)||[]).length+' 個');
+});
+/* 快樂傘：每式都要開到＋圖／口令／點樣帶三步 */
+eq('⑲ 16 式玩法卡全部有「即開」掣',(chuteHtml.match(/Chute\.play\(/g)||[]).length,G.DATA.chute.length);
+ok('⑲ 快樂傘有基本三步圖＋安全三句',/chute-steps/.test(chuteHtml)&&/安全三句/.test(chuteHtml));
+ok('⑲ 快樂傘有冇傘點算',/冇傘/.test(chuteHtml));
+CH.ritual('open');
+eq('⑲ 開會儀式開到 chuteopen 畫面',Lead.S.meet.stages[0].screen,'chuteopen');
+CH.ritual('close');
+eq('⑲ 散會儀式開到 chuteclose 畫面',Lead.S.meet.stages[0].screen,'chuteclose');
+CH.random();
+ok('⑲ 抽一式開到玩法卡',Lead.S.meet.stages[0].screen==='chute'&&typeof Lead.S.meet.stages[0].chuteIndex==='number',
+  JSON.stringify(Lead.S.meet.stages[0]).slice(0,80));
+CH.calm();
+eq('⑲ 冷靜一式會揀「冷靜落嚟」嗰類',G.DATA.chute[Lead.S.meet.stages[0].chuteIndex].tag,'冷靜落嚟');
+CH.tag='動起來';
+ok('⑲ 可以淨揀「動起來」嗰幾式',CH.list().length>0&&CH.list().every(function(c){return c.tag==='動起來'}),CH.list().length+' 式');
+CH.tag='all';
+/* 唱歌：曲庫＋卡拉OK＋逐句動作 */
+ok('⑲ 曲庫三首都入咗唱歌頁',(songHtml.match(/Song\.start\(/g)||[]).length>=Object.keys(G.Music.SONGBOOK).length,
+  Object.keys(G.Music.SONGBOOK).join(','));
+eq('⑲ 主題曲六句＝六個動作',G.DATA.facts.song.length,SG.ACTIONS.length);
+SG.start('theme');
+ok('⑲ 主題曲卡拉OK 開到 song 畫面',Lead.S.meet.stages[0].screen==='song'&&Lead.S.meet.stages[0].song==='theme',
+  JSON.stringify(Lead.S.meet.stages[0]).slice(0,80));
+SG.start('jingle');
+ok('⑲ 曲庫第二首都開到（場景：節慶）',Lead.S.meet.stages[0].song==='jingle'&&/Jingle/.test(Lead.S.meet.n),Lead.S.meet.n);
+SG.tempo('slow');eq('⑲ 速度揀「慢」＝92 BPM',G.Music.bpm,92);
+SG.tempo('std');eq('⑲ 速度彈返「中」＝112 BPM',G.Music.bpm,112);
+SG.opt('chords');ok('⑲ 和弦伴奏撳到（開→關）',G.Music.chords===false||G.Music.chords===true);
+/* 快鍵：兩個清單＋每個掣都真係有函數 */
+eq('⑲ 臨時加節目 10 個',TL.PROGRAMS.length,10);
+eq('⑲ 控場快鍵 10 個',TL.QUICK.length,10);
+['Chute.play','Lead.startGame','Lead.quickTool','Lead.quietQuick','Sfx.whistle','Sfx.horn',
+ 'Kit.openCheckFor','Kit.searchOpen','Kit.hubOpen','Venue.open','App.startInstant','App.go','App.quickHub'].forEach(function(fn){
+  var p=fn.split('.'),host=p.length===2?sandbox[p[0]]:null;
+  ok('⑲ 快鍵用嘅 '+fn+' 存在',p.length===2?!!(host&&host[p[1]]!==undefined):typeof sandbox[fn]==='function');
+});
+/* 回歸：檢查表快鍵一定要俾「有 stages 嘅集會」，唔係俾 Pack.meet() 個 wrapper */
+const ckGo=TL.QUICK.filter(function(x){return /Kit\.openCheckFor/.test(x[3])})[0];
+const ckArg=(ckGo[3].match(/Kit\.openCheckFor\((.*)\)$/)||[])[1]||'';
+const ckVal=vm.runInContext(ckArg,ctx);
+ok('⑲ 檢查表快鍵傳入嘅係集會本體（有 stages）',!!ckVal&&Array.isArray(ckVal.stages),ckArg+' → '+JSON.stringify(ckVal).slice(0,80));
 
 /* ============ 結果 ============ */
 console.log('\n✅ 通過 '+pass+' 項');

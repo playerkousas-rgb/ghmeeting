@@ -18,14 +18,16 @@
     <div class="topbtns">
       <button class="iconbtn" onclick="App.quickHub()" title="⚡ 隨手開會：即刻砌一場">⚡</button>
       <button class="iconbtn" onclick="Kit.searchOpen()" title="全站搵嘢：範本・手工・圖紙・物料">🔍</button>
+      <button class="iconbtn" onclick="App.go('#book')" title="📖 手冊：誓詞・規律・獎章・貼士（查嘢用）">📖</button>
       <button class="iconbtn" onclick="App.settings()" title="旅團設定">⚙️</button>
     </div>
   </header>
-  <!-- 🅰️ 上方＝新手最常入嗰四度（純快速入口，唔負責教流程；流程由 🧭 嚮導帶） -->
-  <nav id="topnav" aria-label="新手快速入口">
-    <div class="navcap a">🅰️ 新手快速入口</div>
+  <!-- 🅰️ 上方＝集會：由揀到散會，五步全部要事前準備（純快速入口，唔負責教流程；流程由 🧭 嚮導帶） -->
+  <nav id="topnav" aria-label="集會流程">
+    <div class="navcap a">🅰️ 集會：由揀到散會（要事前準備）</div>
     <div class="navrow">
       <a href="#plan" data-tab="plan"><span>📅</span>揀集會</a>
+      <a href="#meet" data-tab="meet"><span>🧩</span>定流程</a>
       <a href="#pack" data-tab="pack"><span>🖨️</span>印教材</a>
       <a href="#lead" data-tab="lead"><span>▶️</span>帶領</a>
       <a href="#track" data-tab="track"><span>🏅</span>記錄</a>
@@ -35,14 +37,15 @@
   <main id="view"></main>
   <!-- 🧭 step by step：揀咗集會之後，一步步帶到散會 -->
   <div id="flowbar"></div>
-  <!-- 🅱️ 下方＝工具箱：老手唔使跟步驟，想要邊樣直接撳（最多 4 個掣） -->
+  <!-- 🅱️ 下方＝工具箱：唔使事前準備，突然想加個節目就即開即用（最多 5 個掣） -->
   <nav id="tabbar" aria-label="工具箱">
-    <div class="navcap b">🅱️ 工具箱：想要邊樣，直接撳</div>
+    <div class="navcap b">🅱️ 工具箱：想加節目，即開即用</div>
     <div class="navrow">
-      <a href="#print" data-tab="print"><span>✂️</span>圖紙</a>
+      <a href="#print" data-tab="print"><span>✂️</span>工作紙</a>
       <a href="#play" data-tab="play"><span>🎮</span>活動</a>
-      <a href="#meet" data-tab="meet"><span>🧩</span>範本</a>
-      <a href="#book" data-tab="book"><span>📖</span>手冊</a>
+      <a href="#chute" data-tab="chute"><span>🌈</span>快樂傘</a>
+      <a href="#song" data-tab="song"><span>🎵</span>唱歌</a>
+      <a href="#tools" data-tab="tools"><span>🎲</span>快鍵</a>
     </div>
   </nav>
 </div>
@@ -65,6 +68,9 @@
 <script src="js/play.js"></script>
 <script src="js/venue.js"></script>
 <script src="js/kit.js"></script>
+<script src="js/chute.js"></script>
+<script src="js/song.js"></script>
+<script src="js/tools.js"></script>
 <script>
 if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});}
 App.init();
