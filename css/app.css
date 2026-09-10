@@ -858,6 +858,61 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
 .print-preview-top h3 {
   margin: 0;
 }
+/* 🖨️ 一睇就知出唔出界：預覽條＋每張紙頭頂嘅旗仔＋紅虛線頁尾 */
+.print-preview-bar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin: -4px 0 10px;
+}
+.sheet-stat {
+  font-size: .78rem;
+  font-weight: 800;
+  line-height: 1.4;
+  padding: 4px 11px;
+  border-radius: 99px;
+  border: 1.5px solid;
+}
+.sheet-stat.ok { color: #1b5e20; background: #e8f5e9; border-color: #a5d6a7; }
+.sheet-stat.warn { color: #8d6e00; background: #fff8e1; border-color: #ffe082; }
+.sheet-stat.bad { color: #b71c1c; background: #ffebee; border-color: #ef9a9a; }
+.sheet-flag {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  z-index: 3;
+  font-size: .7rem;
+  font-weight: 800;
+  line-height: 1.4;
+  padding: 3px 9px;
+  border-radius: 99px;
+  border: 1.5px solid;
+  background: #fff;
+  white-space: nowrap;
+}
+.sheet-flag.ok { color: #1b5e20; background: #e8f5e9; border-color: #a5d6a7; }
+.sheet-flag.warn { color: #8d6e00; background: #fff8e1; border-color: #ffe082; }
+.sheet-flag.bad { color: #b71c1c; background: #ffebee; border-color: #ef9a9a; }
+.sheet-pageline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  border-top: 2px dashed #e53935;
+  pointer-events: none;
+}
+.sheet-pageline::after {
+  content: "呢度係頁尾・過咗界";
+  position: absolute;
+  right: 0;
+  top: 2px;
+  font-size: .64rem;
+  font-weight: 800;
+  color: #e53935;
+  background: #fff;
+  padding: 0 4px;
+}
 .print-sheet-wrapper {
   background: #cfd8dc;
   padding: 16px;
@@ -870,6 +925,7 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
 
 /* 標準 A4 紙張預覽 (210mm x 297mm 比例) */
 .a4-sheet {
+  position: relative;
   background: #ffffff;
   color: #212121;
   width: 100%;
@@ -1346,6 +1402,7 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
     padding: 0 !important;
     margin: 0 !important;
   }
+  .print-preview-bar, .sheet-flag, .sheet-pageline, .sheet-stat { display: none !important; }
   #topbar, #tabbar, #topnav, #stickytop, #flowbar, .print-preview-top, #modal .x, .btns, .pill, .activity-tabs, .action-grid {
     display: none !important;
   }

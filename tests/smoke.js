@@ -656,9 +656,12 @@ ok('⑲ 檢查表快鍵傳入嘅係集會本體（有 stages）',!!ckVal&&Array.
    原則：列表頁只俾重點，長描述最多兩行（CSS clamp），全文留返撳入去嗰張卡。
    呢個上限係「而家值 × 約 1.3」，改版面如果爆咗就代表又長篇大論返。 */
 function visibleLen(h){
-  return String(h).replace(/<details\b[^>]*>[\s\S]*?<\/details>/g,'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim().length;
+  /* 摺住嘅 <details> 唔計（要撳開先睇到）；<option> 都唔計（下拉選單未撳開之前睇唔到） */
+  return String(h).replace(/<details\b[^>]*>[\s\S]*?<\/details>/g,'')
+                  .replace(/<option\b[^>]*>[\s\S]*?<\/option>/g,'')
+                  .replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim().length;
 }
-const BUDGET={'#pack':1500,'#plan':1800,'#meet':2100,'#print':1750,'#play':1600,
+const BUDGET={'#pack':1050,'#plan':1200,'#meet':2100,'#print':1750,'#play':1600,
               '#chute':1550,'#song':1150,'#tools':1000,'#book':1000};
 Object.keys(BUDGET).forEach(function(h){
   if(h==='#book')G.HB.tab='core';          /* 手冊：用預設嗰頁（核心內容）量 */
@@ -728,6 +731,36 @@ ok('⑳c 一頁高度計得出（約 1057px）',pagePx>1000&&pagePx<1100,'px='+p
   ok('⑳c 長過一頁好多 → 唔縮到睇唔到（照流，喺段落位斷）',!c.style.zoom);
   G.PrintKit.resetFit();
   ok('⑳c 印完還原（預覽回復原狀）',!a.style.zoom);
+})();
+
+/* ⑳c② 一睇就知出唔出界：每張紙嘅旗仔・紅虛線頁尾・預覽條總結 */
+(function(){
+  const box=G.PrintKit.pageBox();
+  ok('⑳c A4 印到嘅範圍計得出（約 733×1063px）',box.w>700&&box.w<760&&box.h>1040&&box.h<1080,
+     'w='+box.w+' h='+box.h);
+  const lbox=G.PrintKit.pageBox({classList:{contains:function(c){return c==='landscape'}}});
+  ok('⑳c 打橫嗰張紙闊同高要掉轉',lbox.w===box.h&&lbox.h===box.w,'w='+lbox.w+' h='+lbox.h);
+  const mk=function(h){
+    const flag={className:'',innerHTML:''},line={style:{}};
+    return {style:{},scrollHeight:h,clientWidth:733,
+      classList:{contains:function(){return false}},
+      querySelector:function(sel){return sel==='.sheet-flag'?flag:sel==='.sheet-pageline'?line:null},
+      appendChild:function(){},_flag:flag,_line:line};
+  };
+  const area=mkEl('printableArea');
+  const a=mk(1200),b=mk(900),c=mk(2000);      /* 1063＝一頁高 */
+  area.querySelectorAll=function(){return [a,b,c]};
+  els.set('printableArea',area);
+  const st=G.PrintKit.flagSheets();
+  ok('⑳c 逐張紙數得出「啱好／要縮／出界」',st.total===3&&st.shrink===1&&st.over===1,JSON.stringify(st));
+  ok('⑳c 啱一頁 → 綠色「一頁印得落」',/\u4e00\u9801\u5370\u5f97\u843d/.test(b._flag.innerHTML)&&/ok/.test(b._flag.className),b._flag.innerHTML);
+  ok('⑳c 差少少 → 黃色「會自動縮到 89%」',/89%/.test(a._flag.innerHTML)&&/warn/.test(a._flag.className),a._flag.innerHTML);
+  ok('⑳c 長過一截 → 紅色「會分 2 頁」',/\u5206 2 \u9801/.test(c._flag.innerHTML)&&/bad/.test(c._flag.className),c._flag.innerHTML);
+  ok('⑳c 出界嗰張有紅虛線標出頁尾位置',parseFloat(c._line.style.top)>1000,'top='+c._line.style.top);
+  ok('⑳c 啱好嗰張唔好畫紅虛線',!b._line.style.top);
+  ok('⑳c 預覽條總結有幾張出界',/1 \u5f35\u51fa\u754c/.test(els.get('sheetStat').innerHTML),els.get('sheetStat').innerHTML);
+  ok('⑳c 列印時收埋旗仔同紅虛線（唔好印出嚟）',
+     /\.print-preview-bar, \.sheet-flag, \.sheet-pageline, \.sheet-stat \{ display: none/.test(printCss));
 })();
 
 /* ============ 結果 ============ */

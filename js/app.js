@@ -181,11 +181,15 @@ var Plan={
     h+='<div class="card"><h2>🗓️ 年度行事曆 <span class="tag">'+done+'/'+pl.rows.length+' 完成</span></h2>'+
       '<div class="mute" style="font-size:.82rem;margin-bottom:8px">撳任何一格：換卡・記完成・即刻帶。</div>'+
       Plan.calendar(pl)+'</div>';
-    h+='<div class="card"><h2>🗺️ 42個月完整路線圖</h2><div class="mute" style="font-size:.82rem">團員章 → 四級進步獎章(約22個月)→ 小草蜢獎章(7範疇×2體驗)→ 晉團幼童軍</div>'+Plan.roadmap()+'</div>';
-    h+='<div class="card"><h2>🦗 小草蜢歷險(6歲起)</h2><div class="mute" style="font-size:.82rem;margin-bottom:8px">七大範疇各完成2項體驗=小草蜢獎章。app 已為每個範疇預備一次集會範本。</div><div class="grid2">'+
+    h+='<div class="card"><h2>🏅 獎章路線圖・七大範疇</h2>'+
+      '<details class="guide-more"><summary>🗺️ 42 個月路線圖</summary>'+
+        '<div class="mute" style="font-size:.82rem">團員章 → 進步獎章（約 22 個月）→ 小草蜢獎章（7 範疇 ×2 體驗）→ 晉團幼童軍</div>'+Plan.roadmap()+
+      '</details>'+
+      '<details class="guide-more"><summary>🦗 小草蜢歷險・七大範疇（6 歲起）</summary>'+
+        '<div class="mute" style="font-size:.82rem;margin-bottom:8px">七大範疇各完成 2 項體驗＝小草蜢獎章。每個範疇 app 都預備咗一次集會範本。</div><div class="grid2">'+
       DATA.ghDomains.map(function(d,i){var t=TPLS.filter(function(x){return x.cat==='gh'})[i];
         return '<div class="mem"><h4>'+d.ic+' '+d.n+'</h4><small class="mute">範本:'+esc(t.n)+'</small><div class="btns" style="margin:6px 0 0"><button class="btn sm ghost" onclick="App.go(\'#meet\');setTimeout(function(){Prepare.detail(\''+t.id+'\')},50)">查看</button><button class="btn sm" onclick="Lead.start(\''+t.id+'\')">▶</button></div></div>'}).join('')+
-      '</div></div>';
+      '</div></details></div>';
     return h;
   },
   lenOf:function(t){return (t.stages||[]).reduce(function(a,s){return a+(+s.m||0)},0)},
