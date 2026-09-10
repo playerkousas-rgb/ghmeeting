@@ -1,9 +1,11 @@
-/* 🦗 handbook.js — 手冊:支部內容、快樂傘、SFH、帶領貼士、關於 © 2026 Scout System */
+/* 🦗 handbook.js — 手冊（🅰️ 右1）：小童軍核心內容——核心・獎章制度・保護自己・帶領貼士・關於 © 2026 Scout System
+   定位（2026-09 負責人）：手冊＝小童軍核心內容。手工自學卡抽上「📦 官方套包」頁正面位；
+   點預備／場地設置／遊戲帶領／快樂傘各有自己入口（套包 parts・嚮導・下方 🎮活動・🌈快樂傘），唔再喺手冊重覆。 */
 var HB={
   tab:'core',
   html:function(){
-    var tabs=[['core','⚖️ 核心內容'],['craft','🎨 手工自學'],['kit','🧰 點預備'],['venue','📍 場地設置'],['games','🎮 遊戲帶領'],['badge','🏅 獎章制度'],['chute','🌈 快樂傘'],['sfh','🛡️ 保護自己'],['tips','💡 帶領貼士'],['about','ℹ️ 關於']];
-    var h='<div class="card"><h2>📖 手冊</h2><div>'+tabs.map(function(t){return '<span class="pill'+(HB.tab===t[0]?' on':'')+'" onclick="HB.t(\''+t[0]+'\')">'+t[1]+'</span>'}).join('')+'</div></div>';
+    var tabs=[['core','⚖️ 核心內容'],['badge','🏅 獎章制度'],['sfh','🛡️ 保護自己'],['tips','💡 帶領貼士'],['about','ℹ️ 關於']];
+    var h='<div class="card"><h2>📖 手冊</h2><div class="mute" style="font-size:.82rem">小童軍核心內容：查嘢用，撳到就有。</div><div>'+tabs.map(function(t){return '<span class="pill'+(HB.tab===t[0]?' on':'')+'" onclick="HB.t(\''+t[0]+'\')">'+t[1]+'</span>'}).join('')+'</div></div>';
     h+=HB[HB.tab]();
     return h;
   },

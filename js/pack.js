@@ -32,12 +32,14 @@ var Pack={
     if(k==='bag')return Pack.bagModal();
     if(k==='cards'){Modal.close();Prepare._detailId=cur.tid;Prepare.detail(cur.tid);return}
     if(k==='craftc'){
-      var cs=Sheets.forMeet(m).filter(function(x){return x.kind==='craft'});
-      if(!cs.length){toast('呢場冇手工環節');return}
-      if(cs.length===1){Modal.close();Craft.open(Sheets.craftFor({n:cs[0].stage})||cs[0].k);return}
+      /* 手工自學卡已抽上套包頁正面位（2026-09 負責人）：有段就跳去嗰度，冇（非套包頁）就開彈窗 */
+      var el=document.getElementById('craftCards');
+      if(el&&el.scrollIntoView){el.scrollIntoView({behavior:'smooth',block:'start'});toast('📚 手工自學卡喺上面呢度');return}
+      var cs2=(m.stages||[]).map(function(s){return {s:s,c:Craft.match(s)}}).filter(function(x){return x.c});
+      if(!cs2.length){toast('呢場冇手工環節');return}
       Modal.open('<h3>📚 手工自學卡</h3><div class="mute" style="font-size:.82rem">揀一樣，開會前 3 分鐘睇完就帶得。</div>'+
-        '<div class="kit-grid" style="margin-top:8px">'+cs.map(function(x){
-          return '<button class="btn sm gr" onclick="Modal.close();Craft.open(\''+x.k+'\')">'+x.ic+' '+esc(x.n)+'</button>'}).join('')+'</div>');
+        '<div class="kit-grid" style="margin-top:8px">'+cs2.map(function(x){
+          return '<button class="btn sm gr" onclick="Modal.close();Craft.open(\''+x.c.k+'\')">'+x.c.ic+' '+esc(x.s.n)+'</button>'}).join('')+'</div>');
       return;
     }
     if(k==='venue')return Venue.open();
@@ -223,6 +225,8 @@ var Pack={
       '<div class="pk-eco">🌱 淨印 <b>'+printN+' 頁</b>。其餘 '+appN+' 樣喺 APP 睇就夠。</div>'+
       '<div class="pk-3"><b>1</b> 撳「印齊今場」<b>2</b> APP 剔住執袋<b>3</b> 到場撳「即開帶領」</div>'+
     '</section>';
+    /* 📚 手工自學卡：抽上嚟做正面位（唔埋喺套包parts入面） */
+    h+=Pack.craftSectionHtml();
     /* 套包內容：分兩組排——上面「要印」，下面「APP 睇就夠」，唔會撈埋一齊 */
     h+='<div class="card"><h2>套包入面有乜 <span class="tag">只印必要嘅</span></h2>'+
       Pack.partsGroupHtml(m,kids,fl,sel,1)+
@@ -233,7 +237,7 @@ var Pack={
           return '<button class="pill'+(Pack.kidOn(x.k)?' on':'')+'" onclick="Pack.toggleKid(\''+x.k+'\')">'+x.ic+' '+esc(x.n)+'</button>'}).join('')+'</div>':'')+
       '<label class="f">🧒 印幾份</label>'+
       '<div class="pk-cp"><input type="number" min="1" max="40" value="'+cp+'" onchange="Pack.setCopies(this.value)">'+
-      '<span class="mute">份・'+(Pack.hasRoster()?'已跟你團名單人數':'未填名單 — 去上面「4 🏅 記錄」加名單就自動印夠人數')+'</span></div>'+
+      '<span class="mute">份・'+(Pack.hasRoster()?'已跟你團名單人數':'未填名單 — 撳頂欄 🏅 記錄加名單，自動印夠人數')+'</span></div>'+
     '</div>';
     /* 換一場 */
     h+='<div class="card"><h2>換一場集會</h2><div class="pk-pick">'+
@@ -248,19 +252,24 @@ var Pack={
     h+='<div class="card"><h2>⚡ 臨時集會 <span class="tag">唔使排期</span></h2>'+
       '<div class="pk-inst">'+Pack.INST.map(function(x){
         return '<button class="btn sm ghost" onclick="Pack.instant(\''+x.k+'\','+x.mins+')">'+x.ic+' '+esc(x.n)+'（'+x.mins+'分）</button>'}).join('')+'</div></div>';
-    /* 常用工具：淨係留最常撳嘅 4 樣，其餘全部喺「✂️ 工作紙」度 */
-    h+='<div class="card"><h2>🎮 一撳就印嘅工具</h2><div class="pk-quick">'+
-      '<button class="btn sm" onclick="PrintKit.openModal(\'game-cards\')">🃏 遊戲帶領卡</button>'+
-      '<button class="btn sm ghost" onclick="PrintKit.openModal(\'floor-grid\')">🦗 九宮格地貼</button>'+
-      '<button class="btn sm ghost" onclick="PrintKit.openModal(\'corner-signs\')">🅰️ 四角角牌</button>'+
-      '<button class="btn sm ghost" onclick="App.go(\'#print\')">✂️ 全部圖紙 ↗</button>'+
-      '</div></div>';
-    /* 對照官方（收埋） */
-    h+='<details class="card pk-cal"><summary>🆚 仲使唔使睇官方套包？</summary>'+Pack.coverHtml()+'</details>';
-    /* 年度行事曆（收埋） */
-    var pl=Store.get('plan',{rows:[]})||{rows:[]};
-    h+='<details class="card pk-cal"><summary>📅 年度行事曆（'+(pl.rows||[]).length+' 次）</summary>'+
-      ((pl.rows||[]).length?Plan.calendar(pl):'<div class="mute">未排行事曆 — 去上面「1 📅 揀集會」撳「重建行事曆」。</div>')+'</details>';
+    return h;
+  },
+  /* 📚 手工自學卡（領袖說明書）：由深層抽上嚟，套包頁正面位。開會前 3 分鐘睇呢度就夠。 */
+  craftSectionHtml:function(){
+    var m=Pack.meet().m;
+    var cs=(m.stages||[]).map(function(s){return {s:s,c:Craft.match(s)}}).filter(function(x){return x.c});
+    var h='<div class="card" id="craftCards"><h2>📚 手工自學卡 <span class="tag">開會前 3 分鐘睇呢度</span></h2>';
+    if(cs.length){
+      h+='<div class="mute" style="font-size:.82rem">今場 '+cs.length+' 個手工環節——你未做過都跟得住：成品圖＋逐步拆解＋後備版。</div>'+
+        '<div class="kit-grid" style="margin-top:8px">'+cs.map(function(x){
+          return '<button class="btn sm gr" onclick="Craft.open(\''+x.c.k+'\')">'+x.c.ic+' '+esc(x.s.n)+' → 跟我自學</button>'}).join('')+'</div>';
+    }else{
+      h+='<div class="mute" style="font-size:.82rem">今場冇手工環節。</div>';
+    }
+    h+='<div class="btns" style="margin-top:8px">'+
+      '<button class="btn sm" onclick="Craft.indexOpen()">📚 全部 '+Craft.list().length+' 張自學卡</button>'+
+      '<button class="btn sm ghost" onclick="PrintKit.openModal(\'craft-coach\')">🖨️ 印自學卡總表</button>'+
+      '<button class="btn sm ghost" onclick="Craft.open(\'any\')">🧯 萬用六步（未有圖解）</button></div></div>';
     return h;
   },
   dateLine:function(m){

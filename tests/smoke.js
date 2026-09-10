@@ -247,7 +247,8 @@ ok('⑦ 手冊有「遊戲帶領總表」',/遊戲帶領總表/.test(hbHtml));
 ok('⑦ 講明「唔係打電子 GAME」（螢幕只係工具）',/唔係打電子 GAME|螢幕只係(幫你)?出題/.test(hbHtml));
 const miss2=Object.keys(Lead.playMeta).filter(function(k){return hbHtml.indexOf(Lead.playMeta[k].n)<0});
 ok('⑦ 總表列出全部遊戲',miss2.length===0,'缺:'+miss2.join(','));
-ok('⑦ 手冊 tabs 有 games 分頁',/games','🎮 遊戲帶領/.test(fs.readFileSync(path.join(__dirname,'..','js','handbook.js'),'utf8')));
+ok('⑦ 手冊 tabs＝核心內容・獎章制度・保護自己・帶領貼士・關於',
+  ['⚖️ 核心內容','🏅 獎章制度','🛡️ 保護自己','💡 帶領貼士','ℹ️ 關於'].every(function(x){return fs.readFileSync(path.join(__dirname,'..','js','handbook.js'),'utf8').indexOf(x)>=0}));
 
 /* ============ ⑧ 帶領指引（綠色欄）都改成實體玩法 ============ */
 const Guide=G.Guide;
@@ -336,7 +337,7 @@ ok('⑬ PrintKit 有「場地設置卡」並且 render 到',!!kV&&kV.render().le
 ok('⑬ PrintKit 有「4–7 歲控場卡」並且 render 到',!!kC&&kC.render().length>2000,kC?('len='+kC.render().length):'missing');
 
 /* ⑬b 新層已接駁到實際入口（唔係淨係有函數） */
-ok('⑬ 手冊分頁列有「📍 場地設置」',/\['venue','📍 場地設置'\]/.test(fs.readFileSync(path.join(__dirname,'..','js','handbook.js'),'utf8')));
+ok('⑬ 場地設置唔再放手冊（去嚮導／搜尋／套包 parts）',/\['venue','📍 場地設置'\]/.test(fs.readFileSync(path.join(__dirname,'..','js','handbook.js'),'utf8'))===false);
 ok('⑬ 手冊 HB.venue() 渲染到教學頁',G.HB.venue().length>5000&&/分區/.test(G.HB.venue()));
 ok('⑬ 準備卡 Kit.meetKitHtml(t01) 已含場地段',/vn-meet/.test(G.Kit.meetKitHtml(allT[0])));
 ok('⑬ 準備卡 Kit.meetKitHtml(t03) 計出投擲線＋角牌',
@@ -366,7 +367,8 @@ ok('⑮ 套包頁出到三個大掣（印齊今場／淨印圖紙／淨印教案
 const pkSeen=pkHtml.replace(/<details[\s\S]*?<\/details>/g,'').replace(/<[^>]+>/g,'').replace(/\s/g,'');
 ok('⑮ 套包頁字少：一開見到嘅正文少過 1200 字',pkSeen.length<1200,'len='+pkSeen.length);
 ok('⑮ 有「臨時集會」入口（資深領袖即用）',/臨時集會/.test(pkHtml)&&PK.INST.length===6,'inst='+PK.INST.length);
-ok('⑮ 有「一撳就印嘅工具」',/一撳就印嘅工具/.test(pkHtml));
+/* 2026-09 負責人：套包頁收細，印圖紙工具全部歸「✂️ 工作紙」純教材庫（下方即插即用） */
+ok('⑮ 可印工具全部喺工作紙教材庫（工作紙卡・地貼・角牌）',/遊戲帶領卡/.test(G.PrintKit.html())&&/九宮格地貼/.test(G.PrintKit.html())&&/四角角牌/.test(G.PrintKit.html()));
 /* 領袖套包內容 */
 const leadHtml=PK.sheets('lead',pkMeet.m,1);
 ok('⑮ 領袖套包渲染到',leadHtml.length>6000,'len='+leadHtml.length);
@@ -510,7 +512,8 @@ G.Store.set('members',[{n:'陳大文'},{n:'李小明'},{n:'黃小美'}]);
 G.Store.set('packcopies',0);
 eq('⑮ 有名單就跟人數印',PK.copies(),3);
 G.Store.set('members',[]);
-ok('⑮ 對照官方套包表（取代官方）',PK.COVER.length>=8&&/官方冇/.test(JSON.stringify(PK.COVER))&&/仲使唔使睇官方套包/.test(pkHtml),
+/* 2026-09 負責人：套包頁收細（對照表收埋出頁面），取代官方套包嘅對照資料保留 */
+ok('⑮ 對照官方套包資料保留（取代官方）',PK.COVER.length>=8&&/官方冇/.test(JSON.stringify(PK.COVER)),
   'rows='+PK.COVER.length);
 
 /* 曲庫：每首唱遊歌都要有啱節奏嘅伴奏 */
@@ -536,14 +539,15 @@ const topLinks=(topNav.match(/<a /g)||[]).length, botLinks=(botNav.match(/<a /g)
 ok('⑯ 上方 5 個集會掣',topLinks===5,'top='+topLinks);
 ok('⑯ 下方 5 個工具箱掣',botLinks===5,'bottom='+botLinks);
 ok('⑯ 上下方分開兩類（🅰️ 集會要準備／🅱️ 工具箱即開即用）',/🅰️/.test(topNav)&&/🅱️/.test(botNav));
-ok('⑯ 上方＝集會五步（揀・定・印・帶・記）',['plan','meet','pack','lead','track'].every(function(v){return topNav.indexOf('data-tab="'+v+'"')>=0}));
-ok('⑯ 下方＝工具箱（工作紙・活動・快樂傘・唱歌・快鍵）',
-  ['print','play','chute','song','tools'].every(function(v){return botNav.indexOf('data-tab="'+v+'"')>=0}));
+ok('⑯ 上方＝五入口（集會目錄・範本・帶領・官方套包・手冊）',['plan','meet','lead','pack','book'].every(function(v){return topNav.indexOf('data-tab="'+v+'"')>=0}));
+ok('⑯ 下方＝即插即用（工作紙・活動・歌曲・快樂傘・快鍵）',
+  ['print','play','song','chute','tools'].every(function(v){return botNav.indexOf('data-tab="'+v+'"')>=0}));
 const navTabs=(idxHtml.match(/data-tab="([a-z]+)"/g)||[]).map(function(x){return x.replace(/[^a-z]/g,'').replace('datatab','')});
-['pack','plan','meet','play','lead','track','print','chute','song','tools'].forEach(function(v){
+['pack','plan','meet','play','lead','book','print','chute','song','tools'].forEach(function(v){
   ok('⑯ 「'+v+'」有入口（唔會有孤兒分頁）',navTabs.indexOf(v)>=0,navTabs.join(','));
 });
-ok('⑯ 📖 手冊有入口（放喺頂欄，唔佔導航格）',/#book/.test(topBar),topBar.replace(/\s+/g,' ').slice(0,120));
+ok('⑯ 🏅 記錄有入口（頂欄 icon，唔佔上方 5 格）',/#track/.test(topBar),topBar.replace(/\s+/g,' ').slice(0,120));
+ok('⑯ 📖 手冊＝上方右1（核心內容：獎章制度・保護自己・帶領貼士・關於）',/#book/.test(topNav));
 ok('⑯ 兩條 bar 都會著燈',/#tabbar a, #topnav a/.test(fs.readFileSync(path.join(__dirname,'..','js','app.js'),'utf8')));
 ok('⑯ 上方係入口唔係步驟（冇 1234 編號扮流程）',!/<i>[1-9]<\/i>/.test(topNav),topNav.replace(/\s+/g,' ').slice(0,120));
 ok('⑯ 三格工具箱都有 js 檔',['chute','song','tools'].every(function(f){
@@ -584,7 +588,7 @@ ok('⑰ 一疊過＝教案＋分隔頁＋圖紙',/pack-run/.test(allStack)&&/pk-
 ok('⑰ 分隔頁講明下面係圖紙',/以下係「小朋友圖紙」/.test(allStack));
 eq('⑰ 一疊過頁數＝教案＋1 分隔頁＋圖紙',PK.pages('all',craftT,1),PK.pages('lead',craftT,1)+1+PK.pages('kid',craftT,1));
 ok('⑰ 套包頁講到圖紙喺邊',/今場圖紙/.test(pkHtml));
-ok('⑰ 圖紙庫（教材庫）第一屏就有今場圖紙',/今場/.test(G.PrintKit.html())&&/印齊今場/.test(G.PrintKit.html()));
+ok('⑰ 工作紙頁＝純教材庫（下方即插即用，冇「今場」準備條）',!/pk-now/.test(G.PrintKit.html())&&!/印齊今場（教案＋圖紙）/.test(G.PrintKit.html())&&!/換一場／改份數/.test(G.PrintKit.html()));
 const pkCats=G.PrintKit.kits.map(function(k){return k.cat});
 ok('⑰ 教材分四類，冇孤兒類',pkCats.every(function(c){return ['kid','floor','lead','admin'].indexOf(c)>=0}),
   Array.from(new Set(pkCats)).join(','));

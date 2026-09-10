@@ -74,7 +74,7 @@ var Flow={
   doneCount:function(){var s=Flow.st();return Flow.STEPS.filter(function(x){return s.done[x.k]}).length},
 
   /* ---------- 每一步撳落去做乜 ---------- */
-  doPick:function(){App.go('#plan');toast('揀一場：撳行事曆任何一格，或者下面「⚡ 臨時集會」')},
+  doPick:function(){App.go('#plan');toast('揀一場：撳「集會目錄」任何一題，或者「📦 官方套包」砌⚡ 臨時集會')},
   doPrint:function(){App.go('#pack');setTimeout(function(){Pack.open('all')},60)},
   doBag:function(){App.go('#pack');setTimeout(function(){Pack.bagModal()},60)},
   doVenue:function(){if(typeof Venue!=='undefined')Venue.open();else App.go('#pack')},

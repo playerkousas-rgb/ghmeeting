@@ -14,37 +14,36 @@
 <div id="app">
   <div id="stickytop">
   <header id="topbar">
-    <div class="brand" onclick="location.hash='#pack'">🦗 小童軍集會助手</div>
+    <div class="brand" onclick="location.hash='#plan'">🦗 小童軍集會助手</div>
     <div class="topbtns">
-      <button class="iconbtn" onclick="App.quickHub()" title="⚡ 隨手開會：即刻砌一場">⚡</button>
-      <button class="iconbtn" onclick="Kit.searchOpen()" title="全站搵嘢：範本・手工・圖紙・物料">🔍</button>
-      <button class="iconbtn" onclick="App.go('#book')" title="📖 手冊：誓詞・規律・獎章・貼士（查嘢用）">📖</button>
-      <button class="iconbtn" onclick="App.settings()" title="旅團設定">⚙️</button>
+      <button class="iconbtn" onclick="Kit.searchOpen()" title="🔍 全站搵嘢：範本・手工・圖紙・物料">🔍</button>
+      <button class="iconbtn" onclick="App.go('#track')" title="🏅 記錄：團員名單・出席・獎章進度">🏅</button>
+      <button class="iconbtn" onclick="App.settings()" title="⚙️ 旅團設定">⚙️</button>
     </div>
   </header>
-  <!-- 🅰️ 上方＝集會：由揀到散會，五步全部要事前準備（純快速入口，唔負責教流程；流程由 🧭 嚮導帶） -->
-  <nav id="topnav" aria-label="集會流程">
-    <div class="navcap a">🅰️ 集會：由揀到散會（要事前準備）</div>
+  <!-- 🅰️ 上方＝五個入口：集會目錄→範本→帶領→官方套包→手冊 -->
+  <nav id="topnav" aria-label="集會入口">
+    <div class="navcap a">🅰️ 上：由目錄到帶領（事前準備）</div>
     <div class="navrow">
-      <a href="#plan" data-tab="plan"><span>📅</span>揀集會</a>
-      <a href="#meet" data-tab="meet"><span>🧩</span>定流程</a>
-      <a href="#pack" data-tab="pack"><span>🖨️</span>印教材</a>
+      <a href="#plan" data-tab="plan"><span>📅</span>集會目錄</a>
+      <a href="#meet" data-tab="meet"><span>🧩</span>範本</a>
       <a href="#lead" data-tab="lead"><span>▶️</span>帶領</a>
-      <a href="#track" data-tab="track"><span>🏅</span>記錄</a>
+      <a href="#pack" data-tab="pack"><span>📦</span>官方套包</a>
+      <a href="#book" data-tab="book"><span>📖</span>手冊</a>
     </div>
   </nav>
   </div>
   <main id="view"></main>
   <!-- 🧭 step by step：揀咗集會之後，一步步帶到散會 -->
   <div id="flowbar"></div>
-  <!-- 🅱️ 下方＝工具箱：唔使事前準備，突然想加個節目就即開即用（最多 5 個掣） -->
-  <nav id="tabbar" aria-label="工具箱">
-    <div class="navcap b">🅱️ 工具箱：想加節目，即開即用</div>
+  <!-- 🅱️ 下方＝即插即用：集會途中先至會撳 -->
+  <nav id="tabbar" aria-label="即插即用">
+    <div class="navcap b">🅱️ 下：即插即用（集會中途撳）</div>
     <div class="navrow">
       <a href="#print" data-tab="print"><span>✂️</span>工作紙</a>
       <a href="#play" data-tab="play"><span>🎮</span>活動</a>
+      <a href="#song" data-tab="song"><span>🎵</span>歌曲</a>
       <a href="#chute" data-tab="chute"><span>🌈</span>快樂傘</a>
-      <a href="#song" data-tab="song"><span>🎵</span>唱歌</a>
       <a href="#tools" data-tab="tools"><span>🎲</span>快鍵</a>
     </div>
   </nav>

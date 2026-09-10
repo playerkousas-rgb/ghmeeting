@@ -472,7 +472,7 @@ var Kit={
     });
     push('📦 集會套包','今場套包：一撳印齊所有教材','領袖教案＋小朋友圖紙（一疊過）','套包 打印 印齊 教材 圖紙 即用紙 教案 執袋單 程序表 帶領卡 家長通知 pack',
       "Modal.close();App.go('#pack')",'📦 開');
-    push('✂️ 工作紙／圖紙庫','所有工作紙・圖紙・場地圖卡・教案・海報','25 份教材分四類，第一格就係今場要用嗰啲','圖紙 工作紙 紙 教材庫 印 打印 列印 worksheet print 圖卡 海報 教案',
+    push('✂️ 工作紙／圖紙庫','所有工作紙・圖紙・場地圖卡・教案・海報','25 份教材分四類，純教材庫','圖紙 工作紙 紙 教材庫 印 打印 列印 worksheet print 圖卡 海報 教案',
       "Modal.close();App.go('#print')",'✂️ 開');
     push('📦 集會套包','⚡ 臨時集會（揀主題即出套包）','資深領袖臨時頂位用','臨時 加場 頂位 即興 隨手 開會',
       "Modal.close();App.go('#pack')",'📦 開');
@@ -507,14 +507,14 @@ var Kit={
     push('📍 場地設置','場地設置：六分區・30 分鐘時間表・五條規矩','新手必睇・A4 可印','場地 設場 貼地 界線 集合圈 物資枱 冷靜位 規矩 控場 分組 救急 平面圖',"Modal.close();Venue.open()",'📍 開');
     push('🧒 4–7 歲控場','手工控場卡（8 招）＋15 個手工年齡分工','貼枱邊・A4 2 頁','控場 控制 秩序 嘈 搶 喊 唔肯做 派料 一步一停 舉手 收工 4歲 5歲 6歲 7歲 幼兒 小童軍',"Modal.close();PrintKit.openModal('craft-ctrl')",'🖨️ 開');
     push('📍 場地設置','到場設場檢查表（10 項）','開場前 30 分鐘逐項剔','到場 設場 檢查表 界線 集合圈 螢幕 冷靜位',"Modal.close();Kit.openCheck('venue')",'🧭 開');
-    [['core','⚖️ 核心內容（誓詞・規律・支部）'],['craft','🎨 手工自學總覽'],['kit','🧰 做之前點預備'],['games','🎮 遊戲帶領總表（小朋友做乜・領袖撳乜）'],['badge','🏅 獎章制度'],['chute','🌈 快樂傘（手冊版）'],['sfh','🛡️ 保護自己'],['tips','💡 4–7 歲帶領貼士']].forEach(function(x){
+    [['core','⚖️ 核心內容（誓詞・規律・主題曲）'],['badge','🏅 獎章制度'],['sfh','🛡️ 保護自己'],['tips','💡 4–7 歲帶領貼士'],['about','ℹ️ 關於']].forEach(function(x){
       push('📖 手冊',x[1],'手冊分頁',[x[1],x[0],'手冊'].join(' '),"Modal.close();App.go('#book');setTimeout(function(){HB.t('"+x[0]+"')},60)");
     });
     /* 🅱️ 工具箱三格：臨時加節目就係靠佢哋，一定要搵得到 */
     push('🌈 快樂傘','快樂傘：開會／散會儀式＋'+((typeof DATA!=='undefined'&&DATA.chute)?DATA.chute.length:16)+' 式玩法卡','即開即用・每式有圖＋口令＋點樣帶三步',
       ((typeof DATA!=='undefined'&&DATA.chute)?DATA.chute.map(function(c){return c.n+' '+c.tag+' '+c.h+' '+c.t}).join(' '):'')+' 快樂傘 傘 彩虹傘 氣球傘 揚傘 收傘 開會 散會 儀式',
       "Modal.close();App.go('#chute')",'🌈 開');
-    push('🎵 唱歌','唱小童軍主題曲・卡拉OK（APP 即時彈伴奏）','唔使上網・速度／數拍／和弦自訂',
+    push('🎵 歌曲','日常集會會播嘅歌：主題曲・洗手七步歌・Jingle Bells・新年好・誓詞口號','撳一下就播・APP 即時彈伴奏・唔使上網',
       ((typeof DATA!=='undefined'&&DATA.facts)?DATA.facts.song.join(' '):'')+' 唱歌 歌 主題曲 卡拉OK 伴奏 旋律 London Bridge Greeny 洗手歌 唱遊 團員章',
       "Modal.close();App.go('#song')",'🎵 開');
     push('🎲 快鍵','控場快鍵：安靜・吹哨・抽籤・分組・計分・倒數','集會途中先至會撳嘅嘢，全部一撳即開',
