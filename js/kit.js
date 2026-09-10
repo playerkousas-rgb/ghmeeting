@@ -212,13 +212,11 @@ var Kit={
     var h='<div class="card kit-card"><h4 class="kit-h4">🧰 做之前點預備（備料・檢查表・分工）</h4>';
     h+=this.matsTipHtml(mats);
     if(typeof Venue!=='undefined')h+=Venue.meetHtml(t);
-    h+=this.checkHtml(t.stages||[],t,t.id);
+    h+=this.checkHtml(t.stages||[],t,t.id,true);
     h+=this.dateRowHtml(t.id);
     h+='<div class="kit-owner"><b>👥 邊個帶邊節（填咗即刻儲存，打印教案都會跟住出）</b>';
     h+='<input class="owner-in" list="leaderList" placeholder="全部未定＝你一個帶晒（呢格係預設負責人）" value="'+esc(def)+'" oninput="Kit.setDefaultOwner(this.value)">';
-    h+='<div class="mute kit-note">填呢格＝所有未註明嘅環節都算呢位帶；想逐節唔同，喺下面每個環節入面改。';
-    h+=(names.length?'':'（想下次快速揀名：去「設定 → 旅團設定 → 領袖名單」填，用、分開）');
-    h+='</div></div>';
+    h+='<div class="mute kit-note">填呢格＝冇特別註明嘅環節都算佢帶。'+(names.length?'':'（想快速揀名：設定 → 領袖名單）')+'</div></div>';
     var best=this.checkFor(t.stages||[]);
     h+='<div class="btns" style="margin-top:8px">'+
       '<button class="btn sm ghost" onclick="Kit.prepMsgFor(\''+esc(t.id||'')+'\')">📣 抄畀家長（已填主題・物資）</button>'+
@@ -251,18 +249,20 @@ var Kit={
     for(var key in this.mats){if(k.indexOf(key)>-1||key.indexOf(k)>-1)return this.mats[key]}
     return null;
   },
-  checkHtml:function(st,t,mid){
+  /* collapse=true：準備卡入面摺埋（要剔先撳開），唔會一開波就十項字壓落嚟 */
+  checkHtml:function(st,t,mid,collapse){
     var c=this.checkFor(st||{t:(t&&t.t)||'',n:(t&&t.n)||'',how:''});
     if(!c)c=this.checkFor(t||null);
     if(!c)return '';
     var id=mid||(t&&t.id)||'',on=this.ckGet(id,c.key);
-    return '<div class="kit-check"><div class="kc-h">'+c.ic+' '+esc(c.n)+' <span class="tag">逐項剔走・剔咗會記住</span></div>'+
-      '<ol class="kc-list">'+c.items.map(function(x,i){return '<li class="'+(on.indexOf(i)>=0?'on':'')+'" onclick="Kit.tickItem(\''+id+'\',\''+c.key+'\','+i+',this)"><span class="kc-no">'+(i+1)+'</span>'+esc(x)+'</li>'}).join('')+'</ol>'+
-      '<div class="kc-foot">'+(id?'<span class="kc-prog">'+this.checkProg(id,c.key)+'</span>':'')+
+    var head='<div class="kc-h">'+c.ic+' '+esc(c.n)+' <span class="tag">'+on.length+'/'+c.items.length+' 已剔</span></div>';
+    var list='<ol class="kc-list">'+c.items.map(function(x,i){return '<li class="'+(on.indexOf(i)>=0?'on':'')+'" onclick="Kit.tickItem(\''+id+'\',\''+c.key+'\','+i+',this)"><span class="kc-no">'+(i+1)+'</span>'+esc(x)+'</li>'}).join('')+'</ol>';
+    var foot='<div class="kc-foot">'+(id?'<span class="kc-prog">'+this.checkProg(id,c.key)+'</span>':'')+
       '<button class="btn sm" onclick="Kit.copy(Kit.checkTxt(\''+c.n.replace(/'/g,'')+'\'),this)">📋 複製清單</button>'+
       (on.length?'<button class="btn sm ghost" onclick="Kit.ckSet(\''+id+'\',\''+c.key+'\',[]);Kit.refreshCheck()">🧽 清重剔</button>':'')+
-      '<small class="mute">出發前讀一次，完成晒先至開隊。剔咗嘅位會喺呢部機記住；撳「✅ 完成今場」就自動清返，下次由頭剔。</small></div>'+
-      this.uncheckNote(id,c.key)+'</div>';
+      '<small class="mute">出發前剔一次；剔位會記住，完成今場自動清。</small></div>';
+    if(collapse)return '<div class="kit-check">'+head+'<details class="guide-more"><summary>🧭 撳開逐項剔（'+c.items.length+' 項）</summary>'+list+foot+'</details>'+this.uncheckNote(id,c.key)+'</div>';
+    return '<div class="kit-check">'+head+list+foot+this.uncheckNote(id,c.key)+'</div>';
   },
   refreshCheck:function(){
     var t=(typeof Prepare!=='undefined'&&Prepare._detailId&&typeof dur==='function')?dur(Prepare._detailId):null;

@@ -70,6 +70,11 @@ small,.mute{color:var(--mute)}
 .song-hero{background:linear-gradient(135deg,#f3e5f5,#fff 60%,#fff3e0);border:1px solid #e1bee7}
 .tools-hero{background:linear-gradient(135deg,#fff3e0,#fff 60%,#e8f5e9);border:1px solid #ffe0b2}
 .chute-steps{margin:7px 0 0;font-size:.78rem;color:var(--mute)}
+/* 列表頁只俾重點：長描述最多兩行，全文喺撳開嗰張卡 */
+.chute-steps{display:flex;flex-wrap:wrap;gap:2px 9px}
+.chute-steps span{white-space:nowrap}
+.chute-card .box,.activity-copy p,.activity-mats{display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
+.chute-card .box{-webkit-line-clamp:2}.activity-copy p{-webkit-line-clamp:2}.activity-mats{-webkit-line-clamp:2}
 .chute-steps div{padding:3px 0;border-top:1px dashed #f3e5d5;line-height:1.4}
 .chute-steps div:first-child{border-top:0}
 .chute-steps b{color:var(--ord);margin-right:5px}
@@ -284,7 +289,12 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
 .brief-head small{display:block}.brief-card{border:1px solid var(--line);border-radius:18px;padding:13px;margin:10px 0;background:#fff}.brief-card.done{background:#f4fbf4}
 .guide-lead{background:#e8f5e9;border-radius:12px;padding:9px 11px;margin:10px 0;font-size:.9rem}.guide-lead b{color:var(--grd);display:block;font-size:.75rem;letter-spacing:.5px}
 .guide-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}.guide-step{background:#fff8ee;border:1px solid #ffe0b2;border-radius:13px;padding:9px 8px;min-height:100px}.guide-step .gnum{display:inline-flex;width:22px;height:22px;align-items:center;justify-content:center;background:var(--or);color:#fff;border-radius:50%;font-size:.75rem;font-weight:800}.guide-step .gicon{font-size:1.65rem;display:block;line-height:1.15;margin:4px 0}.guide-step b{font-size:.82rem;display:block}.guide-step small{font-size:.75rem;line-height:1.35;display:block}
-.say-box{border:2px solid #c8e6c9;border-radius:13px;padding:9px 11px;font-size:.9rem;background:#f7fff7}.say-box b{color:var(--grd);font-size:.75rem;display:block}.watch-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;font-size:.78rem}.watch-row>div{padding:7px 9px;border-radius:10px;background:#f7f4f1}.watch-row .safe{background:#fff3f0;color:#7b2929}
+.say-box{border:2px solid #c8e6c9;border-radius:13px;padding:9px 11px;font-size:.9rem;background:#f7fff7}.say-box b{color:var(--grd);font-size:.75rem;display:block}.watch-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;font-size:.78rem}
+.guide-more{margin-top:8px}.guide-more>summary{cursor:pointer;list-style:none;font-size:.75rem;font-weight:800;
+  color:var(--mute);background:#f7f4f1;border:1px dashed var(--line);border-radius:10px;padding:6px 10px;text-align:center}
+.guide-more>summary::-webkit-details-marker{display:none}
+.guide-more[open]>summary{color:var(--ord);background:#fff8f1;border-style:solid;margin-bottom:6px}
+.guide-more .watch-row{margin-top:0}.watch-row>div{padding:7px 9px;border-radius:10px;background:#f7f4f1}.watch-row .safe{background:#fff3f0;color:#7b2929}
 .mats-bar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:8px 0}.mats-bar b{font-size:.8rem;color:var(--mute)}
 /* visual parachute instruction */
 .parachute-kit{background:linear-gradient(150deg,#edf8ff,#fff);border:1px solid #c7e5f6;border-radius:18px;padding:10px;margin:10px 0}.parachute-kit h4{margin:0 0 4px;color:#1565c0}.parachute-visual{display:flex;justify-content:center;align-items:center;min-height:148px}.parachute-visual svg{width:min(100%,430px);height:auto;max-height:190px}.para-caption{text-align:center;font-size:.78rem;color:#5d7180;margin-top:-3px}.para-safety{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.para-safety span{background:#fff;border:1px solid #c7e5f6;border-radius:99px;padding:4px 8px;font-size:.74rem;color:#28566c}
@@ -1469,6 +1479,8 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
   .craft-learn div>span{font-size:.78rem}
 }
 @media print{
+  .guide-more>summary{display:none}
+  .guide-more .watch-row{display:grid!important}
   .craft-screen .cs-open{display:none}
   .p-folds,.print-two{break-inside:avoid}
   .craft-sheet .p-note{break-inside:avoid}

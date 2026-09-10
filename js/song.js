@@ -25,8 +25,7 @@ var Song={
     var f=(typeof DATA!=='undefined'&&DATA.facts)?DATA.facts:{song:[]};
     var h='<div class="card song-hero"><span class="eyebrow">🎵 唱歌</span>'+
       '<h2>想唱就唱，唔使搵片、唔使上網。</h2>'+
-      '<p class="mute">伴奏由 APP 即時彈出（'+esc(String(f.songNote||'寄調 London Bridge').split('・APP')[0])+'），'+
-      '撳一下卡拉OK 就開：黃色句子＝唱緊嗰句，聽到 4 聲「嘀」先至一齊開聲。</p>'+
+      '<p class="mute">APP 即時彈伴奏，撳一下就開唱：黃色＝唱緊嗰句，聽到 4 聲「嘀」先開聲。</p>'+
       '<div class="btns"><button class="btn gr blk" onclick="Song.start(\'theme\')">▶ 開主題曲卡拉OK</button></div>'+
       '<div class="song-setup" style="margin-top:10px">'+
         '<span>🐢 速度 '+Music.TEMPOS.map(function(t){
@@ -51,7 +50,7 @@ var Song={
 
     /* ③ 唱得住嘅活動：想加節目就喺度揀 */
     h+='<div class="card"><h3>🎤 加個節目：呢啲都係「有聲音」嘅活動</h3>'+
-      '<div class="mute" style="font-size:.82rem">臨時想加一節？全部一撳即開，唔使準備物資。</div>'+
+      '<div class="mute" style="font-size:.82rem">臨時想加一節？一撳即開。</div>'+
       '<div class="tk-grid">'+
       qBtn('🧼','洗手七步歌','20 秒計時歌，全體跟住搓','Lead.startGame(\'clean\',\'洗手七步好寶寶\')')+
       qBtn('🎤','音樂傳球點名','停球嗰位講名＋一樣鍾意嘅嘢','Lead.startGame(\'roll\',\'音樂傳球點名\')')+
@@ -63,17 +62,16 @@ var Song={
 
     /* ④ 4–7 歲唱歌貼士 */
     h+='<div class="card"><h3>💡 唱歌帶領貼士（4–7 歲）</h3><div class="box">'+
-      '<b>① 先聽一次</b>：第一次播，淨聽；第二次先邀請一齊唱。<br>'+
-      '<b>② 領袖先唱</b>：你唱到幾大聲，佢哋先至敢跟。<br>'+
-      '<b>③ 慢過你想像</b>：第一次用「慢」；熟咗先轉「中」。<br>'+
-      '<b>④ 動作多過歌詞</b>：每句一個動作，記唔到詞都跟到。<br>'+
-      '<b>⑤ 兩次就夠</b>：唱三次以上會散；想再唱留返下次集會。<br>'+
-      '<b>⑥ 唔使背、唔使準</b>：願意開聲就算完成——呢個係團員章要求。</div></div>';
+      '<b>① 先聽一次</b>：第一次淨聽，第二次先一齊唱。<br>'+
+      '<b>② 你先唱</b>：你大聲，佢哋先敢跟。<br>'+
+      '<b>③ 慢</b>：第一次用「慢」。<br>'+
+      '<b>④ 每句一個動作</b>：記唔到詞都跟到。<br>'+
+      '<b>⑤ 唱兩次就夠</b>；肯開聲就算完成。</div></div>';
 
     /* ⑤ 團員章：唱主題歌 */
     var b=(typeof Kit!=='undefined'&&Kit.badgeMap)?Kit.badgeMap.filter(function(x){return x.k==='song'})[0]:null;
     if(b)h+='<div class="card"><h3>🏅 唱完就計數：團員章「'+esc(b.t)+'」</h3>'+
-      '<div class="box">📍 '+esc(b.where)+'<br>💡 '+esc(b.how)+'</div>'+
+      '<div class="box">📍 '+esc(b.where)+'<br>💡 '+esc(String(b.how).split("；")[0])+'。'+'</div>'+
       '<div class="btns"><button class="btn sm gr" onclick="'+b.link+'">▶ 即刻開</button>'+
       '<button class="btn sm ghost" onclick="App.go(\'#track\')">🏅 去記錄</button></div></div>';
     return h;

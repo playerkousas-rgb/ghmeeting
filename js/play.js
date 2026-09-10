@@ -46,7 +46,7 @@ var Play={
   },
   html:function(){
     var h='<div class="card activity-hero"><span class="eyebrow">🎮 活動架</span><h2>想玩咩，就揀咩。</h2>'+
-      '<p class="mute">螢幕只做<b>出題・叫位・計時・計分</b>，小朋友用身體玩。手工有「✂️ 即用紙」＋「📚 自學卡」。臨時開會：<button class="lnk" onclick="App.go(\'#pack\')">📦 集會套包</button>。</p>'+
+      '<p class="mute">螢幕只做<b>出題・叫位・計分</b>，小朋友用身體玩。</p>'+
       '<div class="activity-stat"><b>'+this.games.length+'</b><span>個即玩遊戲／數碼工具</span><b>'+this.craftItems().length+'</b><span>個手工活動（附自學卡）</span><b>'+this.videos.length+'</b><span>條參考片</span><b>'+Craft.list().length+'</b><span>張手工自學卡</span></div></div>'+
       '<div class="card"><div class="activity-tabs">'+[['all','全部'],['game','🎮 遊戲／工具'],['craft','🎨 手工'],['video','🎬 示範片']].map(function(x){return '<button class="pill '+(Play.tab===x[0]?'on':'')+'" onclick="Play.filterBy(\''+x[0]+'\')">'+x[1]+'</button>'}).join('')+'</div><input type="text" value="'+esc(this.q)+'" placeholder="🔎 搵活動，例如：回收、安全、交通、球、傘、燈籠、揮春" oninput="Play.search(this.value)"><div id="playList" class="activity-grid">'+this.listHtml()+'</div></div>';
     return h;

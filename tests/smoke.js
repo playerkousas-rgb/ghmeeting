@@ -494,7 +494,7 @@ ok('⑮ 預設領袖紙只有程序表（執袋單／帶領卡／通知都唔印
 PK.setPart('notice',1);
 ok('⑮ 想要先至印：剔開家長通知就出到',/家長通知/.test(PK.sheets('lead',pkMeet.m,0)));
 PK.setPart('notice',0);
-ok('⑮ 套包頁講明印幾頁＋慳幾多',/淨係印/.test(pkHtml)&&/其餘/.test(pkHtml)&&/🌱/.test(pkHtml));
+ok('⑮ 套包頁講明印幾頁＋慳幾多',/淨印|淨係印/.test(pkHtml)&&/其餘/.test(pkHtml)&&/🌱/.test(pkHtml));
 ok('⑮ 冇名單時預設印 1 份（唔好白白印 12 份）',PK.copies()===1,'copies='+PK.copies());
 /* 小朋友紙逐款揀 */
 var kAll=PK.kidPicks(pkMeet.m);
@@ -651,6 +651,40 @@ const ckGo=TL.QUICK.filter(function(x){return /Kit\.openCheckFor/.test(x[3])})[0
 const ckArg=(ckGo[3].match(/Kit\.openCheckFor\((.*)\)$/)||[])[1]||'';
 const ckVal=vm.runInContext(ckArg,ctx);
 ok('⑲ 檢查表快鍵傳入嘅係集會本體（有 stages）',!!ckVal&&Array.isArray(ckVal.stages),ckArg+' → '+JSON.stringify(ckVal).slice(0,80));
+
+/* ⑳ 字唔好太多：一開波睇到嘅字有上限；長文一律收埋（摺住嘅 <details> 唔計）
+   原則：列表頁只俾重點，長描述最多兩行（CSS clamp），全文留返撳入去嗰張卡。
+   呢個上限係「而家值 × 約 1.3」，改版面如果爆咗就代表又長篇大論返。 */
+function visibleLen(h){
+  return String(h).replace(/<details\b[^>]*>[\s\S]*?<\/details>/g,'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim().length;
+}
+const BUDGET={'#pack':1600,'#plan':1900,'#meet':3200,'#print':2600,'#play':5000,
+              '#chute':2600,'#song':1300,'#tools':1200,'#book':1200};
+Object.keys(BUDGET).forEach(function(h){
+  if(h==='#book')G.HB.tab='core';          /* 手冊：用預設嗰頁（核心內容）量 */
+  sandbox.location.hash=h;G.App.route();
+  const n=visibleLen(els.get('view').innerHTML);
+  ok('⑳ '+h+' 一開波睇到嘅字 ≤ '+BUDGET[h],n<=BUDGET[h],'now='+n);
+});
+sandbox.location.hash='#pack';G.App.route();
+/* 準備卡都唔可以長篇大論 */
+G.Prepare.detail('t03');
+const prepLen=visibleLen(els.get('modal').innerHTML);
+ok('⑳ 準備卡一開波睇到嘅字 ≤ 3800',prepLen<=3800,'now='+prepLen);
+
+/* ⑳b step by step 一定要列點、按次序（1→2→3，唔係一大段字） */
+ok('⑳b 每個環節都係三步，由 1 排到 3',G.TPLS.every(function(t){
+  return t.stages.every(function(st){
+    var g=G.Guide.forStage(st);
+    return (g.steps||[]).length>=3&&(g.steps||[]).every(function(x,i){return String(x[0])===String(i+1)});
+  });
+}));
+const ghCard=Lead.guideHtml(G.Guide.forStage({t:'遊戲',n:'測試',screen:'catch'}));
+ok('⑳b 領袖欄：三步排喺最前，留意／安全收埋',
+  /guide-steps[\s\S]*?gnum">1<[\s\S]*?gnum">2<[\s\S]*?gnum">3</.test(ghCard)&&
+  /<details class="guide-more"[\s\S]*?留意[\s\S]*?安全/.test(ghCard),
+  ghCard.replace(/<[^>]+>/g,'').slice(0,80));
+ok('⑳b 領袖欄有得照讀（一句講稿）',/say-box/.test(ghCard));
 
 /* ============ 結果 ============ */
 console.log('\n✅ 通過 '+pass+' 項');

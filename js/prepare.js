@@ -43,7 +43,8 @@ var Prepare={
     var visual=(s.screen==='chuteopen'||s.screen==='chuteclose'||s.screen==='chute')?Lead.parachuteSvg(s.screen==='chuteclose'?'close':'open'):'';
     return '<article class="brief-card"><div class="brief-head"><span class="brief-no">'+(i+1)+'</span><div><h3>'+esc(s.n)+'</h3><small>'+esc(s.t)+'・'+(+s.m||0)+' 分鐘</small></div></div>'+mats+visual+
       '<div class="guide-lead"><b>領袖先做</b>'+esc(g.lead)+'</div><div class="guide-steps">'+g.steps.map(function(x){return '<div class="guide-step"><span class="gnum">'+esc(x[0])+'</span><span class="gicon">'+x[1]+'</span><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div>'}).join('')+'</div>'+
-      '<div class="say-box"><b>🎤 可以直接照講</b>'+esc(g.say)+'</div><div class="watch-row"><div><b>👀 睇住呢樣</b><br>'+esc(g.watch)+'</div><div class="safe"><b>🛡️ 安全</b><br>'+esc(g.safety)+'</div></div>'+
+      '<div class="say-box"><b>🎤 照講</b>'+esc(g.say)+'</div>'+
+      '<details class="guide-more"><summary>👀 留意・🛡️ 安全</summary><div class="watch-row"><div><b>👀 睇住呢樣</b>'+esc(g.watch)+'</div><div class="safe"><b>🛡️ 安全</b>'+esc(g.safety)+'</div></div></details>'+
       ((Craft&&(Craft.match(s)||Craft.isCraft(s)))?Craft.mini(s):'')+Kit.ownerHtml(Prepare._detailId,i,s)+
       '<div class="mark-row">'+(function(){var o=[];if(s.gh!==undefined)o.push('🦗 計入 '+DATA.ghDomains[s.gh].ic+' '+DATA.ghDomains[s.gh].n);if(s.badge)o.push('🏅 完場自動剔 '+DATA.badgeItems.filter(function(x){return x.k===s.badge})[0].t);return o.length?o.join('　'):'呢節唔使記數，玩就得'}())+'</div>'+
       '<details style="margin-top:9px"><summary>顯示完整玩法文字</summary><div class="box" style="margin-top:6px">'+esc(s.how||'')+'</div></details><div class="btns"><button class="btn sm gr" onclick="Prepare.detailStage(\''+esc(Prepare._detailId||'')+'\','+i+')">▶ 試用呢節</button></div></article>';

@@ -33,14 +33,13 @@ var Tools={
   html:function(){
     var h='<div class="card tools-hero"><span class="eyebrow">🎲 快鍵</span>'+
       '<h2>而家即刻要用的，全部喺呢度。</h2>'+
-      '<p class="mute">途中先至會撳嘅嘢：突然想<b>加個節目</b>、要佢哋<b>靜落嚟</b>、要<b>分組計分</b>——一撳即開，唔使準備。'+
-      '想由頭帶一場？去 <button class="lnk" onclick="App.go(\'#lead\')">▶️ 帶領</button>。</p>'+
+      '<p class="mute">集會途中先撳嘅嘢：加節目・要佢哋靜・分組計分——一撳即開。</p>'+
       '<div class="btns"><button class="btn gr" onclick="App.quickHub()">⚡ 隨手開會面板</button>'+
       '<button class="btn ghost" onclick="App.startInstant(\'general\',40)">🎲 零準備即興集會（40分）</button></div></div>';
 
     /* ① 臨時加節目 */
     h+='<div class="card"><h3>⚡ 臨時加節目 <span class="tag">零物資・即開</span></h3>'+
-      '<div class="mute" style="font-size:.82rem">環節快過頭／唔啱玩／想加多節？撳一下全螢幕就開，領袖照住畫面做。</div>'+
+      '<div class="mute" style="font-size:.82rem">環節快過頭／想加多節？撳一下就開。</div>'+
       '<div class="tk-grid">'+this.PROGRAMS.map(function(p){
         return qBtn(p[0],p[1],p[2],p[3])}).join('')+'</div></div>';
 
@@ -52,7 +51,7 @@ var Tools={
 
     /* ③ 頂位：連集會都未砌 */
     h+='<div class="card"><h3>🎲 臨時頂位：連集會都未砌</h3>'+
-      '<div class="mute" style="font-size:.82rem">揀個主題＋時長，APP 即刻砌好一場（套包照印、畫面照帶）。</div>'+
+      '<div class="mute" style="font-size:.82rem">揀主題＋時長，即刻砌好一場。</div>'+
       '<div class="tk-grid">'+
       qBtn('🎲','歡樂綜合','40 分鐘・動靜交替','App.startInstant(\'general\',40)')+
       qBtn('🛡️','身體安全','40 分鐘・保護自己','App.startInstant(\'safety\',40)')+

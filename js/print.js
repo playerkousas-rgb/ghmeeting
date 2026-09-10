@@ -238,7 +238,7 @@ var PrintKit={
     var h='<div class="card printable-hero">'+
       '<span class="eyebrow">✂️ 工作紙 ‧ 圖紙 ‧ 教材庫</span>'+
       '<h2>所有印得出嚟嘅嘢，全部喺呢度。</h2>'+
-      '<p class="mute">圖紙＝小朋友剪／摺／塗嗰啲紙　｜　場地圖卡＝貼地貼牆嗰啲　｜　教案＝領袖手揸嗰疊。</p>'+
+      '<p class="mute">圖紙＝小朋友剪摺塗｜場地圖卡＝貼地貼牆｜教案＝領袖手揸。</p>'+
       PrintKit.nowHtml()+
       '<div class="activity-tabs" style="margin-top:12px">'+
         cats.map(function(c){return '<button class="pill '+(PrintKit.tab===c[0]?'on':'')+'" onclick="PrintKit.setTab(\''+c[0]+'\')">'+c[1]+'</button>'}).join('')+
