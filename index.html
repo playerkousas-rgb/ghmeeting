@@ -71,7 +71,16 @@
 <script src="js/song.js"></script>
 <script src="js/tools.js"></script>
 <script>
-if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});}
+if('serviceWorker' in navigator){
+  var _swHadController=!!navigator.serviceWorker.controller;
+  addEventListener('load',function(){
+    navigator.serviceWorker.register('sw.js').then(function(reg){reg.update()}).catch(function(){});
+  });
+  /* 有新 SW 接手 → 自動重新整理一次，保證見到最新版（首次開啟唔會 refresh） */
+  navigator.serviceWorker.addEventListener('controllerchange',function(){
+    if(_swHadController){location.reload()}
+  });
+}
 App.init();
 </script>
 </body>
