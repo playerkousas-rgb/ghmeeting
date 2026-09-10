@@ -251,10 +251,12 @@ var PrintKit={
           '<div class="p-body">'+
             '<h4>'+esc(k.n)+'</h4>'+
             '<div class="p-pages">📄 '+esc(k.pages)+'</div>'+
-            '<p class="mute" style="font-size:.82rem;line-height:1.4;margin:4px 0 10px">'+esc(k.desc)+'</p>'+
-            '<div class="btns">'+
+            '<div class="btns" style="margin:6px 0 0">'+
               '<button class="btn sm gr" onclick="PrintKit.openModal(\''+k.id+'\')">🖨️ 預覽及列印</button>'+
             '</div>'+
+            '<details class="guide-more"><summary>入面有咖</summary>'+
+              '<p class="mute" style="font-size:.82rem;line-height:1.5;margin:0">'+esc(k.desc)+'</p>'+
+            '</details>'+
           '</div>'+
         '</div>';
       }).join('')+

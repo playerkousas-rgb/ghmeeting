@@ -658,8 +658,8 @@ ok('⑲ 檢查表快鍵傳入嘅係集會本體（有 stages）',!!ckVal&&Array.
 function visibleLen(h){
   return String(h).replace(/<details\b[^>]*>[\s\S]*?<\/details>/g,'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim().length;
 }
-const BUDGET={'#pack':1600,'#plan':1900,'#meet':3200,'#print':2600,'#play':5000,
-              '#chute':2600,'#song':1300,'#tools':1200,'#book':1200};
+const BUDGET={'#pack':1500,'#plan':1800,'#meet':2100,'#print':1750,'#play':1600,
+              '#chute':1550,'#song':1150,'#tools':1000,'#book':1000};
 Object.keys(BUDGET).forEach(function(h){
   if(h==='#book')G.HB.tab='core';          /* 手冊：用預設嗰頁（核心內容）量 */
   sandbox.location.hash=h;G.App.route();

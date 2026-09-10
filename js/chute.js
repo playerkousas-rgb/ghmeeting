@@ -83,11 +83,13 @@ var Chute={
         var i=DATA.chute.indexOf(c);
         var g=(typeof Guide!=='undefined'&&Guide.chute)?Guide.chute(c):{steps:[]};
         return '<div class="mem chute-card"><h4>'+c.ic+' '+esc(c.n)+' <span class="tag">'+esc(c.tag)+'</span></h4>'+
-          '<div class="box" style="font-size:.85rem">'+esc(c.h)+'</div>'+
           '<div class="chute-steps">'+(g.steps||[]).map(function(s){
             return '<span><b>'+esc(s[0])+'</b>'+esc(s[1])+esc(s[2])+'</span>'}).join('')+'</div>'+
-          '<small class="mute">💡 '+esc(c.t)+'</small>'+
-          '<div class="btns"><button class="btn sm gr" onclick="Chute.play('+i+')">▶ 即開圖卡</button></div></div>';
+          '<div class="btns" style="margin:6px 0 0"><button class="btn sm gr" onclick="Chute.play('+i+')">▶ 即開圖卡</button></div>'+
+          '<details class="guide-more"><summary>玩法・提示</summary>'+
+            '<div class="box" style="font-size:.85rem">'+esc(c.h)+'</div>'+
+            '<small class="mute">💡 '+esc(c.t)+'</small>'+
+          '</details></div>';
       }).join('')+'</div></div>';
 
     /* ④ 同團員章嘅關係：玩完記得計數 */
