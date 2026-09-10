@@ -205,22 +205,26 @@ var Kit={
   /* ============ ⑥ 影相與私隱：4 句就夠，但要講 ============ */
   photo:'📷 影相四句：①開季問家長有冇不同意收集／分享；②只影自己團員，唔影外人／其他團正面；③唔將相放入公開群組（用旅團專用群）；④有隊員唔想被影—佢做「攝影師助手」一樣有份。',
   /* 成場集會嘅「預備包」：備料指引 + 執行檢查表 + 分工（準備卡底部用） */
-  meetKitHtml:function(t){
+  /* part='pre'＝開場前（備料・分工・通知家長）／'on'＝到場後（設場・檢查表）／冇傳＝全部 */
+  meetKitHtml:function(t,part){
     var mats=(typeof matsOf==='function')?matsOf(t):[];
     var names=this.leaderNames();
     var def=(Store.get('meetmeta',{}).__def)||'';
-    var h='<div class="card kit-card"><h4 class="kit-h4">🧰 做之前點預備（備料・檢查表・分工）</h4>';
-    h+=this.matsTipHtml(mats);
-    if(typeof Venue!=='undefined')h+=Venue.meetHtml(t);
-    h+=this.checkHtml(t.stages||[],t,t.id,true);
-    h+=this.dateRowHtml(t.id);
-    h+='<div class="kit-owner"><b>👥 邊個帶邊節（填咗即刻儲存，打印教案都會跟住出）</b>';
-    h+='<input class="owner-in" list="leaderList" placeholder="全部未定＝你一個帶晒（呢格係預設負責人）" value="'+esc(def)+'" oninput="Kit.setDefaultOwner(this.value)">';
-    h+='<div class="mute kit-note">填呢格＝冇特別註明嘅環節都算佢帶。'+(names.length?'':'（想快速揀名：設定 → 領袖名單）')+'</div></div>';
+    var pre=!part||part==='pre', on=!part||part==='on';
+    var h='<div class="card kit-card"><h4 class="kit-h4">🧰 '+(pre&&!on?'開場前要搞掂':(!pre&&on?'到場後跟住做':'做之前點預備'))+'</h4>';
+    if(pre)h+=this.matsTipHtml(mats);
+    if(on&&typeof Venue!=='undefined')h+=Venue.meetHtml(t);
+    if(on)h+=this.checkHtml(t.stages||[],t,t.id,true);
+    if(pre)h+=this.dateRowHtml(t.id);
+    if(pre){
+      h+='<div class="kit-owner"><b>👥 邊個帶邊節</b>';
+      h+='<input class="owner-in" list="leaderList" placeholder="全部未定＝你一個帶晒" value="'+esc(def)+'" oninput="Kit.setDefaultOwner(this.value)">';
+      h+='<div class="mute kit-note">填呢格＝冇特別註明嘅環節都算佢帶。'+(names.length?'':'（想快速揀名：設定 → 領袖名單）')+'</div></div>';
+    }
     var best=this.checkFor(t.stages||[]);
     h+='<div class="btns" style="margin-top:8px">'+
-      '<button class="btn sm ghost" onclick="Kit.prepMsgFor(\''+esc(t.id||'')+'\')">📣 抄畀家長（已填主題・物資）</button>'+
-      (best?'<button class="btn sm ghost" onclick="Kit.prepCheckPrint(\''+esc(t.id||'')+'\')">🖨️ 打印'+esc(best.n)+'</button>':'')+
+      (pre?'<button class="btn sm ghost" onclick="Kit.prepMsgFor(\''+esc(t.id||'')+'\')">📣 抄畀家長</button>':'')+
+      (best&&on?'<button class="btn sm ghost" onclick="Kit.prepCheckPrint(\''+esc(t.id||'')+'\')">🖨️ 打印'+esc(best.n)+'</button>':'')+
       '</div>';
     return h+'</div>';
   },

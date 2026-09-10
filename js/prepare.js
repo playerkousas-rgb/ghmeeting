@@ -3,36 +3,20 @@ var Prepare={
   filter:'all',
   html:function(){
     var cats=[['all','全部'],['member','團員章'],['prog','進步'],['fest','特別'],['outdoor','戶外'],['gh','小草蜢'],['custom','自訂']];
-    var h='<div class="card">'+
-      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">'+
-        '<div><h2>🧩 定流程・帶領卡庫</h2><div class="mute" style="font-size:.83rem">'+TPLS.length+' 張即用帶領卡：照用一張，或者砌自己嘅流程（定好先去印教材）。</div></div>'+
-        '<button class="btn sm" onclick="App.go(\'#pack\')" style="background:#2e7d32;color:#fff">📦 集會套包 ↗</button>'+
-      '</div>'+
-      '<div style="margin:8px 0">'+cats.map(function(c){return '<span class="pill'+(Prepare.filter===c[0]?' on':'')+'" onclick="Prepare.f(\''+c[0]+'\')">'+c[1]+'</span>'}).join('')+'</div>';
+    var h='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><h2>🧩 定流程・帶領卡庫</h2><div class="mute" style="font-size:.83rem">'+TPLS.length+' 張即用帶領卡：照用一張，或者砌自己嘅流程（定好先去印教材）。</div></div><button class="btn sm" onclick="App.go(\'#pack\')" style="background:#2e7d32;color:#fff">📦 集會套包 ↗</button></div><div style="margin:8px 0">'+cats.map(function(c){return '<span class="pill'+(Prepare.filter===c[0]?' on':'')+'" onclick="Prepare.f(\''+c[0]+'\')">'+c[1]+'</span>'}).join('')+'</div>';
     var list=TPLS.filter(function(t){return Prepare.filter==='all'||t.cat===Prepare.filter});
     list.forEach(function(t){
       var mk=Track.meetMarks(t);
       var chips=(Kit.rain[t.id]?'<span class="tag b" title="有室內後備版，落雨照玩">☔ 有後備版</span>':'')+
         (mk.gh.length?'<span class="tag g" title="完場自動幫細個計數，唔使自己寫表">🦗 自動計 '+mk.gh.length+' 範疇</span>':'')+
         (mk.badge.length?'<span class="tag g">🏅 自動剔 '+mk.badge.length+' 項</span>':'');
-      h+='<div class="mem" style="margin:10px 0"><h4>'+esc(t.n)+' <span class="tag">'+TPLS.catName[t.cat]+'</span> '+chips+'</h4>'+
-        '<small class="mute">'+esc(t.theme)+'・建議'+t.mo+'・約'+Plan.lenOf(t)+'分鐘・'+t.stages.length+'個環節</small>'+
-        '<div class="btns" style="margin:8px 0 0">'+
-        '<button class="btn sm" onclick="Prepare.detail(\''+t.id+'\')">🧭 睇準備卡</button>'+
-        '<button class="btn sm gr" onclick="Lead.start(\''+t.id+'\')">▶ 即刻帶領</button>'+
-        '<button class="btn sm ghost" onclick="PrintKit.openModal(\'lesson-plans\',\''+t.id+'\')">🖨️ 打印教案</button>'+
-        '<button class="btn sm ghost" onclick="Prepare.edit(\''+t.id+'\')">✏️ 改內容</button>'+
-        '</div></div>';
+      h+='<div class="mem" style="margin:10px 0"><h4>'+esc(t.n)+' <span class="tag">'+TPLS.catName[t.cat]+'</span> '+chips+'</h4><small class="mute">'+esc(t.theme)+'・建議'+t.mo+'・約'+Plan.lenOf(t)+'分鐘・'+t.stages.length+'個環節</small><div class="btns" style="margin:8px 0 0"><button class="btn sm" onclick="Prepare.detail(\''+t.id+'\')">🧭 睇準備卡</button><button class="btn sm gr" onclick="Lead.start(\''+t.id+'\')">▶ 即刻帶領</button><button class="btn sm ghost" onclick="PrintKit.openModal(\'lesson-plans\',\''+t.id+'\')">🖨️ 打印教案</button><button class="btn sm ghost" onclick="Prepare.edit(\''+t.id+'\')">✏️ 改內容</button></div></div>';
     });
     h+='</div>';
     var my=Store.get('mymeets',[]);
     h+='<div class="card"><h2>🗂️ 我嘅集會 <span class="tag g">'+my.length+'</span></h2>'+
       (my.length?'<div class="mute" style="font-size:.83rem">你儲存嘅自製／修改集會。</div>'+my.map(function(m){
-        return '<div class="mem" style="margin:10px 0"><h4>'+esc(m.n)+'</h4><small class="mute">約'+m.stages.reduce(function(a,s){return a+(+s.m||0)},0)+'分鐘・'+m.stages.length+'環節</small>'+
-        '<div class="btns" style="margin:8px 0 0"><button class="btn sm gr" onclick="Lead.startMy(\''+m.id+'\')">▶ 帶領</button>'+
-        '<button class="btn sm ghost" onclick="Prepare.editMy(\''+m.id+'\')">✏️ 編輯</button>'+
-        '<button class="btn sm ghost" onclick="Prepare.shareMy(\''+m.id+'\')">📤 分享</button>'+
-        '<button class="btn sm ghost rd" style="color:#b71c1c;border-color:#e53935" onclick="Prepare.delMy(\''+m.id+'\')">🗑️</button></div></div>'}).join('')
+        return '<div class="mem" style="margin:10px 0"><h4>'+esc(m.n)+'</h4><small class="mute">約'+m.stages.reduce(function(a,s){return a+(+s.m||0)},0)+'分鐘・'+m.stages.length+'環節</small><div class="btns" style="margin:8px 0 0"><button class="btn sm gr" onclick="Lead.startMy(\''+m.id+'\')">▶ 帶領</button><button class="btn sm ghost" onclick="Prepare.editMy(\''+m.id+'\')">✏️ 編輯</button><button class="btn sm ghost" onclick="Prepare.shareMy(\''+m.id+'\')">📤 分享</button><button class="btn sm ghost rd" style="color:#b71c1c;border-color:#e53935" onclick="Prepare.delMy(\''+m.id+'\')">🗑️</button></div></div>'}).join('')
       :'<div class="empty">未有自製集會。揀上面任何範本撳「✏️ 複製修改」,或者<br><button class="btn sm" onclick="Prepare.edit(\'blank\')" style="margin-top:8px">➕ 由空白開始</button></div>')+'</div>';
     return h;
   },
@@ -42,46 +26,53 @@ var Prepare={
     var mats=(s.mats||[]).length?'<div class="mats-bar"><b>🧺 要拎：</b>'+s.mats.map(function(m){return '<span class="pill" onclick="this.classList.toggle(\'on\')"><span class="dot"></span>'+esc(m)+'</span>'}).join('')+'</div>':'';
     var visual=(s.screen==='chuteopen'||s.screen==='chuteclose'||s.screen==='chute')?Lead.parachuteSvg(s.screen==='chuteclose'?'close':'open'):'';
     return '<article class="brief-card"><div class="brief-head"><span class="brief-no">'+(i+1)+'</span><div><h3>'+esc(s.n)+'</h3><small>'+esc(s.t)+'・'+(+s.m||0)+' 分鐘</small></div></div>'+mats+visual+
-      '<div class="guide-lead"><b>領袖先做</b>'+esc(g.lead)+'</div><div class="guide-steps">'+g.steps.map(function(x){return '<div class="guide-step"><span class="gnum">'+esc(x[0])+'</span><span class="gicon">'+x[1]+'</span><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div>'}).join('')+'</div>'+
-      '<div class="say-box"><b>🎤 照講</b>'+esc(g.say)+'</div>'+
-      '<details class="guide-more"><summary>👀 留意・🛡️ 安全</summary><div class="watch-row"><div><b>👀 睇住呢樣</b>'+esc(g.watch)+'</div><div class="safe"><b>🛡️ 安全</b>'+esc(g.safety)+'</div></div></details>'+
+      '<div class="guide-lead"><b>領袖先做</b>'+esc(g.lead)+'</div><div class="guide-steps">'+g.steps.map(function(x){return '<div class="guide-step"><span class="gnum">'+esc(x[0])+'</span><span class="gicon">'+x[1]+'</span><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div>'}).join('')+'</div><div class="say-box"><b>🎤 照講</b>'+esc(g.say)+'</div><details class="guide-more"><summary>👀 留意・🛡️ 安全</summary><div class="watch-row"><div><b>👀 睇住呢樣</b>'+esc(g.watch)+'</div><div class="safe"><b>🛡️ 安全</b>'+esc(g.safety)+'</div></div></details>'+
       ((Craft&&(Craft.match(s)||Craft.isCraft(s)))?Craft.mini(s):'')+Kit.ownerHtml(Prepare._detailId,i,s)+
-      '<div class="mark-row">'+(function(){var o=[];if(s.gh!==undefined)o.push('🦗 計入 '+DATA.ghDomains[s.gh].ic+' '+DATA.ghDomains[s.gh].n);if(s.badge)o.push('🏅 完場自動剔 '+DATA.badgeItems.filter(function(x){return x.k===s.badge})[0].t);return o.length?o.join('　'):'呢節唔使記數，玩就得'}())+'</div>'+
-      '<details style="margin-top:9px"><summary>顯示完整玩法文字</summary><div class="box" style="margin-top:6px">'+esc(s.how||'')+'</div></details><div class="btns"><button class="btn sm gr" onclick="Prepare.detailStage(\''+esc(Prepare._detailId||'')+'\','+i+')">▶ 試用呢節</button></div></article>';
+      '<div class="mark-row">'+(function(){var o=[];if(s.gh!==undefined)o.push('🦗 計入 '+DATA.ghDomains[s.gh].ic+' '+DATA.ghDomains[s.gh].n);if(s.badge)o.push('🏅 完場自動剔 '+DATA.badgeItems.filter(function(x){return x.k===s.badge})[0].t);return o.length?o.join('　'):'呢節唔使記數，玩就得'}())+'</div><details style="margin-top:9px"><summary>顯示完整玩法文字</summary><div class="box" style="margin-top:6px">'+esc(s.how||'')+'</div></details><div class="btns"><button class="btn sm gr" onclick="Prepare.detailStage(\''+esc(Prepare._detailId||'')+'\','+i+')">▶ 試用呢節</button></div></article>';
   },
   detailStage:function(id,i){
     var t=dur(id);if(t&&t.stages[i])Lead.startStage(id,i);
   },
+  dtab:'pre',
+  dtabSet:function(x){Prepare.dtab=x;Prepare.detail(Prepare._detailId)},
+  /* 準備卡分兩頁：🧺 開場前（執袋・分工・通知）／📍 到場後（設場・檢查・跟流程）
+     一次過显示全部會變「一篇文」，分開就係「而家做緊邊一步」 */
   detail:function(id){
     var t=dur(id);if(!t)return;Prepare._detailId=id;
-    var mats=matsOf(t);
+    var mats=matsOf(t),pre=Prepare.dtab!=='on';
+    var tabs=[['pre','🧺 開場前'],['on','📍 到場後']];
     var h='<div class="ready-detail"><div class="eyebrow">🧭 領袖準備卡・'+esc(t.mo)+'</div><h3>'+esc(t.n)+'</h3><div class="mute" style="font-size:.85rem">'+esc(t.theme)+'・約 <b>'+Plan.lenOf(t)+' 分鐘</b>・'+t.stages.length+' 個小步驟</div>'+
-      '<div class="btns" style="margin-top:12px">'+
-        '<button class="btn gr" onclick="Modal.close();Lead.start(\''+t.id+'\')">▶ 由頭開始帶領</button>'+
-        '<button class="btn" style="background:#2e7d32;color:#fff" onclick="Modal.close();Pack.pick(\'tpl\',\''+t.id+'\')">📦 印齊今場套包</button>'+
-        '<button class="btn ghost" onclick="Prepare.shareTpl(\''+t.id+'\')">📤 分享準備卡</button>'+
-      (Kit.rain[t.id]?'<button class="btn ghost" style="background:#e3f2fd;border-color:#90caf9;color:#0d47a1" onclick="Kit.rainAsk(\''+t.id+'\')">☔ 落雨點算（睇後備版）</button>':'')+
-      '</div>'+
-      /* 印邊樣講到明：教案同圖紙唔會分開失蹤 */
-      '<div class="pk-where"><b>🖨️ 想即刻印？</b>'+
-        (function(){var ls=Pack.sheetList(t);
-          return ls.length?'<div class="pw-list">'+ls.map(function(x){return '<span class="pw-i">'+x.ic+' '+esc(x.n)+'</span>'}).join('')+'</div>'
-            :'<div class="pw-hint">呢場冇圖紙，印教案就夠。</div>'})()+
-        '<div class="btns" style="margin-bottom:0">'+
-          '<button class="btn sm" onclick="PrintKit.openModal(\'meet-all\',\''+t.id+'\')">🖨️ 教案＋圖紙（一疊過）</button>'+
-          '<button class="btn sm ghost" onclick="PrintKit.openModal(\'lesson-plans\',\''+t.id+'\')">📋 只印教案</button>'+
-          '<button class="btn sm gr" onclick="PrintKit.openModal(\'kid-pack\',\''+t.id+'\')">✂️ 只印圖紙</button>'+
-        '</div></div>'+
-      (function(){var cs=t.stages.filter(function(x){return Craft.isCraft(x)});
-        return '<div class="attention" style="margin-top:12px"><b>開場前三件事</b>：① 照執袋單執齊　② 預留活動位置　③ 撳「由頭開始帶領」跟綠色欄做。</div>'+
-          (cs.length?'<div class="attention" style="margin-top:8px;background:#fff8ee;border-left-color:#f57c00"><b>🎨 今次有 '+cs.length+' 個手工環節'+(cs.some(function(x){return Craft.match(x)})?'，每樣都附自學卡':'')+'</b><br>'+
-          cs.map(function(x){var c=Craft.match(x);return c?'・'+c.ic+' <b>'+esc(x.n)+'</b> → <button class="lnk" onclick="Craft.open(\''+c.k+'\')">跟我自學</button>':'・🎨 <b>'+esc(x.n)+'</b> → <button class="lnk" onclick="Craft.open(\'any\')">萬用六步</button>'}).join('<br>')+
-          '<br><small class="mute">未做過都跟得住：睇成品示意圖＋逐步拆解，帶班時只示範頭兩步。</small></div>':'')
-      })()+
-      '<div class="card" style="box-shadow:none;border:1px solid var(--line);padding:11px;margin:12px 0"><h4 style="margin:0;color:var(--ord)">🧺 物資總清單・逐項撳一下剔走</h4><div class="mats-bar">'+(mats.length?mats.map(function(m){return '<span class="pill" onclick="this.classList.toggle(\'on\')"><span class="dot"></span>'+esc(m)+'</span>'}).join(''):'<span class="mute">今次唔需要額外物資</span>')+'</div></div>'+
-      Kit.meetKitHtml(t)+
-      '<h4 style="margin:14px 0 4px;color:var(--ord)">跟住呢條流程做'+(Kit.leaderNames().length?'・撳環節下面嘅「負責領袖」分工':'')+'</h4>'+t.stages.map(function(s,i){return Prepare.brief(s,i)}).join('')+
-      '<div class="attention"><b>收尾</b><br>完成後返到帶領畫面最後一頁，撳「記錄完成＋記出席」，就唔使另外抄名單。</div></div>';
+      '<div class="activity-tabs" style="margin:11px 0 2px">'+tabs.map(function(x){
+        return '<button class="pill '+(Prepare.dtab===x[0]?'on':'')+'" onclick="Prepare.dtabSet(\''+x[0]+'\')">'+x[1]+'</button>'}).join('')+'</div>';
+
+    if(pre){
+      h+='<div class="btns" style="margin-top:10px"><button class="btn" style="background:#2e7d32;color:#fff" onclick="Modal.close();Pack.pick(\'tpl\',\''+t.id+'\')">📦 印齊今場套包</button><button class="btn ghost" onclick="Prepare.shareTpl(\''+t.id+'\')">📤 分享準備卡</button>'+
+        (Kit.rain[t.id]?'<button class="btn ghost" style="background:#e3f2fd;border-color:#90caf9;color:#0d47a1" onclick="Kit.rainAsk(\''+t.id+'\')">☔ 落雨點算</button>':'')+
+        '</div>'+
+        /* 印邊樣講到明：教案同圖紙唔會分開失蹤 */
+        '<div class="pk-where"><b>🖨️ 想即刻印？</b>'+
+          (function(){var ls=Pack.sheetList(t);
+            return ls.length?'<div class="pw-list">'+ls.map(function(x){return '<span class="pw-i">'+x.ic+' '+esc(x.n)+'</span>'}).join('')+'</div>'
+              :'<div class="pw-hint">呢場冇圖紙，印教案就夠。</div>'})()+
+          '<div class="btns" style="margin-bottom:0"><button class="btn sm" onclick="PrintKit.openModal(\'meet-all\',\''+t.id+'\')">🖨️ 教案＋圖紙（一疊過）</button><button class="btn sm ghost" onclick="PrintKit.openModal(\'lesson-plans\',\''+t.id+'\')">📋 只印教案</button><button class="btn sm gr" onclick="PrintKit.openModal(\'kid-pack\',\''+t.id+'\')">✂️ 只印圖紙</button></div></div><div class="attention" style="margin-top:12px"><b>開場前三件事</b>：① 照執袋單執齊　② 預留活動位置　③ 到場撳「由頭開始帶領」。</div>'+
+        (function(){var cs=t.stages.filter(function(x){return Craft.isCraft(x)});
+          if(!cs.length)return '';
+          return '<div class="attention" style="margin-top:8px;background:#fff8ee;border-left-color:#f57c00"><b>🎨 今次有 '+cs.length+' 個手工環節</b><br>'+
+            cs.map(function(x){var c=Craft.match(x);
+              return c?'・'+c.ic+' <b>'+esc(x.n)+'</b> → <button class="lnk" onclick="Craft.open(\''+c.k+'\')">跟我自學</button>'
+                      :'・🎨 <b>'+esc(x.n)+'</b> → <button class="lnk" onclick="Craft.open(\'any\')">萬用六步</button>'}).join('<br>')+
+            '<br><small class="mute">未做過都跟得住：睇成品圖＋逐步拆解。</small></div>'})()+
+        '<div class="card" style="box-shadow:none;border:1px solid var(--line);padding:11px;margin:12px 0"><h4 style="margin:0;color:var(--ord)">🧺 物資總清單・逐項撳一下剔走</h4><div class="mats-bar">'+
+          (mats.length?mats.map(function(m){return '<span class="pill" onclick="this.classList.toggle(\'on\')"><span class="dot"></span>'+esc(m)+'</span>'}).join(''):'<span class="mute">今次唔需要額外物資</span>')+'</div></div>'+
+        Kit.meetKitHtml(t,'pre');
+    } else {
+      h+='<div class="btns" style="margin-top:10px"><button class="btn gr" onclick="Modal.close();Lead.start(\''+t.id+'\')">▶ 由頭開始帶領</button><button class="btn ghost" onclick="Modal.close();Pack.pick(\'tpl\',\''+t.id+'\')">📦 套包</button></div>'+
+        Kit.meetKitHtml(t,'on')+
+        '<h4 style="margin:14px 0 4px;color:var(--ord)">跟住呢條流程做</h4>'+
+        t.stages.map(function(s,i){return Prepare.brief(s,i)}).join('')+
+        '<div class="attention"><b>收尾</b><br>完成後返到帶領畫面最後一頁，撳「記錄完成＋記出席」，唔使另外抄名單。</div>';
+    }
+    h+='</div>';
     Modal.open(h);
   },
   /* ---------- 編排器 ---------- */
@@ -93,13 +84,9 @@ var Prepare={
   delMy:function(id){if(confirm('刪除呢個自製集會?')){Store.set('mymeets',Store.get('mymeets').filter(function(x){return x.id!==id}));App.route()}},
   editor:function(m,isMy){
     Prepare._m=m;Prepare._isMy=isMy;
-    var h='<h3>🛠️ 集會編排器</h3>'+
-      '<label class="f">集會名稱</label><input type="text" id="edN" value="'+esc(m.n)+'">'+
-      '<div class="btns"><button class="btn sm" onclick="Prepare.save()">💾 儲存</button>'+
+    var h='<h3>🛠️ 集會編排器</h3><label class="f">集會名稱</label><input type="text" id="edN" value="'+esc(m.n)+'"><div class="btns"><button class="btn sm" onclick="Prepare.save()">💾 儲存</button>'+
       (isMy?'<button class="btn sm gr" onclick="Prepare.save();Lead.startMy(\''+m.id+'\')">▶ 儲存並帶領</button>':'')+
-      '<button class="btn sm ghost" onclick="Prepare.addBlock()">➕ 加環節</button>'+
-      '<button class="btn sm ghost" onclick="Prepare.preview()">👁️ 預視物資</button></div>'+
-      '<div id="edStages"></div>';
+      '<button class="btn sm ghost" onclick="Prepare.addBlock()">➕ 加環節</button><button class="btn sm ghost" onclick="Prepare.preview()">👁️ 預視物資</button></div><div id="edStages"></div>';
     Modal.open(h);Prepare.renderStages();
   },
   renderStages:function(){
@@ -108,11 +95,7 @@ var Prepare={
     var total=m.stages.reduce(function(a,s){return a+(+s.m||0)},0);
     var h='<div class="mute" style="font-size:.8rem">合計 <b>'+total+'</b> 分鐘</div><div class="tbl"><tr><th>分</th><th>環節</th><th></th></tr>';
     m.stages.forEach(function(s,i){
-      h+='<tr><td><input type="number" value="'+(+s.m||0)+'" min="1" max="120" style="width:56px;padding:5px" onchange="Prepare._m.stages['+i+'].m=+this.value;Prepare.renderStages()"></td>'+
-        '<td><b>'+esc(s.n)+'</b><br><small class="mute">'+s.t+'</small></td>'+
-        '<td style="white-space:nowrap"><button class="btn sm ghost" onclick="Prepare.stageOpts('+i+')">✏️</button> '+
-        '<button class="btn sm ghost" onclick="Prepare.move('+i+',-1)">⬆️</button><button class="btn sm ghost" onclick="Prepare.move('+i+',1)">⬇️</button> '+
-        '<button class="btn sm ghost rd" style="color:#b71c1c;border-color:#e53935" onclick="Prepare._m.stages.splice('+i+',1);Prepare.renderStages()">🗑️</button></td></tr>';
+      h+='<tr><td><input type="number" value="'+(+s.m||0)+'" min="1" max="120" style="width:56px;padding:5px" onchange="Prepare._m.stages['+i+'].m=+this.value;Prepare.renderStages()"></td><td><b>'+esc(s.n)+'</b><br><small class="mute">'+s.t+'</small></td><td style="white-space:nowrap"><button class="btn sm ghost" onclick="Prepare.stageOpts('+i+')">✏️</button> <button class="btn sm ghost" onclick="Prepare.move('+i+',-1)">⬆️</button><button class="btn sm ghost" onclick="Prepare.move('+i+',1)">⬇️</button> <button class="btn sm ghost rd" style="color:#b71c1c;border-color:#e53935" onclick="Prepare._m.stages.splice('+i+',1);Prepare.renderStages()">🗑️</button></td></tr>';
     });
     el.innerHTML=h+'</div>';
   },
@@ -129,22 +112,11 @@ var Prepare={
     Modal.open(Prepare._editorHtml());Prepare.renderStages();
   },
   _editorHtml:function(){var m=Prepare._m;
-    return '<h3>🛠️ 集會編排器</h3><label class="f">集會名稱</label><input type="text" id="edN" value="'+esc(m.n)+'">'+
-      '<div class="btns"><button class="btn sm" onclick="Prepare.save()">💾 儲存</button>'+
-      '<button class="btn sm ghost" onclick="Prepare.addBlock()">➕ 加環節</button>'+
-      '<button class="btn sm ghost" onclick="Prepare.preview()">👁️ 預視物資</button></div><div id="edStages"></div>'},
+    return '<h3>🛠️ 集會編排器</h3><label class="f">集會名稱</label><input type="text" id="edN" value="'+esc(m.n)+'"><div class="btns"><button class="btn sm" onclick="Prepare.save()">💾 儲存</button><button class="btn sm ghost" onclick="Prepare.addBlock()">➕ 加環節</button><button class="btn sm ghost" onclick="Prepare.preview()">👁️ 預視物資</button></div><div id="edStages"></div>'},
   stageOpts:function(i){
     var s=i>=0?Prepare._m.stages[i]:{t:'自訂',n:'新環節',m:5,how:'',script:'',mats:[]};
     Prepare._si=i;
-    Modal.open('<h3>'+(i>=0?'✏️ 編輯環節':'🧪 自訂環節')+'</h3>'+
-      '<label class="f">名稱</label><input type="text" id="soN" value="'+esc(s.n)+'">'+
-      '<label class="f">類型</label><select id="soT">'+['儀式','點名','課程','遊戲','美勞','故事','唱遊','靜息','特備','頒獎'].map(function(t){return '<option'+(s.t===t?' selected':'')+'>'+t+'</option>'}).join('')+'</select>'+
-      '<label class="f">分鐘</label><input type="number" id="soM" value="'+(+s.m||5)+'" min="1" max="180">'+
-      '<label class="f">點玩/內容</label><textarea id="soH">'+esc(s.how||'')+'</textarea>'+
-      '<label class="f">🎤 領袖講稿(帶領模式顯示)</label><textarea id="soS">'+esc(s.script||'')+'</textarea>'+
-      '<label class="f">物資(逗號分隔)</label><input type="text" id="soMat" value="'+esc((s.mats||[]).join(','))+'">'+
-      '<label class="f">投影畫面</label><select id="soScr">'+Prepare.scrList(s.screen)+'</select>'+
-      '<div class="btns" style="margin-top:12px"><button class="btn" onclick="Prepare.saveStage()">確定</button></div>');
+    Modal.open('<h3>'+(i>=0?'✏️ 編輯環節':'🧪 自訂環節')+'</h3><label class="f">名稱</label><input type="text" id="soN" value="'+esc(s.n)+'"><label class="f">類型</label><select id="soT">'+['儀式','點名','課程','遊戲','美勞','故事','唱遊','靜息','特備','頒獎'].map(function(t){return '<option'+(s.t===t?' selected':'')+'>'+t+'</option>'}).join('')+'</select><label class="f">分鐘</label><input type="number" id="soM" value="'+(+s.m||5)+'" min="1" max="180"><label class="f">點玩/內容</label><textarea id="soH">'+esc(s.how||'')+'</textarea><label class="f">🎤 領袖講稿(帶領模式顯示)</label><textarea id="soS">'+esc(s.script||'')+'</textarea><label class="f">物資(逗號分隔)</label><input type="text" id="soMat" value="'+esc((s.mats||[]).join(','))+'"><label class="f">投影畫面</label><select id="soScr">'+Prepare.scrList(s.screen)+'</select><div class="btns" style="margin-top:12px"><button class="btn" onclick="Prepare.saveStage()">確定</button></div>');
   },
   scrList:function(cur){
     var opts=[

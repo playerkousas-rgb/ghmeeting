@@ -18,6 +18,7 @@ var HB={
   /* 📍 場地設置：新手由零開始 */
   venue:function(){return Venue.html()},
   /* 🎮 遊戲帶領總表：小朋友做乜・領袖撳乜・物資・安全（同 APP 帶領畫面同一份資料） */
+  /* 🎮 遊戲帶領總表：名＋玩法類型一睇就揀到；「點帶」四行收埋，要睇先撳開 */
   games:function(){
     var keys=Object.keys(Lead.playMeta);
     var phys=keys.filter(function(k){return Lead.playMeta[k].kind==='實體互動'});
@@ -27,32 +28,35 @@ var HB={
       return arr.map(function(k){
         var m=Lead.playMeta[k];
         return '<div class="gcard"><div class="gc-h">'+m.ic+' <b>'+esc(m.n)+'</b><span class="tag">'+esc(m.kind)+'</span></div>'+
-          '<div class="gc-row"><b>🧒 小朋友</b>'+esc(m.kids)+'</div>'+
-          '<div class="gc-row"><b>🧑‍🏫 領袖</b>'+esc(m.lead)+'</div>'+
-          '<div class="gc-row"><b>🧺 物資</b>'+esc(m.mats)+'</div>'+
-          '<div class="gc-row"><b>🛡️ 安全</b>'+esc(m.safe)+'</div>'+
-          '<div class="btns"><button class="btn sm gr" onclick="Lead.startGame(\''+k+'\',\''+esc(m.n)+'\')">▶ 即開</button>'+
-          (m.print?'<button class="btn sm ghost" onclick="PrintKit.openModal(\''+m.print+'\')">🖨️ 印教具</button>':'')+'</div></div>';
+          '<div class="btns" style="margin-top:6px">'+
+            '<button class="btn sm gr" onclick="Lead.startGame(\''+k+'\',\''+esc(m.n)+'\')">▶ 即開</button>'+
+            (m.print?'<button class="btn sm ghost" onclick="PrintKit.openModal(\''+m.print+'\')">🖨️ 印教具</button>':'')+
+          '</div>'+
+          '<details class="guide-more"><summary>點帶（小朋友・領袖・物資・安全）</summary>'+
+            '<div class="gc-row"><b>🧒 小朋友</b>'+esc(m.kids)+'</div>'+
+            '<div class="gc-row"><b>🧑‍🏫 領袖</b>'+esc(m.lead)+'</div>'+
+            '<div class="gc-row"><b>🧺 物資</b>'+esc(m.mats)+'</div>'+
+            '<div class="gc-row"><b>🛡️ 安全</b>'+esc(m.safe)+'</div>'+
+          '</details></div>';
       }).join('');
     };
-    return '<div class="card"><h2>🎮 遊戲帶領總表：螢幕點用，小朋友點玩</h2>'+
-      '<div class="attention"><b>我哋唔係打電子 GAME。</b>呢個 APP 嘅螢幕只係幫你<b>出題・叫位・計時・計分・播拍子</b>；遊戲本身係小朋友喺場內用身體玩。'+
-      '十幾個小朋友唔使圍住一部機搶住撳—佢哋嘅手應該喺隊友手上、地上、傘邊。<br>'+
-      '<b>新領袖點用：</b>開會前睇呢一頁，揀 2–3 個遊戲 → 撳「🖨️ 印教具」印地貼／角牌 → 當日撳「▶ 即開」跟住畫面嘅「🧭 點樣帶」卡做就得。</div>'+
-      '<div class="box" style="font-size:.86rem">📊 遊戲庫：'+keys.length+' 個活動—<b>'+phys.length+' 個實體走位／跳動遊戲</b>・'+body.length+' 個教學＋肢體・'+tool.length+' 個領袖工具／教學畫面。全部都有「小朋友做乜・領袖撳乜・物資・安全」四項。</div></div>'+
-      '<div class="card"><h3>🧒 實體互動遊戲（小朋友落場玩）</h3><div class="mute" style="font-size:.82rem">呢啲遊戲小朋友要郁身體：跳格、行角、分邊、拋球、圍圈傳球、揚傘。螢幕由領袖操作。</div>'+
-      '<div class="gcards">'+rows(phys)+'</div></div>'+
-      '<div class="card"><h3>🖐️ 教學＋肢體（睇住畫面一齊做）</h3><div class="mute" style="font-size:.82rem">領袖撳住講，全體跟住做動作／答問題—唔使逐個上機。</div>'+
-      '<div class="gcards">'+rows(body)+'</div></div>'+
-      '<div class="card"><h3>🧑‍🏫 領袖工具・教學畫面</h3><div class="mute" style="font-size:.82rem">抽籤、故事、呼吸、圖鑑—領袖操作，全場一齊參與。</div>'+
-      '<div class="gcards">'+rows(tool)+'</div></div>'+
-      '<div class="card"><h3>🖨️ 想做實體教具？</h3><div class="box" style="font-size:.86rem">'+
-      '・<b>九宮格地貼</b>：草蜢跳格用（A4 九格，可放大或直接貼地）＋玩法卡<br>'+
-      '・<b>場地圖卡</b>：A／B／C／D 四角角牌・👍👎 分邊牌・三色回收桶標籤・射月靶與投擲線<br>'+
-      '・<b>互動遊戲帶領卡</b>：每個遊戲一張 A4，寫晒小朋友做乜・領袖撳乜・物資・安全<br>'+
-      '・<b>地貼／體能遊戲前檢查表</b>：10 項逐項剔（清場・地面・地貼・界線・鞋襪・分組・停手口令・距離・計時・水）</div>'+
-      '<div class="btns" style="margin-top:8px"><button class="btn sm gr" onclick="App.go(\'#print\')">🖨️ 去教材打印中心</button>'+
-      '<button class="btn sm ghost" onclick="Kit.openCheck(\'floor\')">🧭 地貼／體能遊戲檢查表</button></div></div>';
+    return '<div class="card"><h2>🎮 遊戲帶領總表</h2>'+
+      '<div class="attention"><b>螢幕只係出題・叫位・計時・計分</b>；遊戲本身係小朋友用身體玩。'+
+      '揀 2–3 個 → 撳「▶ 即開」，想印教具就撳「🖨️」。</div>'+
+      '<div class="box" style="font-size:.86rem">📊 '+keys.length+' 個活動：'+phys.length+' 個實體走位／跳動・'+
+        body.length+' 個教學＋肢體・'+tool.length+' 個領袖工具。</div></div>'+
+      '<div class="card"><h3>🧒 實體互動（小朋友落場玩）</h3><div class="gcards">'+rows(phys)+'</div></div>'+
+      '<div class="card"><h3>🖐️ 教學＋肢體（睇住畫面一齊做）</h3><div class="gcards">'+rows(body)+'</div></div>'+
+      '<div class="card"><h3>🧑‍🏫 領袖工具・教學畫面</h3><div class="gcards">'+rows(tool)+'</div></div>'+
+      '<details class="card guide-more" style="padding:12px 14px"><summary>🖨️ 想做實體教具？</summary>'+
+        '<div class="box" style="font-size:.86rem">'+
+        '・<b>九宮格地貼</b>：草蜢跳格用（A4 九格，可放大或直接貼地）＋玩法卡<br>'+
+        '・<b>場地圖卡</b>：A／B／C／D 四角角牌・👍👎 分邊牌・三色回收桶標籤・射月靶與投擲線<br>'+
+        '・<b>互動遊戲帶領卡</b>：每個遊戲一張 A4，寫晒小朋友做乜・領袖撳乜・物資・安全<br>'+
+        '・<b>地貼／體能遊戲前檢查表</b>：10 項逐項剔（清場・地面・地貼・界線・鞋襪・分組・停手口令・距離・計時・水）</div>'+
+        '<div class="btns" style="margin-top:8px"><button class="btn sm gr" onclick="App.go(\'#print\')">🖨️ 去教材打印中心</button>'+
+        '<button class="btn sm ghost" onclick="Kit.openCheck(\'floor\')">🧭 地貼／體能遊戲檢查表</button></div>'+
+      '</details>';
   },
   core:function(){
     var f=DATA.facts;

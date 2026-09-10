@@ -244,7 +244,7 @@ const P=G.PrintKit;
 G.HB.tab='games';
 const hbHtml=G.HB.games();
 ok('⑦ 手冊有「遊戲帶領總表」',/遊戲帶領總表/.test(hbHtml));
-ok('⑦ 講明「唔係打電子 GAME」',/唔係打電子 GAME/.test(hbHtml));
+ok('⑦ 講明「唔係打電子 GAME」（螢幕只係工具）',/唔係打電子 GAME|螢幕只係(幫你)?出題/.test(hbHtml));
 const miss2=Object.keys(Lead.playMeta).filter(function(k){return hbHtml.indexOf(Lead.playMeta[k].n)<0});
 ok('⑦ 總表列出全部遊戲',miss2.length===0,'缺:'+miss2.join(','));
 ok('⑦ 手冊 tabs 有 games 分頁',/games','🎮 遊戲帶領/.test(fs.readFileSync(path.join(__dirname,'..','js','handbook.js'),'utf8')));
@@ -667,10 +667,28 @@ Object.keys(BUDGET).forEach(function(h){
   ok('⑳ '+h+' 一開波睇到嘅字 ≤ '+BUDGET[h],n<=BUDGET[h],'now='+n);
 });
 sandbox.location.hash='#pack';G.App.route();
-/* 準備卡都唔可以長篇大論 */
-G.Prepare.detail('t03');
-const prepLen=visibleLen(els.get('modal').innerHTML);
-ok('⑳ 準備卡一開波睇到嘅字 ≤ 3800',prepLen<=3800,'now='+prepLen);
+/* 準備卡分「開場前／到場後」兩頁：每页都唔可以長篇大論 */
+[['pre',1500],['on',2600]].forEach(function(x){
+  G.Prepare.dtab=x[0];G.Prepare.detail('t03');
+  const n=visibleLen(els.get('modal').innerHTML);
+  ok('⑳ 準備卡（'+(x[0]==='pre'?'開場前':'到場後')+'）睇到嘅字 ≤ '+x[1],n<=x[1],'now='+n);
+});
+G.Prepare.dtab='pre';G.Prepare.detail('t03');
+const preHtml=els.get('modal').innerHTML;
+ok('⑳ 開場前＝執袋・分工・通知（唔好出逐節流程）',
+  /物資總清單/.test(preHtml)&&/邊個帶邊節/.test(preHtml)&&/抄畀家長/.test(preHtml)&&!/跟住呢條流程做/.test(preHtml));
+G.Prepare.dtab='on';G.Prepare.detail('t03');
+const onHtml=els.get('modal').innerHTML;
+ok('⑳ 到場後＝設場・檢查表・逐節流程',
+  /跟住呢條流程做/.test(onHtml)&&/vn-meet/.test(onHtml)&&/撳開逐項剔/.test(onHtml));
+G.Prepare.dtab='pre';
+/* 手冊遊戲總表：淨出名＋「▶ 即開」，四行收埋 */
+G.HB.tab='games';
+const ghb=G.HB.html();
+ok('⑳ 手冊遊戲總表：四行收埋、即開掣喺面',
+  /<details class="guide-more"[\s\S]*?點帶/.test(ghb)&&/Lead\.startGame/.test(ghb));
+ok('⑳ 手冊遊戲總表睇到嘅字 ≤ 1500',visibleLen(ghb)<=1500,'now='+visibleLen(ghb));
+G.HB.tab='core';
 
 /* ⑳b step by step 一定要列點、按次序（1→2→3，唔係一大段字） */
 ok('⑳b 每個環節都係三步，由 1 排到 3',G.TPLS.every(function(t){
