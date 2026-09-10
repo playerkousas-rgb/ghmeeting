@@ -704,6 +704,32 @@ ok('⑳b 領袖欄：三步排喺最前，留意／安全收埋',
   ghCard.replace(/<[^>]+>/g,'').slice(0,80));
 ok('⑳b 領袖欄有得照讀（一句講稿）',/say-box/.test(ghCard));
 
+/* ⑳c 🖨️ 列印：一張紙＝一頁（唔會無啦啦分兩頁、唔會出白紙） */
+const cssTxt=fs.readFileSync(path.join(__dirname,'..','css','app.css'),'utf8');
+const printCss=(cssTxt.match(/@media print \{[\s\S]*?\n\}/)||[''])[0];
+ok('⑳c 講明紙張係 A4（唔好跟印表機預設，Letter 會短 18mm）',/@page\s*\{\s*size:\s*A4/.test(cssTxt));
+ok('⑳c 一張紙 break-after:page ＋ 內容 break-inside:avoid',
+  /\.a4-sheet\s*\{[^}]*break-inside:\s*avoid/.test(printCss)&&/\.a4-sheet\s*\{[^}]*break-after:\s*page/.test(printCss));
+ok('⑳c .pbreak 收埋（唔係每張紙後面多印一張白紙）',/\.pbreak\s*\{\s*display:\s*none/.test(printCss));
+ok('⑳c 最後一張紙之後唔好再 break',/\.a4-sheet:last-child[^}]*break-after:\s*auto/.test(printCss));
+ok('⑳c 標題同內容唔好分家',/\.a4-sheet h2[^}]*break-after:\s*avoid/.test(printCss));
+/* 自動縮放：高過一頁就縮（差太遠就由得佢流，但喺段落位斷） */
+const pagePx=G.PrintKit.PAGE_PX();
+ok('⑳c 一頁高度計得出（約 1057px）',pagePx>1000&&pagePx<1100,'px='+pagePx);
+(function(){
+  const mk=function(h){return {style:{},scrollHeight:h}};
+  const area=mkEl('printableArea');
+  const a=mk(1200),b=mk(900),c=mk(2000);
+  area.querySelectorAll=function(){return [a,b,c]};
+  els.set('printableArea',area);
+  const n=G.PrintKit.fitSheets();
+  ok('⑳c 高過一頁少少 → 自動縮到一頁',n===1&&Math.abs(a.style.zoom-1057/1200)<0.01,'zoom='+a.style.zoom+' fit='+n);
+  ok('⑳c 啱啱好一頁 → 唔好郁佢',!b.style.zoom);
+  ok('⑳c 長過一頁好多 → 唔縮到睇唔到（照流，喺段落位斷）',!c.style.zoom);
+  G.PrintKit.resetFit();
+  ok('⑳c 印完還原（預覽回復原狀）',!a.style.zoom);
+})();
+
 /* ============ 結果 ============ */
 console.log('\n✅ 通過 '+pass+' 項');
 if(fails.length){

@@ -269,6 +269,10 @@ hr.soft{border:none;border-top:1.5px dashed var(--line);margin:12px 0}
 .badgegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .mem{background:#fff;border-radius:16px;box-shadow:var(--sh);padding:12px}
 .mem h4{margin:0 0 4px;color:var(--ord)}
+.tpl-card{margin:8px 0!important;padding:10px 12px!important}
+.tpl-card .tag{margin-left:2px}
+.tpl-card h4+.mute,.tpl-card small.mute{display:block;line-height:1.5}
+.tpl-card .box{font-size:.83rem;line-height:1.6;padding:7px 9px;margin:2px 0 6px;background:#f7f4f1;border-radius:10px}
 .progbar{height:8px;border-radius:6px;background:#f3e5d5;overflow:hidden;margin:6px 0}
 .progbar i{display:block;height:100%;background:linear-gradient(90deg,var(--or),var(--gr))}
 toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#3e2723;color:#fff;
@@ -1329,6 +1333,9 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
   padding-top: 6px;
 }
 
+/* 🖨️ 打印紙張：講明 A4（唔講，瀏覽器會跟印表機預設，Letter 會短 18mm 就爆頁） */
+@page { size: A4; margin: 8mm; }
+
 /* ==========================================================================
    🖨️ 瀏覽器實際打印規則 (@media print)
    ========================================================================== */
@@ -1365,15 +1372,34 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
     overflow: visible !important;
     display: block !important;
   }
+  /* ⚠️ .pbreak 一定要收埋：佢自己都有 page-break-after，
+     加埋 .a4-sheet 嗰個＝每張紙後面多印一張白紙 */
+  .pbreak { display: none !important; }
   .a4-sheet {
     box-shadow: none !important;
-    max-width: 100% !important;
-    width: 100% !important;
-    min-height: auto !important;
+    max-width: none !important;
+    width: auto !important;
+    min-height: 0 !important;
+    height: auto !important;
     padding: 0 !important;
     margin: 0 !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    break-after: page;
     page-break-after: always;
   }
+  /* 一張紙入面：段落／步驟／卡片唔好由中間斬開 */
+  .a4-sheet > *,
+  .a4-sheet .craft-block, .a4-sheet .ct-step, .a4-sheet .learn-row,
+  .a4-sheet .cards-cut-grid, .a4-sheet .cert-box, .a4-sheet .kc-row,
+  .a4-sheet tr, .a4-sheet .p-block, .a4-sheet .rs-block {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  /* 最後一張唔好再 break（唔係尾會多張白紙） */
+  .a4-sheet:last-child { break-after: auto; page-break-after: auto; }
+  /* 萬一內容真係長過一頁：標題同內容唔好分家 */
+  .a4-sheet h2, .a4-sheet h3, .a4-sheet h4 { break-after: avoid; page-break-after: avoid; }
 }
 
 

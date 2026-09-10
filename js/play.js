@@ -60,13 +60,27 @@ var Play={
     if(this.tab==='all'||this.tab==='video')all=all.concat(this.videos.map(function(x){return Object.assign({kind:'video'},x)}));
     var q=this.q.trim().toLowerCase();return q?all.filter(function(x){return (x.n+' '+(x.d||'')+' '+(x.meta||'')+' '+(x.src||'')).toLowerCase().indexOf(q)>=0}):all;
   },
+  /* 列表只出「名・分鐘・即開」；玩法／物資收埋落「點玩」，要睇先撳開 */
   listHtml:function(){
     var arr=this.items();
     var cards=arr.length?arr.map(function(x){
-      var action=x.kind==='game'?'<button class="btn sm gr" onclick="Lead.startGame(\''+x.id+'\',\''+esc(x.n)+'\')">▶ 即玩</button>':x.kind==='craft'?'<div class="act-col"><button class="btn sm gr" onclick="'+(x.ck?('Craft.open(\''+x.ck+'\')'):('Play.craftAny('+x.tid+','+x.si+')'))+'">'+(x.ck?'📚 跟我自學':'🧯 萬用六步')+'</button><button class="btn sm ghost" onclick="Play.craftDetail(\''+x.tid+'\','+x.si+')">🧭 睇步驟卡</button></div>':'<a class="btn sm ghost" href="'+x.url+'" target="_blank" rel="noopener">觀看 ↗</a>';
       var pm=(x.kind==='game'&&window.Lead&&Lead.playMeta)?Lead.playMeta[x.id]:null;
-      var ktag=pm?'<span class="coach-tag '+(pm.kind==='實體互動'?'tag-play':'tag-tool')+'">'+(pm.kind==='實體互動'?'🧒 小朋友身體落場玩':pm.kind==='教學＋肢體'?'🧒 睇住做＋肢體':pm.kind==='領袖工具'?'🧑‍🏫 領袖操作・全場跟住做':'🧑‍🏫 領袖帶領')+'</span>':'';
-      return '<article class="activity-card'+(x.kind==='craft'&&x.ck?' has-coach':'')+'"><div class="activity-icon">'+x.ic+'</div><div class="activity-copy"><h3>'+esc(x.n)+'</h3><small>'+esc(x.meta||x.src||'需要上網')+'</small>'+(x.kind==='craft'?'<span class="coach-tag">'+x.coach+'</span>':ktag)+'<p>'+esc(x.d)+'</p>'+(pm?'<div class="activity-mats">🧺 '+esc(pm.mats)+'</div>':(x.mats&&x.mats.length?'<div class="activity-mats">🧺 實物物資：'+esc(x.mats.join('、'))+'</div>':''))+'</div><div class="activity-action">'+action+'</div></article>';
+      var action=x.kind==='game'
+        ?'<button class="btn sm gr" onclick="Lead.startGame(\''+x.id+'\',\''+esc(x.n)+'\')">▶ 即玩</button>'
+        :x.kind==='craft'
+          ?'<button class="btn sm gr" onclick="'+(x.ck?('Craft.open(\''+x.ck+'\')'):('Play.craftAny(\''+x.tid+'\','+x.si+')'))+'">'+(x.ck?'📚 自學':'🧯 萬用')+'</button>'
+          :'<a class="btn sm ghost" href="'+x.url+'" target="_blank" rel="noopener">睇片 ↗</a>';
+      var more=(x.kind==='video')
+        ?'<div class="activity-mats">'+esc(x.d)+'</div>'
+        :'<details class="guide-more"><summary>點玩</summary>'+
+            '<p class="ac-d">'+esc(x.d)+'</p>'+
+            (pm?'<div class="activity-mats">🧺 '+esc(pm.mats)+'</div>'
+               :(x.mats&&x.mats.length?'<div class="activity-mats">🧺 '+esc(x.mats.join('、'))+'</div>':''))+
+            (x.kind==='craft'&&x.tid!==undefined?'<div class="btns"><button class="btn sm ghost" onclick="Play.craftDetail(\''+x.tid+'\','+x.si+')">🧭 睇步驟卡</button></div>':'')+
+          '</details>';
+      return '<article class="activity-card"><div class="activity-icon">'+x.ic+'</div>'+
+        '<div class="activity-copy"><h3>'+esc(x.n)+'</h3><small>'+esc(x.meta||x.src||'需要上網')+'</small>'+
+        '<div class="btns" style="margin:6px 0 0">'+action+'</div>'+more+'</div></article>';
     }).join(''):'<div class="empty">搵唔到呢類活動。試下其他字眼，或者撳「全部」。</div>';
     return cards+this.coachHtml();
   },
@@ -78,7 +92,10 @@ var Play={
     if(!arr.length)return '';
     return '<div class="coach-wrap"><h4>📚 手工自學卡庫・即揀即學（未排入集會都用得）</h4><div class="coach-grid">'+
       arr.map(function(c){
-        return '<article class="activity-card has-coach"><div class="activity-icon">'+c.ic+'</div><div class="activity-copy"><h3>'+esc(c.n)+'</h3><small>自學卡・'+c.learn.length+' 步拆解＋後備版＋常錯補救</small><span class="coach-tag">🎨 有成品示意圖，唔使領袖識做</span><p>成品長咁樣：'+esc(c.look)+'</p></div><div class="activity-action"><button class="btn sm gr" onclick="Craft.open(\''+c.k+'\')">📚 跟我自學</button></div></article>'
+        return '<article class="activity-card has-coach"><div class="activity-icon">'+c.ic+'</div><div class="activity-copy"><h3>'+esc(c.n)+'</h3><small>自學卡・'+c.learn.length+' 步拆解</small>'+
+          '<div class="btns" style="margin:6px 0 0"><button class="btn sm gr" onclick="Craft.open(\''+c.k+'\')">📚 跟我自學</button></div>'+
+          '<details class="guide-more"><summary>成品係點</summary><p class="ac-d">'+esc(c.look)+'</p></details>'+
+          '</div></article>'
       }).join('')+'</div></div>';
   },
   craftDetail:function(tid,si){

@@ -298,8 +298,41 @@ var PrintKit={
     Modal.open(h);
   },
 
+  /* ==========================================================
+     🖨️ 一張紙＝一頁：印之前量一度，高過一頁就縮少少（縮到 85% 以內先縮，
+        再細就由得佢流去第二頁，但會喺段落位斷，唔會斬開中間）
+     ========================================================== */
+  PAGE_PX:function(){
+    /* A4 297mm − 上下邊 16mm ＝ 281mm；96dpi → 1mm＝3.7795px，減 6px 緩衝 */
+    return Math.round(281*96/25.4)-6;
+  },
+  fitSheets:function(){
+    var area=document.getElementById('printableArea');
+    if(!area||!area.querySelectorAll)return 0;
+    var max=PrintKit.PAGE_PX(), fit=0;
+    var list=area.querySelectorAll('.a4-sheet');
+    for(var i=0;i<list.length;i++){
+      var el=list[i];
+      el.style.zoom='';                       /* 每次重新量，唔好疊加 */
+      var h=el.scrollHeight;
+      if(!h||h<=max)continue;
+      var s=max/h;
+      if(s>=0.85){el.style.zoom=s;fit++}      /* 差少少 → 縮到啱一頁 */
+      else el.style.zoom='';                  /* 真係長 → 照流，但段落位先斷 */
+    }
+    return fit;
+  },
+  resetFit:function(){
+    var area=document.getElementById('printableArea');
+    if(!area||!area.querySelectorAll)return;
+    var list=area.querySelectorAll('.a4-sheet');
+    for(var i=0;i<list.length;i++)list[i].style.zoom='';
+  },
   triggerPrint:function(){
-    window.print();
+    var n=0;
+    try{n=PrintKit.fitSheets()}catch(e){}
+    if(n)toast('🖨️ '+n+' 張紙自動縮到一頁（唔會再斬開兩頁）');
+    setTimeout(function(){window.print()},80);
   },
 
   /* ==========================================================================
@@ -791,3 +824,9 @@ var PrintKit={
     '</div>';
   }
 };
+
+/* 由瀏覽器 menu 撳列印（唔經 APP 個掣）都要先縮一縮 */
+if(typeof addEventListener==='function'){
+  addEventListener('beforeprint',function(){try{PrintKit.fitSheets()}catch(e){}});
+  addEventListener('afterprint',function(){try{PrintKit.resetFit()}catch(e){}});
+}
