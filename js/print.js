@@ -236,9 +236,9 @@ var PrintKit={
     var filtered=(PrintKit.tab==='all'?PrintKit.kits.slice():PrintKit.kits.filter(function(k){return k.cat===PrintKit.tab}))
       .sort(function(a,b){return (order[a.cat]||9)-(order[b.cat]||9)});
     var h='<div class="card printable-hero">'+
-      '<span class="eyebrow">✂️ 圖紙 ‧ 教材庫</span>'+
+      '<span class="eyebrow">✂️ 工作紙 ‧ 圖紙 ‧ 教材庫</span>'+
       '<h2>所有印得出嚟嘅嘢，全部喺呢度。</h2>'+
-      '<p class="mute">圖紙＝小朋友剪／摺／塗嗰啲紙　｜　場地圖卡＝貼地貼牆嗰啲　｜　教案＝領袖手揸嗰疊。</p>'+
+      '<p class="mute">圖紙＝小朋友剪摺塗｜場地圖卡＝貼地貼牆｜教案＝領袖手揸。</p>'+
       PrintKit.nowHtml()+
       '<div class="activity-tabs" style="margin-top:12px">'+
         cats.map(function(c){return '<button class="pill '+(PrintKit.tab===c[0]?'on':'')+'" onclick="PrintKit.setTab(\''+c[0]+'\')">'+c[1]+'</button>'}).join('')+
@@ -251,10 +251,12 @@ var PrintKit={
           '<div class="p-body">'+
             '<h4>'+esc(k.n)+'</h4>'+
             '<div class="p-pages">📄 '+esc(k.pages)+'</div>'+
-            '<p class="mute" style="font-size:.82rem;line-height:1.4;margin:4px 0 10px">'+esc(k.desc)+'</p>'+
-            '<div class="btns">'+
+            '<div class="btns" style="margin:6px 0 0">'+
               '<button class="btn sm gr" onclick="PrintKit.openModal(\''+k.id+'\')">🖨️ 預覽及列印</button>'+
             '</div>'+
+            '<details class="guide-more"><summary>入面有咖</summary>'+
+              '<p class="mute" style="font-size:.82rem;line-height:1.5;margin:0">'+esc(k.desc)+'</p>'+
+            '</details>'+
           '</div>'+
         '</div>';
       }).join('')+
@@ -291,15 +293,119 @@ var PrintKit={
         '<div><h3>'+kit.ic+' '+esc(kit.n)+'</h3><small class="mute">A4 標準列印排版・'+esc(kit.pages)+'</small></div>'+
         '<div class="btns"><button class="btn gr" onclick="PrintKit.triggerPrint()"><span style="font-size:1.1rem">🖨️</span> 即刻列印 / 存為 PDF</button></div>'+
       '</div>'+
+      '<div class="print-preview-bar"><span id="sheetStat" class="sheet-stat">🖨️ 正在量紙張…</span>'+
+        '<small class="mute">紅虛線係頁尾，黎得黎就安全</small></div>'+
       '<div class="print-sheet-wrapper" id="printableArea">'+
         contentHtml+
       '</div>'+
     '</div>';
     Modal.open(h);
+    /* 版面出嚟先量（要等 DOM 排好） */
+    if(typeof setTimeout==='function')setTimeout(function(){try{PrintKit.flagSheets()}catch(e){}},80);
   },
 
+  /* ==========================================================
+     🖨️ 一張紙＝一頁：印之前量一度，高過一頁就縮少少（縮到 85% 以內先縮，
+        再細就由得佢流去第二頁，但會喺段落位斷，唔會斬開中間）
+
+     重要：一定要用「A4 實際間度」量，不好用手機螢幕的間度
+        （手機螢幕實得 360px，內容折多一倍，量出來全部都像出界）
+     ========================================================== */
+  PAGE_PX:function(){
+    /* A4 297mm − 上下邊 16mm ＝ 281mm；96dpi → 1mm＝3.7795px，減 6px 緩衝 */
+    return Math.round(281*96/25.4)-6;
+  },
+  /* A4 印到嘅範圍（減 8mm 邊）：打直 194×281mm，打橫掉轉 */
+  pageBox:function(el){
+    var w=Math.round(194*96/25.4), h=Math.round(281*96/25.4);
+    var land=el&&el.classList&&el.classList.contains?el.classList.contains('landscape'):false;
+    return land?{w:h,h:w}:{w:w,h:h};
+  },
+  /* 量一張紙「印落 A4 會幾高」：複製一份擺喺畫面外，用 A4 嘅闊度量 */
+  sheetHeight:function(el){
+    var box=PrintKit.pageBox(el);
+    if(!el||!el.cloneNode||!document.body||!document.body.appendChild)return el?el.scrollHeight||0:0;
+    var probe=el.cloneNode(true);
+    var junk=probe.querySelectorAll?probe.querySelectorAll('.sheet-flag,.sheet-pageline'):[];
+    for(var i=0;i<junk.length;i++)if(junk[i].parentNode)junk[i].parentNode.removeChild(junk[i]);
+    try{
+      probe.style.zoom='';probe.style.position='absolute';probe.style.left='-9999px';probe.style.top='0';
+      probe.style.width=box.w+'px';probe.style.maxWidth='none';probe.style.minHeight='0';
+      probe.style.height='auto';probe.style.boxShadow='none';
+    }catch(e){}
+    document.body.appendChild(probe);
+    var h=probe.offsetHeight||probe.scrollHeight||0;
+    if(probe.parentNode)probe.parentNode.removeChild(probe);
+    return h;
+  },
+  /* 看一眼就知出不出界：每張紙頭頂貼一個點標，出界伸一條紅虛線距頁尾 */
+  flagSheets:function(){
+    var area=document.getElementById('printableArea');
+    if(!area||!area.querySelectorAll)return {total:0,shrink:0,over:0};
+    var list=area.querySelectorAll('.a4-sheet'),st={total:list.length,shrink:0,over:0};
+    for(var i=0;i<list.length;i++){
+      var el=list[i],box=PrintKit.pageBox(el);
+      var h=PrintKit.sheetHeight(el),r=h?h/box.h:0;
+      var txt,cls;
+      if(!h||r<=1.02){cls='ok';txt='✅ 一頁印得落'}
+      else if(r<=1.18){cls='warn';txt='⚠️ 會自動縮到 '+Math.round(100/r)+'%';st.shrink++}
+      else{cls='bad';txt='⚠️ 出界，印時會分 '+Math.ceil(r)+' 頁';st.over++}
+      PrintKit._flag(el,cls,txt);
+      if(r>1.02)PrintKit._pageLine(el,Math.round(box.h*(el.clientWidth&&box.w?el.clientWidth/box.w:1)));
+    }
+    var bar=document.getElementById('sheetStat');
+    if(bar){
+      bar.className='sheet-stat '+(st.over?'bad':st.shrink?'warn':'ok');
+      bar.innerHTML=st.total+' 張紙：'+
+        (st.over?('⚠️ '+st.over+' 張出界')
+          :st.shrink?('⚠️ '+st.shrink+' 張會自動縮細入一頁')
+          :'✅ 全部一頁印得落');
+    }
+    return st;
+  },
+  _flag:function(el,cls,txt){
+    if(!el.querySelector)return;
+    var f=el.querySelector('.sheet-flag');
+    if(!f){
+      if(!document.createElement)return;
+      f=document.createElement('div');f.className='sheet-flag';el.appendChild(f);
+    }
+    f.className='sheet-flag '+cls;f.innerHTML=txt;
+  },
+  _pageLine:function(el,top){
+    if(!el.querySelector||!document.createElement)return;
+    var l=el.querySelector('.sheet-pageline');
+    if(!l){l=document.createElement('div');l.className='sheet-pageline';el.appendChild(l)}
+    l.style.top=top+'px';
+  },
+  fitSheets:function(){
+    var area=document.getElementById('printableArea');
+    if(!area||!area.querySelectorAll)return 0;
+    var fit=0;
+    var list=area.querySelectorAll('.a4-sheet');
+    for(var i=0;i<list.length;i++){
+      var el=list[i];
+      el.style.zoom='';                       /* 每次重新量，唔好疊加 */
+      var max=PrintKit.pageBox(el).h;         /* 打橫／打直各自嘅一頁高度 */
+      var h=PrintKit.sheetHeight(el);
+      if(!h||h<=max)continue;
+      var s=max/h;
+      if(s>=0.85){el.style.zoom=s;fit++}      /* 差少少 → 縮到啱一頁 */
+      else el.style.zoom='';                  /* 真係長 → 照流，但段落位先斷 */
+    }
+    return fit;
+  },
+  resetFit:function(){
+    var area=document.getElementById('printableArea');
+    if(!area||!area.querySelectorAll)return;
+    var list=area.querySelectorAll('.a4-sheet');
+    for(var i=0;i<list.length;i++)list[i].style.zoom='';
+  },
   triggerPrint:function(){
-    window.print();
+    var n=0;
+    try{n=PrintKit.fitSheets()}catch(e){}
+    if(n)toast('🖨️ '+n+' 張紙自動縮到一頁（唔會再斬開兩頁）');
+    setTimeout(function(){window.print()},80);
   },
 
   /* ==========================================================================
@@ -791,3 +897,9 @@ var PrintKit={
     '</div>';
   }
 };
+
+/* 由瀏覽器 menu 撳列印（唔經 APP 個掣）都要先縮一縮 */
+if(typeof addEventListener==='function'){
+  addEventListener('beforeprint',function(){try{PrintKit.fitSheets()}catch(e){}});
+  addEventListener('afterprint',function(){try{PrintKit.resetFit()}catch(e){}});
+}

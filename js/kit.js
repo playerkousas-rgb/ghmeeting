@@ -26,7 +26,7 @@ var Kit={
     '隧道':{q:'每組 1 條',how:'出口兩邊要有人望住',sub:'兩張枱對拼＋布蓋、紙箱拆開接成長筒（效果一樣、仲似秘密基地）'},
     '旅巾':{q:'每人 1 條（檢查巾圈 size）',how:'預先逐條試摺一次，知邊啲巾圈太緊要剪返',sub:'用方巾／大手帕代替練習'},
     '獎章':{q:'按名單數量＋2 個後備',how:'開會前按名單順序排喺盒/枱（叫名先至唔使搵）',sub:'冇獎章：用打印嘉許狀先頒，獎章稍後補（本 APP 可打印）'},
-    '證書':{q:'每人 1 份',how:'官方證書要經旅團向總部申請，一般需時數星期—所以現場用打印嘉許狀先颁',sub:'🖨️ 工具箱「✂️ 圖紙」→「小童軍嘉許狀」即刻打印填名頒發'},
+    '證書':{q:'每人 1 份',how:'官方證書要經旅團向總部申請，一般需時數星期—所以現場用打印嘉許狀先颁',sub:'🖨️ 工具箱「✂️ 工作紙」→「小童軍嘉許狀」即刻打印填名頒發'},
     '急救包':{q:'1 個／小隊（戶外必須）',how:'檢查有無：膠布、無菌紗、生理鹽水、唔放針線、剪刀',sub:'向旅團借；出發前確認負責人識用'},
     '名單':{q:'紙本 1 份＋手機 1 份',how:'出發前印一次（含緊急聯絡人、過敏、服食藥物）',sub:'用 APP「🏅追蹤」截圖離線睇；完全冇網都要有紙本'},
     '飲用水':{q:'每人 500 毫升＋每組備 1 支後備',how:'天氣熱加電解質；標名避免飲錯',sub:'確認場地方有飲水機；冇就減短活動時間'},
@@ -39,7 +39,7 @@ var Kit={
     '毛筆':{q:'每 2 人 1 支（中楷）',how:'先浸水 30 秒甩乾才蘸墨—乾筆最難用，領袖最容易忽略',sub:'用馬克筆／蠟筆代替（唔會爆墨，4–7 歲更成功）'},
     '紅紙':{q:'每人 1 張 21×21 厘米（A4 約 1/3）',how:'預先一次裁好，唔使現場量',sub:'用紅卡紙；冇紅色就白紙画框＋金色筆，倒轉貼都係「福到」'},
     '白殼蛋':{q:'優先塑料蛋；真蛋要焗熟',how:'焗熟蛋先洗乾＋抹乾；塑料蛋用顏料要先上底料，否則甩色',sub:'用紙蛋（卡紙剪蛋形）—零風險、效果一樣'},
-    '快樂傘':{q:'1 張／4–5 人（20 人預 5 張）；另備 1 張後備',how:'開會前試揚 3 次：確認唔漏氣、傘邊唔笠手；太滑就圍一圈膠紙。玩法直接喺 APP「活動 → 快樂傘 21 式」揀，唔使自己諗',sub:'冇傘：用大型垃圾膠袋（玩法一樣，壽命短）；或 8 人拉一根長繩做「人肉傘」，同樣练合作'},
+    '快樂傘':{q:'1 張／4–5 人（20 人預 5 張）；另備 1 張後備',how:'開會前試揚 3 次：確認唔漏氣、傘邊唔笠手；太滑就圍一圈膠紙。玩法直接喺工具箱「🌈 快樂傘」揀（開散會儀式＋16 式），唔使自己諗',sub:'用大型垃圾膠袋（玩法一樣，壽命短）；或 8 人拉一根長繩做「人肉傘」，同樣練合作'},
     '海灘波':{q:'1 個／小隊；打氣至七成飽',how:'預先試打氣、綁實結；太硬會傷細個嘅頭，放氣少少',sub:'冇波：用膠樽入水（撞到＝1 分）或紙球（安全、安靜版）'},
     '皮球':{q:'4–6 人 1 個（氣球每人 1 隻）',how:'氣球預先吹 10 隻（細個嘅吹得慢）；皮波打氣至彈得起但唔瀉手',sub:'冇波：錫紙搓成球（一樣彈到手心就傳）；或改用「拍手代替傳波」玩口令遊戲'},
     '團員章':{q:'每人 1 套（6 枚）；另預 2 套後備',how:'開會前對住名單剔好邊個差邊一枚；針腳式別針逐個試扣，鬆咗即扭緊',sub:'未領到官方章：用「🖨️教材包 → 工作紙」印紙版章即場貼，事後補發，儀式感唔走'},
@@ -205,24 +205,26 @@ var Kit={
   /* ============ ⑥ 影相與私隱：4 句就夠，但要講 ============ */
   photo:'📷 影相四句：①開季問家長有冇不同意收集／分享；②只影自己團員，唔影外人／其他團正面；③唔將相放入公開群組（用旅團專用群）；④有隊員唔想被影—佢做「攝影師助手」一樣有份。',
   /* 成場集會嘅「預備包」：備料指引 + 執行檢查表 + 分工（準備卡底部用） */
-  meetKitHtml:function(t){
+  /* part='pre'＝開場前（備料・分工・通知家長）／'on'＝到場後（設場・檢查表）／冇傳＝全部 */
+  meetKitHtml:function(t,part){
     var mats=(typeof matsOf==='function')?matsOf(t):[];
     var names=this.leaderNames();
     var def=(Store.get('meetmeta',{}).__def)||'';
-    var h='<div class="card kit-card"><h4 class="kit-h4">🧰 做之前點預備（備料・檢查表・分工）</h4>';
-    h+=this.matsTipHtml(mats);
-    if(typeof Venue!=='undefined')h+=Venue.meetHtml(t);
-    h+=this.checkHtml(t.stages||[],t,t.id);
-    h+=this.dateRowHtml(t.id);
-    h+='<div class="kit-owner"><b>👥 邊個帶邊節（填咗即刻儲存，打印教案都會跟住出）</b>';
-    h+='<input class="owner-in" list="leaderList" placeholder="全部未定＝你一個帶晒（呢格係預設負責人）" value="'+esc(def)+'" oninput="Kit.setDefaultOwner(this.value)">';
-    h+='<div class="mute kit-note">填呢格＝所有未註明嘅環節都算呢位帶；想逐節唔同，喺下面每個環節入面改。';
-    h+=(names.length?'':'（想下次快速揀名：去「設定 → 旅團設定 → 領袖名單」填，用、分開）');
-    h+='</div></div>';
+    var pre=!part||part==='pre', on=!part||part==='on';
+    var h='<div class="card kit-card"><h4 class="kit-h4">🧰 '+(pre&&!on?'開場前要搞掂':(!pre&&on?'到場後跟住做':'做之前點預備'))+'</h4>';
+    if(pre)h+=this.matsTipHtml(mats);
+    if(on&&typeof Venue!=='undefined')h+=Venue.meetHtml(t);
+    if(on)h+=this.checkHtml(t.stages||[],t,t.id,true);
+    if(pre)h+=this.dateRowHtml(t.id);
+    if(pre){
+      h+='<div class="kit-owner"><b>👥 邊個帶邊節</b>';
+      h+='<input class="owner-in" list="leaderList" placeholder="全部未定＝你一個帶晒" value="'+esc(def)+'" oninput="Kit.setDefaultOwner(this.value)">';
+      h+='<div class="mute kit-note">填呢格＝冇特別註明嘅環節都算佢帶。'+(names.length?'':'（想快速揀名：設定 → 領袖名單）')+'</div></div>';
+    }
     var best=this.checkFor(t.stages||[]);
     h+='<div class="btns" style="margin-top:8px">'+
-      '<button class="btn sm ghost" onclick="Kit.prepMsgFor(\''+esc(t.id||'')+'\')">📣 抄畀家長（已填主題・物資）</button>'+
-      (best?'<button class="btn sm ghost" onclick="Kit.prepCheckPrint(\''+esc(t.id||'')+'\')">🖨️ 打印'+esc(best.n)+'</button>':'')+
+      (pre?'<button class="btn sm ghost" onclick="Kit.prepMsgFor(\''+esc(t.id||'')+'\')">📣 抄畀家長</button>':'')+
+      (best&&on?'<button class="btn sm ghost" onclick="Kit.prepCheckPrint(\''+esc(t.id||'')+'\')">🖨️ 打印'+esc(best.n)+'</button>':'')+
       '</div>';
     return h+'</div>';
   },
@@ -251,18 +253,20 @@ var Kit={
     for(var key in this.mats){if(k.indexOf(key)>-1||key.indexOf(k)>-1)return this.mats[key]}
     return null;
   },
-  checkHtml:function(st,t,mid){
+  /* collapse=true：準備卡入面摺埋（要剔先撳開），唔會一開波就十項字壓落嚟 */
+  checkHtml:function(st,t,mid,collapse){
     var c=this.checkFor(st||{t:(t&&t.t)||'',n:(t&&t.n)||'',how:''});
     if(!c)c=this.checkFor(t||null);
     if(!c)return '';
     var id=mid||(t&&t.id)||'',on=this.ckGet(id,c.key);
-    return '<div class="kit-check"><div class="kc-h">'+c.ic+' '+esc(c.n)+' <span class="tag">逐項剔走・剔咗會記住</span></div>'+
-      '<ol class="kc-list">'+c.items.map(function(x,i){return '<li class="'+(on.indexOf(i)>=0?'on':'')+'" onclick="Kit.tickItem(\''+id+'\',\''+c.key+'\','+i+',this)"><span class="kc-no">'+(i+1)+'</span>'+esc(x)+'</li>'}).join('')+'</ol>'+
-      '<div class="kc-foot">'+(id?'<span class="kc-prog">'+this.checkProg(id,c.key)+'</span>':'')+
+    var head='<div class="kc-h">'+c.ic+' '+esc(c.n)+' <span class="tag">'+on.length+'/'+c.items.length+' 已剔</span></div>';
+    var list='<ol class="kc-list">'+c.items.map(function(x,i){return '<li class="'+(on.indexOf(i)>=0?'on':'')+'" onclick="Kit.tickItem(\''+id+'\',\''+c.key+'\','+i+',this)"><span class="kc-no">'+(i+1)+'</span>'+esc(x)+'</li>'}).join('')+'</ol>';
+    var foot='<div class="kc-foot">'+(id?'<span class="kc-prog">'+this.checkProg(id,c.key)+'</span>':'')+
       '<button class="btn sm" onclick="Kit.copy(Kit.checkTxt(\''+c.n.replace(/'/g,'')+'\'),this)">📋 複製清單</button>'+
       (on.length?'<button class="btn sm ghost" onclick="Kit.ckSet(\''+id+'\',\''+c.key+'\',[]);Kit.refreshCheck()">🧽 清重剔</button>':'')+
-      '<small class="mute">出發前讀一次，完成晒先至開隊。剔咗嘅位會喺呢部機記住；撳「✅ 完成今場」就自動清返，下次由頭剔。</small></div>'+
-      this.uncheckNote(id,c.key)+'</div>';
+      '<small class="mute">出發前剔一次；剔位會記住，完成今場自動清。</small></div>';
+    if(collapse)return '<div class="kit-check">'+head+'<details class="guide-more"><summary>🧭 撳開逐項剔（'+c.items.length+' 項）</summary>'+list+foot+'</details>'+this.uncheckNote(id,c.key)+'</div>';
+    return '<div class="kit-check">'+head+list+foot+this.uncheckNote(id,c.key)+'</div>';
   },
   refreshCheck:function(){
     var t=(typeof Prepare!=='undefined'&&Prepare._detailId&&typeof dur==='function')?dur(Prepare._detailId):null;
@@ -468,7 +472,7 @@ var Kit={
     });
     push('📦 集會套包','今場套包：一撳印齊所有教材','領袖教案＋小朋友圖紙（一疊過）','套包 打印 印齊 教材 圖紙 即用紙 教案 執袋單 程序表 帶領卡 家長通知 pack',
       "Modal.close();App.go('#pack')",'📦 開');
-    push('✂️ 圖紙庫','所有圖紙・場地圖卡・教案・海報','24 份教材分四類，第一格就係今場要用嗰啲','圖紙 圖 紙 教材庫 印 打印 列印 worksheet print 圖卡 海報 教案',
+    push('✂️ 工作紙／圖紙庫','所有工作紙・圖紙・場地圖卡・教案・海報','25 份教材分四類，第一格就係今場要用嗰啲','圖紙 工作紙 紙 教材庫 印 打印 列印 worksheet print 圖卡 海報 教案',
       "Modal.close();App.go('#print')",'✂️ 開');
     push('📦 集會套包','⚡ 臨時集會（揀主題即出套包）','資深領袖臨時頂位用','臨時 加場 頂位 即興 隨手 開會',
       "Modal.close();App.go('#pack')",'📦 開');
@@ -503,9 +507,19 @@ var Kit={
     push('📍 場地設置','場地設置：六分區・30 分鐘時間表・五條規矩','新手必睇・A4 可印','場地 設場 貼地 界線 集合圈 物資枱 冷靜位 規矩 控場 分組 救急 平面圖',"Modal.close();Venue.open()",'📍 開');
     push('🧒 4–7 歲控場','手工控場卡（8 招）＋15 個手工年齡分工','貼枱邊・A4 2 頁','控場 控制 秩序 嘈 搶 喊 唔肯做 派料 一步一停 舉手 收工 4歲 5歲 6歲 7歲 幼兒 小童軍',"Modal.close();PrintKit.openModal('craft-ctrl')",'🖨️ 開');
     push('📍 場地設置','到場設場檢查表（10 項）','開場前 30 分鐘逐項剔','到場 設場 檢查表 界線 集合圈 螢幕 冷靜位',"Modal.close();Kit.openCheck('venue')",'🧭 開');
-    [['core','⚖️ 核心內容（誓詞・規律・支部）'],['craft','🎨 手工自學總覽'],['kit','🧰 做之前點預備'],['games','🎮 遊戲帶領總表（小朋友做乜・領袖撳乜）'],['badge','🏅 獎章制度'],['chute','🌈 快樂傘 21 式'],['sfh','🛡️ 保護自己'],['tips','💡 4–7 歲帶領貼士']].forEach(function(x){
+    [['core','⚖️ 核心內容（誓詞・規律・支部）'],['craft','🎨 手工自學總覽'],['kit','🧰 做之前點預備'],['games','🎮 遊戲帶領總表（小朋友做乜・領袖撳乜）'],['badge','🏅 獎章制度'],['chute','🌈 快樂傘（手冊版）'],['sfh','🛡️ 保護自己'],['tips','💡 4–7 歲帶領貼士']].forEach(function(x){
       push('📖 手冊',x[1],'手冊分頁',[x[1],x[0],'手冊'].join(' '),"Modal.close();App.go('#book');setTimeout(function(){HB.t('"+x[0]+"')},60)");
     });
+    /* 🅱️ 工具箱三格：臨時加節目就係靠佢哋，一定要搵得到 */
+    push('🌈 快樂傘','快樂傘：開會／散會儀式＋'+((typeof DATA!=='undefined'&&DATA.chute)?DATA.chute.length:16)+' 式玩法卡','即開即用・每式有圖＋口令＋點樣帶三步',
+      ((typeof DATA!=='undefined'&&DATA.chute)?DATA.chute.map(function(c){return c.n+' '+c.tag+' '+c.h+' '+c.t}).join(' '):'')+' 快樂傘 傘 彩虹傘 氣球傘 揚傘 收傘 開會 散會 儀式',
+      "Modal.close();App.go('#chute')",'🌈 開');
+    push('🎵 唱歌','唱小童軍主題曲・卡拉OK（APP 即時彈伴奏）','唔使上網・速度／數拍／和弦自訂',
+      ((typeof DATA!=='undefined'&&DATA.facts)?DATA.facts.song.join(' '):'')+' 唱歌 歌 主題曲 卡拉OK 伴奏 旋律 London Bridge Greeny 洗手歌 唱遊 團員章',
+      "Modal.close();App.go('#song')",'🎵 開');
+    push('🎲 快鍵','控場快鍵：安靜・吹哨・抽籤・分組・計分・倒數','集會途中先至會撳嘅嘢，全部一撳即開',
+      '快鍵 控場 安靜 靜 吹哨 哨子 號角 抽籤 轉盤 分組 計分 倒數 拍子機 音效 呼吸 臨時 加節目 即興',
+      "Modal.close();App.go('#tools')",'🎲 開');
     this._si=ix;this._siAt=this._stamp();
     return ix;
   },

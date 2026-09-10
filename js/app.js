@@ -17,9 +17,10 @@ var App={
   route:function(){
     var h=(location.hash||'#plan').slice(1).split('?')[0];
     if(document.body.contains(document.getElementById('leadroot'))&&!document.getElementById('leadroot').classList.contains('hidden'))Lead.exit(false);
-    var v={pack:'pack',plan:'plan',meet:'meet',play:'play',lead:'lead',track:'track',book:'book',print:'print'}[h]||'pack';
+    var v={pack:'pack',plan:'plan',meet:'meet',play:'play',lead:'lead',track:'track',book:'book',print:'print',
+           chute:'chute',song:'song',tools:'tools'}[h]||'pack';
     App.view=v;
-    /* 🅰️ 上方新手四步 ＋ 🅱️ 下方工具箱：兩條 bar 都要著返正確嗰格 */
+    /* 🅰️ 上方集會五步 ＋ 🅱️ 下方工具箱五格：兩條 bar 都要著返正確嗰格 */
     document.querySelectorAll('#tabbar a, #topnav a').forEach(function(a){a.classList.toggle('on',a.dataset.tab===v)});
     var el=document.getElementById('view');
     if(v==='pack')el.innerHTML=Pack.html();
@@ -30,6 +31,10 @@ var App={
     if(v==='track')el.innerHTML=Track.html();
     if(v==='book')el.innerHTML=HB.html();
     if(v==='print')el.innerHTML=PrintKit.html();
+    /* 🅱️ 工具箱三格：唔使準備，即開即用 */
+    if(v==='chute')el.innerHTML=Chute.html();
+    if(v==='song')el.innerHTML=Song.html();
+    if(v==='tools')el.innerHTML=Tools.html();
     if(typeof Flow!=='undefined')Flow.render();   /* 🧭 嚮導條跟住畫面更新 */
     scrollTo(0,0);
   },
@@ -176,11 +181,15 @@ var Plan={
     h+='<div class="card"><h2>🗓️ 年度行事曆 <span class="tag">'+done+'/'+pl.rows.length+' 完成</span></h2>'+
       '<div class="mute" style="font-size:.82rem;margin-bottom:8px">撳任何一格：換卡・記完成・即刻帶。</div>'+
       Plan.calendar(pl)+'</div>';
-    h+='<div class="card"><h2>🗺️ 42個月完整路線圖</h2><div class="mute" style="font-size:.82rem">團員章 → 四級進步獎章(約22個月)→ 小草蜢獎章(7範疇×2體驗)→ 晉團幼童軍</div>'+Plan.roadmap()+'</div>';
-    h+='<div class="card"><h2>🦗 小草蜢歷險(6歲起)</h2><div class="mute" style="font-size:.82rem;margin-bottom:8px">七大範疇各完成2項體驗=小草蜢獎章。app 已為每個範疇預備一次集會範本。</div><div class="grid2">'+
+    h+='<div class="card"><h2>🏅 獎章路線圖・七大範疇</h2>'+
+      '<details class="guide-more"><summary>🗺️ 42 個月路線圖</summary>'+
+        '<div class="mute" style="font-size:.82rem">團員章 → 進步獎章（約 22 個月）→ 小草蜢獎章（7 範疇 ×2 體驗）→ 晉團幼童軍</div>'+Plan.roadmap()+
+      '</details>'+
+      '<details class="guide-more"><summary>🦗 小草蜢歷險・七大範疇（6 歲起）</summary>'+
+        '<div class="mute" style="font-size:.82rem;margin-bottom:8px">七大範疇各完成 2 項體驗＝小草蜢獎章。每個範疇 app 都預備咗一次集會範本。</div><div class="grid2">'+
       DATA.ghDomains.map(function(d,i){var t=TPLS.filter(function(x){return x.cat==='gh'})[i];
         return '<div class="mem"><h4>'+d.ic+' '+d.n+'</h4><small class="mute">範本:'+esc(t.n)+'</small><div class="btns" style="margin:6px 0 0"><button class="btn sm ghost" onclick="App.go(\'#meet\');setTimeout(function(){Prepare.detail(\''+t.id+'\')},50)">查看</button><button class="btn sm" onclick="Lead.start(\''+t.id+'\')">▶</button></div></div>'}).join('')+
-      '</div></div>';
+      '</div></details></div>';
     return h;
   },
   lenOf:function(t){return (t.stages||[]).reduce(function(a,s){return a+(+s.m||0)},0)},

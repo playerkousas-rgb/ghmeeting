@@ -65,7 +65,7 @@ const sandbox={
 };
 sandbox.window=sandbox;sandbox.globalThis=sandbox;
 const ctx=vm.createContext(sandbox);
-const order=['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','flow.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js'];
+const order=['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','flow.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js','chute.js','song.js','tools.js'];
 for(const f of order){
   vm.runInContext(fs.readFileSync(path.join(__dirname,'..','js',f),'utf8'),ctx,{filename:'js/'+f});
 }
@@ -244,7 +244,7 @@ const P=G.PrintKit;
 G.HB.tab='games';
 const hbHtml=G.HB.games();
 ok('⑦ 手冊有「遊戲帶領總表」',/遊戲帶領總表/.test(hbHtml));
-ok('⑦ 講明「唔係打電子 GAME」',/唔係打電子 GAME/.test(hbHtml));
+ok('⑦ 講明「唔係打電子 GAME」（螢幕只係工具）',/唔係打電子 GAME|螢幕只係(幫你)?出題/.test(hbHtml));
 const miss2=Object.keys(Lead.playMeta).filter(function(k){return hbHtml.indexOf(Lead.playMeta[k].n)<0});
 ok('⑦ 總表列出全部遊戲',miss2.length===0,'缺:'+miss2.join(','));
 ok('⑦ 手冊 tabs 有 games 分頁',/games','🎮 遊戲帶領/.test(fs.readFileSync(path.join(__dirname,'..','js','handbook.js'),'utf8')));
@@ -494,7 +494,7 @@ ok('⑮ 預設領袖紙只有程序表（執袋單／帶領卡／通知都唔印
 PK.setPart('notice',1);
 ok('⑮ 想要先至印：剔開家長通知就出到',/家長通知/.test(PK.sheets('lead',pkMeet.m,0)));
 PK.setPart('notice',0);
-ok('⑮ 套包頁講明印幾頁＋慳幾多',/淨係印/.test(pkHtml)&&/其餘/.test(pkHtml)&&/🌱/.test(pkHtml));
+ok('⑮ 套包頁講明印幾頁＋慳幾多',/淨印|淨係印/.test(pkHtml)&&/其餘/.test(pkHtml)&&/🌱/.test(pkHtml));
 ok('⑮ 冇名單時預設印 1 份（唔好白白印 12 份）',PK.copies()===1,'copies='+PK.copies());
 /* 小朋友紙逐款揀 */
 var kAll=PK.kidPicks(pkMeet.m);
@@ -527,20 +527,27 @@ ok('⑮ 載入 jingle 後跟住換',Music.cur==='jingle'&&Music.song===Music.SON
 Music.load('theme');
 ok('⑮ 載入返 theme',Music.cur==='theme');
 
-/* ⑯ 導航重組：上方 4 個新手掣 ＋ 下方 4 個工具掣（電話放得曬） */
+/* ⑯ 導航重組：🅰️ 上方 5 個集會掣（要準備）＋ 🅱️ 下方 5 個工具箱掣（即開即用） */
 const idxHtml=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 const topNav=(idxHtml.match(/<nav id="topnav"[\s\S]*?<\/nav>/)||[''])[0];
 const botNav=(idxHtml.match(/<nav id="tabbar"[\s\S]*?<\/nav>/)||[''])[0];
+const topBar=(idxHtml.match(/<div class="topbtns">[\s\S]*?<\/div>/)||[''])[0];
 const topLinks=(topNav.match(/<a /g)||[]).length, botLinks=(botNav.match(/<a /g)||[]).length;
-ok('⑯ 上方最多 4 個掣',topLinks>0&&topLinks<=4,'top='+topLinks);
-ok('⑯ 下方最多 4 個掣',botLinks>0&&botLinks<=4,'bottom='+botLinks);
-ok('⑯ 上下方分開兩類（🅰️ 新手四步／🅱️ 工具箱）',/🅰️/.test(topNav)&&/🅱️/.test(botNav));
+ok('⑯ 上方 5 個集會掣',topLinks===5,'top='+topLinks);
+ok('⑯ 下方 5 個工具箱掣',botLinks===5,'bottom='+botLinks);
+ok('⑯ 上下方分開兩類（🅰️ 集會要準備／🅱️ 工具箱即開即用）',/🅰️/.test(topNav)&&/🅱️/.test(botNav));
+ok('⑯ 上方＝集會五步（揀・定・印・帶・記）',['plan','meet','pack','lead','track'].every(function(v){return topNav.indexOf('data-tab="'+v+'"')>=0}));
+ok('⑯ 下方＝工具箱（工作紙・活動・快樂傘・唱歌・快鍵）',
+  ['print','play','chute','song','tools'].every(function(v){return botNav.indexOf('data-tab="'+v+'"')>=0}));
 const navTabs=(idxHtml.match(/data-tab="([a-z]+)"/g)||[]).map(function(x){return x.replace(/[^a-z]/g,'').replace('datatab','')});
-['pack','plan','meet','play','lead','track','book','print'].forEach(function(v){
+['pack','plan','meet','play','lead','track','print','chute','song','tools'].forEach(function(v){
   ok('⑯ 「'+v+'」有入口（唔會有孤兒分頁）',navTabs.indexOf(v)>=0,navTabs.join(','));
 });
+ok('⑯ 📖 手冊有入口（放喺頂欄，唔佔導航格）',/#book/.test(topBar),topBar.replace(/\s+/g,' ').slice(0,120));
 ok('⑯ 兩條 bar 都會著燈',/#tabbar a, #topnav a/.test(fs.readFileSync(path.join(__dirname,'..','js','app.js'),'utf8')));
 ok('⑯ 上方係入口唔係步驟（冇 1234 編號扮流程）',!/<i>[1-9]<\/i>/.test(topNav),topNav.replace(/\s+/g,' ').slice(0,120));
+ok('⑯ 三格工具箱都有 js 檔',['chute','song','tools'].every(function(f){
+  return /<script src="js\//.test(idxHtml)&&idxHtml.indexOf('js/'+f+'.js')>=0}));
 
 /* ⑯b 🧭 step by step：揀咗集會之後一步步帶到散會（唔靠上面粒掣扮流程） */
 const FL=G.Flow;
@@ -594,6 +601,167 @@ ok('⑱ 四角搶答／分邊／回收各有自己張圖（唔再共用一張）
 ok('⑱ 記憶配對唔會亂配一張四角圖',!imgMap.memory);
 ok('⑱ 新圖有入 sw 快取',/g-judge\.avif/.test(fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8'))&&
   /g-recycle\.avif/.test(fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8')));
+
+/* ⑲ 🅱️ 工具箱三格（快樂傘・唱歌・快鍵）：即開即用，唔使事前準備 */
+const CH=G.Chute, SG=G.Song, TL=G.Tools;
+ok('⑲ 三格工具箱都有模組同頁面',!!CH&&!!SG&&!!TL&&typeof CH.html==='function'&&typeof SG.html==='function'&&typeof TL.html==='function');
+const chuteHtml=CH.html(), songHtml=SG.html(), toolsHtml=TL.html();
+[['快樂傘',chuteHtml],['唱歌',songHtml],['快鍵',toolsHtml]].forEach(function(x){
+  ok('⑲ '+x[0]+' 頁有內容',x[1].length>1500,'len='+x[1].length);
+  ok('⑲ '+x[0]+' 頁有「一撳即開」大掣',(x[1].match(/tk-btn/g)||[]).length>=4,(x[1].match(/tk-btn/g)||[]).length+' 個');
+});
+/* 快樂傘：每式都要開到＋圖／口令／點樣帶三步 */
+eq('⑲ 16 式玩法卡全部有「即開」掣',(chuteHtml.match(/Chute\.play\(/g)||[]).length,G.DATA.chute.length);
+ok('⑲ 快樂傘有基本三步圖＋安全三句',/chute-steps/.test(chuteHtml)&&/安全三句/.test(chuteHtml));
+ok('⑲ 快樂傘有冇傘點算',/冇傘/.test(chuteHtml));
+CH.ritual('open');
+eq('⑲ 開會儀式開到 chuteopen 畫面',Lead.S.meet.stages[0].screen,'chuteopen');
+CH.ritual('close');
+eq('⑲ 散會儀式開到 chuteclose 畫面',Lead.S.meet.stages[0].screen,'chuteclose');
+CH.random();
+ok('⑲ 抽一式開到玩法卡',Lead.S.meet.stages[0].screen==='chute'&&typeof Lead.S.meet.stages[0].chuteIndex==='number',
+  JSON.stringify(Lead.S.meet.stages[0]).slice(0,80));
+CH.calm();
+eq('⑲ 冷靜一式會揀「冷靜落嚟」嗰類',G.DATA.chute[Lead.S.meet.stages[0].chuteIndex].tag,'冷靜落嚟');
+CH.tag='動起來';
+ok('⑲ 可以淨揀「動起來」嗰幾式',CH.list().length>0&&CH.list().every(function(c){return c.tag==='動起來'}),CH.list().length+' 式');
+CH.tag='all';
+/* 唱歌：曲庫＋卡拉OK＋逐句動作 */
+ok('⑲ 曲庫三首都入咗唱歌頁',(songHtml.match(/Song\.start\(/g)||[]).length>=Object.keys(G.Music.SONGBOOK).length,
+  Object.keys(G.Music.SONGBOOK).join(','));
+eq('⑲ 主題曲六句＝六個動作',G.DATA.facts.song.length,SG.ACTIONS.length);
+SG.start('theme');
+ok('⑲ 主題曲卡拉OK 開到 song 畫面',Lead.S.meet.stages[0].screen==='song'&&Lead.S.meet.stages[0].song==='theme',
+  JSON.stringify(Lead.S.meet.stages[0]).slice(0,80));
+SG.start('jingle');
+ok('⑲ 曲庫第二首都開到（場景：節慶）',Lead.S.meet.stages[0].song==='jingle'&&/Jingle/.test(Lead.S.meet.n),Lead.S.meet.n);
+SG.tempo('slow');eq('⑲ 速度揀「慢」＝92 BPM',G.Music.bpm,92);
+SG.tempo('std');eq('⑲ 速度彈返「中」＝112 BPM',G.Music.bpm,112);
+SG.opt('chords');ok('⑲ 和弦伴奏撳到（開→關）',G.Music.chords===false||G.Music.chords===true);
+/* 快鍵：兩個清單＋每個掣都真係有函數 */
+eq('⑲ 臨時加節目 10 個',TL.PROGRAMS.length,10);
+eq('⑲ 控場快鍵 10 個',TL.QUICK.length,10);
+['Chute.play','Lead.startGame','Lead.quickTool','Lead.quietQuick','Sfx.whistle','Sfx.horn',
+ 'Kit.openCheckFor','Kit.searchOpen','Kit.hubOpen','Venue.open','App.startInstant','App.go','App.quickHub'].forEach(function(fn){
+  var p=fn.split('.'),host=p.length===2?sandbox[p[0]]:null;
+  ok('⑲ 快鍵用嘅 '+fn+' 存在',p.length===2?!!(host&&host[p[1]]!==undefined):typeof sandbox[fn]==='function');
+});
+/* 回歸：檢查表快鍵一定要俾「有 stages 嘅集會」，唔係俾 Pack.meet() 個 wrapper */
+const ckGo=TL.QUICK.filter(function(x){return /Kit\.openCheckFor/.test(x[3])})[0];
+const ckArg=(ckGo[3].match(/Kit\.openCheckFor\((.*)\)$/)||[])[1]||'';
+const ckVal=vm.runInContext(ckArg,ctx);
+ok('⑲ 檢查表快鍵傳入嘅係集會本體（有 stages）',!!ckVal&&Array.isArray(ckVal.stages),ckArg+' → '+JSON.stringify(ckVal).slice(0,80));
+
+/* ⑳ 字唔好太多：一開波睇到嘅字有上限；長文一律收埋（摺住嘅 <details> 唔計）
+   原則：列表頁只俾重點，長描述最多兩行（CSS clamp），全文留返撳入去嗰張卡。
+   呢個上限係「而家值 × 約 1.3」，改版面如果爆咗就代表又長篇大論返。 */
+function visibleLen(h){
+  /* 摺住嘅 <details> 唔計（要撳開先睇到）；<option> 都唔計（下拉選單未撳開之前睇唔到） */
+  return String(h).replace(/<details\b[^>]*>[\s\S]*?<\/details>/g,'')
+                  .replace(/<option\b[^>]*>[\s\S]*?<\/option>/g,'')
+                  .replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim().length;
+}
+const BUDGET={'#pack':1050,'#plan':1200,'#meet':2100,'#print':1750,'#play':1600,
+              '#chute':1550,'#song':1150,'#tools':1000,'#book':1000};
+Object.keys(BUDGET).forEach(function(h){
+  if(h==='#book')G.HB.tab='core';          /* 手冊：用預設嗰頁（核心內容）量 */
+  sandbox.location.hash=h;G.App.route();
+  const n=visibleLen(els.get('view').innerHTML);
+  ok('⑳ '+h+' 一開波睇到嘅字 ≤ '+BUDGET[h],n<=BUDGET[h],'now='+n);
+});
+sandbox.location.hash='#pack';G.App.route();
+/* 準備卡分「開場前／到場後」兩頁：每页都唔可以長篇大論 */
+[['pre',1500],['on',2600]].forEach(function(x){
+  G.Prepare.dtab=x[0];G.Prepare.detail('t03');
+  const n=visibleLen(els.get('modal').innerHTML);
+  ok('⑳ 準備卡（'+(x[0]==='pre'?'開場前':'到場後')+'）睇到嘅字 ≤ '+x[1],n<=x[1],'now='+n);
+});
+G.Prepare.dtab='pre';G.Prepare.detail('t03');
+const preHtml=els.get('modal').innerHTML;
+ok('⑳ 開場前＝執袋・分工・通知（唔好出逐節流程）',
+  /物資總清單/.test(preHtml)&&/邊個帶邊節/.test(preHtml)&&/抄畀家長/.test(preHtml)&&!/跟住呢條流程做/.test(preHtml));
+G.Prepare.dtab='on';G.Prepare.detail('t03');
+const onHtml=els.get('modal').innerHTML;
+ok('⑳ 到場後＝設場・檢查表・逐節流程',
+  /跟住呢條流程做/.test(onHtml)&&/vn-meet/.test(onHtml)&&/撳開逐項剔/.test(onHtml));
+G.Prepare.dtab='pre';
+/* 手冊遊戲總表：淨出名＋「▶ 即開」，四行收埋 */
+G.HB.tab='games';
+const ghb=G.HB.html();
+ok('⑳ 手冊遊戲總表：四行收埋、即開掣喺面',
+  /<details class="guide-more"[\s\S]*?點帶/.test(ghb)&&/Lead\.startGame/.test(ghb));
+ok('⑳ 手冊遊戲總表睇到嘅字 ≤ 1500',visibleLen(ghb)<=1500,'now='+visibleLen(ghb));
+G.HB.tab='core';
+
+/* ⑳b step by step 一定要列點、按次序（1→2→3，唔係一大段字） */
+ok('⑳b 每個環節都係三步，由 1 排到 3',G.TPLS.every(function(t){
+  return t.stages.every(function(st){
+    var g=G.Guide.forStage(st);
+    return (g.steps||[]).length>=3&&(g.steps||[]).every(function(x,i){return String(x[0])===String(i+1)});
+  });
+}));
+const ghCard=Lead.guideHtml(G.Guide.forStage({t:'遊戲',n:'測試',screen:'catch'}));
+ok('⑳b 領袖欄：三步排喺最前，留意／安全收埋',
+  /guide-steps[\s\S]*?gnum">1<[\s\S]*?gnum">2<[\s\S]*?gnum">3</.test(ghCard)&&
+  /<details class="guide-more"[\s\S]*?留意[\s\S]*?安全/.test(ghCard),
+  ghCard.replace(/<[^>]+>/g,'').slice(0,80));
+ok('⑳b 領袖欄有得照讀（一句講稿）',/say-box/.test(ghCard));
+
+/* ⑳c 🖨️ 列印：一張紙＝一頁（唔會無啦啦分兩頁、唔會出白紙） */
+const cssTxt=fs.readFileSync(path.join(__dirname,'..','css','app.css'),'utf8');
+const printCss=(cssTxt.match(/@media print \{[\s\S]*?\n\}/)||[''])[0];
+ok('⑳c 講明紙張係 A4（唔好跟印表機預設，Letter 會短 18mm）',/@page\s*\{\s*size:\s*A4/.test(cssTxt));
+ok('⑳c 一張紙 break-after:page ＋ 內容 break-inside:avoid',
+  /\.a4-sheet\s*\{[^}]*break-inside:\s*avoid/.test(printCss)&&/\.a4-sheet\s*\{[^}]*break-after:\s*page/.test(printCss));
+ok('⑳c .pbreak 收埋（唔係每張紙後面多印一張白紙）',/\.pbreak\s*\{\s*display:\s*none/.test(printCss));
+ok('⑳c 最後一張紙之後唔好再 break',/\.a4-sheet:last-child[^}]*break-after:\s*auto/.test(printCss));
+ok('⑳c 標題同內容唔好分家',/\.a4-sheet h2[^}]*break-after:\s*avoid/.test(printCss));
+/* 自動縮放：高過一頁就縮（差太遠就由得佢流，但喺段落位斷） */
+const pagePx=G.PrintKit.PAGE_PX();
+ok('⑳c 一頁高度計得出（約 1057px）',pagePx>1000&&pagePx<1100,'px='+pagePx);
+(function(){
+  const mk=function(h){return {style:{},scrollHeight:h}};
+  const area=mkEl('printableArea');
+  const a=mk(1200),b=mk(900),c=mk(2000);
+  area.querySelectorAll=function(){return [a,b,c]};
+  els.set('printableArea',area);
+  const n=G.PrintKit.fitSheets();
+  ok('⑳c 高過一頁少少 → 自動縮到一頁',n===1&&Math.abs(a.style.zoom-1057/1200)<0.01,'zoom='+a.style.zoom+' fit='+n);
+  ok('⑳c 啱啱好一頁 → 唔好郁佢',!b.style.zoom);
+  ok('⑳c 長過一頁好多 → 唔縮到睇唔到（照流，喺段落位斷）',!c.style.zoom);
+  G.PrintKit.resetFit();
+  ok('⑳c 印完還原（預覽回復原狀）',!a.style.zoom);
+})();
+
+/* ⑳c② 一睇就知出唔出界：每張紙嘅旗仔・紅虛線頁尾・預覽條總結 */
+(function(){
+  const box=G.PrintKit.pageBox();
+  ok('⑳c A4 印到嘅範圍計得出（約 733×1063px）',box.w>700&&box.w<760&&box.h>1040&&box.h<1080,
+     'w='+box.w+' h='+box.h);
+  const lbox=G.PrintKit.pageBox({classList:{contains:function(c){return c==='landscape'}}});
+  ok('⑳c 打橫嗰張紙闊同高要掉轉',lbox.w===box.h&&lbox.h===box.w,'w='+lbox.w+' h='+lbox.h);
+  const mk=function(h){
+    const flag={className:'',innerHTML:''},line={style:{}};
+    return {style:{},scrollHeight:h,clientWidth:733,
+      classList:{contains:function(){return false}},
+      querySelector:function(sel){return sel==='.sheet-flag'?flag:sel==='.sheet-pageline'?line:null},
+      appendChild:function(){},_flag:flag,_line:line};
+  };
+  const area=mkEl('printableArea');
+  const a=mk(1200),b=mk(900),c=mk(2000);      /* 1063＝一頁高 */
+  area.querySelectorAll=function(){return [a,b,c]};
+  els.set('printableArea',area);
+  const st=G.PrintKit.flagSheets();
+  ok('⑳c 逐張紙數得出「啱好／要縮／出界」',st.total===3&&st.shrink===1&&st.over===1,JSON.stringify(st));
+  ok('⑳c 啱一頁 → 綠色「一頁印得落」',/\u4e00\u9801\u5370\u5f97\u843d/.test(b._flag.innerHTML)&&/ok/.test(b._flag.className),b._flag.innerHTML);
+  ok('⑳c 差少少 → 黃色「會自動縮到 89%」',/89%/.test(a._flag.innerHTML)&&/warn/.test(a._flag.className),a._flag.innerHTML);
+  ok('⑳c 長過一截 → 紅色「會分 2 頁」',/\u5206 2 \u9801/.test(c._flag.innerHTML)&&/bad/.test(c._flag.className),c._flag.innerHTML);
+  ok('⑳c 出界嗰張有紅虛線標出頁尾位置',parseFloat(c._line.style.top)>1000,'top='+c._line.style.top);
+  ok('⑳c 啱好嗰張唔好畫紅虛線',!b._line.style.top);
+  ok('⑳c 預覽條總結有幾張出界',/1 \u5f35\u51fa\u754c/.test(els.get('sheetStat').innerHTML),els.get('sheetStat').innerHTML);
+  ok('⑳c 列印時收埋旗仔同紅虛線（唔好印出嚟）',
+     /\.print-preview-bar, \.sheet-flag, \.sheet-pageline, \.sheet-stat \{ display: none/.test(printCss));
+})();
 
 /* ============ 結果 ============ */
 console.log('\n✅ 通過 '+pass+' 項');

@@ -220,7 +220,7 @@ var Pack={
         '<button class="btn ghost" onclick="Pack.lead()">▶ 即開帶領（APP 幫你帶）</button>'+
       '</div>'+
       Pack.sheetWhereHtml(m)+
-      '<div class="pk-eco">🌱 淨係印 <b>'+printN+' 頁</b>：小朋友剪摺圖紙＋貼地標記＋領袖一頁流程。其餘 '+appN+' 樣喺 APP 睇，唔使印。</div>'+
+      '<div class="pk-eco">🌱 淨印 <b>'+printN+' 頁</b>。其餘 '+appN+' 樣喺 APP 睇就夠。</div>'+
       '<div class="pk-3"><b>1</b> 撳「印齊今場」<b>2</b> APP 剔住執袋<b>3</b> 到場撳「即開帶領」</div>'+
     '</section>';
     /* 套包內容：分兩組排——上面「要印」，下面「APP 睇就夠」，唔會撈埋一齊 */
@@ -248,7 +248,7 @@ var Pack={
     h+='<div class="card"><h2>⚡ 臨時集會 <span class="tag">唔使排期</span></h2>'+
       '<div class="pk-inst">'+Pack.INST.map(function(x){
         return '<button class="btn sm ghost" onclick="Pack.instant(\''+x.k+'\','+x.mins+')">'+x.ic+' '+esc(x.n)+'（'+x.mins+'分）</button>'}).join('')+'</div></div>';
-    /* 常用工具：淨係留最常撳嘅 4 樣，其餘全部喺「✂️ 圖紙」度 */
+    /* 常用工具：淨係留最常撳嘅 4 樣，其餘全部喺「✂️ 工作紙」度 */
     h+='<div class="card"><h2>🎮 一撳就印嘅工具</h2><div class="pk-quick">'+
       '<button class="btn sm" onclick="PrintKit.openModal(\'game-cards\')">🃏 遊戲帶領卡</button>'+
       '<button class="btn sm ghost" onclick="PrintKit.openModal(\'floor-grid\')">🦗 九宮格地貼</button>'+
@@ -492,7 +492,7 @@ var Pack={
     return '<div class="pk-where"><b>✂️ 今場圖紙（'+ls.length+' 款）</b>'+
       '<div class="pw-list">'+ls.map(function(x){
         return '<span class="pw-i">'+x.ic+' '+esc(x.n)+'<i>'+esc(x.cp)+'</i></span>'}).join('')+'</div>'+
-      '<div class="pw-hint">撳「印齊今場」＝教案打頭陣，<b>圖紙自動跟喺後面</b>（中間有分隔頁）。想單獨再印：下面工具箱「✂️ 圖紙」。</div>'+
+      '<div class="pw-hint">💡 印齊＝教案打頭陣、圖紙跟喺後面。想再印：工具箱「✂️ 工作紙」。</div>'+
       '</div>';
   },
   /* 打印用：教案入面嘅「圖紙清單」，印完就知有幾多張紙要跟住剪 */

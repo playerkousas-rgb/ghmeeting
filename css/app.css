@@ -51,7 +51,39 @@ small,.mute{color:var(--mute)}
 #tabbar a span{font-size:1.4rem;filter:grayscale(.5);transition:.15s}
 #tabbar a.on{color:var(--grd)}
 #tabbar a.on span{filter:none;transform:translateY(-2px)}
-@media(max-width:340px){.navcap{font-size:.56rem}#topnav .navrow a,#tabbar a{font-size:.66rem}}
+/* 5 格版：字要縮少少先至放得曬（380px 以下每格約 72px） */
+@media(max-width:380px){#topnav .navrow a{font-size:.66rem}#tabbar a{font-size:.68rem}
+  #topnav .navrow a span{font-size:1.05rem}#tabbar a span{font-size:1.25rem}}
+@media(max-width:340px){.navcap{font-size:.56rem}#topnav .navrow a,#tabbar a{font-size:.62rem}
+  #topnav .navrow a span{font-size:1rem}#tabbar a span{font-size:1.15rem}}
+/* ---- 🅱️ 工具箱三格（快樂傘・唱歌・快鍵）：共用嘅「一撳即開」大掣 ---- */
+.tk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px;margin:10px 0}
+.tk-btn{display:block;width:100%;text-align:left;font-family:inherit;background:#fff;
+  border:1.5px solid var(--line);border-left:5px solid var(--or);border-radius:14px;
+  padding:9px 11px;box-shadow:var(--sh);cursor:pointer;transition:.12s}
+.tk-btn:active{transform:scale(.97);background:#fff8f1}
+.tk-btn b{display:block;font-size:.9rem;color:var(--ink);line-height:1.3}
+.tk-btn small{display:block;font-size:.74rem;color:var(--mute);line-height:1.4;margin-top:3px}
+.chute-hero{background:linear-gradient(135deg,#e3f2fd,#fff 60%,#f3e5f5);border:1px solid #bbdefb}
+.chute-hero h2,.song-hero h2,.tools-hero h2{font-size:clamp(1.35rem,5vw,1.9rem);color:var(--ord);margin:.15em 0}
+.chute-hero p,.song-hero p,.tools-hero p{max-width:700px;margin:0;font-size:.95rem}
+.song-hero{background:linear-gradient(135deg,#f3e5f5,#fff 60%,#fff3e0);border:1px solid #e1bee7}
+.tools-hero{background:linear-gradient(135deg,#fff3e0,#fff 60%,#e8f5e9);border:1px solid #ffe0b2}
+.chute-steps{margin:7px 0 0;font-size:.78rem;color:var(--mute)}
+/* 列表頁只俾重點：長描述最多兩行，全文喺撳開嗰張卡 */
+.chute-steps{display:flex;flex-wrap:wrap;gap:2px 9px}
+.chute-steps span{white-space:nowrap}
+.chute-card .box,.activity-copy p,.activity-mats{display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
+.chute-card .box{-webkit-line-clamp:2}.activity-copy p{-webkit-line-clamp:2}.activity-mats{-webkit-line-clamp:2}
+.chute-steps div{padding:3px 0;border-top:1px dashed #f3e5d5;line-height:1.4}
+.chute-steps div:first-child{border-top:0}
+.chute-steps b{color:var(--ord);margin-right:5px}
+.song-lyric{margin-top:8px}
+.song-act{display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed #f3e5d5;font-size:.9rem}
+.song-act:last-child{border-bottom:0}
+.song-act i{font-style:normal;color:#fff;background:var(--or);border-radius:99px;
+  font-size:.72rem;font-weight:800;width:1.6em;height:1.6em;line-height:1.6em;text-align:center;flex:none}
+.song-act small{display:block;color:var(--mute);font-size:.78rem;margin-top:1px}
 /* ---- 🧭 嚮導條：揀咗集會之後一步步帶到散會（貼喺工具箱上面） ---- */
 #flowbar{position:fixed;left:0;right:0;bottom:0;z-index:51;pointer-events:none}
 #flowbar.on{pointer-events:auto;bottom:calc(64px + env(safe-area-inset-bottom))}
@@ -237,6 +269,10 @@ hr.soft{border:none;border-top:1.5px dashed var(--line);margin:12px 0}
 .badgegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .mem{background:#fff;border-radius:16px;box-shadow:var(--sh);padding:12px}
 .mem h4{margin:0 0 4px;color:var(--ord)}
+.tpl-card{margin:8px 0!important;padding:10px 12px!important}
+.tpl-card .tag{margin-left:2px}
+.tpl-card h4+.mute,.tpl-card small.mute{display:block;line-height:1.5}
+.tpl-card .box{font-size:.83rem;line-height:1.6;padding:7px 9px;margin:2px 0 6px;background:#f7f4f1;border-radius:10px}
 .progbar{height:8px;border-radius:6px;background:#f3e5d5;overflow:hidden;margin:6px 0}
 .progbar i{display:block;height:100%;background:linear-gradient(90deg,var(--or),var(--gr))}
 toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#3e2723;color:#fff;
@@ -257,7 +293,12 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
 .brief-head small{display:block}.brief-card{border:1px solid var(--line);border-radius:18px;padding:13px;margin:10px 0;background:#fff}.brief-card.done{background:#f4fbf4}
 .guide-lead{background:#e8f5e9;border-radius:12px;padding:9px 11px;margin:10px 0;font-size:.9rem}.guide-lead b{color:var(--grd);display:block;font-size:.75rem;letter-spacing:.5px}
 .guide-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}.guide-step{background:#fff8ee;border:1px solid #ffe0b2;border-radius:13px;padding:9px 8px;min-height:100px}.guide-step .gnum{display:inline-flex;width:22px;height:22px;align-items:center;justify-content:center;background:var(--or);color:#fff;border-radius:50%;font-size:.75rem;font-weight:800}.guide-step .gicon{font-size:1.65rem;display:block;line-height:1.15;margin:4px 0}.guide-step b{font-size:.82rem;display:block}.guide-step small{font-size:.75rem;line-height:1.35;display:block}
-.say-box{border:2px solid #c8e6c9;border-radius:13px;padding:9px 11px;font-size:.9rem;background:#f7fff7}.say-box b{color:var(--grd);font-size:.75rem;display:block}.watch-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;font-size:.78rem}.watch-row>div{padding:7px 9px;border-radius:10px;background:#f7f4f1}.watch-row .safe{background:#fff3f0;color:#7b2929}
+.say-box{border:2px solid #c8e6c9;border-radius:13px;padding:9px 11px;font-size:.9rem;background:#f7fff7}.say-box b{color:var(--grd);font-size:.75rem;display:block}.watch-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;font-size:.78rem}
+.guide-more{margin-top:8px}.guide-more>summary{cursor:pointer;list-style:none;font-size:.75rem;font-weight:800;
+  color:var(--mute);background:#f7f4f1;border:1px dashed var(--line);border-radius:10px;padding:6px 10px;text-align:center}
+.guide-more>summary::-webkit-details-marker{display:none}
+.guide-more[open]>summary{color:var(--ord);background:#fff8f1;border-style:solid;margin-bottom:6px}
+.guide-more .watch-row{margin-top:0}.watch-row>div{padding:7px 9px;border-radius:10px;background:#f7f4f1}.watch-row .safe{background:#fff3f0;color:#7b2929}
 .mats-bar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:8px 0}.mats-bar b{font-size:.8rem;color:var(--mute)}
 /* visual parachute instruction */
 .parachute-kit{background:linear-gradient(150deg,#edf8ff,#fff);border:1px solid #c7e5f6;border-radius:18px;padding:10px;margin:10px 0}.parachute-kit h4{margin:0 0 4px;color:#1565c0}.parachute-visual{display:flex;justify-content:center;align-items:center;min-height:148px}.parachute-visual svg{width:min(100%,430px);height:auto;max-height:190px}.para-caption{text-align:center;font-size:.78rem;color:#5d7180;margin-top:-3px}.para-safety{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.para-safety span{background:#fff;border:1px solid #c7e5f6;border-radius:99px;padding:4px 8px;font-size:.74rem;color:#28566c}
@@ -817,6 +858,61 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
 .print-preview-top h3 {
   margin: 0;
 }
+/* 🖨️ 一睇就知出唔出界：預覽條＋每張紙頭頂嘅旗仔＋紅虛線頁尾 */
+.print-preview-bar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin: -4px 0 10px;
+}
+.sheet-stat {
+  font-size: .78rem;
+  font-weight: 800;
+  line-height: 1.4;
+  padding: 4px 11px;
+  border-radius: 99px;
+  border: 1.5px solid;
+}
+.sheet-stat.ok { color: #1b5e20; background: #e8f5e9; border-color: #a5d6a7; }
+.sheet-stat.warn { color: #8d6e00; background: #fff8e1; border-color: #ffe082; }
+.sheet-stat.bad { color: #b71c1c; background: #ffebee; border-color: #ef9a9a; }
+.sheet-flag {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  z-index: 3;
+  font-size: .7rem;
+  font-weight: 800;
+  line-height: 1.4;
+  padding: 3px 9px;
+  border-radius: 99px;
+  border: 1.5px solid;
+  background: #fff;
+  white-space: nowrap;
+}
+.sheet-flag.ok { color: #1b5e20; background: #e8f5e9; border-color: #a5d6a7; }
+.sheet-flag.warn { color: #8d6e00; background: #fff8e1; border-color: #ffe082; }
+.sheet-flag.bad { color: #b71c1c; background: #ffebee; border-color: #ef9a9a; }
+.sheet-pageline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  border-top: 2px dashed #e53935;
+  pointer-events: none;
+}
+.sheet-pageline::after {
+  content: "呢度係頁尾・過咗界";
+  position: absolute;
+  right: 0;
+  top: 2px;
+  font-size: .64rem;
+  font-weight: 800;
+  color: #e53935;
+  background: #fff;
+  padding: 0 4px;
+}
 .print-sheet-wrapper {
   background: #cfd8dc;
   padding: 16px;
@@ -829,6 +925,7 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
 
 /* 標準 A4 紙張預覽 (210mm x 297mm 比例) */
 .a4-sheet {
+  position: relative;
   background: #ffffff;
   color: #212121;
   width: 100%;
@@ -1292,6 +1389,9 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
   padding-top: 6px;
 }
 
+/* 🖨️ 打印紙張：講明 A4（唔講，瀏覽器會跟印表機預設，Letter 會短 18mm 就爆頁） */
+@page { size: A4; margin: 8mm; }
+
 /* ==========================================================================
    🖨️ 瀏覽器實際打印規則 (@media print)
    ========================================================================== */
@@ -1302,6 +1402,7 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
     padding: 0 !important;
     margin: 0 !important;
   }
+  .print-preview-bar, .sheet-flag, .sheet-pageline, .sheet-stat { display: none !important; }
   #topbar, #tabbar, #topnav, #stickytop, #flowbar, .print-preview-top, #modal .x, .btns, .pill, .activity-tabs, .action-grid {
     display: none !important;
   }
@@ -1328,15 +1429,34 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
     overflow: visible !important;
     display: block !important;
   }
+  /* ⚠️ .pbreak 一定要收埋：佢自己都有 page-break-after，
+     加埋 .a4-sheet 嗰個＝每張紙後面多印一張白紙 */
+  .pbreak { display: none !important; }
   .a4-sheet {
     box-shadow: none !important;
-    max-width: 100% !important;
-    width: 100% !important;
-    min-height: auto !important;
+    max-width: none !important;
+    width: auto !important;
+    min-height: 0 !important;
+    height: auto !important;
     padding: 0 !important;
     margin: 0 !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    break-after: page;
     page-break-after: always;
   }
+  /* 一張紙入面：段落／步驟／卡片唔好由中間斬開 */
+  .a4-sheet > *,
+  .a4-sheet .craft-block, .a4-sheet .ct-step, .a4-sheet .learn-row,
+  .a4-sheet .cards-cut-grid, .a4-sheet .cert-box, .a4-sheet .kc-row,
+  .a4-sheet tr, .a4-sheet .p-block, .a4-sheet .rs-block {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  /* 最後一張唔好再 break（唔係尾會多張白紙） */
+  .a4-sheet:last-child { break-after: auto; page-break-after: auto; }
+  /* 萬一內容真係長過一頁：標題同內容唔好分家 */
+  .a4-sheet h2, .a4-sheet h3, .a4-sheet h4 { break-after: avoid; page-break-after: avoid; }
 }
 
 
@@ -1442,6 +1562,8 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
   .craft-learn div>span{font-size:.78rem}
 }
 @media print{
+  .guide-more>summary{display:none}
+  .guide-more .watch-row{display:grid!important}
   .craft-screen .cs-open{display:none}
   .p-folds,.print-two{break-inside:avoid}
   .craft-sheet .p-note{break-inside:avoid}

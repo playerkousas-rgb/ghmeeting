@@ -998,8 +998,16 @@ Lead.scr={
   }
 };
 
+/* 領袖欄＝睇住做：① 三步（大字、有次序）② 一句照讀；留意／安全收埋，要睇先撳開 */
 Lead.guideHtml=function(g){
-  return '<div class="lead-guide"><div class="guide-lead"><b>領袖先做</b>'+esc(g.lead)+'</div><div class="guide-steps">'+g.steps.map(function(x){return '<div class="guide-step"><span class="gnum">'+esc(x[0])+'</span><span class="gicon">'+x[1]+'</span><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div>'}).join('')+'</div><div class="say-box"><b>🎤 領袖可以照讀</b>'+esc(g.say)+'</div><div class="watch-row"><div><b>👀 留意</b><br>'+esc(g.watch)+'</div><div class="safe"><b>🛡️ 安全</b><br>'+esc(g.safety)+'</div></div></div>';
+  var steps=(g.steps||[]).map(function(x){return '<div class="guide-step"><span class="gnum">'+esc(x[0])+'</span><span class="gicon">'+x[1]+'</span><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div>'}).join('');
+  return '<div class="lead-guide">'+
+    '<div class="guide-lead"><b>跟住做</b>'+esc(g.lead)+'</div>'+
+    '<div class="guide-steps">'+steps+'</div>'+
+    '<div class="say-box"><b>🎤 照讀</b>'+esc(g.say)+'</div>'+
+    '<details class="guide-more"><summary>👀 留意・🛡️ 安全</summary>'+
+      '<div class="watch-row"><div><b>👀 留意</b>'+esc(g.watch)+'</div><div class="safe"><b>🛡️ 安全</b>'+esc(g.safety)+'</div></div>'+
+    '</details></div>';
 };
 
 Lead.parachuteSvg=function(mode){

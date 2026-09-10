@@ -1,4 +1,4 @@
-/* 🦗 ui.js — 全站入口巡一遍：七個分頁・十個手冊分頁・24 份教材・30 場範本兩疊紙・搜尋・臨時集會
+/* 🦗 ui.js — 全站入口巡一遍：十個分頁・十個手冊分頁・24 份教材・30 場範本兩疊紙・搜尋・臨時集會
    跑法：node tests/ui.js   （載入真實 js/*.js，唔係複製邏輯） */
 'use strict';
 const fs=require('fs'),path=require('path'),vm=require('vm');
@@ -21,7 +21,7 @@ const s={console,
     this.createGain=()=>({gain:{value:0,setValueAtTime(){},linearRampToValueAtTime(){},exponentialRampToValueAtTime(){}},connect(){},disconnect(){}});
     this.resume=()=>{};}};
 s.window=s;const c=vm.createContext(s);
-['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','flow.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js']
+['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','flow.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js','chute.js','song.js','tools.js']
   .forEach(f=>vm.runInContext(fs.readFileSync(path.join(__dirname,'..','js',f),'utf8'),c,{filename:f}));
 const {App,HB,Play,Prepare,PrintKit,Pack,Kit,TPLS}=s;
 App.init();
@@ -36,7 +36,7 @@ function tagBalance(html){
   });
   return d;
 }
-['#pack','#plan','#meet','#play','#track','#book','#print'].forEach(h=>{
+['#pack','#plan','#meet','#play','#track','#book','#print','#chute','#song','#tools'].forEach(h=>{
   s.location.hash=h;
   try{App.route();const out=els.get('view').innerHTML;
     if(!out||out.length<200)fails.push(h+' 內容太短 '+out.length);
@@ -47,14 +47,14 @@ function tagBalance(html){
 });
 /* 新手機／清空咗資料都要開到（即開即用底線） */
 Object.keys(s.localStorage).forEach(k=>s.localStorage.removeItem(k));
-['#pack','#plan','#meet','#play','#track','#book','#print'].forEach(h=>{
+['#pack','#plan','#meet','#play','#track','#book','#print','#chute','#song','#tools'].forEach(h=>{
   s.location.hash=h;
   try{App.route();const out=els.get('view').innerHTML;
     if(!out||out.length<200)fails.push('清空資料後 '+h+' 開唔到（'+out.length+' 字）');
     if(tagBalance(out)!==0)fails.push('清空資料後 '+h+' tag 唔平衡');
   }catch(e){fails.push('清空資料後 '+h+' → '+e.message)}
 });
-console.log('冷啟動（localStorage 清空）7 個分頁 ok');
+console.log('冷啟動（localStorage 清空）10 個分頁 ok');
 
 /* 「其餘喺 APP 睇」唔可以係死掣：每個唔印嘅項目都要真係開到嘢出嚟 */
 App.init();
@@ -113,6 +113,6 @@ try{Kit.searchOpen();const r=Kit.searchHtml('套包');if(!/集會套包/.test(r)
 // 臨時集會
 try{Pack.instant('safety',40);console.log('instant ok ->',Pack.meet().m.n)}catch(e){fails.push('instant → '+e.message)}
 try{const kid=Pack.sheets('kid',Pack.meet().m,1);console.log('instant kid sheets len',kid.length)}catch(e){fails.push('instant kid → '+e.message)}
-console.log('\n分頁 7・手冊分頁 10・教材 '+PrintKit.kits.length+' 份・範本 '+TPLS.length+' 場（每場兩疊紙）');
+console.log('\n分頁 10・手冊分頁 10・教材 '+PrintKit.kits.length+' 份・範本 '+TPLS.length+' 場（每場兩疊紙）');
 if(fails.length){console.log('\n❌ '+fails.length+' 個問題：');fails.forEach(function(f){console.log('  ・'+f)});process.exit(1)}
 console.log('🎉 全部 UI 路徑行得');
