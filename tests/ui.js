@@ -36,7 +36,7 @@ function tagBalance(html){
   });
   return d;
 }
-['#pack','#plan','#meet','#play','#track','#book','#print','#chute','#song','#tools'].forEach(h=>{
+['#pack','#plan','#prep','#meet','#play','#track','#book','#print','#chute','#song','#tools'].forEach(h=>{
   s.location.hash=h;
   try{App.route();const out=els.get('view').innerHTML;
     if(!out||out.length<200)fails.push(h+' 內容太短 '+out.length);
@@ -47,7 +47,7 @@ function tagBalance(html){
 });
 /* 新手機／清空咗資料都要開到（即開即用底線） */
 Object.keys(s.localStorage).forEach(k=>s.localStorage.removeItem(k));
-['#pack','#plan','#meet','#play','#track','#book','#print','#chute','#song','#tools'].forEach(h=>{
+['#pack','#plan','#prep','#meet','#play','#track','#book','#print','#chute','#song','#tools'].forEach(h=>{
   s.location.hash=h;
   try{App.route();const out=els.get('view').innerHTML;
     if(!out||out.length<200)fails.push('清空資料後 '+h+' 開唔到（'+out.length+' 字）');

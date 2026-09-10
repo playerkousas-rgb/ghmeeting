@@ -2113,3 +2113,26 @@ figure.fig figcaption{font-size:.76rem;color:var(--mute);padding:7px 10px;border
 /* © 頁脚 */
 .app-foot{text-align:center;font-size:.72rem;font-weight:700;color:#c2ab97;
   letter-spacing:.4px;padding:18px 0 6px}
+
+/* 🧭 逐步預備頁（#prep）：撳住場之後，一步只做一件事 */
+.prep-hero{margin-bottom:10px}
+.prep-hero h2{margin:.1em 0}
+.prep-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.prep-prog{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.prep-prog b{flex:0 0 auto;font-size:.9rem;color:var(--ord)}
+.prep-prog-bar{flex:1;height:8px;border-radius:99px;background:#fff3e0;overflow:hidden}
+.prep-prog-bar span{display:block;height:100%;background:var(--gr);border-radius:99px;transition:width .25s}
+.prep-steps{display:flex;flex-direction:column;gap:4px}
+.prep-step{display:flex;align-items:flex-start;gap:10px;padding:9px 6px;border-radius:12px;opacity:.55}
+.prep-step-no{flex:0 0 30px;height:30px;border-radius:50%;background:#fff3e0;color:var(--ord);
+  font-weight:800;font-size:.85rem;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.prep-step-b{flex:1;min-width:0}
+.prep-step-b b{font-size:.95rem}
+.prep-step-b small{display:block;font-size:.8rem;line-height:1.45}
+.prep-step.done{opacity:.6}
+.prep-step.done .prep-step-no{background:#e8f5e9;color:var(--grd)}
+.prep-step.cur{opacity:1;background:#fff8ee;border:1.5px solid #ffd9a8;padding:12px}
+.prep-step.cur .prep-step-no{background:var(--or);color:#fff}
+.prep-undo{margin-top:2px}
+.prep-done{background:#f1f8e9;border:1.5px solid #a5d6a7}
+.toc-row.on{background:#fff8ee}

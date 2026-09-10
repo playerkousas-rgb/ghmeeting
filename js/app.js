@@ -18,13 +18,14 @@ var App={
     var h=(location.hash||'#plan').slice(1).split('?')[0];
     if(document.body.contains(document.getElementById('leadroot'))&&!document.getElementById('leadroot').classList.contains('hidden'))Lead.exit(false);
     var v={pack:'pack',plan:'plan',meet:'meet',play:'play',lead:'lead',track:'track',book:'book',print:'print',
-           chute:'chute',song:'song',tools:'tools'}[h]||'plan';
+           chute:'chute',song:'song',tools:'tools',prep:'prep'}[h]||'plan';
     App.view=v;
     /* 🅰️ 上方五入口 ＋ 🅱️ 下方即插即用五格：兩條 bar 都要著返正確嗰格 */
     document.querySelectorAll('#tabbar a, #topnav a').forEach(function(a){a.classList.toggle('on',a.dataset.tab===v)});
     var el=document.getElementById('view');
     if(v==='pack')el.innerHTML=Pack.html();
     if(v==='plan')el.innerHTML=Plan.html();
+    if(v==='prep')el.innerHTML=Flow.prepHtml();   /* 🧭 逐步預備：揀好場之後一步步帶 */
     if(v==='meet')el.innerHTML=Prepare.html();
     if(v==='play')el.innerHTML=Play.html();
     if(v==='lead')el.innerHTML=Lead.html();
@@ -163,8 +164,8 @@ var Plan={
     var next=pl.rows.find(function(r){return r.status==='todo'});
     var done=pl.rows.filter(function(r){return r.status==='done'}).length;
     var nextT=next?dur(next.tid):null;
-    var h='<section class="toc-hero"><span class="eyebrow">📅 22次集會目錄・時程</span><h1>撳標題，睇該場全部。</h1>'+
-      '<p>流程・道具・帶領・印教材——全部喺詳細卡入面，先揀先睇。</p>';
+    var h='<section class="toc-hero"><span class="eyebrow">📅 22次集會目錄・時程</span><h1>撳一場，一步步預備。</h1>'+
+      '<p>揀好場之後 STEP BY STEP 帶你：印教材 → 執袋 → 設場 → 帶領 → 記出席。</p>';
     if(nextT){
       h+='<div class="btns" style="margin:10px 0 0"><button class="btn primary" onclick="Lead.start(\''+nextT.id+'\','+next.no+')">▶ 帶第'+next.no+'次集會</button>';
       if(typeof Flow!=='undefined'){
@@ -177,7 +178,7 @@ var Plan={
     }
     h+='<div class="stat" style="margin-top:10px"><div class="s"><b>'+(pl.rows.length-done)+'</b>尚餘集會</div><div class="s"><b>'+done+'/'+pl.rows.length+'</b>已完成</div></div></section>';
     h+='<div class="card"><h2>目錄 <span class="tag">'+pl.rows.length+' 次</span></h2>'+
-      '<div class="mute" style="font-size:.82rem;margin-bottom:4px">撳<b>標題</b>睇詳細流程／道具／帶領；撳<b>狀態</b>改完成・跳過・日期。</div>'+
+      '<div class="mute" style="font-size:.82rem;margin-bottom:4px">撳<b>標題</b>＝入呢場嘅 STEP BY STEP 預備；撳<b>狀態</b>改完成・跳過・日期。</div>'+
       Plan.toc(pl)+'</div>';
     h+='<details class="card guide-more" style="padding:12px 14px"><summary>🗺️ 42 個月路線圖（團員章→進步獎章→小草蜢）</summary>'+
       '<div class="mute" style="font-size:.82rem">團員章 → 進步獎章（約 22 個月）→ 小草蜢獎章（7 範疇 ×2 體驗）→ 晉團幼童軍</div>'+Plan.roadmap()+'</details>';
@@ -186,13 +187,15 @@ var Plan={
   lenOf:function(t){return (t.stages||[]).reduce(function(a,s){return a+(+s.m||0)},0)},
   toc:function(pl){
     pl=pl||{rows:[]};if(!pl.rows)pl.rows=[];
+    var cm=(typeof Pack!=='undefined')?Pack.meet():null;
     var h='';
     pl.rows.forEach(function(r){
       var t=dur(r.tid);if(!t)return;
       var st=r.status==='done'?'<span class="tag g">✓ 完成</span>':r.status==='skip'?'<span class="tag br">跳過</span>':'<span class="tag">未做</span>';
       var dt=r.date?esc(Kit.fmtDate(r.date)):esc(t.mo);
-      h+='<div class="toc-row"><b class="toc-no">'+r.no+'</b>'+
-        '<div class="toc-mid"><a href="#plan" onclick="event.preventDefault();Prepare.detail(\''+t.id+'\')"><b>'+esc(t.n)+'</b></a>'+
+      var isCur=cm&&cm.tid===t.id&&((cm.no||0)===r.no);
+      h+='<div class="toc-row'+(isCur?' on':'')+'"><b class="toc-no">'+r.no+'</b>'+
+        '<div class="toc-mid"><a href="#prep" onclick="event.preventDefault();Flow.select('+r.no+',\''+t.id+'\')"><b>'+esc(t.n)+'</b>'+(isCur?' <span class="tag g">今場</span>':'')+'</a>'+
         '<small class="mute">'+esc(t.theme)+'</small></div>'+
         '<div class="toc-right"><small class="mute">'+dt+'</small><a href="#plan" onclick="event.preventDefault();Plan.rowAction('+r.no+')">'+st+'</a></div></div>';
     });
@@ -210,8 +213,8 @@ var Plan={
       '<div class="date-row"><input type="date" value="'+esc(r.date||'')+'" onchange="Plan.setDate('+no+',this.value)">'+(r.date?'<button class="btn sm ghost" onclick="Plan.setDate('+no+',\'\');Plan.rowAction('+no+')">清走</button>':'')+'</div>'+
       '<label class="f">改用其他範本</label><select onchange="Plan.swap('+no+',this.value)">'+
       TPLS.map(function(x){return '<option value="'+x.id+'"'+(x.id===r.tid?' selected':'')+'>'+esc(x.n)+'</option>'}).join('')+'</select>'+
-      '<div class="btns" style="margin-top:12px"><button class="btn" onclick="Modal.close();Pack.pick(\'tpl\',\''+r.tid+'\','+no+');App.go(\'#pack\')">📦 就揀呢場（跟住去印教材）</button>'+
-      '<button class="btn gr" onclick="Modal.close();Lead.start(\''+r.tid+'\','+no+')">▶ 帶領呢次</button></div>');
+      '<div class="btns" style="margin-top:12px"><button class="btn" onclick="Modal.close();Flow.select('+no+',\''+r.tid+'\')">🧭 揀呢場・STEP BY STEP 預備</button>'+
+      '<button class="btn gr" onclick="Modal.close();Lead.start(\''+r.tid+'\','+no+')">▶ 直接帶領呢次</button></div>');
   },
   setRow:function(no,st){var pl=App.plan();pl.rows.find(function(x){return x.no===no}).status=st;Store.set('plan',pl);
     if(st==='done')Track.attendPrompt(no);else{Modal.close();App.route()}},

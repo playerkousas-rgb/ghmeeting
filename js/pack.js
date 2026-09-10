@@ -108,12 +108,12 @@ var Pack={
     if(next&&dur(next.tid))return {m:dur(next.tid),tid:next.tid,no:next.no};
     return {m:TPLS[0],tid:TPLS[0].id,no:1};
   },
-  pick:function(type,id,no){
+  pick:function(type,id,no,quiet){
     Store.set('packcur',{type:type,id:id,no:no||0});
     if(typeof Flow!=='undefined'){var fs=Flow.st();fs.tid=id;fs.done={pick:1};Flow.save(fs);}
     Pack.route();
     if(typeof Flow!=='undefined')Flow.render();
-    toast('📦 已轉去：'+(type==='my'?'我嘅集會':'範本'));
+    if(!quiet)toast('📦 已轉去：'+(type==='my'?'我嘅集會':'範本'));
   },
   sel:function(){
     var id=Pack.meet().tid,a=Store.get('packsel',{})||{},ch=0;

@@ -573,6 +573,19 @@ FL.mark('lead');FL.mark('rec');
 ok('⑯b 做齊 6 步＝散會（條 bar 出完成訊息）',FL.cur()===null&&/散會/.test(FL.barHtml()),'done='+FL.doneCount());
 FL.reset();
 eq('⑯b 下一場可以重頭再嚟',FL.cur().k,'pick');
+/* 2026-09 負責人：撳住場＝即時入 STEP BY STEP 預備（唔係一堆資料） */
+G.Store.set('packcur',null);
+G.Flow.select(1,'t01');
+ok('⑯b 撳場即入逐步預備（flow 開・跳去 #prep・第 2 步）',G.Flow.on()&&G.location.hash==='#prep'&&FL.cur().k==='print',
+  'hash='+G.location.hash+' cur='+(FL.cur()&&FL.cur().k));
+const prepHtml=G.Flow.prepHtml();
+ok('⑯b 逐步預備頁＝一步一件事（第 2 步印教材有大掣）',/Pack\.open\('all'\)/.test(prepHtml)&&/第 2 步／共 6/.test(prepHtml));
+ok('⑯b 預備頁有「📋 睇全部資料」出口（想睇堆資料先撳）',/睇全部資料/.test(prepHtml)&&/Prepare\.detail/.test(prepHtml));
+G.App.view='prep';FL.render();
+ok('⑯b 喺預備頁底部嚮導條唔重覆出（頁本身就係嚮導）',els.get('flowbar').innerHTML==='');
+G.App.view='pack';FL.render();
+ok('⑯b 其他頁行緊預備，底部條跟住你（有📋返預備頁）',/fb-top/.test(els.get('flowbar').innerHTML)&&/#prep/.test(els.get('flowbar').innerHTML));
+G.App.view='plan';
 ok('⑯b 「揀集會」頁有嚮導入口',/帶我由頭做到尾|嚮導行緊/.test(G.Plan.html()));
 FL.quit();
 ok('⑯b 撳✕ 之後唔會再彈出嚟',!FL.on());
@@ -665,7 +678,7 @@ function visibleLen(h){
                   .replace(/<option\b[^>]*>[\s\S]*?<\/option>/g,'')
                   .replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim().length;
 }
-const BUDGET={'#pack':1050,'#plan':1200,'#meet':2100,'#print':1750,'#play':1600,
+const BUDGET={'#pack':1050,'#plan':1200,'#prep':700,'#meet':2100,'#print':1750,'#play':1600,
               '#chute':1550,'#song':1150,'#tools':1000,'#book':1000};
 Object.keys(BUDGET).forEach(function(h){
   if(h==='#book')G.HB.tab='core';          /* 手冊：用預設嗰頁（核心內容）量 */
