@@ -36,7 +36,7 @@ var App={
     if(v==='chute')el.innerHTML=Chute.html();
     if(v==='song')el.innerHTML=Song.html();
     if(v==='tools')el.innerHTML=Tools.html();
-    el.innerHTML+='<div class="app-foot">© Scout System</div>';
+    el.innerHTML+='<div class="app-foot">© Scout System・v4.6</div>'; /* v號跟 sw.js CACHE 版本行（改一齊） */
     if(typeof Flow!=='undefined')Flow.render();   /* 🧭 嚮導條跟住畫面更新 */
     scrollTo(0,0);
   },
