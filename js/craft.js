@@ -670,7 +670,7 @@ var Craft={
         '<button class="btn sm" onclick="Craft.open(\''+c.k+'\')">📚 自學卡</button></div>'
     }).join('')+'</div>';
   },
-  /* 全部自學卡彈窗（📦 集會套包頁「手工自學卡」段用） */
+  /* 全部自學卡彈窗（📦 官方套包頁「手工自學卡」段用） */
   indexOpen:function(){
     Modal.open('<div class="eyebrow">📚 手工自學卡・'+this.list().length+' 張</div><h3>揀一樣，開會前 3 分鐘睇完就帶得</h3>'+
       '<div class="mute" style="font-size:.82rem">每張有：成品圖・逐步拆解・帶班拆法・補救・後備版。</div>'+this.indexHtml());

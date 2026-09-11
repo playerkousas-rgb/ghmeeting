@@ -113,7 +113,7 @@ TPLS.forEach(t=>{
 console.log('30 templates ok');
 // 隨手開會 + 搜尋 + quickHub
 try{App.quickHub();console.log('quickHub ok',els.get('modal').innerHTML.length)}catch(e){fails.push('quickHub → '+e.message)}
-try{Kit.searchOpen();const r=Kit.searchHtml('套包');if(!/集會套包/.test(r))fails.push('搜尋「套包」搵唔到');
+try{Kit.searchOpen();const r=Kit.searchHtml('套包');if(!/官方套包/.test(r))fails.push('搜尋「套包」搵唔到');
   const r2=Kit.searchHtml('燈籠 即用紙');if(!/即用紙/.test(r2))fails.push('搜尋「即用紙」搵唔到');
   const r3=Kit.searchHtml('圖紙');if(!/圖紙/.test(r3))fails.push('搜尋「圖紙」搵唔到');
   console.log('search ok')}catch(e){fails.push('search → '+e.message)}
