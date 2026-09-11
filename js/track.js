@@ -73,7 +73,14 @@ var Track={
   attendPrompt:function(no){
     var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});var t=dur(r.tid)||{stages:[]};
     var mem=Store.get('members');
-    if(!mem.length){Modal.close();App.route();toast('集會已完成 ✓(未有名單,冇出席紀錄)');return}
+    /* 未有名單：唔好死路——俾佢照樣標記完成（出席之後先補），或者先去加名單 */
+    if(!mem.length){
+      Modal.open('<h3>📝 第'+no+'次集會完成</h3><div class="mute" style="font-size:.85rem">'+esc(t.n)+'</div>'+
+        '<div class="attention" style="margin:8px 0">未有團員名單，記唔到出席。想先記低呢場完成？</div>'+
+        '<div class="btns"><button class="btn gr" onclick="Modal.close();Track.doneNoRoster('+no+')">✓ 標記完成（出席之後先補）</button>'+
+        '<button class="btn ghost" onclick="Modal.close();App.go(\'#track\')">🏅 先去加團員名單</button></div>');
+      return;
+    }
     Modal.open('<h3>📝 第'+no+'次集會完成</h3><div class="mute" style="font-size:.85rem">'+esc(t.n)+'</div>'+
       '<label class="f">邊個有出席?(全體預設✓,撳一下取消)</label>'+
       mem.map(function(m,i){return '<div class="chk"><span class="dot on" id="at'+m.id+'" onclick="this.classList.toggle(\'on\')"></span>'+esc(m.n)+'</div>'}).join('')+
@@ -83,8 +90,23 @@ var Track={
       t.stages.filter(function(s){return s.badge}).map(function(s){return '<div class="chk"><span class="dot" id="bg'+s.badge+'" onclick="this.classList.toggle(\'on\')"></span>'+DATA.badgeItems.find(function(b){return b.k===s.badge}).t+'</div>'}).join('')+
       '<div class="btns" style="margin-top:12px"><button class="btn gr" onclick="Track.saveAttend('+no+')">✓ 儲存紀錄</button></div>');
   },
+  /* 未有名單照樣收場：集會標完成＋嚮導記 ✓，出席紀錄留返加名單後補 */
+  doneNoRoster:function(no){
+    var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});if(!r)return;
+    var t=dur(r.tid)||{stages:[]};
+    r.status='done';Store.set('plan',pl);
+    var recs=Store.get('recs',[]);
+    recs.push({no:no,tid:r.tid,date:new Date().toISOString().slice(0,10),present:[],badges:[],gh:[],noroster:1});
+    Store.set('recs',recs);
+    if(typeof Flow!=='undefined')Flow.mark('rec',1);
+    if(typeof Kit!=='undefined'&&Kit.ckClear)Kit.ckClear(t.id);
+    App.route();
+    toast('✓ 第'+no+'次已標完成 — 加咗名單之後先補出席');
+  },
   saveAttend:function(no){
     var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});var t=dur(r.tid)||{stages:[]};
+    /* 記出席＝呢場收咗工：目錄狀態一齊標完成（同帶領畫面「✓ 記錄完成」一致，邊個入口都一樣） */
+    if(r){r.status='done';Store.set('plan',pl)}
     var mem=Store.get('members');
     var present=mem.filter(function(m){var e=document.getElementById('at'+m.id);return e&&e.classList.contains('on')}).map(function(m){return m.id});
     var badges=t.stages.filter(function(s){return s.badge&&document.getElementById('bg'+s.badge)&&document.getElementById('bg'+s.badge).classList.contains('on')}).map(function(s){return s.badge});

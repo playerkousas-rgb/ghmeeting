@@ -73,12 +73,15 @@ var App={
   },
   startInstant:function(theme, mins){
     Modal.close();
-    var t=(typeof Pack!=='undefined')?Pack.instantMeet(theme,mins):null;
-    if(!t)return;
-    Lead.cleanupTimers();
-    Lead.S={meet:t,idx:0,left:(t.stages[0].m||5)*60,timerOn:false,no:0};
-    Lead.open();
-    toast('⚡ 已啟動「'+t.n+'」！');
+    var m=(typeof Pack!=='undefined')?Pack.instantMeet(theme,mins):null;
+    if(!m)return;
+    /* 砌好＝存入「我嘅集會」＋套包／執袋跟住呢場（同套包頁「⚡ 臨時集會」一致，唔係開完就唔見） */
+    var my=Store.get('mymeets',[])||[];
+    my.unshift(m);Store.set('mymeets',my);
+    if(typeof Pack!=='undefined')Pack.pick('my',m.id,0);
+    if(typeof Lead!=='undefined'&&Lead.startMy)Lead.startMy(m.id);
+    else if(typeof Lead!=='undefined'){Lead.cleanupTimers();Lead.S={meet:m,idx:0,left:(m.stages[0].m||5)*60,timerOn:false,no:0};Lead.open()}
+    toast('⚡ 已砌好＋啟動「'+m.n+'」—完場套包照印');
   },
   /* ---- 設定 ---- */
   settings:function(){

@@ -603,6 +603,24 @@ ok('⑯b 「揀集會」頁有嚮導入口',/帶我由頭做到尾|嚮導行緊/
 FL.quit();
 ok('⑯b 撳✕ 之後唔會再彈出嚟',!FL.on());
 
+/* ⑯c 2026-09 負責人：臨時集會砌完要留低（唔係開完就唔見）；未有名單都收到場（唔係死路） */
+G.Store.set('mymeets',[]);G.Store.set('packcur',null);
+G.App.startInstant('general',40);
+ok('⑯c 零準備即興集會＝存入我嘅集會＋套包跟住',(G.Store.get('mymeets')||[]).length===1&&G.Pack.meet().mine===1&&G.Lead.S.meet.stages.length>=4,
+  'my='+(G.Store.get('mymeets')||[]).length+' mine='+G.Pack.meet().mine);
+G.Store.set('members',[]);
+G.Track.attendPrompt(1);
+ok('⑯c 未有名單收場＝有得揀「標記完成」，唔係死路',/標記完成/.test(els.get('modal').innerHTML)&&/加團員名單/.test(els.get('modal').innerHTML));
+G.Track.doneNoRoster(1);
+const rDone=G.Store.get('plan').rows.find(function(x){return x.no===1});
+ok('⑯c 標記完成＝目錄狀態變完成＋嚮導記✓',rDone.status==='done'&&G.Flow.isDone('rec'),'status='+rDone.status);
+/* 有名單：記出席儲存都要一齊標完成（同帶領畫面「✓ 記錄完成」一致） */
+var p2=G.Store.get('plan');p2.rows.find(function(x){return x.no===2}).status='todo';G.Store.set('plan',p2);
+G.Store.set('members',[{id:'p1',n:'小明',bday:'',join:'',badge:{},step:0,gh:[]}]);
+G.Track.saveAttend(2);
+const r2=G.Store.get('plan').rows.find(function(x){return x.no===2});
+ok('⑯c 記出席儲存＝目錄狀態一齊標完成',r2.status==='done','status='+r2.status);
+
 /* ⑰ 圖紙搵得返：教案入面有圖紙清單・一疊過印教案＋圖紙 */
 const lp=G.PrintKit.renderLessonPlan('t03');
 ok('⑰ 教案有「今場圖紙清單」',/今場圖紙清單/.test(lp),'len='+lp.length);
