@@ -774,11 +774,15 @@ Lead.scr={
   },
   chuteopen:function(){
     var g=Guide.forStage({screen:'chuteopen'});
-    return '<div class="big">🌈 快樂傘開會・跟圖做</div>'+Lead.parachuteSvg('open')+Lead.guideHtml(g)+'<div class="huge" style="font-size:clamp(2rem,8vw,4.5rem)">「小童軍——向前進!」</div>';
+    return '<div class="big">🌈 快樂傘開會・跟圖做</div>'+
+      ((typeof Img!=='undefined')?Img.fig('chute-top','圍圈執實傘邊・一齊揚傘開會','圍一圈，雙手執實傘邊，數一二三一齊揚高'):Lead.parachuteSvg('open'))+
+      Lead.guideHtml(g)+'<div class="huge" style="font-size:clamp(2rem,8vw,4.5rem)">「小童軍——向前進!」</div>';
   },
   chuteclose:function(){
     var g=Guide.forStage({screen:'chuteclose'});
-    return '<div class="big">🌈 快樂傘散會・跟圖做</div>'+Lead.parachuteSvg('close')+Lead.guideHtml(g)+'<div class="huge" style="font-size:clamp(2rem,8vw,4.5rem)">「小童軍——向前進!」</div>';
+    return '<div class="big">🌈 快樂傘散會・跟圖做</div>'+
+      ((typeof Img!=='undefined')?Img.fig('chute-close','慢慢放低・落到膝頭先整理','停・口號・慢慢放低，傘落到膝頭先至整理'):Lead.parachuteSvg('close'))+
+      Lead.guideHtml(g)+'<div class="huge" style="font-size:clamp(2rem,8vw,4.5rem)">「小童軍——向前進!」</div>';
   },
   song:function(st){
     Music.stop();
@@ -810,7 +814,7 @@ Lead.scr={
     var c=DATA.chute[idx];
     var g=Guide.chute(c);
     return '<div class="qa-q">'+c.ic+' '+c.n+' <span class="tag">'+c.tag+'</span></div>'+
-      ((typeof Img!=='undefined')?Img.chuteFig(c.n):'')+Lead.parachuteSvg('open')+Lead.guideHtml(g)+
+      ((typeof Img!=='undefined')?Img.chuteFig(c.n):'')+Lead.guideHtml(g)+
       '<div class="btns" style="justify-content:center"><button class="btn sm" onclick="Lead.nextChute()">🔀 抽另一式</button></div>'+
       Lead.playCard('chute');
   },

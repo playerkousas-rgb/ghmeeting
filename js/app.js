@@ -178,7 +178,7 @@ var Plan={
     }
     h+='<div class="stat" style="margin-top:10px"><div class="s"><b>'+(pl.rows.length-done)+'</b>尚餘集會</div><div class="s"><b>'+done+'/'+pl.rows.length+'</b>已完成</div></div></section>';
     h+='<div class="card"><h2>目錄 <span class="tag">'+pl.rows.length+' 次</span></h2>'+
-      '<div class="mute" style="font-size:.82rem;margin-bottom:4px">撳<b>標題</b>＝入呢場嘅 STEP BY STEP 預備；撳<b>狀態</b>改完成・跳過・日期。</div>'+
+      '<div class="mute" style="font-size:.82rem;margin-bottom:4px">撳<b>任何位置</b>＝入呢場嘅 STEP BY STEP 預備；撳<b>狀態</b>改完成・跳過・日期。</div>'+
       Plan.toc(pl)+'</div>';
     h+='<details class="card guide-more" style="padding:12px 14px"><summary>🗺️ 42 個月路線圖（團員章→進步獎章→小草蜢）</summary>'+
       '<div class="mute" style="font-size:.82rem">團員章 → 進步獎章（約 22 個月）→ 小草蜢獎章（7 範疇 ×2 體驗）→ 晉團幼童軍</div>'+Plan.roadmap()+'</details>';
@@ -194,10 +194,14 @@ var Plan={
       var st=r.status==='done'?'<span class="tag g">✓ 完成</span>':r.status==='skip'?'<span class="tag br">跳過</span>':'<span class="tag">未做</span>';
       var dt=r.date?esc(Kit.fmtDate(r.date)):esc(t.mo);
       var isCur=cm&&cm.tid===t.id&&((cm.no||0)===r.no);
-      h+='<div class="toc-row'+(isCur?' on':'')+'"><b class="toc-no">'+r.no+'</b>'+
-        '<div class="toc-mid"><a href="#prep" onclick="event.preventDefault();Flow.select('+r.no+',\''+t.id+'\')"><b>'+esc(t.n)+'</b>'+(isCur?' <span class="tag g">今場</span>':'')+'</a>'+
+      h+='<div class="toc-row'+(isCur?' on':'')+'" role="link" tabindex="0" title="入呢場嘅 STEP BY STEP 預備"'+
+        ' onclick="Flow.select('+r.no+',\''+t.id+'\')"'+
+        ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();Flow.select('+r.no+',\''+t.id+'\')}"><b class="toc-no">'+r.no+'</b>'+
+        '<div class="toc-mid"><b>'+esc(t.n)+'</b>'+(isCur?' <span class="tag g">今場</span>':'')+
         '<small class="mute">'+esc(t.theme)+'</small></div>'+
-        '<div class="toc-right"><small class="mute">'+dt+'</small><a href="#plan" onclick="event.preventDefault();Plan.rowAction('+r.no+')">'+st+'</a></div></div>';
+        '<div class="toc-right"><small class="mute">'+dt+'</small>'+
+        '<a href="#plan" onclick="event.preventDefault();event.stopPropagation();Plan.rowAction('+r.no+')">'+st+'</a>'+
+        '<b class="toc-go" aria-hidden="true">›</b></div></div>';
     });
     return h+'<div class="btns" style="margin-top:10px"><button class="btn sm ghost" onclick="Plan.markAllDone()">記低呢季完成晒</button></div>';
   },

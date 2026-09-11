@@ -180,23 +180,26 @@ var Pack={
   mins:function(m){return (m.stages||[]).reduce(function(a,s){return a+(+s.m||0)},0)},
 
   /* ═════════════ 取代官方套包：官方有嘅我哋有，官方冇嘅我哋都有 ═════════════
-     官方《小童軍團集會套包》內容＝集會程序＋物資表＋教學參考（發展署旅團支援組）。
-     呢度逐項對照，寫明我哋點樣做到／做得更多，目標係新領袖唔使再開官方 PDF。 */
+     官方套包＝香港童軍總會《小童軍團集會套包》（發展署旅團支援組）＝
+     集會程序＋物資表＋教學參考＋紙模型／圖紙＋年度行事曆。
+     呢度逐項對照，每項撳入去就係本 APP 幫你做嗰版，目標係新領袖唔使再開官方 PDF。 */
   COVER:[
-    ['📄 22 次集會程序表','30 場範本・150 個環節，每節有時間・照讀一句・三步・安全','可調動・順延・補場・改分鐘，改完即刻存入「我嘅集會」'],
-    ['🧺 物資表','47 項物資逐項寫明每人幾多・點備・冇就改用乜','按你團人數自動換算（「本團 12 人 → 約 24 張」）'],
-    ['📖 教學參考（含 YouTube 連結）','每環節有圖解・照讀口令・成品示意圖，全部內置','離線都用得；集會中途唔使跳出去搵片'],
-    ['🖨️ 紙模型／圖紙','15 樣手工有「✂️ 即用紙」（A4 實際尺寸，印完即剪）','另有領袖自學卡：未做過都跟得住'],
-    ['📅 年度行事曆','首年 22 次已排好＋節日對齊','42 個月路線圖：團員章→進步獎章四步→小草蜢七範疇，唔會做完第一年斷'],
-    ['—（官方冇）','當日投影帶領：計時・講稿・主題曲伴奏・遊戲畫面','領袖欄「而家做咩」，新領袖照住撳就帶完 60 分鐘'],
-    ['—（官方冇）','團員進度追蹤：出席＋章項自動剔數','唔使再靠記憶／Excel 知邊個差幾多'],
-    ['—（官方冇）','家長通知範本・檢查表・設場教學・現場救急','一撳複製／逐項剔，全部本機儲存'],
-    ['—（官方冇）','⚡ 臨時集會：揀個主題即砌一場','套包照印、畫面照帶']
+    ['📄 22 次集會程序表','30 場範本・150 個環節，每節有時間・照讀一句・三步・安全','可調動・順延・補場・改分鐘，改完即刻存入「我嘅集會」','App.go(\'#plan\')'],
+    ['🧺 物資表','47 項物資逐項寫明每人幾多・點備・冇就改用乜','按你團人數自動換算（「本團 12 人 → 約 24 張」）','Pack.bagModal()'],
+    ['📖 教學參考（含 YouTube 連結）','每環節有圖解・照讀口令・成品示意圖，全部內置','離線都用得；集會中途唔使跳出去搵片','Pack.lead()'],
+    ['🖨️ 紙模型／圖紙','15 樣手工有「✂️ 即用紙」（A4 實際尺寸，印完即剪）','另有領袖自學卡：未做過都跟得住','App.go(\'#print\')'],
+    ['📅 年度行事曆','首年 22 次已排好＋節日對齊','42 個月路線圖：團員章→進步獎章四步→小草蜢七範疇，唔會做完第一年斷','App.go(\'#plan\')'],
+    ['—（官方冇）','當日投影帶領：計時・講稿・主題曲伴奏・遊戲畫面','領袖欄「而家做咩」，新領袖照住撳就帶完 60 分鐘','Pack.lead()'],
+    ['—（官方冇）','團員進度追蹤：出席＋章項自動剔數','唔使再靠記憶／Excel 知邊個差幾多','App.go(\'#track\')'],
+    ['—（官方冇）','家長通知範本・檢查表・設場教學・現場救急','一撳複製／逐項剔，全部本機儲存','Kit.hubOpen()'],
+    ['—（官方冇）','⚡ 臨時集會：揀個主題即砌一場','套包照印、畫面照帶','document.getElementById(\'instant\').scrollIntoView({behavior:\'smooth\'})']
   ],
   coverHtml:function(){
-    return '<div class="pk-cover"><table class="tbl"><tr><th>官方套包</th><th>呢個 APP</th><th>我哋多咗</th></tr>'+
+    return '<div class="pk-cover"><table class="tbl"><tr><th>官方套包有嘅</th><th>呢個 APP 點做到</th><th>我哋多咗</th></tr>'+
       Pack.COVER.map(function(r){
-        return '<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td class="pkc-more">'+esc(r[2])+'</td></tr>'}).join('')+
+        return '<tr><td>'+esc(r[0])+'</td>'+
+          '<td>'+(r[3]?'<button class="lnk" onclick="'+r[3]+'">'+esc(r[1])+' →</button>':esc(r[1]))+'</td>'+
+          '<td class="pkc-more">'+esc(r[2])+'</td></tr>'}).join('')+
       '</table><small class="mute">非官方輔助工具；訓練綱要與獎章要求以香港童軍總會公佈為準。</small></div>';
   },
 
@@ -225,6 +228,11 @@ var Pack={
       '<div class="pk-eco">🌱 淨印 <b>'+printN+' 頁</b>。其餘 '+appN+' 樣喺 APP 睇就夠。</div>'+
       '<div class="pk-3"><b>1</b> 撳「印齊今場」<b>2</b> APP 剔住執袋<b>3</b> 到場撳「即開帶領」</div>'+
     '</section>';
+    /* 📦 官方套包＝香港童軍總會《小童軍團集會套包》：逐項對照＋每項一撳跳去本 APP 幫你做嗰版 */
+    h+='<details class="card guide-more" style="margin-top:10px">'+
+      '<summary>📦 官方套包＝香港童軍總會《小童軍團集會套包》— 程序・物資・教學參考・紙模型・行事曆，9 項逐個對照，撳開睇</summary>'+
+      '<div class="mute" style="font-size:.82rem;margin:6px 0 2px">官方嗰本嘅每一項，呢版都有對應位置；每行撳「→」即開本 APP 幫你做嗰版。</div>'+
+      Pack.coverHtml()+'</details>';
     /* 📚 手工自學卡：抽上嚟做正面位（唔埋喺套包parts入面） */
     h+=Pack.craftSectionHtml();
     /* 套包內容：分兩組排——上面「要印」，下面「APP 睇就夠」，唔會撈埋一齊 */
@@ -249,7 +257,7 @@ var Pack={
           return '<button class="pill'+(cur.mine&&cur.tid===mm.id?' on':'')+'" onclick="Pack.pick(\'my\',\''+mm.id+'\')">'+esc(mm.n)+'</button>'}).join('')+'</div>':'')+
       '</div></div>';
     /* 臨時集會（資深領袖） */
-    h+='<div class="card"><h2>⚡ 臨時集會 <span class="tag">唔使排期</span></h2>'+
+    h+='<div class="card" id="instant"><h2>⚡ 臨時集會 <span class="tag">唔使排期</span></h2>'+
       '<div class="pk-inst">'+Pack.INST.map(function(x){
         return '<button class="btn sm ghost" onclick="Pack.instant(\''+x.k+'\','+x.mins+')">'+x.ic+' '+esc(x.n)+'（'+x.mins+'分）</button>'}).join('')+'</div></div>';
     return h;

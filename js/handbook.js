@@ -84,7 +84,7 @@ var HB={
   chute:function(){
     return '<div class="card"><h2>🌈 快樂傘：先學基本動作，再揀玩法</h2><div class="mute" style="font-size:.83rem">睇圖就會帶。安全三句：執實傘邊、留一隻手臂距離、傘面唔企人。</div>'+
       Img.fig('chute-top','圍圈執實傘邊','圍一圈，雙手執實傘邊，領袖喺外面打手勢')+
-      Img.fig('chute-steps','三步：執傘、揚高、蒙古包','① 執實 ② 數一二三揚高 ③ 踏前趴低變蒙古包')+Lead.parachuteSvg('open')+
+      Img.fig('chute-steps','三步：執傘、揚高、蒙古包','① 執實 ② 數一二三揚高 ③ 踏前趴低變蒙古包')+
       '<div class="attention"><b>開會口令</b> 「面向傘、跪低、執實」→ 一、二、三揚傘。<br><b>散會口令</b> 「停、口號、慢慢放低」→ 傘落到膝頭才整理。</div>'+
       '<h3 style="margin-top:16px">16式玩法卡</h3><div class="grid2" style="margin-top:8px">'+DATA.chute.map(function(c,i){
         return '<div class="mem"><h4>'+c.ic+' '+c.n+' <span class="tag">'+c.tag+'</span></h4><div class="box" style="font-size:.85rem">'+esc(c.h)+'</div><small class="mute">💡 '+esc(c.t)+'</small><div class="btns"><button class="btn sm gr" onclick="Lead.startChute('+i+')">▶ 開圖卡</button></div></div>'}).join('')+'</div></div>';

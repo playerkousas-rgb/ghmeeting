@@ -4,8 +4,8 @@
        載入失敗自動換返 fbHtml（傳入嘅 SVG／圖解）或內置後備。
      Img.vid(kw) → 「▶ 睇示範片（上網）」YouTube 搜尋掣（條連結永遠啱題、唔會死鏈）。 */
 var Img={
-  /* 內置後備：chute 用回 Lead.parachuteSvg */
-  reg:{'chute-top':{fb:'chute'},'chute-steps':{fb:'chute'}},
+  /* 內置後備：chute 用回 Lead.parachuteSvg（淨係離線／圖缺先出現） */
+  reg:{'chute-top':{fb:'chute'},'chute-steps':{fb:'chute'},'chute-close':{fb:'chute'}},
   /* 遊戲 → 「點玩一眼圖」（實體遊戲先至有） */
   /* 一個遊戲一張圖：圖同玩法一定要對得上（四角搶答＝A/B/C/D 角牌，分邊＝👍👎，回收＝三色桶） */
   games:{catch:'g-grid',quiz:'g-corners',judge:'g-judge',recycle:'g-recycle',
