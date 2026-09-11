@@ -470,6 +470,8 @@ var Kit={
     Object.keys(this.checks).forEach(function(k){var c=Kit.checks[k];
       push('🧭 執行檢查表',c.ic+' '+c.n,c.items.length+' 項可剔・逐項講清點樣檢查',c.n+' '+c.items.join(' '),"Modal.close();Kit.openCheck('"+k+"')");
     });
+    push('📦 官方套包','香港童軍總會官方出版《小童軍團集會套包》','官方 PDF・撳一下新視窗直開','官方 套包 PDF 香港童軍總會 總部 官方出版 團集會',
+      "window.open('https://drive.google.com/file/d/1qI5aUCFZE-sAGDDeloE8ubdGXifZg8P2/view','_blank')",'📖 開官方PDF');
     push('📦 集會套包','今場套包：一撳印齊所有教材','領袖教案＋小朋友圖紙（一疊過）','套包 打印 印齊 教材 圖紙 即用紙 教案 執袋單 程序表 帶領卡 家長通知 pack',
       "Modal.close();App.go('#pack')",'📦 開');
     push('✂️ 工作紙／圖紙庫','所有工作紙・圖紙・場地圖卡・教案・海報','25 份教材分四類，純教材庫','圖紙 工作紙 紙 教材庫 印 打印 列印 worksheet print 圖卡 海報 教案',
