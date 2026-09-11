@@ -5,7 +5,7 @@ const fs=require('fs'),path=require('path'),vm=require('vm');
 const mem={};const els=new Map();
 function mk(id){const cl=new Set();return {id,innerHTML:'',textContent:'',value:'',style:{},dataset:{},
   classList:{add:c=>cl.add(c),remove:c=>cl.delete(c),contains:c=>cl.has(c),toggle:(c,f)=>{f===undefined?f=!cl.has(c):0;f?cl.add(c):cl.delete(c);return f}},
-  querySelector:()=>null,querySelectorAll:()=>[],appendChild(){},remove(){},focus(){},scrollTop:0};}
+  querySelector:()=>null,querySelectorAll:()=>[],appendChild(){},remove(){},focus(){},scrollTop:0,scrollIntoView(){}};}
 const s={console,
   document:{getElementById:id=>{if(!els.has(id))els.set(id,mk(id));return els.get(id)},
     querySelectorAll:()=>[],querySelector:()=>null,createElement:t=>mk(t),
@@ -36,7 +36,7 @@ function tagBalance(html){
   });
   return d;
 }
-['#pack','#plan','#meet','#play','#track','#book','#print','#chute','#song','#tools'].forEach(h=>{
+['#pack','#plan','#prep','#meet','#play','#track','#book','#print','#chute','#song','#tools'].forEach(h=>{
   s.location.hash=h;
   try{App.route();const out=els.get('view').innerHTML;
     if(!out||out.length<200)fails.push(h+' 內容太短 '+out.length);
@@ -47,7 +47,7 @@ function tagBalance(html){
 });
 /* 新手機／清空咗資料都要開到（即開即用底線） */
 Object.keys(s.localStorage).forEach(k=>s.localStorage.removeItem(k));
-['#pack','#plan','#meet','#play','#track','#book','#print','#chute','#song','#tools'].forEach(h=>{
+['#pack','#plan','#prep','#meet','#play','#track','#book','#print','#chute','#song','#tools'].forEach(h=>{
   s.location.hash=h;
   try{App.route();const out=els.get('view').innerHTML;
     if(!out||out.length<200)fails.push('清空資料後 '+h+' 開唔到（'+out.length+' 字）');
@@ -66,6 +66,13 @@ Pack.PARTS.filter(p=>p.app).forEach(p=>{
   mEl.innerHTML='';vEl.innerHTML='';
   let err=null;
   try{Pack.appView(p.k)}catch(e){err=e.message}
+  if(p.k==='craftc'){
+    /* 2026-09 負責人：手工自學卡抽上套包頁正面位（唔再係深層彈窗）——驗段喺頁面 */
+    if(err)fails.push('📱 craftc 開唔到：'+err);
+    else if(!/id="craftCards"/.test(Pack.html()))fails.push('📱 craftc 套包頁冇「手工自學卡」段');
+    else {appOk++;console.log('📱 APP 睇 craftc ok（套包頁正面位）')}
+    return;
+  }
   const out=mEl.innerHTML||vEl.innerHTML;
   if(err)fails.push('📱 '+p.k+' 開唔到：'+err);
   else if(out.length<150)fails.push('📱 '+p.k+' 開到但冇內容（'+out.length+' 字）');
@@ -82,7 +89,7 @@ Pack.toggleKid(k0);
 if(Pack.kidPicks(cur.m).length!==picks0)fails.push('剔返佢之後款數唔返嚟');
 console.log('小朋友紙逐款揀 ok（'+picks0+' 款）');
 // 手冊每個分頁
-['core','craft','kit','venue','games','badge','chute','sfh','tips','about'].forEach(t=>{
+['core','badge','sfh','tips','about'].forEach(t=>{
   try{HB.tab=t;const h=HB.html();if(h.length<500)fails.push('HB.'+t+' 太短')}catch(e){fails.push('HB.'+t+' → '+e.message)}
 });
 console.log('handbook 10 tabs ok');

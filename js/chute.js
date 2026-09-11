@@ -72,8 +72,7 @@ var Chute={
     /* ② 幾多張傘・冇傘點算：開會前先知都唔遲 */
     if(m)h+='<div class="card"><h3>🧺 幾多張傘・冇傘點算</h3><div class="box">'+
       '<b>幾多：</b>'+esc(m.q)+'<br><b>點備：</b>'+esc(String(m.how).split("。")[0])+"。"+'<br><b>冇傘：</b>'+esc(m.sub)+'</div>'+
-      '<div class="btns"><button class="btn sm ghost" onclick="Chute.find(\'傘\')">🔍 搵晒同傘有關嘅嘢</button>'+
-      '<button class="btn sm ghost" onclick="App.go(\'#book\');setTimeout(function(){HB.t(\'chute\')},60)">📖 手冊版快樂傘</button></div></div>';
+      '<div class="btns"><button class="btn sm ghost" onclick="Chute.find(\'傘\')">🔍 搵晒同傘有關嘅嘢</button></div></div>';
 
     /* ③ 玩法卡：分類揀＋即開 */
     h+='<div class="card"><h3>🎴 '+n+' 式玩法卡 <span class="tag">即開即用</span></h3>'+

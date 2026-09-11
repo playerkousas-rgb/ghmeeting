@@ -239,7 +239,6 @@ var PrintKit={
       '<span class="eyebrow">✂️ 工作紙 ‧ 圖紙 ‧ 教材庫</span>'+
       '<h2>所有印得出嚟嘅嘢，全部喺呢度。</h2>'+
       '<p class="mute">圖紙＝小朋友剪摺塗｜場地圖卡＝貼地貼牆｜教案＝領袖手揸。</p>'+
-      PrintKit.nowHtml()+
       '<div class="activity-tabs" style="margin-top:12px">'+
         cats.map(function(c){return '<button class="pill '+(PrintKit.tab===c[0]?'on':'')+'" onclick="PrintKit.setTab(\''+c[0]+'\')">'+c[1]+'</button>'}).join('')+
       '</div>'+
@@ -264,22 +263,8 @@ var PrintKit={
     return h;
   },
 
-  /* 「今場要用嘅圖紙」——最常搵嘅嘢擺喺最前，唔使喺 24 格入面撈 */
-  nowHtml:function(){
-    if(typeof Pack==='undefined')return '';
-    var cur=Pack.meet(),m=cur.m,ls=Pack.sheetList(m);
-    return '<div class="pk-now"><div class="pn-h">📌 今場：<b>'+esc(m.n)+'</b></div>'+
-      (ls.length
-        ?'<div class="pw-list">'+ls.map(function(x){return '<span class="pw-i">'+x.ic+' '+esc(x.n)+'<i>'+esc(x.cp)+'</i></span>'}).join('')+'</div>'
-        :'<div class="mute" style="font-size:.82rem">呢場唔使圖紙（全部環節用螢幕／身體玩）— 印教案就夠。</div>')+
-      '<div class="btns" style="margin-bottom:0">'+
-        '<button class="btn sm" onclick="Pack.open(\'all\')">🖨️ 印齊今場（教案＋圖紙）</button>'+
-        (ls.length?'<button class="btn sm gr" onclick="Pack.open(\'kid\')">✂️ 淨印今場圖紙</button>':'')+
-        '<button class="btn sm ghost" onclick="Pack.open(\'lead\')">📋 淨印教案</button>'+
-        '<button class="btn sm ghost" onclick="App.go(\'#pack\')">📦 換一場／改份數</button>'+
-      '</div></div>';
-  },
-
+  /* 定位（2026-09 負責人）：下方＝即插即用。呢度係純教材庫，唔再放「今場」準備條
+     （今場套包一鍵印 → 去上方 📦 官方套包）。 */
   setTab:function(t){
     PrintKit.tab=t;App.route();
   },

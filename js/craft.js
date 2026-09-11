@@ -631,11 +631,11 @@ var Craft={
       '</div>'+
       (opts.plain?'':'<div class="btns" style="margin-top:12px"><button class="btn sm gr" onclick="Modal.close();PrintKit.openModal(\'craft-ready\',\''+c.k+'\')">✂️ 印小朋友即用紙（即剪即用）</button>'+
         '<button class="btn sm" onclick="Modal.close();PrintKit.openModal(\'craft-coach\',\''+c.k+'\')">📚 印領袖自學卡</button>'+
-        '<button class="btn sm" onclick="Modal.close();PrintKit.openModal(\'craft-ctrl\')">🧒 打印 4–7 歲控場卡</button>'+(opts.inMeet?'<button class="btn sm" onclick="Craft.open(\''+c.k+'\')">📚 睇完整卡</button>':'')+'<button class="btn sm ghost" onclick="Modal.close();App.go(\'#book\');setTimeout(function(){HB.t(\'craft\')},60)">📖 手冊・手工篇</button></div>')+
+        '<button class="btn sm" onclick="Modal.close();PrintKit.openModal(\'craft-ctrl\')">🧒 打印 4–7 歲控場卡</button>'+(opts.inMeet?'<button class="btn sm" onclick="Craft.open(\''+c.k+'\')">📚 睇完整卡</button>':'')+'<button class="btn sm ghost" onclick="Modal.close();App.go(\'#pack\');setTimeout(function(){var e=document.getElementById(\'craftCards\');if(e)e.scrollIntoView()},150)">📦 套包・手工自學卡</button></div>')+
       '</div>';
     return g;
   },
-  open:function(k){Modal.open(this.html(k,{plain:false}));var s=document.querySelector('#modal .sheet');if(s)s.scrollTop=0},
+  open:function(k){Modal.open(this.html(k,{plain:false}));var s=document.querySelector('#modal .sheet-body');if(s)s.scrollTop=0},
 
   /* 準備卡／帶領畫面用嘅短版 */
   mini:function(st){
@@ -669,6 +669,11 @@ var Craft={
       return '<div class="ci-row"><span class="ci-ic">'+c.ic+'</span><div class="ci-b"><b>'+esc(c.n)+'</b><small>'+esc(c.look.split('。')[0])+'。</small></div>'+
         '<button class="btn sm" onclick="Craft.open(\''+c.k+'\')">📚 自學卡</button></div>'
     }).join('')+'</div>';
+  },
+  /* 全部自學卡彈窗（📦 官方套包頁「手工自學卡」段用） */
+  indexOpen:function(){
+    Modal.open('<div class="eyebrow">📚 手工自學卡・'+this.list().length+' 張</div><h3>揀一樣，開會前 3 分鐘睇完就帶得</h3>'+
+      '<div class="mute" style="font-size:.82rem">每張有：成品圖・逐步拆解・帶班拆法・補救・後備版。</div>'+this.indexHtml());
   },
   list:function(){return this.lib.filter(function(c){return c.re})},
 

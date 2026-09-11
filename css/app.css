@@ -154,12 +154,14 @@ hr.soft{border:none;border-top:1.5px dashed var(--line);margin:12px 0}
   background:#fff;margin-right:4px;vertical-align:-2px}
 .dot.on{background:var(--gr);border-color:var(--grd)}
 .empty{text-align:center;color:var(--mute);padding:26px 10px;font-size:.9rem}
-/* modal */
+/* modal —— .sheet 係 flex 欄：✕ 釘喺最上（唔隨內容滑走，拉到最底都關到）；.sheet-body 先係捲動區 */
 #modal:empty{display:none}
 #modal{position:fixed;inset:0;z-index:200;background:rgba(62,39,35,.45);display:flex;
   align-items:flex-end;justify-content:center}
 #modal .sheet{background:#fff;border-radius:22px 22px 0 0;max-width:560px;width:100%;max-height:86dvh;
-  overflow:auto;padding:16px 16px calc(20px + env(safe-area-inset-bottom));animation:up .22s ease}
+  display:flex;flex-direction:column;overflow:hidden;animation:up .22s ease}
+#modal .sheet .sheet-body{overflow:auto;flex:1 1 auto;min-height:0;
+  padding:2px 16px calc(20px + env(safe-area-inset-bottom))}
 @keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
 @media(min-width:600px){#modal{align-items:center}.sheet{border-radius:22px}}
 /* 桌面開詳細唔好縮成細細個：加闊加高 */
@@ -167,7 +169,11 @@ hr.soft{border:none;border-top:1.5px dashed var(--line);margin:12px 0}
   #modal .sheet .craft-art{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start}}
 @media(min-width:1200px){#modal .sheet{max-width:1080px}}
 .sheet h3{color:var(--ord)}
-.sheet .x{float:right;font-size:1.2rem;padding:4px 10px;color:var(--mute)}
+/* ✕ 關閉：永遠喺彈窗最上右，唔會滑走 */
+.sheet .x{flex:0 0 auto;align-self:flex-end;margin:8px 12px 0;padding:4px 16px;
+  font-size:1.05rem;font-weight:700;color:var(--mute);background:#f6efe6;border-radius:999px;
+  box-shadow:0 1px 4px rgba(62,39,35,.12)}
+.sheet .x:active{transform:scale(.96)}
 /* =========== 帶領模式 =========== */
 #leadroot{position:fixed;inset:0;z-index:100;background:#fff;display:flex;flex-direction:column}
 #leadroot.dark{background:#1c2b22}
@@ -1421,6 +1427,11 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
     padding: 0 !important;
     margin: 0 !important;
     animation: none !important;
+    display: block !important;
+  }
+  #modal .sheet .sheet-body {
+    padding: 0 !important;
+    overflow: visible !important;
   }
   .print-sheet-wrapper {
     background: none !important;
@@ -2073,3 +2084,55 @@ figure.fig{margin:10px 0;background:#fff;border:1.5px solid var(--line);border-r
   overflow:hidden;padding:0}
 figure.fig img{display:block;width:100%;height:auto;max-height:340px;object-fit:contain;background:#fafafa}
 figure.fig figcaption{font-size:.76rem;color:var(--mute);padding:7px 10px;border-top:1px dashed var(--line);line-height:1.45}
+
+/* ═══════════ 2026-09 重組：集會目錄（TOC）・歌曲・版權頁脚 ═══════════ */
+/* 📅 集會目錄（上方左1） */
+.toc-hero{margin-bottom:10px}
+.toc-hero h1{margin:.15em 0 .1em}
+.toc-hero p{margin:0;font-size:.9rem}
+.toc-row{display:flex;align-items:flex-start;gap:9px;padding:9px 2px;border-bottom:1px solid #faf0e2}
+.toc-row:last-of-type{border-bottom:none}
+.toc-no{flex:0 0 26px;height:26px;border-radius:8px;background:#fff3e0;color:var(--ord);
+  font-weight:800;font-size:.8rem;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.toc-mid{flex:1;min-width:0}
+.toc-mid b{font-size:.92rem;line-height:1.35}
+.toc-mid a b{text-decoration:none}
+.toc-mid a b:active{text-decoration:underline}
+.toc-mid small{display:block;font-size:.76rem}
+.toc-right{flex:0 0 auto;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.toc-right small{font-size:.74rem}
+.toc-right a{text-decoration:none}
+/* 🎵 歌曲清單 */
+.song-row{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid #faf0e2}
+.song-row:last-of-type{border-bottom:none}
+.song-ic{flex:0 0 38px;height:38px;border-radius:12px;background:#fff3e0;display:flex;
+  align-items:center;justify-content:center;font-size:1.25rem}
+.song-tt{flex:1;min-width:0}
+.song-tt b{font-size:.94rem}
+.song-tt small{display:block;font-size:.76rem}
+/* © 頁脚 */
+.app-foot{text-align:center;font-size:.72rem;font-weight:700;color:#c2ab97;
+  letter-spacing:.4px;padding:18px 0 6px}
+
+/* 🧭 逐步預備頁（#prep）：撳住場之後，一步只做一件事 */
+.prep-hero{margin-bottom:10px}
+.prep-hero h2{margin:.1em 0}
+.prep-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.prep-prog{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.prep-prog b{flex:0 0 auto;font-size:.9rem;color:var(--ord)}
+.prep-prog-bar{flex:1;height:8px;border-radius:99px;background:#fff3e0;overflow:hidden}
+.prep-prog-bar span{display:block;height:100%;background:var(--gr);border-radius:99px;transition:width .25s}
+.prep-steps{display:flex;flex-direction:column;gap:4px}
+.prep-step{display:flex;align-items:flex-start;gap:10px;padding:9px 6px;border-radius:12px;opacity:.55}
+.prep-step-no{flex:0 0 30px;height:30px;border-radius:50%;background:#fff3e0;color:var(--ord);
+  font-weight:800;font-size:.85rem;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.prep-step-b{flex:1;min-width:0}
+.prep-step-b b{font-size:.95rem}
+.prep-step-b small{display:block;font-size:.8rem;line-height:1.45}
+.prep-step.done{opacity:.6}
+.prep-step.done .prep-step-no{background:#e8f5e9;color:var(--grd)}
+.prep-step.cur{opacity:1;background:#fff8ee;border:1.5px solid #ffd9a8;padding:12px}
+.prep-step.cur .prep-step-no{background:var(--or);color:#fff}
+.prep-undo{margin-top:2px}
+.prep-done{background:#f1f8e9;border:1.5px solid #a5d6a7}
+.toc-row.on{background:#fff8ee}

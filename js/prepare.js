@@ -3,14 +3,14 @@ var Prepare={
   filter:'all',
   html:function(){
     var cats=[['all','全部'],['member','團員章'],['prog','進步'],['fest','特別'],['outdoor','戶外'],['gh','小草蜢'],['custom','自訂']];
-    var h='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><h2>🧩 定流程・帶領卡庫</h2><div class="mute" style="font-size:.83rem">'+TPLS.length+' 張即用帶領卡：照用一張，或者砌自己嘅流程（定好先去印教材）。</div></div><button class="btn sm" onclick="App.go(\'#pack\')" style="background:#2e7d32;color:#fff">📦 集會套包 ↗</button></div><div style="margin:8px 0">'+cats.map(function(c){return '<span class="pill'+(Prepare.filter===c[0]?' on':'')+'" onclick="Prepare.f(\''+c[0]+'\')">'+c[1]+'</span>'}).join('')+'</div>';
+    var h='<div class="card"><div><h2>🧩 範本</h2><div class="mute" style="font-size:.83rem">'+TPLS.length+' 場即用範本：撳標題＝揀咗就 STEP BY STEP 預備；想照帶就直接「▶ 帶領」。</div></div><div style="margin:8px 0">'+cats.map(function(c){return '<span class="pill'+(Prepare.filter===c[0]?' on':'')+'" onclick="Prepare.f(\''+c[0]+'\')">'+c[1]+'</span>'}).join('')+'</div>';
     var list=TPLS.filter(function(t){return Prepare.filter==='all'||t.cat===Prepare.filter});
     list.forEach(function(t){
       var mk=Track.meetMarks(t);
       var chips=(Kit.rain[t.id]?'<span class="tag b" title="有室內後備版，落雨照玩">☔ 有後備版</span>':'')+
         (mk.gh.length?'<span class="tag g" title="完場自動幫細個計數，唔使自己寫表">🦗 自動計 '+mk.gh.length+' 範疇</span>':'')+
         (mk.badge.length?'<span class="tag g">🏅 自動剔 '+mk.badge.length+' 項</span>':'');
-      h+='<div class="mem tpl-card"><h4>'+esc(t.n)+' <span class="tag">'+TPLS.catName[t.cat]+'</span></h4>'+'<small class="mute">'+t.mo+'・'+Plan.lenOf(t)+' 分鐘・'+t.stages.length+' 節</small>'+chips+'<div class="btns" style="margin:7px 0 0">'+'<button class="btn sm gr" onclick="Lead.start(\''+t.id+'\')">▶ 帶領</button>'+'<button class="btn sm ghost" onclick="Prepare.detail(\''+t.id+'\')">🧭 準備</button></div>'+'<details class="guide-more"><summary>內容・其他</summary>'+'<div class="box">'+esc(t.theme)+'</div><div class="btns">'+'<button class="btn sm ghost" onclick="PrintKit.openModal(\'lesson-plans\', \''+t.id+'\')">🖨️ 印教案</button>'+'<button class="btn sm ghost" onclick="Prepare.edit(\''+t.id+'\')">✏️ 改內容</button>'+'</div></details></div>';
+      h+='<div class="mem tpl-card"><h4><a href="#prep" onclick="event.preventDefault();Flow.selectTpl(\''+t.id+'\')">'+esc(t.n)+'</a> <span class="tag">'+TPLS.catName[t.cat]+'</span></h4>'+'<small class="mute">'+t.mo+'・'+Plan.lenOf(t)+' 分鐘・'+t.stages.length+' 節</small>'+chips+'<div class="btns" style="margin:7px 0 0">'+'<button class="btn sm gr" onclick="Lead.start(\''+t.id+'\')">▶ 帶領</button>'+'<button class="btn sm ghost" onclick="Prepare.detail(\''+t.id+'\')">📋 睇詳細</button></div>'+'<details class="guide-more"><summary>內容・其他</summary>'+'<div class="box">'+esc(t.theme)+'</div><div class="btns">'+'<button class="btn sm ghost" onclick="PrintKit.openModal(\'lesson-plans\', \''+t.id+'\')">🖨️ 印教案</button>'+'<button class="btn sm ghost" onclick="Prepare.edit(\''+t.id+'\')">✏️ 改內容</button>'+'</div></details></div>';
     });
     h+='</div>';
     var my=Store.get('mymeets',[]);

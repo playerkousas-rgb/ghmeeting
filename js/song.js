@@ -1,6 +1,7 @@
-/* 🦗 song.js — 🎵 唱歌（🅱️ 工具箱）：主題曲卡拉OK＋曲庫＋唱得住嘅活動，即開即唱 © 2026 Scout System
-   定位：下方工具箱＝即開即用。想加個唱遊、開會前想唱主題曲、洗手想有歌計時——撳一下就播。
-   伴奏全部由 APP 即時彈（唔使上網、唔使搵片），速度・數拍・和弦喺呢頁定好，開到卡拉OK照用。 */
+/* 🦗 song.js — 🎵 歌曲（🅱️ 即插即用）：日常集會會播放嘅歌，撳一下就播 © 2026 Scout System
+   定位：下方＝即插即用。日常集會播得嘅歌（主題曲／洗手歌／節慶歌／誓詞口號）排喺一個清單，
+   撳「▶ 播」就開卡拉OK／計時畫面。伴奏全部由 APP 即時彈（唔使上網、唔使搵片），
+   速度・數拍・和弦喺呢頁定好，開到卡拉OK照用。 */
 var Song={
   /* 主題曲逐句動作：4–7 歲係「唱＋做」，淨唱好快散（六句對齊 DATA.facts.song） */
   ACTIONS:[
@@ -11,67 +12,62 @@ var Song={
     '雙手舉高左右搖',
     '全體牽手一齊舉高（收結）'
   ],
-  /* 一撳即唱：最常用嘅三首＋一句講解 */
-  quick:function(){
-    var h='';
-    if(typeof Music!=='undefined'&&Music.SONGBOOK)Object.keys(Music.SONGBOOK).forEach(function(k){
-      var s=Music.SONGBOOK[k];
-      var desc=k==='theme'?'團員章項目・開會散會都唱':(k==='jingle'?'聖誕／冬天節慶用':'新年・生日場合用');
-      h+=qBtn(k==='theme'?'🎵':'🎶',s.title,desc,'Song.start(\''+k+'\')');
-    });
-    return h;
-  },
+  /* 日常集會會播嘅歌：即開即播 */
+  LIST:[
+    {ic:'🦗',k:'theme',n:'小童軍主題曲',d:'開會／散會都唱・團員章項目',go:'Song.start(\'theme\')'},
+    {ic:'🧼',k:'clean',n:'洗手七步歌',d:'20 秒洗手計時歌，全體跟住搓',go:'Lead.startGame(\'clean\',\'洗手七步好寶寶\')'},
+    {ic:'🎶',k:'jingle',n:'Jingle Bells 鈴兒響叮噹',d:'聖誕／冬天節慶用',go:'Song.start(\'jingle\')'},
+    {ic:'🎉',k:'newyear',n:'新年好',d:'新年・生日場合用',go:'Song.start(\'newyear\')'},
+    {ic:'🫡',k:'promise',n:'誓詞・規律・口號',d:'大字投影，領袖帶讀全體跟',go:'Lead.startGame(\'promise\',\'誓詞・規律・口號\')'}
+  ],
   html:function(){
     var f=(typeof DATA!=='undefined'&&DATA.facts)?DATA.facts:{song:[]};
-    var h='<div class="card song-hero"><span class="eyebrow">🎵 唱歌</span>'+
-      '<h2>想唱就唱，唔使搵片、唔使上網。</h2>'+
-      '<p class="mute">APP 即時彈伴奏，撳一下就開唱：黃色＝唱緊嗰句，聽到 4 聲「嘀」先開聲。</p>'+
-      '<div class="btns"><button class="btn gr blk" onclick="Song.start(\'theme\')">▶ 開主題曲卡拉OK</button></div>'+
-      '<div class="song-setup" style="margin-top:10px">'+
+    var h='<div class="card song-hero"><span class="eyebrow">🎵 歌曲</span>'+
+      '<h2>日常集會會播嘅歌。</h2>'+
+      '<p class="mute">撳一下就開唱：APP 即時彈伴奏，唔使上網、唔使搵片。</p>'+
+      '<div class="song-setup" style="margin-top:8px">'+
         '<span>🐢 速度 '+Music.TEMPOS.map(function(t){
           return '<button class="pill'+(Music.bpm===t.bpm?' on':'')+'" onclick="Song.tempo(\''+t.k+'\')">'+esc(t.n)+' ('+t.bpm+')</button>'}).join('')+'</span>'+
         '<span class="pill'+(Music.countIn?' on':'')+'" onclick="Song.opt(\'countIn\')">🥁 4 拍數拍先入</span>'+
         '<span class="pill'+(Music.chords?' on':'')+'" onclick="Song.opt(\'chords\')">🎹 和弦伴奏</span>'+
-      '</div>'+
-      '<div class="mute" style="font-size:.78rem;margin-top:6px">第一次帶用「慢」；呢度定好嘅設定，開到卡拉OK 照用。</div></div>';
+      '</div></div>';
 
-    /* ① 曲庫 */
-    h+='<div class="card"><h3>📚 曲庫 <span class="tag">即開即唱</span></h3>'+
-      '<div class="tk-grid">'+this.quick()+'</div>'+
-      '<div class="mute" style="font-size:.8rem;margin-top:8px">全部公開領域旋律；主題曲寄調 London Bridge is Falling Down。</div></div>';
+    /* ① 日常歌曲清單 */
+    h+='<div class="card"><h3>📚 日常集會歌曲 <span class="tag">即開即唱</span></h3>';
+    Song.LIST.forEach(function(s){
+      h+='<div class="song-row"><span class="song-ic">'+s.ic+'</span>'+
+        '<div class="song-tt"><b>'+esc(s.n)+'</b><small>'+esc(s.d)+'</small></div>'+
+        '<button class="btn sm gr" onclick="'+s.go+'">▶ 播</button></div>';
+      if(s.k==='theme'){
+        h+='<details class="guide-more"><summary>🎤 歌詞＋逐句動作</summary>'+
+          '<div class="song-lyric" style="margin-top:8px">'+(f.song||[]).map(function(l,i){
+            return '<div class="song-act"><i>'+(i+1)+'</i><div><b>'+esc(l)+'</b><small>🙌 '+esc(Song.ACTIONS[i]||'跟住節奏郁動')+'</small></div></div>';
+          }).join('')+'</div></details>';
+      }
+    });
+    h+='<div class="mute" style="font-size:.78rem;margin-top:8px">全部公開領域旋律；主題曲寄調 London Bridge is Falling Down。</div></div>';
 
-    /* ② 主題曲：歌詞＋逐句動作（團員章要唱呢首） */
-    h+='<div class="card"><h3>🦗 小童軍主題曲・歌詞＋動作</h3>'+
-      '<div class="mute" style="font-size:.82rem">'+esc(f.songHint||'')+'</div>'+
-      '<div class="song-lyric">'+(f.song||[]).map(function(l,i){
-        return '<div class="song-act"><i>'+(i+1)+'</i><div><b>'+esc(l)+'</b><small>🙌 '+esc(Song.ACTIONS[i]||'跟住節奏郁動')+'</small></div></div>';
-      }).join('')+'</div>'+
-      '<div class="btns"><button class="btn sm gr" onclick="Song.start(\'theme\')">▶ 開卡拉OK（跟住唱）</button></div></div>';
-
-    /* ③ 唱得住嘅活動：想加節目就喺度揀 */
-    h+='<div class="card"><h3>🎤 加個節目：呢啲都係「有聲音」嘅活動</h3>'+
-      '<div class="mute" style="font-size:.82rem">臨時想加一節？一撳即開。</div>'+
+    /* ② 唱住玩：臨時加節目 */
+    h+='<div class="card"><h3>🎤 唱住玩（臨時加節目）</h3>'+
       '<div class="tk-grid">'+
-      qBtn('🧼','洗手七步歌','20 秒計時歌，全體跟住搓','Lead.startGame(\'clean\',\'洗手七步好寶寶\')')+
       qBtn('🎤','音樂傳球點名','停球嗰位講名＋一樣鍾意嘅嘢','Lead.startGame(\'roll\',\'音樂傳球點名\')')+
       qBtn('🥁','節奏模仿','APP 出拍子聲，領袖做一次全體跟','Lead.startGame(\'rhythm\',\'節奏模仿・跟拍子\')')+
       qBtn('🚩','唱住揚快樂傘','唱到「向前進」就揚高把傘','Song.flag()')+
       qBtn('🏕️','傘下唱歌／講故事','鶴立雞群：傘變帳幕，喺入面唱','Song.tent()')+
-      qBtn('🫡','誓詞・規律・口號','大字投影，領袖帶讀全體跟','Lead.startGame(\'promise\',\'誓詞・規律・口號\')')+
       '</div></div>';
 
-    /* ④ 4–7 歲唱歌貼士 */
-    h+='<div class="card"><h3>💡 唱歌帶領貼士（4–7 歲）</h3><div class="box">'+
+    /* ③ 唱歌貼士（收埋，唔佔版面） */
+    h+='<details class="card guide-more" style="padding:12px 14px"><summary>💡 唱歌帶領貼士（4–7 歲）</summary><div class="box" style="margin-top:8px">'+
       '<b>① 先聽一次</b>：第一次淨聽，第二次先一齊唱。<br>'+
       '<b>② 你先唱</b>：你大聲，佢哋先敢跟。<br>'+
       '<b>③ 慢</b>：第一次用「慢」。<br>'+
       '<b>④ 每句一個動作</b>：記唔到詞都跟到。<br>'+
-      '<b>⑤ 唱兩次就夠</b>；肯開聲就算完成。</div></div>';
+      '<b>⑤ 唱兩次就夠</b>；肯開聲就算完成。</div></details>';
 
-    /* ⑤ 團員章：唱主題歌 */
+    /* ④ 團員章：唱主題歌 */
     var b=(typeof Kit!=='undefined'&&Kit.badgeMap)?Kit.badgeMap.filter(function(x){return x.k==='song'})[0]:null;
     if(b)h+='<div class="card"><h3>🏅 唱完就計數：團員章「'+esc(b.t)+'」</h3>'+
-      '<div class="box">📍 '+esc(b.where)+'<br>💡 '+esc(String(b.how).split("；")[0])+'。'+'</div>'+
+      '<div class="box">📍 '+esc(b.where)+'<br>💡 '+esc(String(b.how).split("；")[0])+'。</div>'+
       '<div class="btns"><button class="btn sm gr" onclick="'+b.link+'">▶ 即刻開</button>'+
       '<button class="btn sm ghost" onclick="App.go(\'#track\')">🏅 去記錄</button></div></div>';
     return h;
