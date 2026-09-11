@@ -237,6 +237,10 @@ const P=G.PrintKit;
   if(id==='game-cards'){
     const miss=Object.keys(Lead.playMeta).filter(function(k2){return html.indexOf(Lead.playMeta[k2].n)<0});
     ok('⑥ 遊戲帶領卡覆蓋全部 '+Object.keys(Lead.playMeta).length+' 個遊戲',miss.length===0,'缺:'+miss.join(','));
+    /* 2026-09 負責人：喺遊戲畫面撳「印遊戲帶領卡」＝只印嗰個遊戲（一頁），唔係成個庫排成書簽條 */
+    const one=P.kits.filter(function(x){return x.id==='game-cards'})[0].render('leader');
+    ok('⑥ 只印一個遊戲＝一頁・冇其他遊戲',one.indexOf(Lead.playMeta.leader.n)>=0&&one.indexOf('ppc-single')>=0&&(one.match(/a4-sheet/g)||[]).length===1&&one.indexOf(Lead.playMeta.quiz.n)<0);
+    ok('⑥ 遊戲畫面嘅印掣帶住嗰個遊戲',/openModal\('game-cards','leader'\)/.test(G.Lead.playCard('leader')));
   }
 });
 

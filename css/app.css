@@ -1836,6 +1836,15 @@ button.lnk:hover{color:var(--ord)}
 .play-print-card .ppc-kind{margin-left:auto;font-size:8pt;background:#eee;border-radius:8px;padding:2px 7px}
 .play-print-card .ppc-row{font-size:8.5pt;line-height:1.45;padding:2px 0}
 .play-print-card .ppc-row b{color:#2e7d32;margin-right:5px}
+/* 單個遊戲版（喺遊戲畫面撳「只印呢個遊戲」）：一張大卡企正中間，唔使剪 */
+.play-print-card.ppc-single{border:2.5px solid #2e7d32;background:#f6fff6;border-radius:14px;
+  padding:16px 18px;margin:14px auto;max-width:660px;box-shadow:0 3px 12px rgba(46,125,50,.12)}
+.play-print-card.ppc-single .ppc-h{gap:10px;padding-bottom:8px;margin-bottom:8px}
+.play-print-card.ppc-single .ppc-ic{font-size:30pt}
+.play-print-card.ppc-single .ppc-h b{font-size:16pt}
+.play-print-card.ppc-single .ppc-kind{font-size:9pt;padding:3px 9px}
+.play-print-card.ppc-single .ppc-row{font-size:11pt;line-height:1.6;padding:4px 0;display:flex;gap:6px}
+.play-print-card.ppc-single .ppc-row b{flex:none}
 
 /* ══ v2.8：📍 場地設置教學 ＋ 🧒 4–7 歲手工控場層 ══ */
 .vn-hint{margin:0 0 8px;background:#fffdf2;border:2px solid #ffd54a;border-left:8px solid #f2a81d;
