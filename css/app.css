@@ -2067,13 +2067,6 @@ button.lnk:hover{color:var(--ord)}
 .kt-row.on b{text-decoration:line-through;opacity:.6}
 .kt-q{color:#e65100}
 .kit-tip .kt-b .kt-row{cursor:pointer}
-/* 對照官方套包 */
-.pk-cover{margin-top:8px}
-.pk-cover .tbl{font-size:.78rem}
-.pk-cover .tbl td{padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4}
-.pk-cover .tbl td:first-child{color:var(--mute);width:24%}
-.pk-cover .pkc-more{color:var(--grd);font-weight:700}
-.pk-cover small{display:block;margin-top:6px;font-size:.7rem}
 .pk-kids{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
 .pk-kids .pill{font-size:.76rem;padding:4px 10px}
 .pk-prev{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);font-size:.8rem;font-weight:800}

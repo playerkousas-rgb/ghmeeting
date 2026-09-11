@@ -512,9 +512,9 @@ G.Store.set('members',[{n:'陳大文'},{n:'李小明'},{n:'黃小美'}]);
 G.Store.set('packcopies',0);
 eq('⑮ 有名單就跟人數印',PK.copies(),3);
 G.Store.set('members',[]);
-/* 2026-09 負責人：套包頁收細（對照表收埋出頁面），取代官方套包嘅對照資料保留 */
-ok('⑮ 對照官方套包資料保留（取代官方）',PK.COVER.length>=8&&/官方冇/.test(JSON.stringify(PK.COVER)),
-  'rows='+PK.COVER.length);
+/* 2026-09 負責人：唔喺 APP 內同官方對比（用戶同官方觀感行先）——套包頁唔可以出現「取代官方／逐項對照／官方套包」 */
+ok('⑮ 套包頁唔同官方對比',!/逐項對照/.test(pkHtml)&&!/取代官方/.test(pkHtml)&&!/官方套包/.test(pkHtml)&&typeof PK.COVER==='undefined',
+  '對照內容已全部移除');
 
 /* 曲庫：每首唱遊歌都要有啱節奏嘅伴奏 */
 eq('⑮ 曲庫有三首歌',Object.keys(Music.SONGBOOK).length,3);
@@ -539,7 +539,7 @@ const topLinks=(topNav.match(/<a /g)||[]).length, botLinks=(botNav.match(/<a /g)
 ok('⑯ 上方 5 個集會掣',topLinks===5,'top='+topLinks);
 ok('⑯ 下方 5 個工具箱掣',botLinks===5,'bottom='+botLinks);
 ok('⑯ 上下方分開兩類（🅰️ 集會要準備／🅱️ 工具箱即開即用）',/🅰️/.test(topNav)&&/🅱️/.test(botNav));
-ok('⑯ 上方＝五入口（集會目錄・範本・帶領・官方套包・手冊）',['plan','meet','lead','pack','book'].every(function(v){return topNav.indexOf('data-tab="'+v+'"')>=0}));
+ok('⑯ 上方＝五入口（集會目錄・範本・帶領・集會套包・手冊）',['plan','meet','lead','pack','book'].every(function(v){return topNav.indexOf('data-tab="'+v+'"')>=0}));
 ok('⑯ 下方＝即插即用（工作紙・活動・歌曲・快樂傘・快鍵）',
   ['print','play','song','chute','tools'].every(function(v){return botNav.indexOf('data-tab="'+v+'"')>=0}));
 const navTabs=(idxHtml.match(/data-tab="([a-z]+)"/g)||[]).map(function(x){return x.replace(/[^a-z]/g,'').replace('datatab','')});
