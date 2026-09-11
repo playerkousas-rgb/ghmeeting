@@ -470,11 +470,11 @@ var Kit={
     Object.keys(this.checks).forEach(function(k){var c=Kit.checks[k];
       push('🧭 執行檢查表',c.ic+' '+c.n,c.items.length+' 項可剔・逐項講清點樣檢查',c.n+' '+c.items.join(' '),"Modal.close();Kit.openCheck('"+k+"')");
     });
-    push('📦 官方套包','今場套包：一撳印齊所有教材','領袖教案＋小朋友圖紙（一疊過）','套包 打印 印齊 教材 圖紙 即用紙 教案 執袋單 程序表 帶領卡 家長通知 pack',
+    push('📦 集會套包','今場套包：一撳印齊所有教材','領袖教案＋小朋友圖紙（一疊過）','套包 打印 印齊 教材 圖紙 即用紙 教案 執袋單 程序表 帶領卡 家長通知 pack',
       "Modal.close();App.go('#pack')",'📦 開');
     push('✂️ 工作紙／圖紙庫','所有工作紙・圖紙・場地圖卡・教案・海報','25 份教材分四類，純教材庫','圖紙 工作紙 紙 教材庫 印 打印 列印 worksheet print 圖卡 海報 教案',
       "Modal.close();App.go('#print')",'✂️ 開');
-    push('📦 官方套包','⚡ 臨時集會（揀主題即出套包）','資深領袖臨時頂位用','臨時 加場 頂位 即興 隨手 開會',
+    push('📦 集會套包','⚡ 臨時集會（揀主題即出套包）','資深領袖臨時頂位用','臨時 加場 頂位 即興 隨手 開會',
       "Modal.close();App.go('#pack')",'📦 開');
     ((typeof Sheets!=='undefined'&&Sheets.craft)?Object.keys(Sheets.craft):[]).forEach(function(k){
       var c=Sheets.craft[k];

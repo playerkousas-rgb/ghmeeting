@@ -47,7 +47,7 @@ var App={
     var next=pl.rows.find(function(r){return r.status==='todo'});
     var nextT=next?dur(next.tid):dur('t01');
     var h='<div class="quick-hub-header"><span class="eyebrow">⚡ 隨手開會</span><h3>即刻開會・零物資</h3></div>'+
-      '<div class="card" style="background:#fff4e6;border:2px solid #ffd9a8;padding:12px;margin:8px 0"><b style="color:var(--ord)">📦 想印齊今場教材？</b><div class="btns" style="margin:6px 0 0"><button class="btn blk" onclick="Modal.close();App.go(\'#pack\')">📦 去官方套包（一撳印齊）</button></div></div>'+
+      '<div class="card" style="background:#fff4e6;border:2px solid #ffd9a8;padding:12px;margin:8px 0"><b style="color:var(--ord)">📦 想印齊今場教材？</b><div class="btns" style="margin:6px 0 0"><button class="btn blk" onclick="Modal.close();App.go(\'#pack\')">📦 去集會套包（一撳印齊）</button></div></div>'+
       (nextT?'<div class="card" style="background:#f1f8e9;border:2px solid #81c784;padding:12px;margin:8px 0"><div style="font-size:.78rem;font-weight:800;color:var(--grd)">📅 推薦：今日進度集會</div><h4 style="margin:4px 0;font-size:1.1rem;color:var(--ink)">'+esc(nextT.n)+'</h4><div class="mute" style="font-size:.8rem">'+esc(nextT.theme)+'・約 '+Plan.lenOf(nextT)+' 分鐘</div><div class="btns" style="margin-top:8px"><button class="btn gr blk" onclick="Modal.close();Lead.start(\''+nextT.id+'\','+(next?next.no:1)+')">▶ 即刻全螢幕帶領</button></div></div>':'')+
       '<div class="card" style="border:1.5px solid var(--line);padding:12px;margin:8px 0"><h4 style="margin:0 0 6px;color:var(--ord)">🎲 零準備即興集會（100% 數碼免道具）</h4><div class="mute" style="font-size:.78rem;margin-bottom:8px">領袖臨時頂位？撳一下自動組合 6 個流暢環節，即開即玩：</div>'+
       '<div class="grid2">'+

@@ -1,4 +1,4 @@
-/* 🦗 pack.js — 官方套包：新領袖一撳就攞到今場所有教材（分開「領袖用」同「小朋友即用紙」） © 2026 Scout System */
+/* 🦗 pack.js — 集會套包：新領袖一撳就攞到今場所有教材（分開「領袖用」同「小朋友即用紙」） © 2026 Scout System */
 /* 目標：開會前一晚，一個按鈕印齊 → 執袋 → 第二日拎起就用。
    兩疊紙分得清清楚楚：領袖套包＝說明／流程／清單；小朋友套包＝印完即剪即摺即用，紙上冇說明書。 */
 var Pack={
@@ -179,7 +179,7 @@ var Pack={
   },
   mins:function(m){return (m.stages||[]).reduce(function(a,s){return a+(+s.m||0)},0)},
 
-  /* ═════════════ 頁面（首頁 = 官方套包） ═════════════ */
+  /* ═════════════ 頁面（首頁 = 集會套包） ═════════════ */
   html:function(){
     var cur=Pack.meet(),m=cur.m,sel=Pack.sel();
     var kids=Sheets.forMeet(m),fl=Sheets.floorFor(m),cp=Pack.copies();
@@ -188,7 +188,7 @@ var Pack={
     var appN=Pack.PARTS.filter(function(p){return !sel[p.k]&&p.app}).length;
     var h='';
     h+='<section class="pk-hero">'+
-      '<span class="eyebrow">📦 官方套包</span>'+
+      '<span class="eyebrow">📦 集會套包</span>'+
       '<h1>'+esc(m.n)+'</h1>'+
       '<div class="pk-meta">'+esc(Pack.dateLine(m))+' ｜ '+Pack.mins(m)+' 分鐘 ｜ '+m.stages.length+' 個環節 ｜ '+(Store.get('members',[])||[]).length+' 人</div>'+
       /* 一撳＝教案＋圖紙一疊過，唔會印完教案仲要周圍搵圖紙 */
@@ -326,7 +326,7 @@ var Pack={
     var mem=(Store.get('members',[])||[]).length;
     var h='<div class="a4-sheet pack-sheet">'+
       '<div class="print-header"><div class="p-title-group">'+
-        '<span class="p-badge">📦 官方套包・領袖套包 1／3</span>'+
+        '<span class="p-badge">📦 集會套包・領袖套包 1／3</span>'+
         '<h2>'+esc(s.group||'小童軍團')+' — '+esc(m.n)+'</h2>'+
         '<div class="p-meta">主題：<b>'+esc(m.theme||'')+'</b> ｜ '+esc(Pack.dateLine(m))+' ｜ <b>'+Pack.mins(m)+' 分鐘</b> ｜ '+m.stages.length+' 個環節'+(mem?' ｜ '+mem+' 人':'')+'</div>'+
       '</div><div class="p-logo">🦗</div></div>'+
@@ -362,7 +362,7 @@ var Pack={
         '<td style="font-size:7.6pt">'+(t?esc(t.how):'')+(t&&t.sub?'<br>♻️ '+esc(t.sub):'')+'</td></tr>';
     }).join(''):'<tr><td colspan="4">呢場唔使額外物資 — 帶部手機就夠。</td></tr>';
     return '<div class="a4-sheet pack-sheet">'+
-      '<div class="print-header-simple"><span>官方套包・領袖套包 2／3</span> <b>🧺 執袋單・'+esc(m.n)+'</b></div>'+
+      '<div class="print-header-simple"><span>集會套包・領袖套包 2／3</span> <b>🧺 執袋單・'+esc(m.n)+'</b></div>'+
       '<div class="p-note">放落袋之前逐樣剔。人手已經跟名單人數計過；冇嗰樣就跟「後備」改。</div>'+
       '<table class="print-table check-table"><thead><tr><th style="width:5%">✓</th><th style="width:16%">物資</th><th style="width:30%">每人幾多</th><th style="width:49%">點備・冇就改用</th></tr></thead><tbody>'+rows+'</tbody></table>'+
       '<div class="print-section" style="margin-top:10px"><div class="p-sec-title">🎒 每次都要帶（唔使諗）</div>'+
@@ -389,7 +389,7 @@ var Pack={
     };
     for(i=0;i<m.stages.length;i+=2){
       h+=(h?'<div class="pbreak"></div>':'')+'<div class="a4-sheet pack-sheet">'+
-        '<div class="print-header-simple"><span>官方套包・領袖套包 3／3</span> <b>🃏 環節帶領卡・剪開手揸</b></div>'+
+        '<div class="print-header-simple"><span>集會套包・領袖套包 3／3</span> <b>🃏 環節帶領卡・剪開手揸</b></div>'+
         '<div class="pk-cards">'+card(m.stages[i],i)+(m.stages[i+1]?card(m.stages[i+1],i+1):'')+'</div></div>';
     }
     return h;
@@ -415,7 +415,7 @@ var Pack={
       rows+='<tr><td class="ck-box"></td><td style="font-size:8.2pt">'+esc(x.x)+'</td><td style="font-size:7.6pt;color:#666">'+esc(x.st)+'</td></tr>';
     });
     return '<div class="a4-sheet pack-sheet">'+
-      '<div class="print-header-simple"><span>官方套包・今場設場</span> <b>📍 到場 30 分鐘照住剔</b></div>'+
+      '<div class="print-header-simple"><span>集會套包・今場設場</span> <b>📍 到場 30 分鐘照住剔</b></div>'+
       '<div class="p-note">今場要設嘅分區：<b>'+Object.keys(zones).join('・')+'</b>。逐項剔晒先至開場。</div>'+
       '<table class="print-table check-table"><thead><tr><th style="width:5%">✓</th><th style="width:66%">做乜</th><th style="width:29%">因為呢節</th></tr></thead><tbody>'+rows+'</tbody></table>'+
       '<div class="print-section" style="margin-top:8px"><div class="p-sec-title">🗣️ 開會前 3 分鐘・五條規矩（每條即場練一次）</div><div class="p-para tiny">'+
@@ -432,7 +432,7 @@ var Pack={
     var mats=matsOf(m),s=Store.get('settings',{})||{};
     var ctx={theme:m.theme,items:mats.slice(0,2),extra:mats.slice(0,3).join('、')||'水同毛巾',date:Kit.planRowDate(m.id)};
     return '<div class="a4-sheet pack-sheet">'+
-      '<div class="print-header-simple"><span>官方套包・家長通知</span> <b>📣 已填好・影相發群就得</b></div>'+
+      '<div class="print-header-simple"><span>集會套包・家長通知</span> <b>📣 已填好・影相發群就得</b></div>'+
       Pack.msgBlock(m,0,ctx)+Pack.msgBlock(m,1,ctx)+
       '<div class="p-foot">旅團：'+esc(s.group||'____________')+'　© 2026 Scout System</div></div>';
   },

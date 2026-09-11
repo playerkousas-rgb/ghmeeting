@@ -1,5 +1,5 @@
 /* 🦗 handbook.js — 手冊（🅰️ 右1）：小童軍核心內容——核心・獎章制度・保護自己・帶領貼士・關於 © 2026 Scout System
-   定位（2026-09 負責人）：手冊＝小童軍核心內容。手工自學卡抽上「📦 官方套包」頁正面位；
+   定位（2026-09 負責人）：手冊＝小童軍核心內容。手工自學卡抽上「📦 集會套包」頁正面位；
    點預備／場地設置／遊戲帶領／快樂傘各有自己入口（套包 parts・嚮導・下方 🎮活動・🌈快樂傘），唔再喺手冊重覆。 */
 var HB={
   tab:'core',
@@ -11,7 +11,7 @@ var HB={
   },
   t:function(x){HB.tab=x;App.route()},
   kit:function(){
-    return '<div class="card"><h2>🧰 做之前點預備</h2><div class="mute" style="font-size:.84rem">物資幾多・場地查乜・家長訊息・章項去邊教。想一次過印齊：去 <button class="lnk" onclick="App.go(\'#pack\')">📦 官方套包</button>。</div></div>'+
+    return '<div class="card"><h2>🧰 做之前點預備</h2><div class="mute" style="font-size:.84rem">物資幾多・場地查乜・家長訊息・章項去邊教。想一次過印齊：去 <button class="lnk" onclick="App.go(\'#pack\')">📦 集會套包</button>。</div></div>'+
       Kit.hubHtml()+
       '<div class="card"><h3>🧺 執袋（開會前晚 10 分鐘版）</h3><div class="box">'+
       '① 今場物資逐樣放落袋（用準備卡嗰個「剔走」清單）<br>② 後備版材料（已剪好／印好）另外一個膠袋<br>③ 大人工具：釘書機、切孔器、熱熔膠（貼低「領袖用」字句）<br>④ 名牌／咭套＋後備筆 2 支<br>⑤ 急救包、哨子、後備水樽<br>⑥ 手機充滿＋充電棒（投影用）<br><small class="mute">想紙本：「集會 → 撳張卡 → 🖨️ 打印本集 A4 教案」，檢查表會跟住印埋。</small></div></div>';
