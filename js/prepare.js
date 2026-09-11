@@ -24,7 +24,8 @@ var Prepare={
   brief:function(s,i){
     var g=Guide.forStage(s);
     var mats=(s.mats||[]).length?'<div class="mats-bar"><b>🧺 要拎：</b>'+s.mats.map(function(m){return '<span class="pill" onclick="this.classList.toggle(\'on\')"><span class="dot"></span>'+esc(m)+'</span>'}).join('')+'</div>':'';
-    var visual=(s.screen==='chuteopen'||s.screen==='chuteclose'||s.screen==='chute')?Lead.parachuteSvg(s.screen==='chuteclose'?'close':'open'):'';
+    var visual=(s.screen==='chuteopen'||s.screen==='chuteclose'||s.screen==='chute')?
+      ((typeof Img!=='undefined')?Img.fig('chute-top','圍圈執實傘邊・一齊揚傘','圍一圈，雙手執實傘邊，數一二三一齊揚高'):Lead.parachuteSvg('open')):'';
     return '<article class="brief-card"><div class="brief-head"><span class="brief-no">'+(i+1)+'</span><div><h3>'+esc(s.n)+'</h3><small>'+esc(s.t)+'・'+(+s.m||0)+' 分鐘</small></div></div>'+mats+visual+
       '<div class="guide-lead"><b>領袖先做</b>'+esc(g.lead)+'</div><div class="guide-steps">'+g.steps.map(function(x){return '<div class="guide-step"><span class="gnum">'+esc(x[0])+'</span><span class="gicon">'+x[1]+'</span><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div>'}).join('')+'</div><div class="say-box"><b>🎤 照講</b>'+esc(g.say)+'</div><details class="guide-more"><summary>👀 留意・🛡️ 安全</summary><div class="watch-row"><div><b>👀 睇住呢樣</b>'+esc(g.watch)+'</div><div class="safe"><b>🛡️ 安全</b>'+esc(g.safety)+'</div></div></details>'+
       ((Craft&&(Craft.match(s)||Craft.isCraft(s)))?Craft.mini(s):'')+Kit.ownerHtml(Prepare._detailId,i,s)+

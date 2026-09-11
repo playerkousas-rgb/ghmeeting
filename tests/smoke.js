@@ -237,6 +237,10 @@ const P=G.PrintKit;
   if(id==='game-cards'){
     const miss=Object.keys(Lead.playMeta).filter(function(k2){return html.indexOf(Lead.playMeta[k2].n)<0});
     ok('⑥ 遊戲帶領卡覆蓋全部 '+Object.keys(Lead.playMeta).length+' 個遊戲',miss.length===0,'缺:'+miss.join(','));
+    /* 2026-09 負責人：喺遊戲畫面撳「印遊戲帶領卡」＝只印嗰個遊戲（一頁），唔係成個庫排成書簽條 */
+    const one=P.kits.filter(function(x){return x.id==='game-cards'})[0].render('leader');
+    ok('⑥ 只印一個遊戲＝一頁・冇其他遊戲',one.indexOf(Lead.playMeta.leader.n)>=0&&one.indexOf('ppc-single')>=0&&(one.match(/a4-sheet/g)||[]).length===1&&one.indexOf(Lead.playMeta.quiz.n)<0);
+    ok('⑥ 遊戲畫面嘅印掣帶住嗰個遊戲',/openModal\('game-cards','leader'\)/.test(G.Lead.playCard('leader')));
   }
 });
 
@@ -512,9 +516,10 @@ G.Store.set('members',[{n:'陳大文'},{n:'李小明'},{n:'黃小美'}]);
 G.Store.set('packcopies',0);
 eq('⑮ 有名單就跟人數印',PK.copies(),3);
 G.Store.set('members',[]);
-/* 2026-09 負責人：套包頁收細（對照表收埋出頁面），取代官方套包嘅對照資料保留 */
-ok('⑮ 對照官方套包資料保留（取代官方）',PK.COVER.length>=8&&/官方冇/.test(JSON.stringify(PK.COVER)),
-  'rows='+PK.COVER.length);
+/* 2026-09 負責人：唔喺 APP 內同官方對比（觀感行先）。「官方套包」＝上方直開官方 PDF 嗰格；
+   APP 自己嗰頁叫「集會套包」，唔可以冒用官方名，亦唔准出現「取代官方／逐項對照」 */
+ok('⑮ 套包頁唔同官方對比（APP 自己嗰頁叫集會套包）',!/逐項對照/.test(pkHtml)&&!/取代官方/.test(pkHtml)&&!/官方套包/.test(pkHtml)&&typeof PK.COVER==='undefined',
+  '比較字眼已全部移除');
 
 /* 曲庫：每首唱遊歌都要有啱節奏嘅伴奏 */
 eq('⑮ 曲庫有三首歌',Object.keys(Music.SONGBOOK).length,3);
@@ -539,13 +544,21 @@ const topLinks=(topNav.match(/<a /g)||[]).length, botLinks=(botNav.match(/<a /g)
 ok('⑯ 上方 5 個集會掣',topLinks===5,'top='+topLinks);
 ok('⑯ 下方 5 個工具箱掣',botLinks===5,'bottom='+botLinks);
 ok('⑯ 上下方分開兩類（🅰️ 集會要準備／🅱️ 工具箱即開即用）',/🅰️/.test(topNav)&&/🅱️/.test(botNav));
-ok('⑯ 上方＝五入口（集會目錄・範本・帶領・官方套包・手冊）',['plan','meet','lead','pack','book'].every(function(v){return topNav.indexOf('data-tab="'+v+'"')>=0}));
+/* 2026-09 負責人：上方右2「📦 官方套包」＝直開香港童軍總會官方出版 PDF（新視窗），唔係 APP 內頁 */
+ok('⑯ 上方＝五入口（目錄・範本・帶領・官方套包＝官方PDF・手冊）',
+  ['plan','meet','lead','book'].every(function(v){return topNav.indexOf('data-tab="'+v+'"')>=0})&&
+  /官方套包/.test(topNav)&&/drive\.google\.com\/file\/d\/1qI5aUCFZE-sAGDDeloE8ubdGXifZg8P2/.test(topNav)&&/target="_blank"/.test(topNav));
 ok('⑯ 下方＝即插即用（工作紙・活動・歌曲・快樂傘・快鍵）',
   ['print','play','song','chute','tools'].every(function(v){return botNav.indexOf('data-tab="'+v+'"')>=0}));
 const navTabs=(idxHtml.match(/data-tab="([a-z]+)"/g)||[]).map(function(x){return x.replace(/[^a-z]/g,'').replace('datatab','')});
-['pack','plan','meet','play','lead','book','print','chute','song','tools'].forEach(function(v){
+['plan','meet','lead','book','print','play','chute','song','tools'].forEach(function(v){
   ok('⑯ 「'+v+'」有入口（唔會有孤兒分頁）',navTabs.indexOf(v)>=0,navTabs.join(','));
 });
+/* 📦 集會套包頁（APP 自印教材）唔再佔上方 5 格——入口喺準備流程・準備卡・搜尋 */
+ok('⑯ 「pack」頁喺準備流程入到（唔係孤兒分頁）',
+  /#pack/.test(fs.readFileSync(path.join(__dirname,'..','js','flow.js'),'utf8'))&&
+  /Pack\.pick\(/.test(fs.readFileSync(path.join(__dirname,'..','js','prepare.js'),'utf8')),
+  '入口喺 flow・準備卡');
 ok('⑯ 🏅 記錄有入口（頂欄 icon，唔佔上方 5 格）',/#track/.test(topBar),topBar.replace(/\s+/g,' ').slice(0,120));
 ok('⑯ 📖 手冊＝上方右1（核心內容：獎章制度・保護自己・帶領貼士・關於）',/#book/.test(topNav));
 ok('⑯ 兩條 bar 都會著燈',/#tabbar a, #topnav a/.test(fs.readFileSync(path.join(__dirname,'..','js','app.js'),'utf8')));
@@ -589,6 +602,24 @@ G.App.view='plan';
 ok('⑯b 「揀集會」頁有嚮導入口',/帶我由頭做到尾|嚮導行緊/.test(G.Plan.html()));
 FL.quit();
 ok('⑯b 撳✕ 之後唔會再彈出嚟',!FL.on());
+
+/* ⑯c 2026-09 負責人：臨時集會砌完要留低（唔係開完就唔見）；未有名單都收到場（唔係死路） */
+G.Store.set('mymeets',[]);G.Store.set('packcur',null);
+G.App.startInstant('general',40);
+ok('⑯c 零準備即興集會＝存入我嘅集會＋套包跟住',(G.Store.get('mymeets')||[]).length===1&&G.Pack.meet().mine===1&&G.Lead.S.meet.stages.length>=4,
+  'my='+(G.Store.get('mymeets')||[]).length+' mine='+G.Pack.meet().mine);
+G.Store.set('members',[]);
+G.Track.attendPrompt(1);
+ok('⑯c 未有名單收場＝有得揀「標記完成」，唔係死路',/標記完成/.test(els.get('modal').innerHTML)&&/加團員名單/.test(els.get('modal').innerHTML));
+G.Track.doneNoRoster(1);
+const rDone=G.Store.get('plan').rows.find(function(x){return x.no===1});
+ok('⑯c 標記完成＝目錄狀態變完成＋嚮導記✓',rDone.status==='done'&&G.Flow.isDone('rec'),'status='+rDone.status);
+/* 有名單：記出席儲存都要一齊標完成（同帶領畫面「✓ 記錄完成」一致） */
+var p2=G.Store.get('plan');p2.rows.find(function(x){return x.no===2}).status='todo';G.Store.set('plan',p2);
+G.Store.set('members',[{id:'p1',n:'小明',bday:'',join:'',badge:{},step:0,gh:[]}]);
+G.Track.saveAttend(2);
+const r2=G.Store.get('plan').rows.find(function(x){return x.no===2});
+ok('⑯c 記出席儲存＝目錄狀態一齊標完成',r2.status==='done','status='+r2.status);
 
 /* ⑰ 圖紙搵得返：教案入面有圖紙清單・一疊過印教案＋圖紙 */
 const lp=G.PrintKit.renderLessonPlan('t03');

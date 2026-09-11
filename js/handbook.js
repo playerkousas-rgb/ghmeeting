@@ -1,5 +1,5 @@
 /* 🦗 handbook.js — 手冊（🅰️ 右1）：小童軍核心內容——核心・獎章制度・保護自己・帶領貼士・關於 © 2026 Scout System
-   定位（2026-09 負責人）：手冊＝小童軍核心內容。手工自學卡抽上「📦 官方套包」頁正面位；
+   定位（2026-09 負責人）：手冊＝小童軍核心內容。手工自學卡抽上「📦 集會套包」頁正面位；
    點預備／場地設置／遊戲帶領／快樂傘各有自己入口（套包 parts・嚮導・下方 🎮活動・🌈快樂傘），唔再喺手冊重覆。 */
 var HB={
   tab:'core',
@@ -14,7 +14,7 @@ var HB={
     return '<div class="card"><h2>🧰 做之前點預備</h2><div class="mute" style="font-size:.84rem">物資幾多・場地查乜・家長訊息・章項去邊教。想一次過印齊：去 <button class="lnk" onclick="App.go(\'#pack\')">📦 集會套包</button>。</div></div>'+
       Kit.hubHtml()+
       '<div class="card"><h3>🧺 執袋（開會前晚 10 分鐘版）</h3><div class="box">'+
-      '① 今場物資逐樣放落袋（用準備卡嗰個「剔走」清單）<br>② 後備版材料（已剪好／印好）另外一個膠袋<br>③ 大人工具：釘書機、切孔器、熱熔膠（貼低「領袖用」字句）<br>④ 名牌／咭套＋後備筆 2 支<br>⑤ 急救包、哨子、後備水樽<br>⑥ 手機充滿＋充電棒（投影用）<br><small class="mute">想紙本：「集會 → 撳張卡 → 🖨️ 打印本集 A4 教案」，檢查表會跟住印埋。</small></div></div>';
+      '① 今場物資逐樣放落袋（用準備卡嗰個「剔走」清單）<br>② 後備版材料（已剪好／印好）另外一個膠袋<br>③ 大人工具：釘書機、切孔器、熱熔膠（貼低「領袖用」字句）<br>④ 名牌／咭套＋後備筆 2 支<br>⑤ 急救包、哨子、後備水樽<br>⑥ 手機充滿＋充電棒（投影用）<br><small class="mute">想紙本：📅 集會目錄撳一場 → 🖨️ 印齊今場（教案＋圖紙一疊）；執袋單・檢查表喺 APP 剔，想印喺套包頁剔返。</small></div></div>';
   },
 
   /* 📍 場地設置：新手由零開始 */
@@ -84,7 +84,7 @@ var HB={
   chute:function(){
     return '<div class="card"><h2>🌈 快樂傘：先學基本動作，再揀玩法</h2><div class="mute" style="font-size:.83rem">睇圖就會帶。安全三句：執實傘邊、留一隻手臂距離、傘面唔企人。</div>'+
       Img.fig('chute-top','圍圈執實傘邊','圍一圈，雙手執實傘邊，領袖喺外面打手勢')+
-      Img.fig('chute-steps','三步：執傘、揚高、蒙古包','① 執實 ② 數一二三揚高 ③ 踏前趴低變蒙古包')+Lead.parachuteSvg('open')+
+      Img.fig('chute-steps','三步：執傘、揚高、蒙古包','① 執實 ② 數一二三揚高 ③ 踏前趴低變蒙古包')+
       '<div class="attention"><b>開會口令</b> 「面向傘、跪低、執實」→ 一、二、三揚傘。<br><b>散會口令</b> 「停、口號、慢慢放低」→ 傘落到膝頭才整理。</div>'+
       '<h3 style="margin-top:16px">16式玩法卡</h3><div class="grid2" style="margin-top:8px">'+DATA.chute.map(function(c,i){
         return '<div class="mem"><h4>'+c.ic+' '+c.n+' <span class="tag">'+c.tag+'</span></h4><div class="box" style="font-size:.85rem">'+esc(c.h)+'</div><small class="mute">💡 '+esc(c.t)+'</small><div class="btns"><button class="btn sm gr" onclick="Lead.startChute('+i+')">▶ 開圖卡</button></div></div>'}).join('')+'</div></div>';

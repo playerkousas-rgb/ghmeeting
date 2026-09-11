@@ -64,7 +64,7 @@ var Chute={
       '<div class="mute" style="font-size:.83rem">第一次玩，先做呢三步。</div>'+
       ((typeof Img!=='undefined')?Img.fig('chute-top','圍圈執實傘邊','圍一圈，雙手執實傘邊，領袖喺外面打手勢'):'')+
       ((typeof Img!=='undefined')?Img.fig('chute-steps','執傘・揚高・蒙古包','① 執實傘邊 ② 數一二三一齊揚高 ③ 踏前一步趴低變蒙古包'):'')+
-      ((typeof Lead!=='undefined'&&Lead.parachuteSvg)?Lead.parachuteSvg('open'):'')+
+      '<div class="mute" style="font-size:.83rem;margin-top:6px">💡 想再清楚啲？下面任何一式撳「▶ 即開圖卡」——三步・口令・照讀樣樣齊，螢幕放出嚟跟住做。</div>'+
       '<div class="attention"><b>開會口令</b>「面向傘、跪低、執實」→ 一、二、三，揚傘。<br>'+
       '<b>散會口令</b>「停、口號、慢慢放低」→ 傘落到膝頭先至整理。<br>'+
       '<b>安全三句</b>（每次開場講）：🤲 執實傘邊　↔️ 留一隻手臂距離　🛑 聽停就停。</div></div>';

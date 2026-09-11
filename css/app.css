@@ -43,6 +43,10 @@ small,.mute{color:var(--mute)}
 #topnav .navrow a.on{color:var(--ord);background:#fff8f1}
 #topnav .navrow a.on i{background:var(--or);color:#fff}
 #topnav .navrow a.on span{filter:none}
+/* 📦 官方套包＝官方 PDF 外連：紅色小牌標明「官方PDF」，一眼就知撳咗會開官方嘢 */
+#topnav .navrow a.official{color:#b71c1c}
+#topnav .navrow a.official span{filter:none}
+#topnav .navrow a.official small{font-size:.52rem;font-weight:800;line-height:1;background:#b71c1c;color:#fff;border-radius:99px;padding:1.5px 5px;margin-top:1px}
 #tabbar{position:fixed;bottom:0;left:0;right:0;z-index:50;display:block;background:#fff;
   border-top:1px solid var(--line);box-shadow:0 -2px 10px rgba(120,60,0,.08);
   padding-bottom:env(safe-area-inset-bottom)}
@@ -1832,6 +1836,15 @@ button.lnk:hover{color:var(--ord)}
 .play-print-card .ppc-kind{margin-left:auto;font-size:8pt;background:#eee;border-radius:8px;padding:2px 7px}
 .play-print-card .ppc-row{font-size:8.5pt;line-height:1.45;padding:2px 0}
 .play-print-card .ppc-row b{color:#2e7d32;margin-right:5px}
+/* 單個遊戲版（喺遊戲畫面撳「只印呢個遊戲」）：一張大卡企正中間，唔使剪 */
+.play-print-card.ppc-single{border:2.5px solid #2e7d32;background:#f6fff6;border-radius:14px;
+  padding:16px 18px;margin:14px auto;max-width:660px;box-shadow:0 3px 12px rgba(46,125,50,.12)}
+.play-print-card.ppc-single .ppc-h{gap:10px;padding-bottom:8px;margin-bottom:8px}
+.play-print-card.ppc-single .ppc-ic{font-size:30pt}
+.play-print-card.ppc-single .ppc-h b{font-size:16pt}
+.play-print-card.ppc-single .ppc-kind{font-size:9pt;padding:3px 9px}
+.play-print-card.ppc-single .ppc-row{font-size:11pt;line-height:1.6;padding:4px 0;display:flex;gap:6px}
+.play-print-card.ppc-single .ppc-row b{flex:none}
 
 /* ══ v2.8：📍 場地設置教學 ＋ 🧒 4–7 歲手工控場層 ══ */
 .vn-hint{margin:0 0 8px;background:#fffdf2;border:2px solid #ffd54a;border-left:8px solid #f2a81d;
@@ -2067,13 +2080,6 @@ button.lnk:hover{color:var(--ord)}
 .kt-row.on b{text-decoration:line-through;opacity:.6}
 .kt-q{color:#e65100}
 .kit-tip .kt-b .kt-row{cursor:pointer}
-/* 對照官方套包 */
-.pk-cover{margin-top:8px}
-.pk-cover .tbl{font-size:.78rem}
-.pk-cover .tbl td{padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4}
-.pk-cover .tbl td:first-child{color:var(--mute);width:24%}
-.pk-cover .pkc-more{color:var(--grd);font-weight:700}
-.pk-cover small{display:block;margin-top:6px;font-size:.7rem}
 .pk-kids{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
 .pk-kids .pill{font-size:.76rem;padding:4px 10px}
 .pk-prev{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);font-size:.8rem;font-weight:800}
@@ -2090,7 +2096,11 @@ figure.fig figcaption{font-size:.76rem;color:var(--mute);padding:7px 10px;border
 .toc-hero{margin-bottom:10px}
 .toc-hero h1{margin:.15em 0 .1em}
 .toc-hero p{margin:0;font-size:.9rem}
-.toc-row{display:flex;align-items:flex-start;gap:9px;padding:9px 2px;border-bottom:1px solid #faf0e2}
+.toc-row{display:flex;align-items:flex-start;gap:9px;padding:9px 2px;border-bottom:1px solid #faf0e2;cursor:pointer;border-radius:8px;transition:background .15s}
+.toc-row:hover{background:#fff8ee}
+.toc-row:focus-visible{outline:2px solid var(--ord);outline-offset:-2px}
+.toc-row:active{transform:scale(.995)}
+.toc-go{color:#d8b25a;font-size:1.25rem;line-height:1.1;margin-left:3px;flex:none}
 .toc-row:last-of-type{border-bottom:none}
 .toc-no{flex:0 0 26px;height:26px;border-radius:8px;background:#fff3e0;color:var(--ord);
   font-weight:800;font-size:.8rem;display:flex;align-items:center;justify-content:center;margin-top:2px}

@@ -774,11 +774,15 @@ Lead.scr={
   },
   chuteopen:function(){
     var g=Guide.forStage({screen:'chuteopen'});
-    return '<div class="big">🌈 快樂傘開會・跟圖做</div>'+Lead.parachuteSvg('open')+Lead.guideHtml(g)+'<div class="huge" style="font-size:clamp(2rem,8vw,4.5rem)">「小童軍——向前進!」</div>';
+    return '<div class="big">🌈 快樂傘開會・跟圖做</div>'+
+      ((typeof Img!=='undefined')?Img.fig('chute-top','圍圈執實傘邊・一齊揚傘開會','圍一圈，雙手執實傘邊，數一二三一齊揚高'):Lead.parachuteSvg('open'))+
+      Lead.guideHtml(g)+'<div class="huge" style="font-size:clamp(2rem,8vw,4.5rem)">「小童軍——向前進!」</div>';
   },
   chuteclose:function(){
     var g=Guide.forStage({screen:'chuteclose'});
-    return '<div class="big">🌈 快樂傘散會・跟圖做</div>'+Lead.parachuteSvg('close')+Lead.guideHtml(g)+'<div class="huge" style="font-size:clamp(2rem,8vw,4.5rem)">「小童軍——向前進!」</div>';
+    return '<div class="big">🌈 快樂傘散會・跟圖做</div>'+
+      ((typeof Img!=='undefined')?Img.fig('chute-close','慢慢放低・落到膝頭先整理','停・口號・慢慢放低，傘落到膝頭先至整理'):Lead.parachuteSvg('close'))+
+      Lead.guideHtml(g)+'<div class="huge" style="font-size:clamp(2rem,8vw,4.5rem)">「小童軍——向前進!」</div>';
   },
   song:function(st){
     Music.stop();
@@ -810,7 +814,7 @@ Lead.scr={
     var c=DATA.chute[idx];
     var g=Guide.chute(c);
     return '<div class="qa-q">'+c.ic+' '+c.n+' <span class="tag">'+c.tag+'</span></div>'+
-      ((typeof Img!=='undefined')?Img.chuteFig(c.n):'')+Lead.parachuteSvg('open')+Lead.guideHtml(g)+
+      ((typeof Img!=='undefined')?Img.chuteFig(c.n):'')+Lead.guideHtml(g)+
       '<div class="btns" style="justify-content:center"><button class="btn sm" onclick="Lead.nextChute()">🔀 抽另一式</button></div>'+
       Lead.playCard('chute');
   },
@@ -1163,11 +1167,14 @@ Lead.playMeta={
 Lead.playCard=function(screen){
   var m=Lead.playMeta[screen];if(!m)return '';
   var row=function(ic,t,v,extra){return '<div class="pc-row"><b>'+ic+' '+t+'</b><span>'+v+(extra||'')+'</span></div>'};
+  /* 🖨️ 遊戲帶領卡＝只印而家呢個遊戲（唔係成個庫）——喺邊個遊戲畫面撳，就印邊個 */
+  var printBtn=m.print?('<button class="btn sm ghost" onclick="PrintKit.openModal(\''+m.print+'\''+
+    (m.print==='game-cards'?',\''+screen+'\'':'')+')">'+esc(m.print==='game-cards'?'🖨️ 只印呢個遊戲（A4 一頁）':(m.printLabel||'打印教材'))+'</button>'):'';
   return '<div class="play-card"><div class="pc-h">🧭 點樣帶 <span class="tag">'+esc(m.kind)+'</span></div>'+
     row('🧒','小朋友做乜（身體落場玩）',esc(m.kids))+
     row('🧑‍🏫','領袖撳乜（螢幕由你操作）',esc(m.lead))+
     row('🧺','物資／場地',esc(m.mats))+
-    (m.print?row('🖨️','想做實體教具',' ','<button class="btn sm ghost" onclick="PrintKit.openModal(\''+m.print+'\')">'+esc(m.printLabel||'打印教材')+'</button>'):'')+
+    (printBtn?row('🖨️','想做實體教具',' ',printBtn):'')+
     row('🛡️','安全',esc(m.safe))+
     '<div class="pc-note">💡 我哋唔係打電子 GAME：螢幕只係幫你出題、叫位、計時、計分。小朋友嘅手应该喺隊友手上、地上、傘邊，唔係喺螢幕。</div></div>';
 };

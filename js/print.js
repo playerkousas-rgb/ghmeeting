@@ -71,9 +71,9 @@ var PrintKit={
       cat:'lead',
       ic:'🎮',
       n:'互動遊戲帶領卡（小朋友做乜・領袖撳乜・物資・安全）',
-      desc:'每個遊戲一張卡：小朋友做乜・領袖撳乜・物資・安全。',
-      pages:'A4 每頁 2 張卡（共約 10 頁）',
-      render:function(){return PrintKit.renderGameCards()}
+      desc:'每個遊戲一張卡：小朋友做乜・領袖撳乜・物資・安全。喺遊戲畫面撳＝只印嗰個（A4 一頁）。',
+      pages:'A4 每頁 2 張卡（喺遊戲畫面撳＝只印嗰個）',
+      render:function(extra){return PrintKit.renderGameCards(extra)}
     },
     {
       id:'task-cards',
@@ -264,7 +264,7 @@ var PrintKit={
   },
 
   /* 定位（2026-09 負責人）：下方＝即插即用。呢度係純教材庫，唔再放「今場」準備條
-     （今場套包一鍵印 → 去上方 📦 官方套包）。 */
+     （今場套包一鍵印 → 去上方 📦 集會套包）。 */
   setTab:function(t){
     PrintKit.tab=t;App.route();
   },
@@ -273,9 +273,14 @@ var PrintKit={
     var kit=PrintKit.kits.find(function(k){return k.id===kitId});
     if(!kit)return;
     var contentHtml=kit.render(extra);
+    /* 🖨️ 遊戲帶領卡：喺遊戲畫面撳＝只印嗰個遊戲（標題・頁數都跟住變） */
+    var single=kitId==='game-cards'&&extra&&typeof Lead!=='undefined'&&Lead.playMeta&&Lead.playMeta[extra];
+    var titleH=kit.ic+' '+esc(kit.n);
+    var pagesH=esc(kit.pages);
+    if(single){titleH=Lead.playMeta[extra].ic+' 遊戲帶領卡・'+esc(Lead.playMeta[extra].n);pagesH='A4 1 頁・只印呢個遊戲'}
     var h='<div class="print-preview-modal">'+
       '<div class="print-preview-top">'+
-        '<div><h3>'+kit.ic+' '+esc(kit.n)+'</h3><small class="mute">A4 標準列印排版・'+esc(kit.pages)+'</small></div>'+
+        '<div><h3>'+titleH+'</h3><small class="mute">A4 標準列印排版・'+pagesH+'</small></div>'+
         '<div class="btns"><button class="btn gr" onclick="PrintKit.triggerPrint()"><span style="font-size:1.1rem">🖨️</span> 即刻列印 / 存為 PDF</button></div>'+
       '</div>'+
       '<div class="print-preview-bar"><span id="sheetStat" class="sheet-stat">🖨️ 正在量紙張…</span>'+
@@ -488,13 +493,15 @@ var PrintKit={
     '</div>';
   },
 
-  /* 12c. 互動遊戲帶領卡：由 Lead.playMeta 自動生成（同 APP 畫面同一份資料） */
-  renderGameCards:function(){
-    var keys=Object.keys(Lead.playMeta);
-    var half=Math.ceil(keys.length/2);
-    var card=function(k){
+  /* 12c. 互動遊戲帶領卡：由 Lead.playMeta 自動生成（同 APP 畫面同一份資料）
+     extra＝遊戲 key（例如 'quiz'）：喺邊個遊戲畫面撳，就只印嗰個（A4 一頁）；
+     唔帶 extra＝教材庫成套印（每頁 2 張，剪開一張一個遊戲）。 */
+  renderGameCards:function(extra){
+    var single=!!extra&&!!Lead.playMeta[extra];
+    var keys=single?[extra]:Object.keys(Lead.playMeta);
+    var card=function(k,one){
       var m=Lead.playMeta[k];
-      return '<div class="play-print-card">'+
+      return '<div class="play-print-card'+(one?' ppc-single':'')+'">'+
         '<div class="ppc-h"><span class="ppc-ic">'+m.ic+'</span><b>'+esc(m.n)+'</b><span class="ppc-kind">'+esc(m.kind)+'</span></div>'+
         '<div class="ppc-row"><b>🧒 小朋友做乜</b>'+esc(m.kids)+'</div>'+
         '<div class="ppc-row"><b>🧑‍🏫 領袖撳乜</b>'+esc(m.lead)+'</div>'+
@@ -502,6 +509,15 @@ var PrintKit={
         '<div class="ppc-row"><b>🛡️ 安全</b>'+esc(m.safe)+'</div>'+
       '</div>';
     };
+    if(single){
+      var m=Lead.playMeta[extra];
+      return '<div class="a4-sheet game-card-sheet game-card-single-sheet">'+
+        '<div class="print-header-simple"><span>小童軍訓練教材套包 13</span> <b>🎮 遊戲帶領卡・'+esc(m.n)+'</b></div>'+
+        '<div class="print-cut-notice">✂️ 唔使剪：就係呢一個遊戲，A4 一頁——手揸／貼喺場邊，跟住帶就啱。</div>'+
+        card(extra,true)+
+        '</div>';
+    }
+    var half=Math.ceil(keys.length/2);
     var pages='';
     for(var i=0;i<keys.length;i+=2){
       pages+=(i?'<div class="pbreak"></div>':'')+
