@@ -547,7 +547,7 @@ ok('⑯ 上下方分開兩類（🅰️ 集會要準備／🅱️ 工具箱即�
 /* 2026-09 負責人：上方右2「📦 官方套包」＝直開香港童軍總會官方出版 PDF（新視窗），唔係 APP 內頁 */
 ok('⑯ 上方＝五入口（目錄・範本・帶領・官方套包＝官方PDF・手冊）',
   ['plan','meet','lead','book'].every(function(v){return topNav.indexOf('data-tab="'+v+'"')>=0})&&
-  /官方套包/.test(topNav)&&/drive\.google\.com\/file\/d\/1qI5aUCFZE-sAGDDeloE8ubdGXifZg8P2/.test(topNav)&&/target="_blank"/.test(topNav));
+  /官方套包/.test(topNav)&&/drive\.google\.com\/file\/d\/1Ei9PQreXhmuvmzR-n5Q2vOcbGnihnnFh/.test(topNav)&&/target="_blank"/.test(topNav));
 ok('⑯ 下方＝即插即用（工作紙・活動・歌曲・快樂傘・快鍵）',
   ['print','play','song','chute','tools'].every(function(v){return botNav.indexOf('data-tab="'+v+'"')>=0}));
 const navTabs=(idxHtml.match(/data-tab="([a-z]+)"/g)||[]).map(function(x){return x.replace(/[^a-z]/g,'').replace('datatab','')});
