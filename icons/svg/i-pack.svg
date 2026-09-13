@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="官方套包">
+<title>官方套包</title>
+<g fill="#7AB8E6" opacity=".2" transform="translate(1.2 1.8)"><path d="M9 20h30v15a5 5 0 0 1-5 5H14a5 5 0 0 1-5-5Z"/></g>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M9 20h30v15a5 5 0 0 1-5 5H14a5 5 0 0 1-5-5Z" fill="#7AB8E6"/>
+  <rect x="6" y="13" width="36" height="8" rx="3.5" fill="#A9D4F2"/>
+  <path d="M21.5 13v26" fill="none"/>
+</g>
+<rect x="20" y="13.5" width="5" height="25" fill="#FFD54F" opacity=".9"/>
+</svg>

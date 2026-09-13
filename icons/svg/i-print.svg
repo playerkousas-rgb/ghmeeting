@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="工作紙">
+<title>工作紙</title>
+<g fill="#6BBE66" opacity=".18" transform="translate(1.2 1.8)"><path d="M8 7h17l5 5v20a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2Z"/></g>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M8 7h17l5 5v20a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2Z" fill="#FFFBF0"/>
+  <path d="M25 7v5h5"/>
+  <g stroke="#6BBE66"><path d="M12 18h12"/><path d="M12 24h12"/></g>
+  <path d="M30.5 37 37 21"/><path d="M39 37 32.5 21"/>
+  <circle cx="29" cy="38.5" r="2.8"/><circle cx="40.5" cy="38.5" r="2.8"/>
+</g>
+</svg>

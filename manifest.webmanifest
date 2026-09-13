@@ -1,21 +1,47 @@
 {
   "name": "小童軍集會助手 Grasshopper Hub",
   "short_name": "草蜢助手",
-  "description": "由年度計劃到散會嗰刻:規劃、執集會、帶領、追蹤,小童軍團集會一條龍工具。",
+  "description": "前進・Forward：唔係工具，係陪新領袖行完整場集會嘅同伴。由年度計劃到散會嗰刻——規劃、執集會、帶領、追蹤，小童軍團集會一條龍。",
   "lang": "zh-HK",
+  "dir": "ltr",
+  "id": "./index.html",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#fff7ec",
-  "theme_color": "#e65100",
+  "background_color": "#FFFBF0",
+  "theme_color": "#6BBE66",
+  "categories": ["education", "productivity", "kids"],
   "shortcuts": [
-    {"name":"✂️ 圖紙（印教材）","short_name":"圖紙","url":"./index.html#print"},
-    {"name":"🖨️ 印齊今場（教案＋圖紙）","short_name":"印齊今場","url":"./index.html#pack"},
-    {"name":"▶️ 即開帶領","short_name":"帶領","url":"./index.html#lead"}
+    {
+      "name": "✂️ 圖紙（印教材）",
+      "short_name": "圖紙",
+      "url": "./index.html#print",
+      "icons": [{ "src": "icons/png/192/i-print.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "🖨️ 印齊今場（教案＋圖紙）",
+      "short_name": "印齊今場",
+      "url": "./index.html#pack",
+      "icons": [{ "src": "icons/png/192/i-pack.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "▶️ 即開帶領",
+      "short_name": "帶領",
+      "url": "./index.html#lead",
+      "icons": [{ "src": "icons/png/192/i-lead.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "📅 集會目錄",
+      "short_name": "目錄",
+      "url": "./index.html#plan",
+      "icons": [{ "src": "icons/png/192/i-plan.png", "sizes": "192x192", "type": "image/png" }]
+    }
   ],
   "icons": [
-    {"src":"icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
-    {"src":"icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+    { "src": "icons/icon-48.png",          "sizes": "48x48",   "type": "image/png" },
+    { "src": "icons/icon-192.png",         "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png",         "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512-maskable.png","sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
