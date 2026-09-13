@@ -37,10 +37,10 @@
 13 粒：🅰️ 集會目錄・範本・帶領・官方套包・手冊 ／ 🅱️ 工作紙・活動・歌曲・快樂傘・快鍵 ／ 頂欄 搜尋・記錄・設定。
 48×48 viewBox｜2.2px 圓角描邊｜水彩填色＋20% 白邊｜一套出齊 PNG 48/192/1024。
 
-**吉祥物**：`img/ghmeeting_mascot.png`（1024² 去背）→ 自動出 `icons/icon-512.png`・`icon-192.png`・`icon-512-maskable.png`（綠底）・`apple-touch-icon.png`（180² 綠底）。
+**吉祥物**：`img/ghmeeting_mascot.src.png`（原檔 1024² 去背）→ 裁法 **A 全身**（彩虹傘完整＋草蜢全身）→ 自動出 `icons/icon-512.png`・`icon-192.png`・`icon-512-maskable.png`（綠底）・`apple-touch-icon.png`（180² 綠底）。後備構圖 B／C 見 `docs/mascot-crop.html`。
 
 ```bash
-bash tools/build-mascot.sh img/ghmeeting_mascot.png   # 換吉祥物 → 全套 PWA icon
+bash tools/build-mascot.sh                         # 換吉祥物 → 全套 PWA icon（CROP=B|C 轉構圖）
 node tools/build-icons.mjs                            # 改 ICON → sprite + PNG + 注入 index.html
 ```
 

@@ -227,7 +227,9 @@ footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--gh-line);colo
   </div>
 
   <p><small>吉祥物＝小蚱蜢戴童軍帽＋背後彩虹快樂傘，水彩繪本風，去背透明底。
-  原檔 <code>img/ghmeeting_mascot.png</code>（1024² 透明）→ 由 <code>tools/build-mascot.sh</code> 自動出全套 PWA icon。</small></p>
+  原檔 <code>img/ghmeeting_mascot.src.png</code>（1024² 去背・未裁）→ <code>tools/build-mascot.sh</code> 出全套 PWA icon。
+  裁法用 <b>A 全身構圖</b>（彩虹傘完整＋草蜢全身）；後備 B 主角特寫／C 中景：<code>CROP=C bash tools/build-mascot.sh</code>。
+  三個裁法嘅實測對比喺 <a href="mascot-crop.html">mascot-crop.html</a>。</small></p>
 
   <h3>吉祥物 → PWA icon（同一張圖，四種輸出）</h3>
   <div style="display:flex;gap:14px;flex-wrap:wrap">

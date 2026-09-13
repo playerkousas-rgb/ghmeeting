@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>吉祥物裁法三揀一｜童仔 GH</title>
+<style>
+:root{--gh-green:#6BBE66;--gh-yellow:#FFD54F;--gh-blue:#7AB8E6;--gh-paper:#FFFBF0;--gh-ink:#3A372E;--gh-line:#F1E7D3;--gh-radius:24px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--gh-paper);color:var(--gh-ink);
+  font-family:"PingFang HK","Noto Sans HK","Microsoft JhengHei",ui-rounded,sans-serif;line-height:1.6;padding:0 0 60px}
+.wrap{max-width:900px;margin:0 auto;padding:0 18px}
+h1{font-size:1.5rem;margin:.7em 0 .2em}
+h2{font-size:1.05rem;margin:1.6em 0 .5em;padding-left:10px;border-left:5px solid var(--gh-green)}
+small{color:#8A8474}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:620px){.grid{grid-template-columns:1fr}}
+.card{background:#fff;border:1.5px solid var(--gh-line);border-radius:var(--gh-radius);padding:14px;text-align:center}
+.card h3{margin:0 0 2px;font-size:1rem}
+.card .why{font-size:.76rem;color:#8A8474;min-height:2.4em;margin-bottom:8px}
+.big{width:132px;height:132px;display:block;margin:0 auto}
+.check{background-image:linear-gradient(45deg,#eee 25%,transparent 25%,transparent 75%,#eee 75%),
+  linear-gradient(45deg,#eee 25%,#fff 25%,#fff 75%,#eee 75%);background-size:16px 16px;
+  background-position:0 0,8px 8px;border-radius:16px}
+.row{display:flex;gap:14px;align-items:flex-end;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.row div{text-align:center}
+.row small{display:block;font-size:.62rem;margin-top:3px}
+.s48{width:48px;height:48px}
+.s72{width:72px;height:72px}
+.tile{width:64px;height:64px;border-radius:15px}
+.dark{background:#3A372E;padding:10px;border-radius:18px;display:inline-block}
+.note{background:var(--gh-yellow-lt,#FFF6DF);border:1.5px solid var(--gh-yellow);border-radius:16px;
+  padding:12px 14px;font-size:.86rem;margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:.84rem;margin-top:8px}
+th,td{border-bottom:1px solid var(--gh-line);padding:6px 8px;text-align:left}
+th{color:#3A7F39;font-size:.78rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🐛 吉祥物裁法・決策記錄</h1>
+  <div class="note"><b>✅ 已採用 A（全身構圖）。</b>出街嘅 <code>icons/icon-512.png</code>・<code>icon-192.png</code>・
+<code>icon-512-maskable.png</code>・<code>apple-touch-icon.png</code> 全部係 A 裁法。<br>
+想轉後備構圖：<code>CROP=C bash tools/build-mascot.sh</code>（B／C 都得），全套 icon 即時重生。</div>
+<p><small>同一張 <code>img/ghmeeting_mascot.src.png</code>（原檔，1024² 去背），三個裁法。
+左邊 A 係用緊嗰個；B／C 留低做後備，第時想換主角特寫就一句 command 搞掂。</small></p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>A · 全身 ✅ 已採用</h3>
+      <div class="why">彩虹傘完整出晒，草蜢喺下面<br>品牌元素最齊，48px 下草蜢偏細但認得出</div>
+      <div class="check" style="width:132px;height:132px;margin:0 auto"><img class="big" src="../icons/icon-512.png" alt="A"></div>
+      <div class="row">
+        <div><img class="s72" src="../icons/icon-512.png"><small>72px</small></div>
+        <div><img class="s48" src="../icons/icon-512.png"><small>48px</small></div>
+        <div><img class="tile" src="../icons/icon-512-maskable.png"><small>iOS 綠底</small></div>
+        <div class="dark"><img class="s48" src="../icons/icon-512.png"><small style="color:#bbb">深底</small></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>B · 主角特寫（後備 1）</h3>
+      <div class="why">裁到草蜢做主角（佔畫面 90% 闊），彩虹傘變背景弧<br>48px 都睇到成隻草蜢連腳</div>
+      <div class="check" style="width:132px;height:132px;margin:0 auto"><img class="big" src="../icons/crop-preview/mascot-B.png" alt="B"></div>
+      <div class="row">
+        <div><img class="s72" src="../icons/crop-preview/mascot-B.png"><small>72px</small></div>
+        <div><img class="s48" src="../icons/crop-preview/mascot-B.png"><small>48px</small></div>
+        <div><img class="tile" src="../icons/crop-preview/ios-B.png"><small>iOS 綠底</small></div>
+        <div class="dark"><img class="s48" src="../icons/crop-preview/mascot-B.png"><small style="color:#bbb">深底</small></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>C · 中景（後備 2・第 2 選擇）</h3>
+      <div class="why">傘頂留多啲（見到彩虹），草蜢大一級<br>兩邊都有，但 48px 仍然偏細</div>
+      <div class="check" style="width:132px;height:132px;margin:0 auto"><img class="big" src="../icons/crop-preview/mascot-C.png" alt="C"></div>
+      <div class="row">
+        <div><img class="s72" src="../icons/crop-preview/mascot-C.png"><small>72px</small></div>
+        <div><img class="s48" src="../icons/crop-preview/mascot-C.png"><small>48px</small></div>
+        <div><img class="tile" src="../icons/crop-preview/ios-C.png"><small>iOS 綠底</small></div>
+        <div class="dark"><img class="s48" src="../icons/crop-preview/mascot-C.png"><small style="color:#bbb">深底</small></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note"><b>構圖數據（44 格網分析原圖）：</b>彩虹傘佔上面 ~55%，草蜢佔下面 ~30%（得 15/44 格闊）。
+所以無論邊個裁法，48px 下草蜢都唔會好大 —— A 保留晒品牌元素（彩虹傘），認得到係童仔 GH，所以揀 A。</div>
+
+  <h2>三個裁法數據</h2>
+  <table>
+    <tr><th>裁法</th><th>構圖</th><th>草蜢佔畫面</th><th>48px 可讀性</th></tr>
+    <tr><td>A 全身</td><td>彩虹傘完整 + 草蜢全身</td><td>約 34% 高</td><td>⚠️ 草蜢糊，似得個頭</td></tr>
+    <tr><td>B 特寫</td><td>草蜢做主角 + 傘做背景弧</td><td>約 62% 高</td><td>✅ 睇到成隻連腳</td></tr>
+    <tr><td>C 中景</td><td>傘頂保留較多 + 草蜢全身</td><td>約 48% 高</td><td>🆗 中間落墨</td></tr>
+  </table>
+
+  <h2>第時想再靚啲</h2>
+  <p><small>如果你有<b>草蜢全身正面、腳清楚</b>嘅版本（或者想要佢企定定、雙手攤開嘅吉祥物公仔構圖），
+  掉張 1024² 去背 PNG 入 <code>img/ghmeeting_mascot.png</code>，跑
+  <code>bash tools/build-mascot.sh</code> —— 構圖好嘅話 A 裁法都已經好靚，唔使犧牲彩虹傘。</small></p>
+</div>
+</body>
+</html>

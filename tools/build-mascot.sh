@@ -6,6 +6,7 @@
 #   bash tools/build-mascot.sh                       # 用 img/ghmeeting_mascot.png
 #   bash tools/build-mascot.sh img/mascot-src-a.png  # 指定來源（白底都得）
 #   GRADE=0 bash tools/build-mascot.sh               # 唔做配色加濃（來源已經係品牌色）
+#   CROP=C   bash tools/build-mascot.sh               # 轉第 2 選擇：中景構圖
 #
 # 輸出：
 #   img/ghmeeting_mascot.png    1024² 去背透明（全域用嘅吉祥物原檔）
@@ -21,8 +22,13 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-SRC="${1:-img/ghmeeting_mascot.png}"
+# 來源：優先搵未裁過嘅原檔 .src.png（掉換吉祥物就蓋呢張），冇先至用輸出檔
+SRC="${1:-}"
+if [ -z "$SRC" ]; then
+  if [ -f "img/ghmeeting_mascot.src.png" ]; then SRC="img/ghmeeting_mascot.src.png"; else SRC="img/ghmeeting_mascot.png"; fi
+fi
 GRADE="${GRADE:-1}"
+CROP="${CROP:-A}"   # 構圖：A 全身（預設・用家已揀）／B 主角特寫／C 中景／auto 自動裁
 GREEN="#6BBE66"
 PAPER="#FFFBF0"
 TMP="$(mktemp -d)"
@@ -71,16 +77,29 @@ convert "$TMP/mat1.png" "$TMP/cc.png" -alpha off -compose CopyOpacity -composite
 convert "$TMP/mat2.png" -channel A -blur 0x0.7 -level 12%,88% +channel "$TMP/mat.png"
 fi
 
-# ④ 裁到實心外框，再補 8% 白邊（安全邊距），復原 1024²
-echo "③ 裁切 + 補安全邊距..."
-BBOX=$(convert "$TMP/mat.png" -alpha extract -trim -format "%wx%h+%X+%Y" info:)
-W=$(echo "$BBOX" | cut -dx -f1); H=$(echo "$BBOX" | cut -d'+' -f1 | cut -dx -f2)
-X=$(echo "$BBOX" | cut -d'+' -f2); Y=$(echo "$BBOX" | cut -d'+' -f3)
-SIDE=$(( W > H ? W : H )); PAD=$(( SIDE * 8 / 100 )); FULL=$(( SIDE + PAD * 2 ))
-convert "$TMP/mat.png" -crop "${W}x${H}+${X}+${Y}" +repage \
-  -background none -extent "${FULL}x${FULL}" -resize 1024x1024 \
-  -define png:color-type=6 -strip "img/ghmeeting_mascot.png"
-echo "   主體 ${W}x${H} → 1024²（留 $((PAD*100/FULL))% 安全邊）"
+# ④ 裁切：CROP=A（預設）／B／C 用固定構圖框（1024 空間嘅比例，見 docs/mascot-crop.html）
+#     CROP=auto 先至用「自動裁到實心外框 + 8% 安全邊」
+echo "③ 裁切（CROP=$CROP）..."
+if [ "$CROP" = "auto" ]; then
+  BBOX=$(convert "$TMP/mat.png" -alpha extract -trim -format "%wx%h+%X+%Y" info:)
+  W=$(echo "$BBOX" | cut -dx -f1); H=$(echo "$BBOX" | cut -d'+' -f1 | cut -dx -f2)
+  X=$(echo "$BBOX" | cut -d'+' -f2); Y=$(echo "$BBOX" | cut -d'+' -f3)
+  SIDE=$(( W > H ? W : H )); PAD=$(( SIDE * 8 / 100 )); FULL=$(( SIDE + PAD * 2 ))
+  convert "$TMP/mat.png" -crop "${W}x${H}+${X}+${Y}" +repage \
+    -background none -extent "${FULL}x${FULL}" -resize 1024x1024 \
+    -define png:color-type=6 -strip "img/ghmeeting_mascot.png"
+  echo "   主體 ${W}x${H} → 1024²（留 $((PAD*100/FULL))% 安全邊）"
+else
+  case "$CROP" in
+    A) CX=93;  CY=93;  CS=814 ;;   # 全身：彩虹傘完整 + 草蜢全身（用家揀呢個）
+    B) CX=244; CY=465; CS=489 ;;   # 主角特寫：草蜢佔 90% 闊
+    C) CX=175; CY=302; CS=605 ;;   # 中景：傘頂留多啲，草蜢中大一級
+    *) echo "❌ CROP 只可以係 A / B / C / auto"; exit 1 ;;
+  esac
+  convert "$TMP/mat.png" -crop "${CS}x${CS}+${CX}+${CY}" +repage -background none \
+    -resize 1024x1024 -define png:color-type=6 -strip "img/ghmeeting_mascot.png"
+  echo "   構圖 $CROP：框 ${CS}² @ ${CX},${CY} → 1024²"
+fi
 
 # ⑤ 各尺寸輸出
 echo "④ 輸出 PWA icon..."
