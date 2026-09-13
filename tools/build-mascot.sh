@@ -31,8 +31,12 @@ trap 'rm -rf "$TMP"' EXIT
 [ -f "$SRC" ] || { echo "❌ 搵唔到來源圖：$SRC"; exit 1; }
 
 echo "① 讀入 $SRC ..."
-# 來源未必係 1024²：先補成正方（透明底／白底都唔會變形）
-convert "$SRC" -background none -gravity center -extent 1024x1024 "$TMP/sq.png"
+# 來源未必係 1024²：先等比縮到 1024 內再補正方（縮細，唔係裁中間！）
+convert "$SRC" -background none -gravity center -resize 1024x1024 -extent 1024x1024 "$TMP/sq.png"
+# 角落已經透明＝來源已去背 → 唔使再做 floodfill
+CORNER_A=$(convert "$TMP/sq.png" -format "%[fx:int(255*a)]" info: 2>/dev/null || echo 255)
+if [ "$CORNER_A" = "0" ]; then ALREADY_CUT=1; else ALREADY_CUT=0; fi
+[ "$ALREADY_CUT" = "1" ] && echo "   來源已去背 → skip floodfill"
 
 # ② 配色：水彩掃描／AI 稿通常偏灰，加濃飽和 + 輕微對比，拉近品牌色板
 if [ "$GRADE" = "1" ]; then
@@ -42,6 +46,14 @@ else
 fi
 
 # ③ 去背：由四角＋四邊中點 floodfill（fuzz 容忍水彩紙紋），再清走細碎孤島
+if [ "$ALREADY_CUT" = "1" ]; then
+  echo "② 去背：來源已有透明底，只做去雜點..."
+  convert "$TMP/graded.png" -alpha extract \
+    -define connected-components:area-threshold=520 \
+    -define connected-components:mean-color=true \
+    -connected-components 4 "$TMP/cc.png"
+  convert "$TMP/graded.png" "$TMP/cc.png" -alpha off -compose CopyOpacity -composite "$TMP/mat.png"
+else
 echo "② 去背（floodfill + 去雜點）..."
 convert "$TMP/graded.png" -alpha set -channel RGBA -fuzz 12% -fill none \
   -draw "color 0,0 floodfill"       -draw "color 1023,0 floodfill" \
@@ -57,6 +69,7 @@ convert "$TMP/mat1.png" -alpha extract \
   -connected-components 4 "$TMP/cc.png"
 convert "$TMP/mat1.png" "$TMP/cc.png" -alpha off -compose CopyOpacity -composite "$TMP/mat2.png"
 convert "$TMP/mat2.png" -channel A -blur 0x0.7 -level 12%,88% +channel "$TMP/mat.png"
+fi
 
 # ④ 裁到實心外框，再補 8% 白邊（安全邊距），復原 1024²
 echo "③ 裁切 + 補安全邊距..."

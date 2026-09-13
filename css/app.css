@@ -12,7 +12,11 @@
   --gh-blue:#7AB8E6;         /* 天空藍：輔助・官方套包 */
   --gh-paper:#FFFBF0;        /* 紙白：全站背景 */
   --gh-ink:#3A372E;          /* 炭筆：文字 */
+  --gh-charcoal:#3A372E;     /* 同上（Brand Book 用名） */
+  --gh-paper-deep:#FFF3C8;   /* 紙白・深（Brand Book） */
   --gh-radius:24px;          /* 卡片圓角 */
+  --gh-radius-sm:20px;       /* 細卡圓角（Brand Book） */
+  --gh-font:"Noto Sans HK","Nunito","PingFang HK","Microsoft JhengHei",ui-rounded,sans-serif;
   /* 深淺延伸（同一套色：漸層・hover・active・底色） */
   --gh-green-dk:#4C9E4B;  --gh-green-lt:#EAF6E6;   --gh-green-dkr:#3A7F39;
   --gh-yellow-dk:#E9B32C; --gh-yellow-lt:#FFF6DF;  --gh-yellow-dkr:#B98612;
@@ -41,14 +45,24 @@ small,.mute{color:var(--mute)}
    冇 emoji、冇字型依賴：黑白打印都得，離線都有，細至 24px 都認得到。            */
 .gh-ic{width:1.4em;height:1.4em;display:block;flex:none;pointer-events:none;
   shape-rendering:geometricPrecision}
-#topnav .navrow a .gh-ic{width:26px;height:26px;margin:0 auto;opacity:.55;transition:.15s}
-#topnav .navrow a.on .gh-ic{opacity:1}
-#topnav .navrow a.official .gh-ic{opacity:1}
-#tabbar a .gh-ic{width:28px;height:28px;margin:0 auto;opacity:.55;transition:.15s}
-#tabbar a.on .gh-ic{opacity:1;transform:translateY(-2px)}
+/* 狀態（Brand Book 06）：非選中＝白底炭灰線 ／ 選中＝綠底白圖 */
+#topnav .navrow a .gh-ic{width:34px;height:34px;margin:0 auto;padding:5px;border-radius:12px;
+  background:#fff;border:1px solid rgba(58,55,46,.08);transition:.15s}
+#topnav .navrow a.on .gh-ic{background:var(--gh-green);border-color:var(--gh-green);
+  box-shadow:0 4px 12px rgba(107,190,102,.4)}
+#topnav .navrow a.on .gh-ic use{filter:brightness(0) invert(1)}   /* 選中 → 白圖 */
+#topnav .navrow a.official .gh-ic{border-color:var(--gh-blue)}
+#tabbar a .gh-ic{width:36px;height:36px;margin:0 auto;padding:5px;border-radius:13px;
+  background:#fff;border:1px solid rgba(58,55,46,.08);transition:.15s}
+#tabbar a.on .gh-ic{background:var(--gh-green);border-color:var(--gh-green);transform:translateY(-2px);
+  box-shadow:0 4px 12px rgba(107,190,102,.4)}
+#tabbar a.on .gh-ic use{filter:brightness(0) invert(1)}
 .iconbtn .gh-ic{width:22px;height:22px;margin:auto}
 .brand-ic{width:26px;height:26px;vertical-align:-7px;margin-right:6px}
-@media(max-width:380px){#topnav .navrow a .gh-ic{width:23px;height:23px}#tabbar a .gh-ic{width:25px;height:25px}}
+@media(max-width:380px){#topnav .navrow a .gh-ic{width:30px;height:30px}#tabbar a .gh-ic{width:32px;height:32px}}
+@media(max-width:340px){#topnav .navrow a .gh-ic{width:27px;height:27px;padding:4px}#tabbar a .gh-ic{width:29px;height:29px;padding:4px}}
+
+
 /* ---- shell ---- */
 #stickytop{position:sticky;top:0;z-index:50}
 #topbar{z-index:50;display:flex;align-items:center;justify-content:space-between;
@@ -316,7 +330,7 @@ hr.soft{border:none;border-top:1.5px dashed var(--line);margin:12px 0}
 .tpl-card .tag{margin-left:2px}
 .tpl-card h4+.mute,.tpl-card small.mute{display:block;line-height:1.5}
 .tpl-card .box{font-size:.83rem;line-height:1.6;padding:7px 9px;margin:2px 0 6px;background:#f7f4f1;border-radius:10px}
-.progbar{height:8px;border-radius:6px;background:#F3E8D6;overflow:hidden;margin:6px 0}
+.progbar{height:6px;border-radius:6px;background:#F3E8D6;overflow:hidden;margin:6px 0}
 .progbar i{display:block;height:100%;background:linear-gradient(90deg,var(--or),var(--gr))}
 toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#3A372E;color:#fff;
   border-radius:99px;padding:10px 20px;font-size:.9rem;z-index:300;box-shadow:var(--sh);white-space:nowrap}

@@ -5,9 +5,9 @@
   <ellipse cx="32" cy="30" rx="6.5" ry="5" transform="rotate(-18 32 30)"/>
 </g>
 <g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M22 14 38 10v6l-16 4Z" fill="#FFD54F"/>
+  <path d="M22 14 38 10v6l-16 4Z" fill="#FFD54F" fill-opacity=".5"/>
   <path d="M22 15v18"/><path d="M38 11v18"/>
-  <ellipse cx="16" cy="34" rx="6.5" ry="5" transform="rotate(-18 16 34)" fill="#FFD54F"/>
-  <ellipse cx="32" cy="30" rx="6.5" ry="5" transform="rotate(-18 32 30)" fill="#FFD54F"/>
+  <ellipse cx="16" cy="34" rx="6.5" ry="5" transform="rotate(-18 16 34)" fill="#FFD54F" fill-opacity=".5"/>
+  <ellipse cx="32" cy="30" rx="6.5" ry="5" transform="rotate(-18 32 30)" fill="#FFD54F" fill-opacity=".5"/>
 </g>
 </svg>
