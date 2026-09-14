@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="範本">
+<title>範本</title>
+<g fill="#FFD54F" opacity=".2" transform="translate(1.2 1.8)"><path d="M15 14h5.5a4.5 4.5 0 1 1 9 0H37v5.5a4.5 4.5 0 1 1 0 9V34h-7.5a4.5 4.5 0 1 1-9 0H15v-5.5a4.5 4.5 0 1 1 0-9Z"/></g>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M15 14h5.5a4.5 4.5 0 1 1 9 0H37v5.5a4.5 4.5 0 1 1 0 9V34h-7.5a4.5 4.5 0 1 1-9 0H15v-5.5a4.5 4.5 0 1 1 0-9Z" fill="#FFD54F" fill-opacity=".22"/>
+</g>
+<ellipse cx="20.5" cy="19" rx="3.2" ry="2" fill="#FFFFFF" opacity=".38"/>
+</svg>

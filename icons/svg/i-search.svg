@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="搜尋">
+<title>搜尋</title>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="21" cy="21" r="11" fill="#FFFBF0"/>
+  <path d="M29.5 29.5 40 40" stroke-width="3.6"/>
+</g>
+<circle cx="17" cy="17" r="3" fill="#7AB8E6" opacity=".45"/>
+</svg>

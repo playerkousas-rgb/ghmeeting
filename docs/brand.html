@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>童仔 GH｜Ghmeeting Brand Icon System</title>
+<style>
+/* ===========================================================================
+   呢份係「唯一品牌真相」嘅可互動版：色板・字型・按鈕・導航模擬・ICON・CSS 變數・manifest
+   所有 token 同 css/app.css 嘅 :root 完全一致；改呢度試完，再改 :root 就全站生效。
+   =========================================================================== */
+:root{
+  --gh-green:#6BBE66;  --gh-green-dk:#4C9E4B;  --gh-green-lt:#EAF6E6;  --gh-green-dkr:#3A7F39;
+  --gh-yellow:#FFD54F; --gh-yellow-dk:#E9B32C; --gh-yellow-lt:#FFF6DF; --gh-yellow-dkr:#B98612;
+  --gh-blue:#7AB8E6;   --gh-blue-dk:#3E93CB;   --gh-blue-lt:#E8F3FB;   --gh-blue-dkr:#1B5E86;
+  --gh-paper:#FFFBF0;  --gh-ink:#3A372E;       --gh-mute:#8A8474;      --gh-line:#F1E7D3;
+  --gh-radius:24px;    --gh-card:#FFFFFF;
+  --font:"PingFang HK","Noto Sans HK","Microsoft JhengHei",ui-rounded,"Helvetica Neue",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--gh-paper);color:var(--gh-ink);font-family:var(--font);line-height:1.6}
+body{padding:0 0 60px}
+.wrap{max-width:960px;margin:0 auto;padding:0 18px}
+h1{font-size:clamp(1.6rem,5vw,2.4rem);margin:.6em 0 .1em;letter-spacing:.5px}
+h2{font-size:1.25rem;margin:2em 0 .6em;padding-left:12px;border-left:6px solid var(--gh-green)}
+h3{font-size:1rem;margin:1.4em 0 .4em;color:var(--gh-green-dkr)}
+p,li{font-size:.94rem}
+small{color:var(--gh-mute)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.84em;
+  background:var(--gh-yellow-lt);padding:1px 6px;border-radius:6px;color:var(--gh-yellow-dkr)}
+.hero{background:linear-gradient(135deg,var(--gh-green-lt) 0%,var(--gh-card) 45%,var(--gh-yellow-lt) 100%);
+  border:1px solid var(--gh-line);border-radius:var(--gh-radius);padding:26px 22px;margin:18px 0 8px;
+  display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.hero img{width:132px;height:132px;flex:none;filter:drop-shadow(0 6px 14px rgba(58,55,46,.16))}
+.hero .txt{flex:1;min-width:240px}
+.hero .pos{font-weight:800;color:var(--gh-green-dkr);font-size:1.05rem}
+.hero .key{display:inline-block;margin:6px 6px 0 0;font-size:.76rem;font-weight:700;padding:3px 10px;
+  border-radius:99px;background:#fff;border:1.5px solid var(--gh-line)}
+/* 色板 */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(146px,1fr));gap:10px}
+.sw{border:1.5px solid var(--gh-line);border-radius:16px;overflow:hidden;background:#fff}
+.sw .chip{height:74px;display:flex;align-items:flex-end;justify-content:flex-end;padding:6px 8px;font-size:.7rem;font-weight:800}
+.sw .meta{padding:8px 10px;font-size:.76rem;line-height:1.45}
+.sw .meta b{display:block;font-size:.86rem}
+.sw .meta span{color:var(--gh-mute);font-family:ui-monospace,monospace;font-size:.72rem}
+/* 按鈕 */
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.btn{font-family:inherit;font-weight:800;font-size:.95rem;padding:11px 22px;border-radius:14px;
+  border:2px solid transparent;cursor:pointer;box-shadow:0 2px 8px rgba(58,55,46,.10)}
+.btn.primary{background:linear-gradient(95deg,var(--gh-green-dk),var(--gh-green));color:#fff}
+.btn.yellow{background:var(--gh-yellow);color:var(--gh-yellow-dkr);border-color:var(--gh-yellow-dk)}
+.btn.blue{background:var(--gh-blue);color:#10395a;border-color:var(--gh-blue-dk)}
+.btn.ghost{background:#fff;border-color:var(--gh-line);color:var(--gh-ink)}
+.btn.sm{padding:7px 14px;font-size:.84rem;border-radius:12px}
+.pill{display:inline-block;font-size:.72rem;font-weight:800;padding:3px 11px;border-radius:99px;margin:3px 4px 0 0}
+.pill.ok{background:var(--gh-green-lt);color:var(--gh-green-dkr)}
+.pill.warn{background:var(--gh-yellow-lt);color:var(--gh-yellow-dkr)}
+.pill.info{background:var(--gh-blue-lt);color:var(--gh-blue-dkr)}
+/* 導航模擬 */
+.simphone{max-width:420px;margin:12px 0;border:2px solid var(--gh-line);border-radius:28px;overflow:hidden;background:#fff;
+  box-shadow:0 8px 24px rgba(58,55,46,.10)}
+.sim-top{background:linear-gradient(95deg,var(--gh-green-dk),var(--gh-green));color:#fff;padding:10px 14px;
+  display:flex;align-items:center;justify-content:space-between;font-weight:800}
+.sim-top img{width:26px;height:26px;vertical-align:-7px;margin-right:6px}
+.sim-top .btns{display:flex;gap:5px}
+.sim-top .ib{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.18);display:grid;place-items:center}
+.sim-top .ib .gh-ic{width:22px;height:22px}
+.navcap{font-size:.62rem;font-weight:800;text-align:center;padding:3px 6px}
+.navcap.a{background:var(--gh-yellow-lt);color:var(--gh-yellow-dkr);border-bottom:1px solid var(--gh-line)}
+.navcap.b{background:var(--gh-green-lt);color:var(--gh-green-dkr);border-bottom:1px solid var(--gh-line)}
+.sim-nav{display:flex;border-bottom:1px solid var(--gh-line)}
+.sim-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 0 8px;font-size:.7rem;
+  font-weight:700;color:var(--gh-mute);border-right:1px solid var(--gh-line)}
+.sim-nav a:last-child{border-right:0}
+.sim-nav a .gh-ic{width:34px;height:34px;padding:5px;border-radius:12px;background:#fff;border:1px solid rgba(58,55,46,.08)}
+.sim-nav a.on{color:var(--gh-green-dk)}
+.sim-nav a.on .gh-ic{background:var(--gh-green);border-color:var(--gh-green);box-shadow:0 4px 12px rgba(107,190,102,.4)}
+.sim-nav a.on .gh-ic use{filter:brightness(0) invert(1)}
+.sim-nav a.official{color:var(--gh-blue-dkr)}
+.sim-nav a.official .gh-ic{border-color:var(--gh-blue)}
+.sim-nav a.official small{font-size:.52rem;font-weight:800;background:var(--gh-blue-dkr);color:#fff;
+  border-radius:99px;padding:1.5px 5px;margin-top:1px}
+.sim-body{padding:16px 14px 26px;color:var(--gh-mute);font-size:.82rem}
+/* ICON 一覽 */
+.icongrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.ic{background:#fff;border:1.5px solid var(--gh-line);border-radius:18px;padding:12px 6px 10px;text-align:center}
+.ic .box{height:56px;display:grid;place-items:center;margin-bottom:6px}
+.ic .gh-ic{width:44px;height:44px}
+.ic b{display:block;font-size:.8rem}
+.ic span{font-size:.66rem;color:var(--gh-mute);font-family:ui-monospace,monospace}
+.ic.sm .gh-ic{width:24px;height:24px}
+.zoom{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;background:#fff;border:1.5px solid var(--gh-line);
+  border-radius:18px;padding:16px}
+.zoom .gh-ic{display:block}
+.zoom small{display:block;text-align:center;margin-top:4px;color:var(--gh-mute);font-size:.68rem}
+pre{background:#fff;border:1.5px solid var(--gh-line);border-radius:16px;padding:14px 16px;overflow:auto;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;line-height:1.6;margin:8px 0}
+table{border-collapse:collapse;width:100%;font-size:.86rem;margin:8px 0}
+th,td{border-bottom:1px solid var(--gh-line);padding:7px 9px;text-align:left}
+th{color:var(--gh-green-dkr);font-size:.8rem}
+.copy{float:right;font-size:.72rem;font-weight:700;background:var(--gh-green-lt);color:var(--gh-green-dkr);
+  border:1px solid var(--gh-green);border-radius:99px;padding:2px 10px;cursor:pointer;margin-top:-2.2em;position:relative}
+.note{background:var(--gh-yellow-lt);border:1.5px solid var(--gh-yellow);border-radius:16px;padding:12px 14px;
+  font-size:.86rem;margin:12px 0;color:var(--gh-yellow-dkr)}
+.note b{color:var(--gh-yellow-dkr)}
+footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--gh-line);color:var(--gh-mute);font-size:.8rem}
+</style>
+</head>
+<body>
+<!--GH-SPRITE:START-->
+<!-- 童仔 GH Icon Sprite — 由 tools/build-icons.mjs 從 icons/svg/i-*.svg 自動產生，唔好手改 -->
+<svg id="gh-sprite" xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true" focusable="false"><defs>
+  <symbol id="gh-book" viewBox="0 0 48 48"><title>手冊</title><title>手冊</title>
+<g fill="#6BBE66" opacity=".18" transform="translate(1.2 1.8)"><path d="M24 15c-4-4-11-4.5-16-2v19c5-2.5 12-2 16 2 4-4 11-4.5 16-2V13c-5-2.5-12-2-16 2Z"/></g>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M24 15c-4-4-11-4.5-16-2v19c5-2.5 12-2 16 2 4-4 11-4.5 16-2V13c-5-2.5-12-2-16 2Z" fill="#6BBE66" fill-opacity=".14"/>
+  <path d="M24 15v21"/>
+  <g stroke="#6BBE66"><path d="M12 21h7"/><path d="M12 26h7"/><path d="M29 21h7"/><path d="M29 26h7"/></g>
+</g></symbol>
+  <symbol id="gh-chute" viewBox="0 0 48 48"><title>快樂傘</title><title>快樂傘</title>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M8 30a16 16 0 0 1 32 0Z" fill="#6BBE66" fill-opacity=".7"/>
+  <path d="M13 30a11 11 0 0 1 22 0Z" fill="#FFD54F" fill-opacity=".7"/>
+  <path d="M18 30a6 6 0 0 1 12 0Z" fill="#7AB8E6" fill-opacity=".7"/>
+  <path d="M8 30h32"/>
+  <path d="M9 30l13 11"/><path d="M24 30v11"/><path d="M39 30 26 41"/>
+  <path d="M20 41h8"/>
+</g></symbol>
+  <symbol id="gh-lead" viewBox="0 0 48 48"><title>帶領</title><title>帶領</title>
+<g fill="#6BBE66" opacity=".2" transform="translate(1.2 1.8)"><path d="M19 12 37 24 19 36Z"/></g>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M19 12 37 24 19 36Z" fill="#6BBE66" fill-opacity=".55"/>
+</g>
+<path d="M23 18.5 30 24 23 29.5Z" fill="#FFFFFF" opacity=".35"/></symbol>
+  <symbol id="gh-pack" viewBox="0 0 48 48"><title>官方套包</title><title>官方套包</title>
+<g fill="#7AB8E6" opacity=".2" transform="translate(1.2 1.8)"><path d="M9 20h30v15a5 5 0 0 1-5 5H14a5 5 0 0 1-5-5Z"/></g>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M9 20h30v15a5 5 0 0 1-5 5H14a5 5 0 0 1-5-5Z" fill="#7AB8E6" fill-opacity=".2"/>
+  <rect x="6" y="13" width="36" height="8" rx="3.5" fill="#7AB8E6" fill-opacity=".35"/>
+</g>
+<rect x="20" y="13.5" width="5" height="25" fill="#FFD54F" fill-opacity=".85"/></symbol>
+  <symbol id="gh-plan" viewBox="0 0 48 48"><title>集會目錄</title><title>集會目錄</title>
+<g fill="#6BBE66" opacity=".2" transform="translate(1.2 1.8)"><rect x="7" y="13" width="34" height="28" rx="6"/></g>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M15 8v6"/><path d="M33 8v6"/>
+  <rect x="7" y="13" width="34" height="28" rx="6" fill="#FFFBF0"/>
+  <path d="M7 21V19a6 6 0 0 1 6-6h22a6 6 0 0 1 6 6v2Z" fill="#6BBE66" fill-opacity=".18"/>
+</g>
+<g fill="#6BBE66"><circle cx="16" cy="27" r="2"/><circle cx="24" cy="27" r="2"/><circle cx="32" cy="27" r="2"/>
+  <circle cx="16" cy="34.5" r="2"/><circle cx="24" cy="34.5" r="2"/><circle cx="32" cy="34.5" r="2"/></g></symbol>
+  <symbol id="gh-play" viewBox="0 0 48 48"><title>活動</title><title>活動</title>
+<g fill="#6BBE66" opacity=".2" transform="translate(1.2 1.8)"><rect x="6" y="17" width="36" height="17" rx="8.5"/></g>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="6" y="17" width="36" height="17" rx="8.5" fill="#6BBE66" fill-opacity=".18"/>
+  <path d="M15 22v8"/><path d="M11 26h8"/>
+</g>
+<g fill="#FFD54F"><circle cx="32" cy="23" r="2.8"/><circle cx="36.5" cy="27.5" r="2.8"/></g></symbol>
+  <symbol id="gh-print" viewBox="0 0 48 48"><title>工作紙</title><title>工作紙</title>
+<g fill="#6BBE66" opacity=".18" transform="translate(1.2 1.8)"><path d="M8 7h17l5 5v20a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2Z"/></g>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M8 7h17l5 5v20a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2Z" fill="#6BBE66" fill-opacity=".12"/>
+  <path d="M25 7v5h5"/>
+  <g stroke="#6BBE66"><path d="M12 18h12"/><path d="M12 24h12"/></g>
+  <path d="M30.5 37 37 21"/><path d="M39 37 32.5 21"/>
+  <circle cx="29" cy="38.5" r="2.8"/><circle cx="40.5" cy="38.5" r="2.8"/>
+</g></symbol>
+  <symbol id="gh-search" viewBox="0 0 48 48"><title>搜尋</title><title>搜尋</title>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="21" cy="21" r="11" fill="#FFFBF0"/>
+  <path d="M29.5 29.5 40 40" stroke-width="3.6"/>
+</g>
+<circle cx="17" cy="17" r="3" fill="#7AB8E6" opacity=".45"/></symbol>
+  <symbol id="gh-settings" viewBox="0 0 48 48"><title>設定</title><title>設定</title>
+<g fill="#6BBE66" opacity=".2" transform="translate(1.2 1.8)"><path d="M19.33 12.73 L20.73 7.93 L27.27 7.93 L28.67 12.73 L33.05 10.32 L37.68 14.95 L35.27 19.33 L40.07 20.73 L40.07 27.27 L35.27 28.67 L37.68 33.05 L33.05 37.68 L28.67 35.27 L27.27 40.07 L20.73 40.07 L19.33 35.27 L14.95 37.68 L10.32 33.05 L12.73 28.67 L7.93 27.27 L7.93 20.73 L12.73 19.33 L10.32 14.95 L14.95 10.32 L19.33 12.73 Z"/></g>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M19.33 12.73 L20.73 7.93 L27.27 7.93 L28.67 12.73 L33.05 10.32 L37.68 14.95 L35.27 19.33 L40.07 20.73 L40.07 27.27 L35.27 28.67 L37.68 33.05 L33.05 37.68 L28.67 35.27 L27.27 40.07 L20.73 40.07 L19.33 35.27 L14.95 37.68 L10.32 33.05 L12.73 28.67 L7.93 27.27 L7.93 20.73 L12.73 19.33 L10.32 14.95 L14.95 10.32 L19.33 12.73 Z" fill="#6BBE66" fill-opacity=".18"/>
+  <circle cx="24" cy="24" r="6" fill="#FFFBF0"/>
+</g></symbol>
+  <symbol id="gh-song" viewBox="0 0 48 48"><title>歌曲</title><title>歌曲</title>
+<g fill="#FFD54F" opacity=".2" transform="translate(1.2 1.8)">
+  <ellipse cx="16" cy="34" rx="6.5" ry="5" transform="rotate(-18 16 34)"/>
+  <ellipse cx="32" cy="30" rx="6.5" ry="5" transform="rotate(-18 32 30)"/>
+</g>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M22 14 38 10v6l-16 4Z" fill="#FFD54F" fill-opacity=".5"/>
+  <path d="M22 15v18"/><path d="M38 11v18"/>
+  <ellipse cx="16" cy="34" rx="6.5" ry="5" transform="rotate(-18 16 34)" fill="#FFD54F" fill-opacity=".5"/>
+  <ellipse cx="32" cy="30" rx="6.5" ry="5" transform="rotate(-18 32 30)" fill="#FFD54F" fill-opacity=".5"/>
+</g></symbol>
+  <symbol id="gh-tools" viewBox="0 0 48 48"><title>快鍵</title><title>快鍵</title>
+<g fill="#7AB8E6" opacity=".2" transform="translate(1.2 1.8)"><rect x="10" y="10" width="28" height="28" rx="8"/></g>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="10" y="10" width="28" height="28" rx="8" fill="#7AB8E6" fill-opacity=".2"/>
+</g>
+<g fill="#3A372E" fill-opacity=".78"><circle cx="17.5" cy="17.5" r="2.6"/><circle cx="30.5" cy="17.5" r="2.6"/>
+  <circle cx="24" cy="24" r="2.6"/><circle cx="17.5" cy="30.5" r="2.6"/><circle cx="30.5" cy="30.5" r="2.6"/></g></symbol>
+  <symbol id="gh-tpl" viewBox="0 0 48 48"><title>範本</title><title>範本</title>
+<g fill="#FFD54F" opacity=".2" transform="translate(1.2 1.8)"><path d="M15 14h5.5a4.5 4.5 0 1 1 9 0H37v5.5a4.5 4.5 0 1 1 0 9V34h-7.5a4.5 4.5 0 1 1-9 0H15v-5.5a4.5 4.5 0 1 1 0-9Z"/></g>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M15 14h5.5a4.5 4.5 0 1 1 9 0H37v5.5a4.5 4.5 0 1 1 0 9V34h-7.5a4.5 4.5 0 1 1-9 0H15v-5.5a4.5 4.5 0 1 1 0-9Z" fill="#FFD54F" fill-opacity=".22"/>
+</g>
+<ellipse cx="20.5" cy="19" rx="3.2" ry="2" fill="#FFFFFF" opacity=".38"/></symbol>
+  <symbol id="gh-track" viewBox="0 0 48 48"><title>記錄</title><title>記錄</title>
+<g fill="#6BBE66" opacity=".2" transform="translate(1.2 1.8)"><path d="M17 13 13 40l11-6 11 6-4-27Z"/></g>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M17 13 13 40l11-6 11 6-4-27Z" fill="#6BBE66" fill-opacity=".28"/>
+  <circle cx="24" cy="21" r="11.5" fill="#FFD54F" fill-opacity=".55"/>
+  <path d="M19.5 21.5 22.5 24.5 28.5 17.5"/>
+</g>
+<ellipse cx="20" cy="16.5" rx="3.2" ry="2" fill="#FFFFFF" opacity=".38"/></symbol>
+</defs></svg>
+  <!--GH-SPRITE:END-->
+
+<div class="wrap">
+
+  <div class="hero">
+    <img src="../img/ghmeeting_mascot.png" alt="童仔 GH 吉祥物">
+    <div class="txt">
+      <h1 style="margin:0">童仔 GH</h1>
+      <div class="pos">前進 · Forward</div>
+      <p style="margin:.4em 0 0">唔係工具，係<b>陪新領袖行完整場集會嘅同伴</b>。<br>
+      由「我未準備好」到「散會」——一步都唔使自已諗。</p>
+      <div>
+        <span class="key">溫暖繪本</span><span class="key">專業步驟</span><span class="key">不用想</span>
+      </div>
+    </div>
+  </div>
+
+  <p><small>吉祥物＝小蚱蜢戴童軍帽＋背後彩虹快樂傘，水彩繪本風，去背透明底。
+  原檔 <code>img/ghmeeting_mascot.src.png</code>（1024² 去背・未裁）→ <code>tools/build-mascot.sh</code> 出全套 PWA icon。
+  裁法用 <b>A 全身構圖</b>（彩虹傘完整＋草蜢全身）；後備 B 主角特寫／C 中景：<code>CROP=C bash tools/build-mascot.sh</code>。
+  三個裁法嘅實測對比喺 <a href="mascot-crop.html">mascot-crop.html</a>。</small></p>
+
+  <h3>吉祥物 → PWA icon（同一張圖，四種輸出）</h3>
+  <div style="display:flex;gap:14px;flex-wrap:wrap">
+    <div style="background:#fff;border:1.5px solid var(--gh-line);border-radius:18px;padding:12px;text-align:center">
+      <img src="../img/ghmeeting_mascot.png" style="width:116px;height:116px;display:block" alt="吉祥物原檔">
+      <b style="font-size:.82rem">原檔</b><br><small>1024² 去背透明</small>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--gh-line);border-radius:18px;padding:12px;text-align:center">
+      <img src="../icons/icon-512.png" style="width:116px;height:116px;display:block" alt="any icon">
+      <b style="font-size:.82rem">any</b><br><small>512² 透明＋6% 安全邊</small>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--gh-line);border-radius:18px;padding:12px;text-align:center">
+      <img src="../icons/apple-touch-icon.png" style="width:116px;height:116px;display:block;border-radius:22px" alt="iOS icon">
+      <b style="font-size:.82rem">iOS 主畫面</b><br><small>180² 綠底（iOS 唔支援透明）</small>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--gh-line);border-radius:18px;padding:12px;text-align:center">
+      <img src="../icons/icon-512-maskable.png" style="width:116px;height:116px;display:block;border-radius:22px" alt="maskable">
+      <b style="font-size:.82rem">Android 遮罩</b><br><small>512² 綠底・主角縮到 60%</small>
+    </div>
+  </div>
+  <p><small>掉換方法：將你嘅去背 PNG 改名做 <code>img/ghmeeting_mascot.png</code> 蓋過，跑
+  <code>bash tools/build-mascot.sh</code>，全套 icon 即時重生。</small></p>
+
+  <h2>1 · 色彩</h2>
+  <div class="swatches">
+    <div class="sw"><div class="chip" style="background:var(--gh-green);color:#fff">主色按鈕・進度 ✓</div>
+      <div class="meta"><b>小童軍綠</b><span>--gh-green<br>#6BBE66</span></div></div>
+    <div class="sw"><div class="chip" style="background:var(--gh-yellow);color:var(--gh-yellow-dkr)">高亮・重要提示</div>
+      <div class="meta"><b>暖陽黃</b><span>--gh-yellow<br>#FFD54F</span></div></div>
+    <div class="sw"><div class="chip" style="background:var(--gh-blue);color:#10395a">輔助・官方套包</div>
+      <div class="meta"><b>天空藍</b><span>--gh-blue<br>#7AB8E6</span></div></div>
+    <div class="sw"><div class="chip" style="background:var(--gh-paper);color:var(--gh-ink);border-bottom:1px solid var(--gh-line)">全站背景</div>
+      <div class="meta"><b>紙白</b><span>--gh-paper<br>#FFFBF0</span></div></div>
+    <div class="sw"><div class="chip" style="background:var(--gh-ink);color:#fff">文字</div>
+      <div class="meta"><b>炭筆</b><span>--gh-ink<br>#3A372E</span></div></div>
+  </div>
+
+  <h3>延伸深淺（同一套色，漸層／hover／底色用）</h3>
+  <div class="swatches">
+    <div class="sw"><div class="chip" style="background:var(--gh-green-dk);color:#fff">dk</div>
+      <div class="meta"><b>綠 · 深</b><span>--gh-green-dk<br>#4C9E4B</span></div></div>
+    <div class="sw"><div class="chip" style="background:var(--gh-green-lt);color:var(--gh-green-dkr)">lt</div>
+      <div class="meta"><b>綠 · 淺</b><span>--gh-green-lt<br>#EAF6E6</span></div></div>
+    <div class="sw"><div class="chip" style="background:var(--gh-yellow-dk);color:#fff">dk</div>
+      <div class="meta"><b>黃 · 深</b><span>--gh-yellow-dk<br>#E9B32C</span></div></div>
+    <div class="sw"><div class="chip" style="background:var(--gh-yellow-lt);color:var(--gh-yellow-dkr)">lt</div>
+      <div class="meta"><b>黃 · 淺</b><span>--gh-yellow-lt<br>#FFF6DF</span></div></div>
+    <div class="sw"><div class="chip" style="background:var(--gh-blue-dk);color:#fff">dk</div>
+      <div class="meta"><b>藍 · 深</b><span>--gh-blue-dk<br>#3E93CB</span></div></div>
+    <div class="sw"><div class="chip" style="background:var(--gh-blue-lt);color:var(--gh-blue-dkr)">lt</div>
+      <div class="meta"><b>藍 · 淺</b><span>--gh-blue-lt<br>#E8F3FB</span></div></div>
+    <div class="sw"><div class="chip" style="background:var(--gh-mute);color:#fff">mute</div>
+      <div class="meta"><b>次要文字</b><span>--gh-mute<br>#8A8474</span></div></div>
+    <div class="sw"><div class="chip" style="background:var(--gh-line);color:var(--gh-mute)">line</div>
+      <div class="meta"><b>分隔線</b><span>--gh-line<br>#F1E7D3</span></div></div>
+  </div>
+  <div class="note"><b>用法守則：</b>綠＝「做得到／已完成」主行動；黃＝「睇呢度」高亮同警告；藍＝官方／外連；
+  紅（<code>#D9534F</code>）只留畀真正出事。一版最多兩隻主色，其餘靠深淺。</div>
+
+  <h2>2 · 字型與圓角</h2>
+  <table>
+    <tr><th>用途</th><th>設定</th></tr>
+    <tr><td>全站字型</td><td><code>"PingFang HK","Noto Sans HK","Microsoft JhengHei",ui-rounded,sans-serif</code>（系統字，離線都靚）</td></tr>
+    <tr><td>卡片圓角</td><td><code>--gh-radius: 24px</code>（大卡／底部彈出／工具箱）</td></tr>
+    <tr><td>按鈕圓角</td><td>14px（大掣）／12px（細掣）／99px（pill 標籤）</td></tr>
+    <tr><td>ICON 圓角</td><td>2.2px 描邊 + round linecap/linejoin（ICON 本身冇方框，靠 20% 白邊呼吸）</td></tr>
+  </table>
+
+  <h2>3 · 按鈕</h2>
+  <div class="btnrow">
+    <button class="btn primary">▶ 開始帶領</button>
+    <button class="btn yellow">🖨 印齊今場</button>
+    <button class="btn blue">📦 官方套包</button>
+    <button class="btn ghost">睇全部資料</button>
+    <button class="btn primary sm">✓ 做咗</button>
+    <button class="btn ghost sm">跳過</button>
+  </div>
+  <div class="btnrow">
+    <span class="pill ok">已完成 3/6</span><span class="pill warn">重要：帶備後備</span><span class="pill info">官方 PDF</span>
+  </div>
+
+  <h2>4 · 導航模擬（APP 上下兩條，即係 ICON 實戰位）</h2>
+  <div class="simphone">
+    <div class="sim-top">
+      <div><img src="../icons/icon-48.png" alt="">小童軍集會助手</div>
+      <div class="btns">
+        <span class="ib"><svg class="gh-ic"><use href="#gh-search"></use></svg></span>
+        <span class="ib"><svg class="gh-ic"><use href="#gh-track"></use></svg></span>
+        <span class="ib"><svg class="gh-ic"><use href="#gh-settings"></use></svg></span>
+      </div>
+    </div>
+    <div class="navcap a">🅰️ 上：由目錄到帶領（事前準備）</div>
+    <div class="sim-nav">
+      <a class="on"><svg class="gh-ic"><use href="#gh-plan"></use></svg>集會目錄</a>
+      <a><svg class="gh-ic"><use href="#gh-tpl"></use></svg>範本</a>
+      <a><svg class="gh-ic"><use href="#gh-lead"></use></svg>帶領</a>
+      <a class="official"><svg class="gh-ic"><use href="#gh-pack"></use></svg>官方套包<small>官方PDF</small></a>
+      <a><svg class="gh-ic"><use href="#gh-book"></use></svg>手冊</a>
+    </div>
+    <div class="sim-body">↑ 非選中＝白底炭灰線　↓ 選中＝綠底白圖（<code>filter:brightness(0) invert(1)</code>）；emoji 感已全部換走，統一繪本線稿。</div>
+    <div class="navcap b">🅱️ 下：即插即用（集會中途撳）</div>
+    <div class="sim-nav" style="border-bottom:0;border-top:1px solid var(--gh-line)">
+      <a><svg class="gh-ic"><use href="#gh-print"></use></svg>工作紙</a>
+      <a class="on"><svg class="gh-ic"><use href="#gh-play"></use></svg>活動</a>
+      <a><svg class="gh-ic"><use href="#gh-song"></use></svg>歌曲</a>
+      <a><svg class="gh-ic"><use href="#gh-chute"></use></svg>快樂傘</a>
+      <a><svg class="gh-ic"><use href="#gh-tools"></use></svg>快鍵</a>
+    </div>
+  </div>
+
+  <h2>5 · ICON 系統（10 功能 + 3 頂欄）</h2>
+  <div class="zoom">
+    <div><svg class="gh-ic" style="width:24px;height:24px"><use href="#gh-chute"></use></svg><small>24px</small></div>
+    <div><svg class="gh-ic" style="width:36px;height:36px"><use href="#gh-chute"></use></svg><small>36px</small></div>
+    <div><svg class="gh-ic" style="width:48px;height:48px"><use href="#gh-chute"></use></svg><small>48px</small></div>
+    <div><svg class="gh-ic" style="width:72px;height:72px"><use href="#gh-chute"></use></svg><small>72px</small></div>
+    <div style="flex:1;min-width:220px;font-size:.84rem;color:var(--gh-mute)">
+      <b style="color:var(--gh-ink)">規格</b>：48×48 viewBox｜2.2px 圓角描邊（<code>round</code> cap/join）｜
+      水彩填色（主色實色 + 偏移 1.2/1.8 嘅 20% 水彩溢色 + 白色高光）｜20% 白邊｜炭筆 <code>#3A372E</code> 描邊。<br>
+      一套 SVG 出齊 <b>48 / 192 / 1024</b> 三種 PNG；介面一律用內聯 SVG（唔使額外請求，離線都有）。<br>
+      <b>狀態</b>：非選中＝白底炭灰線；選中＝綠底白圖。<b>吉祥物只用於空狀態／啟動頁</b>，功能頁一律線稿圖示，唔好干擾。
+    </div>
+  </div>
+
+  <h3>🅰️ 上方指引（5）</h3>
+  <div class="icongrid">
+    <div class="ic"><div class="box"><svg class="gh-ic"><use href="#gh-plan"></use></svg></div><b>集會目錄</b><span>gh-plan</span></div>
+    <div class="ic"><div class="box"><svg class="gh-ic"><use href="#gh-tpl"></use></svg></div><b>範本</b><span>gh-tpl</span></div>
+    <div class="ic"><div class="box"><svg class="gh-ic"><use href="#gh-lead"></use></svg></div><b>帶領</b><span>gh-lead</span></div>
+    <div class="ic"><div class="box"><svg class="gh-ic"><use href="#gh-pack"></use></svg></div><b>官方套包</b><span>gh-pack</span></div>
+    <div class="ic"><div class="box"><svg class="gh-ic"><use href="#gh-book"></use></svg></div><b>手冊</b><span>gh-book</span></div>
+  </div>
+
+  <h3>🅱️ 即插即用（5）</h3>
+  <div class="icongrid">
+    <div class="ic"><div class="box"><svg class="gh-ic"><use href="#gh-print"></use></svg></div><b>工作紙</b><span>gh-print</span></div>
+    <div class="ic"><div class="box"><svg class="gh-ic"><use href="#gh-play"></use></svg></div><b>活動</b><span>gh-play</span></div>
+    <div class="ic"><div class="box"><svg class="gh-ic"><use href="#gh-song"></use></svg></div><b>歌曲</b><span>gh-song</span></div>
+    <div class="ic"><div class="box"><svg class="gh-ic"><use href="#gh-chute"></use></svg></div><b>快樂傘</b><span>gh-chute</span></div>
+    <div class="ic"><div class="box"><svg class="gh-ic"><use href="#gh-tools"></use></svg></div><b>快鍵</b><span>gh-tools</span></div>
+  </div>
+
+  <h3>頂欄（3）</h3>
+  <div class="icongrid">
+    <div class="ic"><div class="box"><svg class="gh-ic"><use href="#gh-search"></use></svg></div><b>搜尋</b><span>gh-search</span></div>
+    <div class="ic"><div class="box"><svg class="gh-ic"><use href="#gh-track"></use></svg></div><b>記錄</b><span>gh-track</span></div>
+    <div class="ic"><div class="box"><svg class="gh-ic"><use href="#gh-settings"></use></svg></div><b>設定</b><span>gh-settings</span></div>
+  </div>
+
+  <h3>喺 HTML 點用</h3>
+  <pre>&lt;!-- sprite 由 tools/build-icons.mjs 自動注入 index.html，唔使手寫 --&gt;
+&lt;svg class="gh-ic" aria-hidden="true"&gt;&lt;use href="#gh-plan"&gt;&lt;/use&gt;&lt;/svg&gt;
+
+&lt;!-- 獨立檔（Email／印刷／設計師攞貨） --&gt;
+icons/svg/i-plan.svg         向量原檔（48×48 viewBox）
+icons/png/48/i-plan.png      介面後備
+icons/png/192/i-plan.png     manifest shortcuts
+icons/png/1024/i-plan.png    商店圖／印刷</pre>
+
+  <h2>6 · CSS 變數（照抄落任何頁）</h2>
+  <button class="copy" onclick="cp(&#39;css1&#39;)">抄低</button>
+  <pre id="css1">:root{
+  --gh-green:#6BBE66;   /* 主色按鈕・進度 ✓ */
+  --gh-yellow:#FFD54F;  /* 高亮・重要提示 */
+  --gh-blue:#7AB8E6;    /* 輔助・官方套包 */
+  --gh-paper:#FFFBF0;   /* 全站背景 */
+  --gh-ink:#3A372E;     /* 文字 */
+  --gh-radius:24px;     /* 卡片圓角 */
+  --gh-green-dk:#4C9E4B; --gh-green-lt:#EAF6E6;
+  --gh-yellow-dk:#E9B32C; --gh-yellow-lt:#FFF6DF;
+  --gh-blue-dk:#3E93CB;  --gh-blue-lt:#E8F3FB;
+  --gh-charcoal:#3A372E; --gh-paper-deep:#FFF3C8;
+  --gh-radius-sm:20px;
+  --gh-font:"Noto Sans HK","Nunito",sans-serif;
+}</pre>
+  <p><small>APP 入面舊嘅 semantic token（<code>--or --ord --gr --grd --bg --ink --mute --line --blue</code>）已經全部改指去呢套變數，
+  即係改 <code>:root</code> 一次就全站 200+ 處跟住轉。</small></p>
+
+  <h2>7 · PWA / manifest 設定</h2>
+  <table>
+    <tr><th>用途</th><th>檔案</th><th>規格</th></tr>
+    <tr><td>主 icon（any）</td><td><code>icons/icon-512.png</code></td><td>512² 透明，吉祥物留 6% 安全邊</td></tr>
+    <tr><td>主 icon（any）</td><td><code>icons/icon-192.png</code></td><td>192² 透明</td></tr>
+    <tr><td>Android 遮罩</td><td><code>icons/icon-512-maskable.png</code></td><td>512² 小童軍綠底，主角縮到 60%（安全區內）</td></tr>
+    <tr><td>iOS 主畫面</td><td><code>icons/apple-touch-icon.png</code></td><td>180² 綠底（iOS 唔支援透明）</td></tr>
+    <tr><td>分頁 favicon</td><td><code>icons/favicon-64.png</code></td><td>64² 綠圓角底</td></tr>
+    <tr><td>shortcuts icon</td><td><code>icons/png/192/i-*.png</code></td><td>192²，四個捷徑各用自己嗰粒 ICON</td></tr>
+  </table>
+  <button class="copy" onclick="cp(&#39;css2&#39;)">抄低</button>
+  <pre id="css2">"theme_color": "#6BBE66",
+"background_color": "#FFFBF0",
+"icons": [
+  {"src":"icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+  {"src":"icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+  {"src":"icons/icon-512-maskable.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+]</pre>
+
+  <h2>8 · 改嘢流程（設計師／Agent 睇呢度）</h2>
+  <pre># ① 換吉祥物：將 1024² 去背 PNG 蓋過 img/ghmeeting_mascot.png，再跑：
+bash tools/build-mascot.sh img/ghmeeting_mascot.png
+
+# ② 改 ICON：直接改 icons/svg/i-*.svg（唯一真相），再跑：
+node tools/build-icons.mjs
+#    → 自動重生 icons/gh-icons.svg、PNG 48/192/1024、並注入 index.html 同 docs/brand.html
+
+# ③ 改色：淨係改 css/app.css 嘅 :root（同呢份手冊同步）</pre>
+
+  <footer>© 2026 Scout System｜非官方輔助工具，一切以香港童軍總會公佈為準。<br>
+  童仔 GH Brand Book v1 — 色板 5 主色・ICON 13 粒・圓角 24px・ICON 描邊 2.2px</footer>
+</div>
+
+<script>
+function cp(id){
+  var t=document.getElementById(id).innerText;
+  navigator.clipboard.writeText(t).then(function(){
+    var b=event.target, o=b.innerText; b.innerText='✓ 抄咗'; setTimeout(function(){b.innerText=o},1200);
+  });
+}
+</script>
+</body>
+</html>

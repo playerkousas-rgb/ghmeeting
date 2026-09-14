@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="快樂傘">
+<title>快樂傘</title>
+<g fill="none" stroke="#3A372E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M8 30a16 16 0 0 1 32 0Z" fill="#6BBE66" fill-opacity=".7"/>
+  <path d="M13 30a11 11 0 0 1 22 0Z" fill="#FFD54F" fill-opacity=".7"/>
+  <path d="M18 30a6 6 0 0 1 12 0Z" fill="#7AB8E6" fill-opacity=".7"/>
+  <path d="M8 30h32"/>
+  <path d="M9 30l13 11"/><path d="M24 30v11"/><path d="M39 30 26 41"/>
+  <path d="M20 41h8"/>
+</g>
+</svg>
