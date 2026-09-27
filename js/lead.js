@@ -353,8 +353,7 @@ var Lead={
        '<div class="timer" id="tmr" onclick="Lead.toggleTmr()">'+Lead.fmt(S.left)+'</div></div>'+
        '<div class="row"><button class="btn sm ghost" onclick="Lead.prev()" '+(S.idx?'':'disabled style="opacity:.4"')+'>◀ 上一個</button>'+
        '<button class="btn sm" onclick="Lead.toggleTmr()" id="tmrBtn">▶ 開始計時</button>'+
-       '<button class="btn sm ghost" onclick="Lead.next()">下一個 ▶</button>'+
-       '<span class="lead-unofficial">'+esc((typeof DATA!=='undefined'&&DATA.official)?DATA.official.flag:'⚠️ 非官方 APP')+'</span></div></div>';
+       '<button class="btn sm ghost" onclick="Lead.next()">下一個 ▶</button></div></div>';
     Lead.stopTmr();Lead.renderTmr();
     if(Lead.after)Lead.after();
   },

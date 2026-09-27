@@ -265,9 +265,6 @@ hr.soft{border:none;border-top:1.5px dashed var(--line);margin:12px 0}
 .lead-bar{background:#14351c;color:#d7e8dc;padding:8px 12px calc(8px + env(safe-area-inset-bottom));
   display:flex;flex-direction:column;gap:6px}
 .lead-bar .row{display:flex;align-items:center;gap:8px}
-/* 全螢幕投影頁底：細細粒「非官方」——俾現場家長見到都知唔係總會出品 */
-.lead-unofficial{margin-left:auto;flex:none;font-size:.68rem;font-weight:700;
-  color:#7d9c88;letter-spacing:.3px;white-space:nowrap}
 .lead-bar .stagepill{flex:1;display:flex;gap:5px;overflow:auto;scrollbar-width:none}
 .lead-bar .stagepill::-webkit-scrollbar{display:none}
 .lead-bar .stagepill i{flex:0 0 8px;height:8px;border-radius:50%;background:#3d5a46;font-style:normal}

@@ -824,7 +824,8 @@ ok('⑳c 一頁高度計得出（約 1057px）',pagePx>1000&&pagePx<1100,'px='+p
   ok('㉑ 兩個官方出口（支部網站＋官方套包 PDF）都係總會嗰邊',
      /scouting\.org\.hk\/grasshopper/.test(o.site)&&/drive\.google\.com\/file\/d\/1Ei9PQreXhmuvmzR-n5Q2vOcbGnihnnFh/.test(o.pack),
      o.site+'／'+o.pack);
-  ok('㉑ 講得清邊啲照錄官方、邊啲 APP 自己編',o.theirs.length>0&&o.ours.length>0&&
+  ok('㉑ 講得清邊啲照錄官方、邊啲係延伸編寫',o.theirs.length>0&&o.ours.length>0&&
+     /延伸編寫/.test(o.oursT)&&/未獲總會授權/.test(o.oursT2)&&
      o.theirs.some(function(x){return /誓詞/.test(x)})&&o.ours.some(function(x){return /範本/.test(x)}));
 
   /* 每一頁最底都有：行勻 10 個分頁，頁尾一定要出現 */
@@ -843,7 +844,7 @@ ok('⑳c 一頁高度計得出（約 1057px）',pagePx>1000&&pagePx<1100,'px='+p
   ok('㉑ 版本號 '+G.App.VER+' 同 sw.js CACHE 對齊（'+cacheName+'）',
      cacheName.indexOf(G.App.VER.replace(/^v/,'').replace(/\./g,'-'))>0);
   ok('㉑ 頁尾「邊啲官方／邊啲自己編」係收埋，唔霸版面',
-     /<details class="foot-more">/.test(foot)&&/照錄官方/.test(foot)&&/APP 自己編/.test(foot));
+     /<details class="foot-more">/.test(foot)&&/照錄官方/.test(foot)&&/延伸編寫/.test(foot));
   ok('㉑ 設定 sheet 最底都有非官方聲明',/非官方 APP/.test(G.App.footMini())&&/未獲/.test(G.App.footMini()));
   ok('㉑ 關於頁用同一份文案（唔准各自亂寫）',/非官方 APP/.test(G.HB.about())&&/無任何關聯/.test(G.HB.about()));
 
@@ -866,11 +867,9 @@ ok('⑳c 一頁高度計得出（約 1057px）',pagePx>1000&&pagePx<1100,'px='+p
   ok('㉑ 列印時收埋 APP 頁底聲明（紙本 p-foot 先係要印嗰個）',
      /\.print-preview-bar, \.sheet-flag, \.sheet-pageline, \.sheet-stat \{ display: none/.test(printCss)&&
      /\.app-foot, \.foot-mini/.test(printCss));
-  /* 全螢幕投影（現場家長見到嗰個畫面）頁底都有細字 */
+  /* 2026-09 負責人：全螢幕投影唔使另加標示——撳全螢幕之前已經喺有頁底嗰版睇過，唔可能話唔知 */
   const leadTxt=fs.readFileSync(path.join(__dirname,'..','js','lead.js'),'utf8');
-  ok('㉑ 全螢幕帶領頁底都有「非官方」細字',
-     /class="lead-unofficial"/.test(leadTxt)&&/DATA\.official\.flag/.test(leadTxt)&&
-     /\.lead-unofficial\{/.test(cssTxt));
+  ok('㉑ 全螢幕投影唔重複加標示（頁底已經印咗）',!/lead-unofficial/.test(leadTxt)&&!/lead-unofficial/.test(cssTxt));
 })();
 
 /* ============ 結果 ============ */

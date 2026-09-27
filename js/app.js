@@ -53,10 +53,10 @@ var App={
       '<p class="foot-links">'+
         '<a href="'+esc(o.site)+'" target="_blank" rel="noopener">'+esc(o.siteN)+'</a>'+
         '<a href="'+esc(o.pack)+'" target="_blank" rel="noopener">'+esc(o.packN)+'</a></p>'+
-      '<details class="foot-more"><summary>✳️ 邊啲係官方？邊啲係 APP 自己寫？</summary>'+
+      '<details class="foot-more"><summary>✳️ 邊啲照錄官方？邊啲係延伸編寫？</summary>'+
         '<div class="foot-split">'+
-          '<div><b>🏛️ 照錄官方</b>'+o.theirs.map(function(x){return '<p>'+esc(x)+'</p>'}).join('')+'</div>'+
-          '<div><b>✍️ APP 自己編</b>'+o.ours.map(function(x){return '<p>'+esc(x)+'</p>'}).join('')+'</div>'+
+          '<div><b>'+esc(o.theirsT)+'</b>'+o.theirs.map(function(x){return '<p>'+esc(x)+'</p>'}).join('')+'</div>'+
+          '<div><b>'+esc(o.oursT)+'</b><p>'+esc(o.oursT2)+'</p>'+o.ours.map(function(x){return '<p>'+esc(x)+'</p>'}).join('')+'</div>'+
         '</div></details>'+
       '<div class="foot-ver">© 2026 Scout System・'+esc(o.note)+'・'+App.VER+'</div>'+
     '</footer>';
