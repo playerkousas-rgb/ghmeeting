@@ -811,6 +811,68 @@ ok('⑳c 一頁高度計得出（約 1057px）',pagePx>1000&&pagePx<1100,'px='+p
      /\.print-preview-bar, \.sheet-flag, \.sheet-pageline, \.sheet-stat \{ display: none/.test(printCss));
 })();
 
+/* ============ ㉑ 非官方聲明：唔好俾人誤會成官方出品（2026-09） ============
+   負責人要求：每一頁最底 + 每張紙最底都要印住「非官方」，免得總會追究冒認。 */
+(function(){
+  const o=G.DATA.official;
+  ok('㉑ 文案有齊四樣：旗・唔關聯聲明・一行版・自述',!!(o&&o.flag&&o.claim&&o.note&&o.who),
+     JSON.stringify(o&&{f:o.flag,c:o.claim,n:o.note}));
+  ok('㉑ 旗上面要寫「非官方」同「無任何關聯」',/非官方/.test(o.flag)&&/無任何關聯/.test(o.claim),o.flag+'／'+o.claim);
+  ok('㉑ 一行版有「一切以香港童軍總會公佈為準」',/一切以香港童軍總會公佈為準/.test(o.note),o.note);
+  ok('㉑ 自述要講明未獲認可／授權／不代表其發布',
+     /未獲/.test(o.who)&&/認可/.test(o.who)&&/授權/.test(o.who)&&/不代表/.test(o.who),o.who);
+  ok('㉑ 兩個官方出口（支部網站＋官方套包 PDF）都係總會嗰邊',
+     /scouting\.org\.hk\/grasshopper/.test(o.site)&&/drive\.google\.com\/file\/d\/1Ei9PQreXhmuvmzR-n5Q2vOcbGnihnnFh/.test(o.pack),
+     o.site+'／'+o.pack);
+  ok('㉑ 講得清邊啲照錄官方、邊啲 APP 自己編',o.theirs.length>0&&o.ours.length>0&&
+     o.theirs.some(function(x){return /誓詞/.test(x)})&&o.ours.some(function(x){return /範本/.test(x)}));
+
+  /* 每一頁最底都有：行勻 10 個分頁，頁尾一定要出現 */
+  const views=['plan','meet','lead','book','print','play','chute','song','tools','track'];
+  const miss=views.filter(function(v){
+    G.App.view=v;G.App.route();
+    return !/class="app-foot"/.test(els.get('view').innerHTML);
+  });
+  ok('㉑ 10 個分頁頁底全部有非官方聲明',miss.length===0,'冇：'+miss.join('、'));
+  const foot=els.get('view').innerHTML;
+  ok('㉑ 頁尾行文有旗・唔關聯・官方出口・版本',
+     /非官方 APP/.test(foot)&&/無任何關聯/.test(foot)&&/scouting\.org\.hk/.test(foot)&&foot.indexOf(G.App.VER)>0);
+  /* 版本號要同 sw.js CACHE 對齊（app.js 註明「改一齊」），CSS 係 cache-first，唔 bump 舊用戶永遠睇唔到新頁底 */
+  const swTxt=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
+  const cacheName=(swTxt.match(/CACHE='([^']+)'/)||['',''])[1];
+  ok('㉑ 版本號 '+G.App.VER+' 同 sw.js CACHE 對齊（'+cacheName+'）',
+     cacheName.indexOf(G.App.VER.replace(/^v/,'').replace(/\./g,'-'))>0);
+  ok('㉑ 頁尾「邊啲官方／邊啲自己編」係收埋，唔霸版面',
+     /<details class="foot-more">/.test(foot)&&/照錄官方/.test(foot)&&/APP 自己編/.test(foot));
+  ok('㉑ 設定 sheet 最底都有非官方聲明',/非官方 APP/.test(G.App.footMini())&&/未獲/.test(G.App.footMini()));
+  ok('㉑ 關於頁用同一份文案（唔准各自亂寫）',/非官方 APP/.test(G.HB.about())&&/無任何關聯/.test(G.HB.about()));
+
+  /* 每張紙最底都有：13 個 p-foot 全部行勻 DATA.official.note */
+  let total=0,bad=[];
+  for(const f of ['craft.js','sheets.js','print.js','pack.js','kit.js','venue.js']){
+    const txt=fs.readFileSync(path.join(__dirname,'..','js',f),'utf8');
+    (txt.match(/p-foot/g)||[]).forEach(function(){total++});
+    (txt.match(/p-foot[^']*?<\/div>/g)||[]).forEach(function(line){
+      if(!/DATA\.official\.note/.test(line))bad.push(f);
+    });
+  }
+  ok('㉑ 紙本頁底全部引用同一句非官方（'+total+' 張紙）',total===13&&bad.length===0,
+     '漏：'+[...new Set(bad)].join('、')+'（共 '+total+' 張）');
+  ok('㉑ 冇 paper 頁底淨係寫「© 2026 Scout System」就冇非官方',
+     !/p-foot[^']*?© 2026 Scout System<\/div>/.test(
+       ['craft.js','print.js','pack.js','kit.js','venue.js'].map(function(f){
+         return fs.readFileSync(path.join(__dirname,'..','js',f),'utf8')}).join('\n')));
+  /* 列印唔好印出 APP 自己嘅頁底（紙本已經有 p-foot） */
+  ok('㉑ 列印時收埋 APP 頁底聲明（紙本 p-foot 先係要印嗰個）',
+     /\.print-preview-bar, \.sheet-flag, \.sheet-pageline, \.sheet-stat \{ display: none/.test(printCss)&&
+     /\.app-foot, \.foot-mini/.test(printCss));
+  /* 全螢幕投影（現場家長見到嗰個畫面）頁底都有細字 */
+  const leadTxt=fs.readFileSync(path.join(__dirname,'..','js','lead.js'),'utf8');
+  ok('㉑ 全螢幕帶領頁底都有「非官方」細字',
+     /class="lead-unofficial"/.test(leadTxt)&&/DATA\.official\.flag/.test(leadTxt)&&
+     /\.lead-unofficial\{/.test(cssTxt));
+})();
+
 /* ============ 結果 ============ */
 console.log('\n✅ 通過 '+pass+' 項');
 if(fails.length){

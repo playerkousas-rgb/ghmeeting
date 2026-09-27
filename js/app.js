@@ -36,11 +36,31 @@ var App={
     if(v==='chute')el.innerHTML=Chute.html();
     if(v==='song')el.innerHTML=Song.html();
     if(v==='tools')el.innerHTML=Tools.html();
-    el.innerHTML+='<div class="app-foot">© Scout System・v4.7</div>'; /* v號跟 sw.js CACHE 版本行（改一齊） */
+    el.innerHTML+=App.foot(); /* 🦗 頁底「非官方」聲明：每一頁都有，唔想俾人誤會成官方出品 */
     if(typeof Flow!=='undefined')Flow.render();   /* 🧭 嚮導條跟住畫面更新 */
     scrollTo(0,0);
   },
   go:function(h){location.hash=h},
+  /* 🦗 版權／非官方聲明：每一頁最底都印住。收埋嗰半「邊啲係官方」撳先展開，唔佔版面。
+     文案全部喺 DATA.official（js/data.js）——紙本 p-foot 都用同一份，唔准各自亂寫。 */
+  VER:'v5.1',
+  foot:function(){
+    var o=(typeof DATA!=='undefined'&&DATA.official)?DATA.official:null;
+    if(!o)return '';
+    return '<footer class="app-foot">'+
+      '<div class="foot-flag">'+esc(o.flag)+'　'+esc(o.claim)+'</div>'+
+      '<p class="foot-note">'+esc(o.who)+'<br>內容如有出入，<b>一切以香港童軍總會公佈為準</b>。</p>'+
+      '<p class="foot-links">'+
+        '<a href="'+esc(o.site)+'" target="_blank" rel="noopener">'+esc(o.siteN)+'</a>'+
+        '<a href="'+esc(o.pack)+'" target="_blank" rel="noopener">'+esc(o.packN)+'</a></p>'+
+      '<details class="foot-more"><summary>✳️ 邊啲係官方？邊啲係 APP 自己寫？</summary>'+
+        '<div class="foot-split">'+
+          '<div><b>🏛️ 照錄官方</b>'+o.theirs.map(function(x){return '<p>'+esc(x)+'</p>'}).join('')+'</div>'+
+          '<div><b>✍️ APP 自己編</b>'+o.ours.map(function(x){return '<p>'+esc(x)+'</p>'}).join('')+'</div>'+
+        '</div></details>'+
+      '<div class="foot-ver">© 2026 Scout System・'+esc(o.note)+'・'+App.VER+'</div>'+
+    '</footer>';
+  },
   /* ---- 隨手開會快速面板 ---- */
   quickHub:function(){
     var pl=Store.get('plan',{rows:[]});
@@ -96,7 +116,18 @@ var App={
       '<label class="f">聯絡電話（只存喺你部機，用於家長訊息範本）</label><input type="text" id="stPh" value="'+esc(s.phone||'')+'" placeholder="例：9123 4567">'+
       '<div class="btns" style="margin-top:14px"><button class="btn blk" onclick="App.saveSettings()">儲存</button></div>'+
       '<hr class="soft"><div class="mute" style="font-size:.78rem">💾 <b>備份</b>：資料只存喺呢部裝置—換機/清理瀏覽器之前，save 一個 file 就唔會歸零。<br>'+      '<div class="btns" style="margin-top:6px"><button class="btn sm ghost" onclick="App.exportAll()">📦 匯出全部資料（一個 file）</button>'+      '<button class="btn sm ghost" onclick="document.getElementById(\'imF\').click()">📥 讀返一個備份</button>'+      '<input type="file" id="imF" accept="application/json,.json,text/plain" style="display:none" onchange="App.importAll(this)"></div>'+      '<div class="mute" style="font-size:.72rem;margin-top:5px">匯入會取代呢部裝置現有資料（名單＋規劃＋紀錄＋自製集會）。</div>'+      '<hr class="soft"><div class="mute" style="font-size:.78rem">🧹 重建年度行事曆會重設規劃表(唔影響團員資料):<br><button class="btn sm ghost" onclick="App.seedPlan(true);Modal.close();toast(\'已重建年度行事曆\')">重建行事曆</button> '+
-      '<button class="btn sm ghost rd" style="color:#b71c1c;border-color:#e53935" onclick="if(confirm(\'清除所有本機資料(含團員/集會/規劃)?\')){localStorage.clear();location.reload()}">清除全部資料</button></div>');
+      '<button class="btn sm ghost rd" style="color:#b71c1c;border-color:#e53935" onclick="if(confirm(\'清除所有本機資料(含團員/集會/規劃)?\')){localStorage.clear();location.reload()}">清除全部資料</button></div>'+
+      App.footMini());
+  },
+  /* ⚙️ 設定 sheet 最底：同一份非官方聲明（細版，慳位） */
+  footMini:function(){
+    var o=(typeof DATA!=='undefined'&&DATA.official)?DATA.official:null;
+    if(!o)return '';
+    return '<hr class="soft"><div class="foot-mini">'+
+      '<b>'+esc(o.flag)+'　'+esc(o.claim)+'</b><br>'+
+      esc(o.who)+'內容如有出入，一切以香港童軍總會公佈為準。<br>'+
+      '<a href="'+esc(o.site)+'" target="_blank" rel="noopener">'+esc(o.siteN)+'</a>　'+
+      '<a href="'+esc(o.pack)+'" target="_blank" rel="noopener">'+esc(o.packN)+'</a></div>';
   },
   exportAll:function(){
     var keys=['settings','plan','members','recs','mymeets','owners','meetmeta','msgTpl','checkins'],data={app:'ghmeeting',ver:1,at:new Date().toISOString(),keys:{}};

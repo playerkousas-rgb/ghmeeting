@@ -691,7 +691,7 @@ var Craft={
           '<td style="font-size:8pt">'+esc(x.need)+'<br><b>備料：</b>'+esc(x.prep)+'</td>'+
           '<td style="font-size:7.6pt">'+x.fail.slice(0,2).map(function(f){return '⚠️ '+esc(f[0])+'→ '+esc(f[1])}).join('<br>')+'<br>🛟 '+esc(x.planb)+'</td></tr>'
       }).join('')+'</tbody></table>'+
-      '<div class="p-foot">© 2026 Scout System・非官方輔助工具・一切以香港童軍總會最新公佈為準</div></div>';
+      '<div class="p-foot">© 2026 Scout System・'+DATA.official.note+'</div></div>';
     }
     var art=this.svg(c.k),fold=this.folds[c.k];
     return '<div class="a4-sheet craft-sheet"><div class="print-header-simple"><span>小童軍訓練教材套包 09</span> <b>'+c.ic+' 手工自學卡・'+esc(c.n)+'</b></div>'+
@@ -714,7 +714,7 @@ var Craft={
           '<tr><td style="width:14%"><b>4–5 歲</b><br>你做多啲</td><td style="font-size:8pt">'+kid.a45.map(function(x){return '・'+x}).join('<br>')+'</td></tr>'+
           '<tr><td><b>6–7 歲</b><br>佢做多啲</td><td style="font-size:8pt">'+kid.a67.map(function(x){return '・'+x}).join('<br>')+'</td></tr>'+
           '</tbody></table><div class="p-para tiny" style="margin-top:4px"><b>⏸️ 停頓位：</b>'+kid.stop.map(function(x,i){return (i+1)+'. '+x}).join('　')+'</div></div>'})()+
-      '<div class="p-foot">© 2026 Scout System・非官方輔助工具・一切以香港童軍總會最新公佈為準</div></div>';
+      '<div class="p-foot">© 2026 Scout System・'+DATA.official.note+'</div></div>';
   }
 };
 
@@ -855,7 +855,7 @@ Craft.controlSheet=function(){
       '6–22 分：一步一停，每步 2–4 分鐘；你巡場，一次幫 2–3 個<br>'+
       '22–27 分：加一任務（做完嘅人）・簡化版（唔肯做嘅人）<br>'+
       '27–30 分：「手離枱」數五下・逐枱收・完成箱・影一張大合照</div></div>'+
-    '<div class="p-foot">© 2026 Scout System・非官方輔助工具・一切以香港童軍總會最新公佈為準</div></div>';
+    '<div class="p-foot">© 2026 Scout System・'+DATA.official.note+'</div></div>';
   return h;
 };
 /* 手工總表加入控場一欄 */

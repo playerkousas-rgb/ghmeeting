@@ -326,7 +326,7 @@ var Venue={
           return '<tr><td style="width:26%"><b>'+esc(x.n)+'</b><br>'+esc(x.g)+'</td><td style="font-size:7.4pt">'+esc(x.r)+'<br>'+esc(x.how)+'</td></tr>'}).join('')+'</tbody></table></div>'+
       '<div><div class="p-sec-title">⑤ 現場救急</div><div class="p-para tiny">'+
         this.fix.map(function(x){return '<b>❓'+esc(x.q)+'</b>→ '+esc(x.a)}).join('<br>')+'</div></div></div>'+
-      '<div class="p-foot">旅團：____________　場地：____________　日期：____________　© 2026 Scout System</div>'+
+      '<div class="p-foot">旅團：____________　場地：____________　日期：____________　© 2026 Scout System・'+DATA.official.note+'</div>'+
     '</div>';
   }
 };

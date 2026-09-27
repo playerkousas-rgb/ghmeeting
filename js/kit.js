@@ -655,7 +655,7 @@ var Kit={
     if(keys.length)h+='<div class="pbreak"></div>'+this.printSheets(keys);
     h+='<div class="pbreak"></div><div class="a4-sheet kit-sheet"><div class="print-header-simple"><span>小童軍訓練教材套包 10</span> <b>📣 家長通知（今場已填好）</b></div>'+      '<div class="p-note">用途：印出貼咭板／影相發群。空住嘅位（日期、聯絡人）即場填就得。</div>'+      this.msgs.slice(0,2).map(function(m){
         return '<div class="print-section"><div class="p-sec-title">'+m.ic+' '+esc(m.n)+'</div><div class="p-para" style="white-space:pre-line">'+esc(Kit.fill(m.t,{theme:t.theme,items:mats.slice(0,2),extra:mats.slice(0,3).join('、')||'水同毛巾',date:(Store.get('plan',{rows:[]}).rows.find(function(r){return r.tid===t.id})||{}).date||''}))+'</div></div>'}).join('')+      '<div class="print-section"><div class="p-sec-title">🎒 執袋單（放落袋之前逐樣剔）</div><table class="print-table check-table"><tbody>'+      (mats.length?mats.map(function(m,i){var q=Kit.mats[Kit.norm(m)]||Kit.fuzzy(m);
-        return '<tr><td class="ck-box"></td><td><b>'+esc(m)+'</b>'+(q?'　'+esc(q.q):'')+(q&&q.sub?'<br><span style="font-size:7.5pt;color:#777">後備：'+esc(q.sub)+'</span>':'')+'</td></tr>'}).join(''):'<tr><td colspan="2">呢場冇額外物資</td></tr>')+      '</tbody></table></div>'+      '<div class="p-foot">旅團：'+esc((Store.get('settings',{})||{}).group||'____________')+'　集會：'+esc(t.n)+'　日期：____________　© 2026 Scout System</div></div>';
+        return '<tr><td class="ck-box"></td><td><b>'+esc(m)+'</b>'+(q?'　'+esc(q.q):'')+(q&&q.sub?'<br><span style="font-size:7.5pt;color:#777">後備：'+esc(q.sub)+'</span>':'')+'</td></tr>'}).join(''):'<tr><td colspan="2">呢場冇額外物資</td></tr>')+      '</tbody></table></div>'+      '<div class="p-foot">旅團：'+esc((Store.get('settings',{})||{}).group||'____________')+'　集會：'+esc(t.n)+'　日期：____________　© 2026 Scout System・'+DATA.official.note+'</div></div>';
     return h;
   },
   /* A4 打印：檢查表（全部場景一頁）或單頁 */
@@ -668,7 +668,7 @@ var Kit={
           c.items.map(function(x,i){return '<tr><td class="ck-no">'+(i+1)+'</td><td class="ck-box"></td><td>'+esc(x)+'</td></tr>'}).join('')+
         '</tbody></table></div>'}).join('')+
       '<div class="print-section"><div class="p-sec-title">📷 影相與私隱（四句就夠）</div><div class="p-para">'+esc(Kit.photo.replace(/^📷\s*/,''))+'</div></div>'+
-      '<div class="p-foot">旅團：____________　集會日期：____________　負責領袖：____________　© 2026 Scout System</div></div>';
+      '<div class="p-foot">旅團：____________　集會日期：____________　負責領袖：____________　© 2026 Scout System・'+DATA.official.note+'</div></div>';
   },
   /* A4 嘉許狀（內部即時頒發版；官方獎章證書仍按旅團程序申請） */
   printCert:function(name,item){

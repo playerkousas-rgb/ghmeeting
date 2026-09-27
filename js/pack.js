@@ -370,7 +370,7 @@ var Pack={
       ['手機／平板（APP 開到・充電・轉飛航模式前先開好畫面）','擴音器或哨子（場細就哨子）','急救包＋濕紙巾＋垃圾袋','團員名單紙本（含家長電話・過敏）','水（每人 500 毫升）','膠紙一卷＋剪刀（大人用）'].map(function(x){
         return '<tr><td class="ck-box"></td><td>'+esc(x)+'</td></tr>'}).join('')+
       '</tbody></table></div>'+
-      '<div class="p-foot">旅團：'+esc(s.group||'____________')+'　日期：'+esc(Pack.dateLine(m))+'　© 2026 Scout System</div></div>';
+      '<div class="p-foot">旅團：'+esc(s.group||'____________')+'　日期：'+esc(Pack.dateLine(m))+'　© 2026 Scout System・'+DATA.official.note+'</div></div>';
   },
   cards:function(m){
     var T=Pack.times(m),own=Kit.ownersOf(m),kids=Sheets.forMeet(m),h='',i;
@@ -420,7 +420,7 @@ var Pack={
       '<table class="print-table check-table"><thead><tr><th style="width:5%">✓</th><th style="width:66%">做乜</th><th style="width:29%">因為呢節</th></tr></thead><tbody>'+rows+'</tbody></table>'+
       '<div class="print-section" style="margin-top:8px"><div class="p-sec-title">🗣️ 開會前 3 分鐘・五條規矩（每條即場練一次）</div><div class="p-para tiny">'+
       (typeof Venue!=='undefined'?Venue.rules.map(function(r,i){return (i+1)+'. '+esc(r.t||r)}).join('<br>'):'')+'</div></div>'+
-      '<div class="p-foot">© 2026 Scout System</div></div>';
+      '<div class="p-foot">© 2026 Scout System・'+DATA.official.note+'</div></div>';
   },
   checkKeys:function(m){
     var out=[];
@@ -434,7 +434,7 @@ var Pack={
     return '<div class="a4-sheet pack-sheet">'+
       '<div class="print-header-simple"><span>集會套包・家長通知</span> <b>📣 已填好・影相發群就得</b></div>'+
       Pack.msgBlock(m,0,ctx)+Pack.msgBlock(m,1,ctx)+
-      '<div class="p-foot">旅團：'+esc(s.group||'____________')+'　© 2026 Scout System</div></div>';
+      '<div class="p-foot">旅團：'+esc(s.group||'____________')+'　© 2026 Scout System・'+DATA.official.note+'</div></div>';
   },
   msgBlock:function(m,i,ctx){
     var mm=Kit.msgs[i];
@@ -504,7 +504,7 @@ var Pack={
       '下面呢疊＝小朋友用嘅紙，印完即剪即摺即塗，紙上冇說明書。<br>'+
       '建議：分隔頁對摺夾住下面嗰疊，返到場一拎就分得清。</div>'+
       '<div class="pkd-list">'+ls.map(function(x){return '<div>'+x.ic+' '+esc(x.n)+'　—　'+esc(x.cp)+'</div>'}).join('')+'</div>'+
-      '<div class="p-foot">© 2026 Scout System</div></div>';
+      '<div class="p-foot">© 2026 Scout System・'+DATA.official.note+'</div></div>';
   },
   toggleKid:function(k){
     var tid=Pack.meet().tid,all=Sheets.forMeet(Pack.meet().m).map(function(x){return x.k});
