@@ -30,6 +30,7 @@
   --line:var(--gh-line);  --blue:var(--gh-blue);
   --red:#D9534F;          --brn:#6F6A5C;
   --sh:0 2px 10px rgba(58,55,46,.10);
+  --appfoot-h:22px;        /* © 常駐頁底一行嘅高度：#tabbar・#flowbar・#view 全部跟住佢計位 */
 }
 html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
   font-family:"PingFang HK","Noto Sans HK","Microsoft JhengHei",ui-rounded,"Helvetica Neue",sans-serif;
@@ -72,7 +73,7 @@ small,.mute{color:var(--mute)}
 .topbtns{display:flex;gap:5px}
 @media(max-width:420px){.brand{font-size:.94rem}.iconbtn{width:33px;height:33px;font-size:1.02rem;border-radius:10px}
   #topbar{padding:8px 10px}}
-#view{max-width:860px;margin:0 auto;padding:14px 14px 108px}
+#view{max-width:860px;margin:0 auto;padding:14px 14px calc(108px + var(--appfoot-h))}
 /* ---- 上下兩條導航：🅰️ 上方＝新手四步 ／ 🅱️ 下方＝工具箱（各最多 4 個掣） ---- */
 .navcap{font-size:.62rem;font-weight:800;letter-spacing:.3px;text-align:center;padding:2px 6px 1px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -94,9 +95,19 @@ small,.mute{color:var(--mute)}
 #topnav .navrow a.official{color:var(--gh-blue-dkr)}
 #topnav .navrow a.official span{filter:none}
 #topnav .navrow a.official small{font-size:.52rem;font-weight:800;line-height:1;background:var(--gh-blue-dkr);color:#fff;border-radius:99px;padding:1.5px 5px;margin-top:1px}
-#tabbar{position:fixed;bottom:0;left:0;right:0;z-index:50;display:block;background:#fff;
-  border-top:1px solid var(--line);box-shadow:0 -2px 10px rgba(120,60,0,.08);
-  padding-bottom:env(safe-area-inset-bottom)}
+#tabbar{position:fixed;bottom:calc(var(--appfoot-h) + env(safe-area-inset-bottom));left:0;right:0;z-index:50;display:block;background:#fff;
+  border-top:1px solid var(--line);box-shadow:0 -2px 10px rgba(120,60,0,.08)}
+/* ---- © 常駐頁底：一行非官方聲明，永遠貼死喺屏幕最底、#tabbar 五掣下面（唔跟內容捲） ----
+   文字由 app.js App.init() 從 DATA.official.note＋App.VER 填入，同 app-foot・紙本 p-foot 同一份。
+   安全區由呢度包底（#tabbar 唔再 pad），窄機用 clamp 縮字保一行。no wrap＝高度永遠係 --appfoot-h */
+#appfoot{position:fixed;left:0;right:0;bottom:0;z-index:52;
+  min-height:calc(var(--appfoot-h) + env(safe-area-inset-bottom));
+  display:flex;align-items:center;justify-content:center;
+  padding:2px 8px env(safe-area-inset-bottom);
+  background:linear-gradient(95deg,var(--gh-green-lt),var(--gh-yellow-lt));
+  border-top:1px solid var(--line);
+  font-size:clamp(.48rem,2.7vw,.68rem);font-weight:700;color:var(--gh-green-dkr);
+  text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0 6px;
   font-size:.74rem;color:var(--mute);font-weight:700}
 #tabbar a span{font-size:1.4rem;filter:grayscale(.5);transition:.15s}
@@ -137,7 +148,7 @@ small,.mute{color:var(--mute)}
 .song-act small{display:block;color:var(--mute);font-size:.78rem;margin-top:1px}
 /* ---- 🧭 嚮導條：揀咗集會之後一步步帶到散會（貼喺工具箱上面） ---- */
 #flowbar{position:fixed;left:0;right:0;bottom:0;z-index:51;pointer-events:none}
-#flowbar.on{pointer-events:auto;bottom:calc(64px + env(safe-area-inset-bottom))}
+#flowbar.on{pointer-events:auto;bottom:calc(64px + var(--appfoot-h) + env(safe-area-inset-bottom))}
 #flowbar.on>*{box-sizing:border-box}
 #flowbar.on>*{max-width:860px;margin:0 auto}
 .fb-top{display:flex;align-items:center;gap:6px;background:linear-gradient(95deg,#4C9E4B,#6BBE66);
@@ -1460,7 +1471,7 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
     margin: 0 !important;
   }
   .print-preview-bar, .sheet-flag, .sheet-pageline, .sheet-stat { display: none !important; }
-  #topbar, #tabbar, #topnav, #stickytop, #flowbar, .print-preview-top, #modal .x, .btns, .pill, .activity-tabs, .action-grid, .app-foot, .foot-mini {
+  #topbar, #tabbar, #topnav, #stickytop, #flowbar, .print-preview-top, #modal .x, .btns, .pill, .activity-tabs, .action-grid, .app-foot, .foot-mini, #appfoot {
     display: none !important;
   }
   #modal {

@@ -870,6 +870,23 @@ ok('⑳c 一頁高度計得出（約 1057px）',pagePx>1000&&pagePx<1100,'px='+p
   /* 2026-09 負責人：全螢幕投影唔使另加標示——撳全螢幕之前已經喺有頁底嗰版睇過，唔可能話唔知 */
   const leadTxt=fs.readFileSync(path.join(__dirname,'..','js','lead.js'),'utf8');
   ok('㉑ 全螢幕投影唔重複加標示（頁底已經印咗）',!/lead-unofficial/.test(leadTxt)&&!/lead-unofficial/.test(cssTxt));
+
+  /* ㉒ 常駐頁底：© 一行永遠貼喺屏幕最底・喺下方 5 掣下面（同 app-foot 唔同——app-foot 跟內容捲走，
+     呢條唔捲：開住任何一頁、捲到邊都好，都見到「非官方・一切以總會公佈為準」） */
+  ok('㉒ index.html 有 #appfoot 且放喺 #tabbar 之後（五掣下面）',
+     /<footer id="appfoot"/.test(idxHtml)&&idxHtml.indexOf('id="appfoot"')>idxHtml.indexOf('id="tabbar"'));
+  ok('㉒ #appfoot 固定貼死屏幕最底（position:fixed・bottom:0・唔跟內容捲）',
+     /#appfoot\{position:fixed[^}]*?bottom:0/.test(cssTxt));
+  ok('㉒ #tabbar 升高一行（將最底嘅位讓咗俾 #appfoot），#view・#flowbar 都跟住讓位',
+     /#tabbar\{position:fixed;bottom:calc\(var\(--appfoot-h\)/.test(cssTxt)&&
+     /#flowbar\.on\{[^}]*?var\(--appfoot-h\)/.test(cssTxt)&&
+     /calc\(108px \+ var\(--appfoot-h\)\)/.test(cssTxt));
+  const appJs=fs.readFileSync(path.join(__dirname,'..','js','app.js'),'utf8');
+  ok('㉒ 頁底文字單一來源（DATA.official.note＋App.VER，唔准另寫第份）',
+     /getElementById\('appfoot'\)[\s\S]{0,200}?DATA\.official\.note[\s\S]{0,80}?App\.VER/.test(appJs));
+  ok('㉒ 常駐頁底行文＝© 2026 Scout System・非官方・版本（同用戶要求嗰行一樣）',
+     G.App.VER==='v5.1'&&/非官方輔助工具・一切以香港童軍總會公佈為準/.test('© 2026 Scout System・'+G.DATA.official.note+'・'+G.App.VER));
+  ok('㉒ 列印唔好印出常駐頁底（同 tabbar 一齊收埋）',/, #appfoot \{?\s*$/.test(printCss)||/#appfoot/.test(printCss));
 })();
 
 /* ============ 結果 ============ */

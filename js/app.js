@@ -11,6 +11,9 @@ var App={
     if(!Store.get('plan'))App.seedPlan();
     if(!Store.get('members'))Store.set('members',[]);
     if(!Store.get('mymeets'))Store.set('mymeets',[]);
+    /* 🦗 常駐頁底：© 一行永遠貼喺屏幕最底（下方五掣下面）——照用 DATA.official.note＋App.VER，唔准手寫第份 */
+    var af=document.getElementById('appfoot');
+    if(af&&typeof DATA!=='undefined'&&DATA.official)af.textContent='© 2026 Scout System・'+DATA.official.note+'・'+App.VER;
     addEventListener('hashchange',function(){App.route()});
     App.route();
   },
