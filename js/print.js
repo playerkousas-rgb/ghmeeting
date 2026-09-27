@@ -428,7 +428,7 @@ var PrintKit={
       '<div class="floor-nine">'+[0,1,2,3,4,5,6,7,8].map(function(i){
         return '<div class="fn-cell"><span class="fn-no">'+(i+1)+'</span><span class="fn-pos">'+POS[i]+'</span></div>'}).join('')+'</div>'+
       '<div class="p-note" style="margin-top:10px">💡 冇打印機？用膠紙／粉筆喺地貼九個格，每格入面用馬克筆寫大號 1–9 就得（10 分鐘搞掂，玩完可以撕走）。</div>'+
-      '<div class="p-foot">旅團：____________　日期：____________　© 2026 Scout System</div>'+
+      '<div class="p-foot">旅團：____________　日期：____________　© 2026 Scout System・'+DATA.official.note+'</div>'+
     '</div>';
     if(useOnly)return head;
     return head+
@@ -456,7 +456,7 @@ var PrintKit={
         '</tbody></table></div>'+
       '<div class="print-section"><div class="p-sec-title">🛡️ 安全（貼地之前讀一次）</div>'+
         '<div class="p-para">一次只一組入格；跳前睇清楚腳下；著波鞋、地面乾爽；聽到「停」即刻企定唔好再跳。地貼用美紋膠紙，撕走唔留膠；玩完即刻撕走，避免下次集會有人絆倒。開會前撳 APP「🧭 檢查表」→「🦗 地貼／體能遊戲前檢查表」逐項剔。</div></div>'+
-      '<div class="p-foot">旅團：____________　日期：____________　負責領袖：____________　© 2026 Scout System</div>'+
+      '<div class="p-foot">旅團：____________　日期：____________　負責領袖：____________　© 2026 Scout System・'+DATA.official.note+'</div>'+
     '</div>';
   },
 
@@ -489,7 +489,7 @@ var PrintKit={
         '<div class="cut-card sign-card sign-line"><div class="sign-letter">▬</div><div class="sign-sub">投擲線・貼地（腳留喺線後）</div></div>'+
       '</div>'+
       '<div class="p-note">👍👎 用法：讀出個案 → 小朋友行去自己覺得嗰邊 → 領袖撳「⚖️ 宣判」→ 請一位講點解。回收桶標籤貼喺真回收箱或紙箱上，四角各一個。射月靶掛牆，投擲線離靶 1.5–2 米。</div>'+
-      '<div class="p-foot">旅團：____________　日期：____________　© 2026 Scout System</div>'+
+      '<div class="p-foot">旅團：____________　日期：____________　© 2026 Scout System・'+DATA.official.note+'</div>'+
     '</div>';
   },
 

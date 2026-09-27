@@ -133,11 +133,15 @@ var HB={
       '<b>⑦ 影相同意（一次搞掂，一年唔使再問）</b><br>'+esc(Kit.photo.replace(/^📷\s*/,''))+'<br><small class="mute">想直接抄範本：去「🧰 點預備」→ 家長訊息範本。</small></div></div>';
   },
   about:function(){
+    var o=(typeof DATA!=='undefined'&&DATA.official)?DATA.official:{};
     return '<div class="card"><h2>ℹ️ 關於</h2><div class="box">🦗 <b>小童軍集會助手 Grasshopper Hub</b><br>由年度計劃到散會嗰刻:規劃→執集會→帶領→追蹤。<br><br>'+
       '📚 內容依據《小童軍活動指引》第三版(2026年8月,2026-08-15生效)之訓練綱要編寫。<br><br>'+
       '🔒 團員資料只儲存在你自己裝置嘅瀏覽器,不會上傳。<br><br>'+
       '📴 支援離線使用:第一次開啟後,冇網都用到(加至主畫面更好用)。<br><br>'+
       '© 2026 Scout System</div>'+
-      '<div class="mute" style="font-size:.8rem;margin-top:8px">此為非官方輔助工具,一切以香港童軍總會最新公佈為準。官方資料:小童軍支部網站 sites.google.com/scouting.org.hk/grasshopper</div></div>';
+      '<div class="box" style="margin-top:10px;border-left:4px solid var(--gh-blue);background:var(--gh-blue-lt)">'+
+      '<b>'+esc(o.flag)+'　'+esc(o.claim)+'</b><br>'+esc(o.who)+'內容如有出入，<b>一切以香港童軍總會公佈為準</b>。<br>'+
+      '<a href="'+esc(o.site)+'" target="_blank" rel="noopener" style="color:var(--gh-blue-dkr);font-weight:700">'+esc(o.siteN)+'</a>　'+
+      '<a href="'+esc(o.pack)+'" target="_blank" rel="noopener" style="color:var(--gh-blue-dkr);font-weight:700">'+esc(o.packN)+'</a></div></div>';
   }
 };

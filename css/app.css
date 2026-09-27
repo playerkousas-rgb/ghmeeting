@@ -1460,7 +1460,7 @@ toast,._toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);bac
     margin: 0 !important;
   }
   .print-preview-bar, .sheet-flag, .sheet-pageline, .sheet-stat { display: none !important; }
-  #topbar, #tabbar, #topnav, #stickytop, #flowbar, .print-preview-top, #modal .x, .btns, .pill, .activity-tabs, .action-grid {
+  #topbar, #tabbar, #topnav, #stickytop, #flowbar, .print-preview-top, #modal .x, .btns, .pill, .activity-tabs, .action-grid, .app-foot, .foot-mini {
     display: none !important;
   }
   #modal {
@@ -2167,9 +2167,27 @@ figure.fig figcaption{font-size:.76rem;color:var(--mute);padding:7px 10px;border
 .song-tt{flex:1;min-width:0}
 .song-tt b{font-size:.94rem}
 .song-tt small{display:block;font-size:.76rem}
-/* © 頁脚 */
-.app-foot{text-align:center;font-size:.72rem;font-weight:700;color:#c2ab97;
-  letter-spacing:.4px;padding:18px 0 6px}
+/* © 頁脚：每一頁最底嘅「非官方」聲明（避免誤會成官方出品）；收埋嗰半撳先展開 */
+.app-foot{margin:16px 0 4px;padding:12px 12px 10px;border-top:2px dashed var(--line);
+  border-radius:var(--gh-radius-sm);background:#fff;text-align:center}
+.foot-flag{font-size:.86rem;font-weight:800;color:var(--brn);letter-spacing:.4px}
+.foot-note{margin:6px 0 0;font-size:.76rem;line-height:1.6;color:var(--mute)}
+.foot-note b{color:var(--brn)}
+.foot-links{margin:7px 0 0;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.foot-links a{font-size:.74rem;font-weight:700;color:var(--gh-blue-dkr);background:var(--gh-blue-lt);
+  border:1px solid var(--gh-blue);border-radius:99px;padding:3px 11px}
+.foot-more{margin-top:8px;text-align:left}
+.foot-more>summary{cursor:pointer;font-size:.78rem;font-weight:700;color:var(--brn);padding:4px 0}
+.foot-split{margin-top:6px;display:grid;grid-template-columns:1fr;gap:8px}
+.foot-split b{font-size:.79rem;color:var(--ord)}
+.foot-split p{margin:3px 0 0;font-size:.74rem;line-height:1.6;color:var(--mute)}
+.foot-ver{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line);
+  font-size:.72rem;font-weight:700;color:#c2ab97;letter-spacing:.4px}
+/* ⚙️ 設定 sheet 最底嘅細版 */
+.foot-mini{font-size:.74rem;line-height:1.65;color:var(--mute)}
+.foot-mini b{color:var(--brn);font-size:.78rem}
+.foot-mini a{color:var(--gh-blue-dkr);font-weight:700;text-decoration:underline}
+@media(min-width:720px){.foot-split{grid-template-columns:1fr 1fr}}
 
 /* 🧭 逐步預備頁（#prep）：撳住場之後，一步只做一件事 */
 .prep-hero{margin-bottom:10px}
