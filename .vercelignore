@@ -1,0 +1,42 @@
+# Vercel 部署瘦身：只部署網站執行必需的檔案（語法同 .gitignore）
+# 呢啲檔案仍保留在 repo，只係唔會上傳去 Vercel，慳部署流量同加快部署。
+
+# --- 文件・測試・開發腳本（網站執行用不著） ---
+*.md
+docs/
+tests/
+test/
+scripts/
+tools/
+.github/
+
+# --- 原始設計檔・封存檔（防呆：日後放入 repo 都唔會誤傳上部署） ---
+*.psd
+*.ai
+*.zip
+*.tar
+*.tgz
+*.tar.gz
+*.7z
+*.rar
+# 本站 PDF 全部係外連（香港童軍總會官方套包 = Google Drive），無本地 PDF 要經前端提供下載
+*.pdf
+
+# --- 吉祥物原圖大檔：原圖留 repo 做母版，部署只用 WebP 版（img/ghmeeting_mascot.webp） ---
+img/ghmeeting_mascot.png
+img/ghmeeting_mascot.src.png
+**/*.src.png
+
+# --- ICON 來源與非執行尺寸 ---
+# 執行時只用到：icons/gh-icons.svg、根目錄 PWA icons、manifest shortcuts 用嘅 icons/png/192/
+icons/svg/
+icons/crop-preview/
+icons/png/48/
+icons/png/1024/
+
+# --- OS・編輯器雜檔 ---
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/

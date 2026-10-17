@@ -1,0 +1,8 @@
+# Vercel CLI 本地連結資料（含 project id，唔入 repo）
+.vercel
+
+# 依賴・雜檔
+node_modules/
+.DS_Store
+Thumbs.db
+*.log

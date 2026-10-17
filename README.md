@@ -189,6 +189,22 @@ node tests/audit.js   # 176 個環節 × 8 類缺口（含「手工有冇即用�
 node tests/ui.js      # 10 個分頁・tag 平衡・冷啟動（清空 localStorage）・25 份教材・30 場範本
 ```
 
+## 🚀 部署（Vercel・瘦身防呆）
+
+- **只有 `main` 會自動部署**：`vercel.json` 的 `git.deploymentEnabled` 是 `{"main": true, "*": false}`。
+  Vercel 規矩是「未寫明的分支預設部署」，只寫 `"main": true` 等於沒有限制，所以要連 `"*": false` 一齊寫；
+  `arena/*` 等工作分支不會觸發 Preview 部署白耗額度（代價：PR 沒有 Preview 網址，要預覽請在本機開）。
+- **非必要不重建**：`ignoreCommand`（exit 0 = skip）——commit 訊息含 `[skip ci]`／`[skip vercel]`，
+  或整個 commit 只改了不部署的檔案（`docs/`、`tests/`、`tools/`、`*.md`、ICON 來源圖等）就自動跳過建置；
+  判斷不了（無上一版／git 出錯）一律照常部署（fail-open），不會靜悄悄漏掉部署。
+- **部署瘦身**：`.vercelignore` 把文件、測試、腳本、設計原檔（`*.psd`／`*.ai`／`*.zip`／`*.pdf`）、
+  吉祥物母版 PNG（約 1 MB）和 ICON 來源（`icons/svg/`、`icons/png/48|1024/`、裁切預覽）留在 repo 但不上傳 Vercel。
+- **圖片規則（單檔 < 200 KB）**：教學插圖用 AVIF；吉祥物部署版是 `img/ghmeeting_mascot.webp`（約 116 KB，`sw.js` 快取這張，
+  母版 PNG 不壓縮、只留 repo）；PWA icon 規格要求 PNG，就量化成 PNG8（512² 約 95 KB，水彩質感看不出差別）。
+  換吉祥物跑 `bash tools/build-mascot.sh` 會自動做埋 WebP＋PNG8 瘦身，之後記得升 `sw.js` 的 `CACHE` 版號。
+- 本專案**沒有** GitHub Actions 自動爬蟲 commit；日後若加入，commit 訊息加 `[skip ci]` 即可（`ignoreCommand` 已支援）。
+  本機 `vercel` CLI 產生的 `.vercel/` 已在 `.gitignore`，不要入 repo。
+
 ## 結構
 
 ```
