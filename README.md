@@ -191,12 +191,14 @@ node tests/ui.js      # 10 個分頁・tag 平衡・冷啟動（清空 localStor
 
 ## 🚀 部署（Vercel・瘦身防呆）
 
-- **只有 `main` 會自動部署**：`vercel.json` 的 `git.deploymentEnabled` 是 `{"main": true, "*": false}`。
-  Vercel 規矩是「未寫明的分支預設部署」，只寫 `"main": true` 等於沒有限制，所以要連 `"*": false` 一齊寫；
-  `arena/*` 等工作分支不會觸發 Preview 部署白耗額度（代價：PR 沒有 Preview 網址，要預覽請在本機開）。
+- **只有 `main` 會自動部署**：`vercel.json` 的 `git.deploymentEnabled` 是 `{"main": true, "*": false, "**": false}`。
+  Vercel 規矩是「未寫明的分支預設部署」，只寫 `"main": true` 等於沒有限制；而 minimatch 的 `*` 不跨越 `/`，
+  擋不住 `arena/xxx` 這類含斜線的分支名，所以一定要連 `"**": false` 一齊寫（多條規則命中時以 true 優先，`main` 照常部署）。
+  工作分支不會觸發 Preview 部署白耗額度（代價：PR 沒有 Preview 網址，要預覽請在本機開）。
 - **非必要不重建**：`ignoreCommand`（exit 0 = skip）——commit 訊息含 `[skip ci]`／`[skip vercel]`，
   或整個 commit 只改了不部署的檔案（`docs/`、`tests/`、`tools/`、`*.md`、ICON 來源圖等）就自動跳過建置；
-  判斷不了（無上一版／git 出錯）一律照常部署（fail-open），不會靜悄悄漏掉部署。
+  判斷不了（無上一版／上一版不在淺 clone／git 出錯）一律 exit 1 照常部署（fail-open），不會靜悄悄漏掉部署。
+  ⚠️ Vercel schema 規定 `ignoreCommand` **最長 256 字元**，超長會令整個部署即時驗證失敗，千萬別寫成長腳本（現行 250 字元）。
 - **部署瘦身**：`.vercelignore` 把文件、測試、腳本、設計原檔（`*.psd`／`*.ai`／`*.zip`／`*.pdf`）、
   吉祥物母版 PNG（約 1 MB）和 ICON 來源（`icons/svg/`、`icons/png/48|1024/`、裁切預覽）留在 repo 但不上傳 Vercel。
 - **圖片規則（單檔 < 200 KB）**：教學插圖用 AVIF；吉祥物部署版是 `img/ghmeeting_mascot.webp`（約 116 KB，`sw.js` 快取這張，
