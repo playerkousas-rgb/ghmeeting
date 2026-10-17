@@ -9,7 +9,8 @@
 #   CROP=C   bash tools/build-mascot.sh               # 轉第 2 選擇：中景構圖
 #
 # 輸出：
-#   img/ghmeeting_mascot.png    1024² 去背透明（全域用嘅吉祥物原檔）
+#   img/ghmeeting_mascot.png    1024² 去背透明（母版・只留 repo，.vercelignore 唔部署）
+#   img/ghmeeting_mascot.webp   1024² WebP q90（部署／sw.js 快取用・目標 < 200 KB）
 #   icons/icon-512.png           512² 透明（PWA any）
 #   icons/icon-192.png           192² 透明（PWA any）
 #   icons/icon-512-maskable.png  512² 小童軍綠底（PWA maskable 安全區 60%）
@@ -123,5 +124,16 @@ convert -size 64x64 "xc:$PAPER" -fill "$GREEN" -draw "roundrectangle 2,2 61,61 1
   \( "img/ghmeeting_mascot.png" -background none -resize 52x52 \) \
   -gravity center -composite -define png:color-type=6 -strip icons/favicon-64.png
 
+# ⑥ 部署瘦身（唔做嘅話 icon 會去返 300 KB+，母版 PNG 成 1 MB）：
+#    - 吉祥物部署版轉 WebP（母版 PNG 保留原質素做母版，唔好直接壓佢）
+#    - PWA icon 必須係 PNG，量化做 PNG8（256 色+抖色，水彩質感睇唔出分別，目標每檔 < 200 KB）
+echo "⑤ 部署瘦身（WebP + PNG8 量化）..."
+convert "img/ghmeeting_mascot.png" -depth 8 -strip -quality 90 \
+  -define webp:method=6 -define webp:alpha-quality=95 "img/ghmeeting_mascot.webp"
+for f in icons/icon-512.png icons/icon-512-maskable.png icons/icon-192.png icons/icon-48.png icons/apple-touch-icon.png icons/favicon-64.png; do
+  convert "$f" -strip -depth 8 -dither FloydSteinberg -colors 256 "PNG8:$TMP/opt.png"
+  mv "$TMP/opt.png" "$f"
+done
+
 echo "✅ 完成："
-ls -la img/ghmeeting_mascot.png icons/*.png | awk '{printf "   %-34s %s bytes\n",$9,$5}'
+ls -la img/ghmeeting_mascot.png img/ghmeeting_mascot.webp icons/*.png | awk '{printf "   %-34s %s bytes\n",$9,$5}'
