@@ -6,5 +6,5 @@
       "*": false
     }
   },
-  "ignoreCommand": "msg=$(git log -1 --pretty=%B 2>/dev/null); case \"$msg\" in *'[skip ci]'*|*'[ci skip]'*|*'[skip vercel]'*|*'[vercel skip]'*) echo 'Vercel: skip build ([skip ci] in commit message)'; exit 0;; esac; base=''; if [ -n \"$VERCEL_GIT_PREVIOUS_SHA\" ] && git cat-file -e \"$VERCEL_GIT_PREVIOUS_SHA^{commit}\" 2>/dev/null; then base=\"$VERCEL_GIT_PREVIOUS_SHA\"; elif git rev-parse -q --verify 'HEAD^' >/dev/null 2>&1; then base='HEAD^'; fi; if [ -z \"$base\" ]; then exit 1; fi; files=$(git diff --name-only \"$base\" HEAD 2>/dev/null); if [ $? -ne 0 ] || [ -z \"$files\" ]; then exit 1; fi; deploy=0; for f in $files; do case \"$f\" in docs/*|tests/*|test/*|scripts/*|tools/*|.github/*|icons/svg/*|icons/crop-preview/*|icons/png/48/*|icons/png/1024/*|img/*.src.png|img/ghmeeting_mascot.png|*.md|*.psd|*.ai|*.zip|*.pdf|.gitignore|LICENSE*) ;; *) deploy=1;; esac; done; if [ \"$deploy\" = 0 ]; then echo 'Vercel: skip build (only non-deployable files changed)'; exit 0; fi; exit 1"
+  "ignoreCommand": "git log -1 --pretty=%B|grep -qiE '\\[skip (ci|vercel)\\]|\\[(ci|vercel) skip\\]'&&exit 0;git diff --quiet ${VERCEL_GIT_PREVIOUS_SHA:-HEAD^} HEAD -- . ':!docs' ':!tests' ':!tools' ':!scripts' ':!.github' ':!*.md' ':!icons/svg' ':!*.src.png'||exit 1;exit 0"
 }
