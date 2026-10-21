@@ -184,10 +184,24 @@ node tools/build-icons.mjs                            # 改 ICON → sprite + PN
 ## 檢查
 
 ```bash
-node tests/smoke.js   # 339 項：主題曲節奏・遊戲狀態機・套包輸出・即用紙版面・上下 5+5 導航・工作紙純教材庫・圖紙搵得返・圖同玩法夾唔夾・字數上限・步驟要列點按次序・列印分頁
-node tests/audit.js   # 176 個環節 × 8 類缺口（含「手工有冇即用紙・有冇混入說明書」）
-node tests/ui.js      # 10 個分頁・tag 平衡・冷啟動（清空 localStorage）・25 份教材・30 場範本
+node tests/smoke.js        # 404 項：主題曲節奏・遊戲狀態機・套包輸出・即用紙版面・上下 5+5 導航・圖紙搵得返・字數上限・12 頁各 1 個 h1 唔跳級・回報系統・預快取 ≤1.5 MB・0 重複定義
+node tests/audit.js        # 176 個環節 × 8 類缺口（含「手工有冇即用紙・有冇混入說明書」）
+node tests/ui.js           # 10 個分頁・tag 平衡・冷啟動（清空 localStorage）・25 份教材・30 場範本
+node tools/align-check.mjs # 其他 MEETING APP 都跑得嘅 10 類對齊檢查（exit code 可以當閘）
 ```
+
+## 📮 意見回報（Scout Admin 統一回報 v1）
+
+有網：右下角 `🐛💬 回報 · 意見`（一行官方 widget，`data-app="小童軍集會"`）。
+離線／腳本被封：手冊底部「📮 意見回報」→ 可複製文字＋網頁版表單，唔會靜靜失敗。
+`data-app` **唔可以用**「小童軍」「童軍」「幼童軍」等單一支部名（會被歸入專章系統）。詳見 `docs/feedback-system.md`。
+
+## 🧭 2026-10-22 對齊（同其他 MEETING APP 同一套標準）
+
+`docs/dialogue-align-20261022.md` 逐回合記低「你講／我做／實測／唔可以改」，尾段係四大類對齊清單（內容／介面／系統／文件）＋共通禁忌，其他 MEETING APP 可以逐項照勾。
+**同 CUBSMEETING 相同嘅係系統同標準，唔係內容**：路由、字數預算、測試棘輪、回報接法、預快取、列印規矩照同一套；誓詞、綱要、制服、獎章、歌曲、場次一律照小童軍官方文件（幼童軍嗰套唔可以搬）。
+**精簡＝收埋／縮短，唔係刪內容**：今次 0 段內容被刪，只係收 `details` 同改寫短句。
+今次落地：12/12 頁各 1 個 `h1`（0 跳級、0 重複 id）、`aria-current`、預快取 80 檔 4.93 MB → 31 檔 0.94 MB（49 張大圖背景補）、制服海報加「依據／示意」聲明、校正 30 場範本長度（`len` 保留並等於逐節加總，測試鎖住）、意見回報、`tools/align-check.mjs`。
 
 ## 🚀 部署（Vercel・瘦身防呆）
 
@@ -218,7 +232,9 @@ js/tpls.js      30 個集會範本            js/venue.js   📍 場地設置
 js/chute.js     🌈 快樂傘（即插即用）    js/song.js    🎵 歌曲・卡拉OK（即插即用）
 js/tools.js     🎲 快鍵・臨時加節目      js/app.js js/prepare.js js/play.js js/track.js js/handbook.js js/data.js js/guide.js
 tests/smoke.js tests/audit.js tests/ui.js
+tools/align-check.mjs  對齊檢查（其他 MEETING APP 都跑得）
 docs/positioning.md 產品定位　docs/gap-audit.md 缺口審計　docs/img-audit.md 圖同玩法對照
+docs/dialogue-align-20261022.md 對齊對話紀錄　docs/feedback-system.md 意見回報系統
 ```
 
 資料只存喺你自己裝置（localStorage），不上傳。

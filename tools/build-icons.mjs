@@ -50,7 +50,9 @@ const items = files.map(f => {
   const close = raw.lastIndexOf('</svg>');
   if (!open || close < 0) throw new Error(`${f} 唔係合法 svg`);
   const viewBox = (raw.match(/viewBox="([^"]+)"/i) || [, '0 0 48 48'])[1];
-  const inner = raw.slice(open.index + open[0].length, close).trim();
+  /* 來源 svg 自己有一個 <title>（無障礙用）；sprite 會再加一個，所以呢度要搣走，
+     否則 <symbol> 會出現兩個 <title>（螢幕報讀器重複讀一次）。 */
+  const inner = raw.slice(open.index + open[0].length, close).replace(/<title>[\s\S]*?<\/title>/gi, '').trim();
   return { key, id: 'gh-' + key.slice(2), label: NAMES[key] || key, viewBox, inner, raw };
 });
 

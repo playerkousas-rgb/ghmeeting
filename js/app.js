@@ -24,7 +24,12 @@ var App={
            chute:'chute',song:'song',tools:'tools',prep:'prep'}[h]||'plan';
     App.view=v;
     /* 🅰️ 上方五入口 ＋ 🅱️ 下方即插即用五格：兩條 bar 都要著返正確嗰格 */
-    document.querySelectorAll('#tabbar a, #topnav a').forEach(function(a){a.classList.toggle('on',a.dataset.tab===v)});
+    document.querySelectorAll('#tabbar a, #topnav a').forEach(function(a){
+      var on=a.dataset.tab===v;
+      a.classList.toggle('on',on);
+      /* 螢幕報讀器要知「而家喺邊一頁」；外連（官方套包）冇 data-tab，永遠唔會有 aria-current */
+      if(on)a.setAttribute('aria-current','page');else if(a.removeAttribute)a.removeAttribute('aria-current');
+    });
     var el=document.getElementById('view');
     if(v==='pack')el.innerHTML=Pack.html();
     if(v==='plan')el.innerHTML=Plan.html();
@@ -46,7 +51,7 @@ var App={
   go:function(h){location.hash=h},
   /* 🦗 版權／非官方聲明：每一頁最底都印住。收埋嗰半「邊啲係官方」撳先展開，唔佔版面。
      文案全部喺 DATA.official（js/data.js）——紙本 p-foot 都用同一份，唔准各自亂寫。 */
-  VER:'v5.1',
+  VER:'v5.3',
   foot:function(){
     var o=(typeof DATA!=='undefined'&&DATA.official)?DATA.official:null;
     if(!o)return '';
@@ -131,6 +136,52 @@ var App={
       esc(o.who)+'內容如有出入，一切以香港童軍總會公佈為準。<br>'+
       '<a href="'+esc(o.site)+'" target="_blank" rel="noopener">'+esc(o.siteN)+'</a>　'+
       '<a href="'+esc(o.pack)+'" target="_blank" rel="noopener">'+esc(o.packN)+'</a></div>';
+  },
+  /* ================= 📮 意見回報（Scout Admin 統一回報 v1）=================
+     有網：index.html 一行官方 widget（右下角 🐛💬 回報・意見）負責提交。
+     離線／腳本被封：下面嘅模態係後備，提供可複製文字＋網頁版表單，唔會靜靜失敗。
+     data-app 一定要用「小童軍集會」——唔可以用「小童軍」「童軍」「幼童軍」等單一支部名，
+     否則 Scout Admin 會歸入「專章系統」，同獎章 APP 嘅回報混埋一齊。 */
+  FB_APP:'小童軍集會',
+  FB_FORM:'https://scout-admin-blue.vercel.app/report.html?app=',
+  fbPage:function(){var h=(location.hash||'#plan').replace(/^#/,'').split('?')[0];return h||'plan'},
+  fbTemplate:function(){
+    var ua=(typeof navigator!=='undefined'&&navigator.userAgent)?navigator.userAgent:'（讀不到）';
+    return '【'+App.FB_APP+'】\n'+
+      '類別：（問題／建議／讚／其他）\n'+
+      '頁面：#'+App.fbPage()+'\n'+
+      '版本：'+App.VER+'（'+App.FB_APP+'）\n'+
+      '裝置：'+ua+'\n\n'+
+      '內容：\n\n'+
+      '——\n（唔好填小朋友姓名、班別、地址或相片）';
+  },
+  fbUrl:function(){return App.FB_FORM+encodeURIComponent(App.FB_APP)},
+  feedback:function(){
+    Modal.open('<h2>📮 意見回報</h2>'+
+      '<div class="fedb-privacy">🔒 只收<b>問題本身</b>：唔好填小朋友姓名、班別、地址或相片。姓名／聯絡方式全部選填，可以匿名。</div>'+
+      '<p class="mute" style="font-size:.82rem">有網時右下角有官方 <b>🐛💬 回報・意見</b> 掣（Scout Admin 統一回報）；下面呢段係<b>離線後備</b>：複製文字，貼去電郵／群組，或者開網頁版表單。</p>'+
+      '<textarea id="fb-ta" rows="8" style="width:100%;font-size:.82rem;line-height:1.5" aria-label="回報文字">'+esc(App.fbTemplate())+'</textarea>'+
+      '<div class="btns"><button class="btn gr" onclick="App.copyFeedback()">📋 複製文字</button>'+
+      '<a class="btn" href="'+esc(App.fbUrl())+'" target="_blank" rel="noopener">🌐 開網頁版表單</a></div>');
+    return true;
+  },
+  copyFeedback:function(){
+    var ta=document.getElementById('fb-ta');
+    var txt=ta?ta.value:App.fbTemplate();
+    var done=function(){toast('已複製 ✓ 貼去電郵／群組就得')};
+    try{
+      if(typeof navigator!=='undefined'&&navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(txt).then(done).catch(function(){App._fbCopyFallback(txt,done)});
+        return true;
+      }
+    }catch(e){}
+    return App._fbCopyFallback(txt,done);
+  },
+  _fbCopyFallback:function(txt,done){
+    var ta=document.getElementById('fb-ta');
+    if(ta){try{ta.focus();ta.select();if(document.execCommand&&document.execCommand('copy')){done();return true}}catch(e){}}
+    try{if(typeof prompt==='function'){prompt('複製下面文字：',txt);return true}}catch(e){}
+    return false;
   },
   exportAll:function(){
     var keys=['settings','plan','members','recs','mymeets','owners','meetmeta','msgTpl','checkins'],data={app:'ghmeeting',ver:1,at:new Date().toISOString(),keys:{}};

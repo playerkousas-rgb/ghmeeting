@@ -160,7 +160,7 @@ var Flow={
     var cur=Flow.cur();
     var total=Flow.STEPS.length,doneN=Flow.doneCount();
     var h='<div class="card prep-hero"><span class="eyebrow">🧭 STEP BY STEP 預備</span>'+
-      '<h2>'+esc(m.n)+'</h2>'+
+      '<h1>'+esc(m.n)+'</h1>'+
       '<div class="mute" style="font-size:.85rem">'+(m.mo?esc(m.mo)+'・':'')+'約 '+Plan.lenOf(m)+' 分鐘・'+(m.stages?m.stages.length:0)+' 個環節</div>';
     if(m.stages&&m.stages.length)h+='<div class="prep-chips">'+m.stages.map(function(x){return '<span class="tag">'+esc(x.n)+'</span>'}).join('')+'</div>';
     h+='<div class="btns" style="margin-top:10px">'+
@@ -168,7 +168,7 @@ var Flow={
       '<button class="btn sm ghost" onclick="Prepare.detail(\''+cm.tid+'\')">📋 睇全部資料</button>'+
       '<button class="btn sm ghost" onclick="Flow.quit()">✕ 收埋嚮導</button></div></div>';
     if(!s.on){
-      h+='<div class="card"><h3>第一次帶呢場？我一步步帶你。</h3>'+
+      h+='<div class="card"><h2>第一次帶呢場？我一步步帶你。</h2>'+
         '<div class="mute" style="font-size:.85rem">印教材 → 執袋 → 設場 → 帶領 → 記出席。每步只做一件事，做咗會記住，收咗機返嚟都接得返。</div>'+
         '<div class="btns" style="margin-top:8px"><button class="btn gr" onclick="Flow.start()">🧭 帶我由頭做到尾</button></div></div>';
       return h;
@@ -191,7 +191,7 @@ var Flow={
         return '<div class="prep-step"><span class="prep-step-no">'+(i+1)+'</span><div class="prep-step-b"><b>'+st.ic+' '+esc(st.n)+'</b></div></div>';
       }).join('')+'</div></div>';
     if(!cur){
-      h+='<div class="card prep-done"><h3>🎉 散會！由頭到尾做齊晒。</h3>'+
+      h+='<div class="card prep-done"><h2>🎉 散會！由頭到尾做齊晒。</h2>'+
         '<div class="btns"><button class="btn" onclick="App.go(\'#plan\')">→ 去目錄揀下一場</button>'+
         '<button class="btn ghost" onclick="App.go(\'#track\')">🏅 去記錄睇進度</button></div></div>';
     }else{

@@ -23,7 +23,7 @@ var Song={
   html:function(){
     var f=(typeof DATA!=='undefined'&&DATA.facts)?DATA.facts:{song:[]};
     var h='<div class="card song-hero"><span class="eyebrow">🎵 歌曲</span>'+
-      '<h2>日常集會會播嘅歌。</h2>'+
+      '<h1>日常集會會播嘅歌。</h1>'+
       '<p class="mute">撳一下就開唱：APP 即時彈伴奏，唔使上網、唔使搵片。</p>'+
       '<div class="song-setup" style="margin-top:8px">'+
         '<span>🐢 速度 '+Music.TEMPOS.map(function(t){
@@ -33,7 +33,7 @@ var Song={
       '</div></div>';
 
     /* ① 日常歌曲清單 */
-    h+='<div class="card"><h3>📚 日常集會歌曲 <span class="tag">即開即唱</span></h3>';
+    h+='<div class="card"><h2>📚 日常集會歌曲 <span class="tag">即開即唱</span></h2>';
     Song.LIST.forEach(function(s){
       h+='<div class="song-row"><span class="song-ic">'+s.ic+'</span>'+
         '<div class="song-tt"><b>'+esc(s.n)+'</b><small>'+esc(s.d)+'</small></div>'+
@@ -48,7 +48,7 @@ var Song={
     h+='<div class="mute" style="font-size:.78rem;margin-top:8px">全部公開領域旋律；主題曲寄調 London Bridge is Falling Down。</div></div>';
 
     /* ② 唱住玩：臨時加節目 */
-    h+='<div class="card"><h3>🎤 唱住玩（臨時加節目）</h3>'+
+    h+='<div class="card"><h2>🎤 唱住玩（臨時加節目）</h2>'+
       '<div class="tk-grid">'+
       qBtn('🎤','音樂傳球點名','停球嗰位講名＋一樣鍾意嘅嘢','Lead.startGame(\'roll\',\'音樂傳球點名\')')+
       qBtn('🥁','節奏模仿','APP 出拍子聲，領袖做一次全體跟','Lead.startGame(\'rhythm\',\'節奏模仿・跟拍子\')')+
@@ -66,7 +66,7 @@ var Song={
 
     /* ④ 團員章：唱主題歌 */
     var b=(typeof Kit!=='undefined'&&Kit.badgeMap)?Kit.badgeMap.filter(function(x){return x.k==='song'})[0]:null;
-    if(b)h+='<div class="card"><h3>🏅 唱完就計數：團員章「'+esc(b.t)+'」</h3>'+
+    if(b)h+='<div class="card"><h2>🏅 唱完就計數：團員章「'+esc(b.t)+'」</h3>'+
       '<div class="box">📍 '+esc(b.where)+'<br>💡 '+esc(String(b.how).split("；")[0])+'。</div>'+
       '<div class="btns"><button class="btn sm gr" onclick="'+b.link+'">▶ 即刻開</button>'+
       '<button class="btn sm ghost" onclick="App.go(\'#track\')">🏅 去記錄</button></div></div>';

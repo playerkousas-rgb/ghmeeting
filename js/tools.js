@@ -32,25 +32,25 @@ var Tools={
   ],
   html:function(){
     var h='<div class="card tools-hero"><span class="eyebrow">🎲 快鍵</span>'+
-      '<h2>而家即刻要用的，全部喺呢度。</h2>'+
+      '<h1>而家即刻要用的，全部喺呢度。</h1>'+
       '<p class="mute">集會途中先撳嘅嘢：加節目・要佢哋靜・分組計分——一撳即開。</p>'+
       '<div class="btns"><button class="btn gr" onclick="App.quickHub()">⚡ 隨手開會面板</button>'+
       '<button class="btn ghost" onclick="App.startInstant(\'general\',40)">🎲 零準備即興集會（40分）</button></div></div>';
 
     /* ① 臨時加節目 */
-    h+='<div class="card"><h3>⚡ 臨時加節目 <span class="tag">零物資・即開</span></h3>'+
+    h+='<div class="card"><h2>⚡ 臨時加節目 <span class="tag">零物資・即開</span></h2>'+
       '<div class="mute" style="font-size:.82rem">環節快過頭／想加多節？撳一下就開。</div>'+
       '<div class="tk-grid">'+this.PROGRAMS.map(function(p){
         return qBtn(p[0],p[1],p[2],p[3])}).join('')+'</div></div>';
 
     /* ② 控場快鍵 */
-    h+='<div class="card"><h3>🧰 控場快鍵 <span class="tag">呢秒就要用</span></h3>'+
+    h+='<div class="card"><h2>🧰 控場快鍵 <span class="tag">呢秒就要用</span></h2>'+
       '<div class="tk-grid">'+this.QUICK.map(function(p){
         return qBtn(p[0],p[1],p[2],p[3])}).join('')+'</div>'+
       '<div class="mute" style="font-size:.78rem;margin-top:8px">💡 抽籤／分組會自動用返「🏅 記錄」入面嘅團員名單。</div></div>';
 
     /* ③ 頂位：連集會都未砌 */
-    h+='<div class="card"><h3>🎲 臨時頂位：連集會都未砌</h3>'+
+    h+='<div class="card"><h2>🎲 臨時頂位：連集會都未砌</h2>'+
       '<div class="mute" style="font-size:.82rem">揀主題＋時長，即刻砌好一場。</div>'+
       '<div class="tk-grid">'+
       qBtn('🎲','歡樂綜合','40 分鐘・動靜交替','App.startInstant(\'general\',40)')+
@@ -62,7 +62,7 @@ var Tools={
       '</div></div>';
 
     /* ④ 其他入口：唔常用但要搵得到 */
-    h+='<div class="card"><h3>🔎 其他入口</h3><div class="tk-grid">'+
+    h+='<div class="card"><h2>🔎 其他入口</h2><div class="tk-grid">'+
       qBtn('🔍','全站搵嘢','範本・手工・圖紙・物料，一框搵晒','Kit.searchOpen()')+
       qBtn('🧰','點預備總覽','物資幾多・檢查表・家長訊息','Kit.hubOpen()')+
       qBtn('📖','手冊','誓詞・規律・獎章・帶領貼士','App.go(\'#book\')')+
