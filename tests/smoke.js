@@ -1016,19 +1016,22 @@ ok('⑳c 一頁高度計得出（約 1057px）',pagePx>1000&&pagePx<1100,'px='+p
   ok('㉗ 圖缺／離線有後備（唔會開天窗）',/圖未載入（離線時改用圖解）/.test(fs.readFileSync(path.join(__dirname,'..','js','img.js'),'utf8')));
 })();
 
-/* ============ ㉘ 單一真相：集會長度只可以計出嚟，唔可以另寫一個 len ============
-   2026-10-22 實測：30 場範本有 13 場 `len` 同逐節加總唔一致（例：t02 寫 40，逐節 45）。
-   而 `len` 從來冇人讀——即係「第二個真相」。已整批刪走，長度一律由 Plan.lenOf() 由 stages 計。 */
+/* ============ ㉘ 長度只有一個真相：len 一定要等於逐節加總 ============
+   原則（2026-10-22 修正）：**唔係為刪而刪**。`len` 係範本自帶欄位（列表／匯出都用得），
+   所以保留；之前 13 場數字同逐節加總唔一致（例：t02 寫 40，逐節 45），
+   已逐場校正為加總值，並用呢條測試鎖住「唔可以再出現兩個數」。 */
 (function(){
-  const bad=G.TPLS.filter(function(t){return 'len' in t}).map(function(t){return t.id});
-  ok('㉘ 30 場範本冇 `len` 欄（長度只由 stages 加總，杜絕第二個真相）',bad.length===0,bad.join('、'));
+  const missing=G.TPLS.filter(function(t){return typeof t.len!=='number'}).map(function(t){return t.id});
+  ok('㉘ 30 場範本都有 len 欄（保留欄位，唔係刪走了事）',missing.length===0,missing.join('、'));
   const mism=G.TPLS.filter(function(t){
     const sum=(t.stages||[]).reduce(function(a,x){return a+(+x.m||0)},0);
-    return !sum||G.Plan.lenOf(t)!==sum;
-  }).map(function(t){return t.id});
-  ok('㉘ 每場長度＝逐節加總（>0）',mism.length===0,mism.join('、'));
+    return t.len!==sum;
+  }).map(function(t){return t.id+'（'+t.len+'≠'+G.Plan.lenOf(t)+'）'});
+  ok('㉘ len＝逐節加總（0 場唔一致；改壞即 FAIL）',mism.length===0,mism.join('、'));
   ok('㉘ 每場有 ≥3 節、總長 20–200 分鐘（唔會出現 0 分鐘集會）',
      G.TPLS.every(function(t){const n=G.Plan.lenOf(t);return (t.stages||[]).length>=3&&n>=20&&n<=200}));
+  ok('㉘ 畫面顯示嘅長度用 Plan.lenOf()（由 stages 計），唔係靠手寫 len',
+     /lenOf:function\(t\)\{return \(t\.stages\|\|\[\]\)\.reduce/.test(fs.readFileSync(path.join(__dirname,'..','js','app.js'),'utf8')));
 })();
 
 /* ============ 結果 ============ */

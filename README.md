@@ -184,7 +184,7 @@ node tools/build-icons.mjs                            # 改 ICON → sprite + PN
 ## 檢查
 
 ```bash
-node tests/smoke.js        # 403 項：主題曲節奏・遊戲狀態機・套包輸出・即用紙版面・上下 5+5 導航・圖紙搵得返・字數上限・12 頁各 1 個 h1 唔跳級・回報系統・預快取 ≤1.5 MB・0 重複定義
+node tests/smoke.js        # 404 項：主題曲節奏・遊戲狀態機・套包輸出・即用紙版面・上下 5+5 導航・圖紙搵得返・字數上限・12 頁各 1 個 h1 唔跳級・回報系統・預快取 ≤1.5 MB・0 重複定義
 node tests/audit.js        # 176 個環節 × 8 類缺口（含「手工有冇即用紙・有冇混入說明書」）
 node tests/ui.js           # 10 個分頁・tag 平衡・冷啟動（清空 localStorage）・25 份教材・30 場範本
 node tools/align-check.mjs # 其他 MEETING APP 都跑得嘅 10 類對齊檢查（exit code 可以當閘）
@@ -199,7 +199,9 @@ node tools/align-check.mjs # 其他 MEETING APP 都跑得嘅 10 類對齊檢查�
 ## 🧭 2026-10-22 對齊（同其他 MEETING APP 同一套標準）
 
 `docs/dialogue-align-20261022.md` 逐回合記低「你講／我做／實測／唔可以改」，尾段係四大類對齊清單（內容／介面／系統／文件）＋共通禁忌，其他 MEETING APP 可以逐項照勾。
-今次落地：12/12 頁各 1 個 `h1`（0 跳級、0 重複 id）、`aria-current`、預快取 80 檔 4.93 MB → 31 檔 0.94 MB（49 張大圖背景補）、制服海報加「依據／示意」聲明、刪走 30 場範本嘅第二個長度真相（`len`）、意見回報、`tools/align-check.mjs`。
+**同 CUBSMEETING 相同嘅係系統同標準，唔係內容**：路由、字數預算、測試棘輪、回報接法、預快取、列印規矩照同一套；誓詞、綱要、制服、獎章、歌曲、場次一律照小童軍官方文件（幼童軍嗰套唔可以搬）。
+**精簡＝收埋／縮短，唔係刪內容**：今次 0 段內容被刪，只係收 `details` 同改寫短句。
+今次落地：12/12 頁各 1 個 `h1`（0 跳級、0 重複 id）、`aria-current`、預快取 80 檔 4.93 MB → 31 檔 0.94 MB（49 張大圖背景補）、制服海報加「依據／示意」聲明、校正 30 場範本長度（`len` 保留並等於逐節加總，測試鎖住）、意見回報、`tools/align-check.mjs`。
 
 ## 🚀 部署（Vercel・瘦身防呆）
 
