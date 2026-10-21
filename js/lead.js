@@ -245,7 +245,7 @@ var Lead={
     var next=pl.rows.find(function(r){return r.status==='todo'});
     var nextT=next?dur(next.tid):null;
     var my=Store.get('mymeets');
-    var h='<div class="card"><h2>▶️ 現場帶領</h2><div class="mute" style="font-size:.85rem">左邊（或投影）係小朋友畫面；下面綠色欄係領袖提示。<b>毋須自備繁複道具</b>：APP 已內置全部互動卡、數碼道具、伴奏同遊戲畫面。</div>';
+    var h='<div class="card"><h1>▶️ 現場帶領</h1><div class="mute" style="font-size:.85rem">左邊（或投影）係小朋友畫面；下面綠色欄係領袖提示。<b>毋須自備繁複道具</b>：APP 已內置全部互動卡、數碼道具、伴奏同遊戲畫面。</div>';
     h+='<div class="attention"><b>第一次用？</b> 先撳「帶領下次集會」，唔需要另外準備投影片；全部活動一按即玩。</div>';
     if(nextT)h+='<div class="btns" style="margin-top:10px"><button class="btn gr blk" onclick="Lead.start(\''+nextT.id+'\','+next.no+')">▶ 帶領下次集會:'+esc(nextT.n).slice(0,18)+'…</button></div>';
     h+='</div>';

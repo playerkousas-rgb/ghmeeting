@@ -2,13 +2,14 @@
 var Track={
   html:function(){
     var mem=Store.get('members');
-    var h='<div class="card"><h2>🏅 記錄（追蹤進度）</h2><div class="mute" style="font-size:.85rem">邊個團員章過咗幾多關、進步獎章去到第幾步、小草蜢七範疇體驗進度——唔使再靠記憶。資料只存喺你部裝置。</div>'+
+    var h='<div class="card"><h1>🏅 記錄（追蹤進度）</h1><div class="mute" style="font-size:.85rem">邊個團員章過咗幾多關、進步獎章去到第幾步、小草蜢七範疇體驗進度——唔使再靠記憶。資料只存喺你部裝置。</div>'+
       '<div class="btns" style="margin-top:10px"><button class="btn" onclick="Track.add()">➕ 加團員</button>'+
       '<button class="btn ghost" onclick="Track.export()">📤 匯出報告</button></div>'+
       '<div class="stat" style="margin-top:8px"><div class="s"><b>'+mem.length+'</b>團員</div>'+
       '<div class="s"><b>'+mem.filter(function(m){return Track.memberDone(m)}).length+'</b>已得團員章</div>'+
       '<div class="s"><b>'+mem.filter(Track.ghDone).length+'</b>小草蜢完成</div></div></div>';
     if(!mem.length){h+='<div class="card"><div class="empty">未有團員。撳上面「➕ 加團員」加入名單,<br>帶領模式嘅點名抽籤、分組、進度追蹤即刻用得。</div></div>';return h}
+    h+='<h2>👥 團員 <span class="tag">'+mem.length+' 人</span></h2>';
     h+='<div class="badgegrid">'+mem.map(function(m,i){return Track.card(m,i)}).join('')+'</div>';
     h+='<div class="card"><h2>🗓️ 出席紀錄</h2>'+Track.records()+'</div>';
     return h;
@@ -18,7 +19,7 @@ var Track={
     var memPct=Math.round(DATA.badgeItems.filter(function(b){return bi[b.k]}).length/DATA.badgeItems.length*100);
     var step=m.step||0;
     var ghDone=DATA.ghDomains.filter(function(d,i2){return (m.gh&&m.gh[i2]||0)>=2}).length;
-    return '<div class="mem"><h4>'+esc(m.n)+' <small class="mute">'+esc(m.bday||'')+'</small></h4>'+
+    return '<div class="mem"><h3>'+esc(m.n)+' <small class="mute">'+esc(m.bday||'')+'</small></h3>'+
       '<div class="progbar"><i style="width:'+memPct+'%"></i></div><small class="mute">團員章 '+memPct+'%・出席 '+Track.attCount(m)+' 次</small>'+
       '<div style="margin:8px 0 4px"><b style="font-size:.85rem">團員章</b></div>'+
       DATA.badgeItems.map(function(b){var inf=Kit.badgeInfo(b.k);var on=Track.itemDone(m,b.k);var auto=b.k==='attend';

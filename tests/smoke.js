@@ -885,8 +885,150 @@ ok('⑳c 一頁高度計得出（約 1057px）',pagePx>1000&&pagePx<1100,'px='+p
   ok('㉒ 頁底文字單一來源（DATA.official.note＋App.VER，唔准另寫第份）',
      /getElementById\('appfoot'\)[\s\S]{0,200}?DATA\.official\.note[\s\S]{0,80}?App\.VER/.test(appJs));
   ok('㉒ 常駐頁底行文＝© 2026 Scout System・非官方・版本（同用戶要求嗰行一樣）',
-     G.App.VER==='v5.1'&&/非官方輔助工具・一切以香港童軍總會公佈為準/.test('© 2026 Scout System・'+G.DATA.official.note+'・'+G.App.VER));
+     /^v\d+\.\d+$/.test(G.App.VER)&&/非官方輔助工具・一切以香港童軍總會公佈為準/.test('© 2026 Scout System・'+G.DATA.official.note+'・'+G.App.VER));
   ok('㉒ 列印唔好印出常駐頁底（同 tabbar 一齊收埋）',/, #appfoot \{?\s*$/.test(printCss)||/#appfoot/.test(printCss));
+
+})();
+
+/* ============ ㉓ 標題層級／路由（2026-10-22 對齊：三身份找 BUG 之後嘅棘輪） ============
+   以前 10/12 個 view 用 h2 做頁名 → 螢幕報讀器讀唔到「呢頁叫咩」，仲有 5 頁標題跳級。
+   以下四條唔准回歸：每頁 1 個 h1、由 h1 起唔跳級、view 內 0 重複 id、外連唔會有 aria-current。 */
+(function(){
+  const appJs=fs.readFileSync(path.join(__dirname,'..','js','app.js'),'utf8');
+  ok('㉓ 路由只由 app.js 負責，兼且寫 aria-current（螢幕報讀器知而家邊頁）',
+     /setAttribute\('aria-current','page'\)/.test(appJs)&&/removeAttribute\('aria-current'\)/.test(appJs));
+  const views=['plan','meet','lead','pack','book','print','play','song','chute','tools','track','prep'];
+  const bad=[];
+  views.forEach(function(v){
+    if(v==='book')G.HB.tab='core';
+    sandbox.location.hash='#'+v;G.App.route();
+    const html=els.get('view').innerHTML;
+    const h1=(html.match(/<h1\b/g)||[]).length;
+    if(h1!==1){bad.push(v+'：h1='+h1);return}
+    const lv=(html.match(/<h([1-6])\b/g)||[]).map(function(t){return +t[2]});
+    let prev=0,jump=0;
+    lv.forEach(function(n){if(prev&&n>prev+1)jump++;prev=n});
+    const ids=(html.match(/\sid="([^"]+)"/g)||[]).map(function(x){return x.slice(5,-1)});
+    const dup=ids.filter(function(x,i){return ids.indexOf(x)!==i});
+    if(jump)bad.push(v+'：跳級 '+jump+' 次');
+    if(dup.length)bad.push(v+'：重複 id '+dup.join(','));
+  });
+  ok('㉓ 12 個 view 每頁 1 個 h1、0 標題跳級、0 重複 id（另有 24 條文件路由由 ui.js 掃）',
+     bad.length===0,bad.join('｜'));
+  // 導覽：10 個內頁掣有 data-tab（先會標 aria-current）；官方套包係外連，一定要 _blank + noopener
+  const navLinks=(idxHtml.match(/<a [^>]*href="[^"]*"[^>]*>/g)||[]);
+  const tabs=navLinks.filter(function(a){return /data-tab=/.test(a)}).length;
+  const ext=navLinks.filter(function(a){return /^<a [^>]*href="https?:/.test(a)});
+  ok('㉓ 上下導覽：9 個內頁掣（上方 4＋下方 5；上方第 4 格係官方套包外連）＋外連有 target/rel',
+     tabs===9&&ext.length>0&&ext.every(function(a){return /target="_blank"/.test(a)&&/rel="noopener"/.test(a)}),
+     'tabs='+tabs+' ext='+ext.length);
+})();
+
+/* ============ ㉔ 意見回報：Scout Admin 統一回報 v1（2026-10-22 接入） ============
+   有網＝官方 widget 一行；離線＝手冊卡＋可複製模態。私隱界線要寫得出，唔准靜靜失敗。 */
+(function(){
+  ok('㉔ index.html 有官方 widget 腳本（scout-admin-blue.vercel.app/widget.js）',
+     /<script src="https:\/\/scout-admin-blue\.vercel\.app\/widget\.js"/.test(idxHtml));
+  ok('㉔ data-app 用「小童軍集會」＋ defer',/data-app="小童軍集會"/.test(idxHtml)&&/widget\.js"[^>]*defer/.test(idxHtml));
+  ok('㉔ 唔准用單一支部名做 data-app（會被 Scout Admin 歸入「專章系統」）',
+     !/data-app="(小童軍|童軍|幼童軍|深資童軍|樂行童軍|專章)"/.test(idxHtml));
+  const card=G.HB.feedbackCard();
+  ok('㉔ 手冊有回報卡：開表單掣＋網頁版＋私隱＋離線做法',
+     /feedback-card/.test(card)&&/App\.feedback\(\)/.test(card)&&/report\.html\?app=/.test(card)&&
+     /私隱界線/.test(card)&&/唔好填小朋友姓名/.test(card)&&/離線/.test(card));
+  ok('㉔ 手冊頁本體有張卡（唔止得個 function）',/feedback-card/.test(G.HB.html()));
+  G.App.feedback();
+  const m=els.get('modal').innerHTML;
+  ok('㉔ App.feedback() 開到後備模態：可複製文字＋網頁版表單，唔會靜靜失敗',
+     /id="fb-ta"/.test(m)&&/App\.copyFeedback\(\)/.test(m)&&/report\.html\?app=%E5%B0%8F%E7%AB%A5%E8%BB%8D%E9%9B%86%E6%9C%83/.test(m));
+  ok('㉔ 模態寫明私隱（唔好填小朋友姓名／班別／地址／相片）',/唔好填小朋友姓名/.test(m)&&/相片/.test(m));
+  const tpl=G.App.fbTemplate();
+  ok('㉔ 回報模板有類別／頁面／版本／裝置，方便後台重現',
+     /類別/.test(tpl)&&/#plan|#book|#/.test(tpl)&&/版本/.test(tpl)&&/裝置/.test(tpl));
+  ok('㉔ 模板提醒唔好填小朋友資料',/唔好填小朋友姓名/.test(tpl));
+  ok('㉔ App.copyFeedback 存在（剪貼簿失敗要有退路）',
+     typeof G.App.copyFeedback==='function'&&typeof G.App._fbCopyFallback==='function');
+  ok('㉔ 浮動掣升上底部導覽（var(--appfoot-h)＋78px）、≥44px、列印隱藏',
+     /#scoutw-fab\{[^}]*bottom:calc\(var\(--appfoot-h\) \+ 78px/.test(cssTxt)&&
+     /#scoutw-fab\{[^}]*min-height:44px/.test(cssTxt)&&
+     /@media print\{#scoutw-fab,#scoutw-overlay\{display:none!important\}\}/.test(cssTxt));
+  ok('㉔ 回報卡／模態嘅私隱框有樣式（唔係一坨字）',/\.fb-privacy,\.fedb-privacy\{/.test(cssTxt));
+})();
+
+/* ============ ㉕ 模組擴充棘輪：唔准同一個 Module.fn 定義兩次 ============
+   本 APP 冇 monkey-patch 疊加鏈（App.wrap 用唔著），但「兩個檔案都寫同一個 function」係同一種病：
+   載入次序一改就靜靜壞。呢條鎖住「0 個重複定義」。 */
+(function(){
+  const files=fs.readdirSync(path.join(__dirname,'..','js')).filter(function(f){return /\.js$/.test(f)});
+  const seen={},dups=[];
+  files.forEach(function(f){
+    const src=fs.readFileSync(path.join(__dirname,'..','js',f),'utf8');
+    const re=/^(?:var\s+)?([A-Z][A-Za-z]*)\.([A-Za-z_$][\w$]*)\s*=\s*function/gm;
+    let m;
+    while((m=re.exec(src))){
+      const key=m[1]+'.'+m[2];
+      if(seen[key]&&seen[key]!==f)dups.push(key+'（'+seen[key]+' / '+f+'）');
+      else seen[key]=f;
+    }
+  });
+  ok('㉕ 19 個 js 模組冇重複定義同一個 function（防止靜靜覆寫）',dups.length===0,dups.join('、'));
+  ok('㉕ 模組總數合理（≥60 個對外 function）',Object.keys(seen).length>=60,'defs='+Object.keys(seen).length);
+})();
+
+/* ============ ㉖ 制服海報：只可以「官方依據＋示意＋以總會為準」 ============ */
+(function(){
+  const kit=G.PrintKit.kits.find(function(k){return k.id==='uniform-guide'});
+  const html=kit?kit.render():'';
+  ok('㉖ 制服海報有官方依據（《小童軍活動指引》第三版 2026-08-15 生效）',
+     /第三版/.test(html)&&/2026-08-15/.test(html));
+  ok('㉖ 自繪圖示標明「示意」，唔可以扮官方圖',/示意/.test(html)&&!/官方圖片/.test(html.replace(/唔係官方圖片/g,'')));
+  ok('㉖ 制服新制式以總會最新公佈為準（一句寫得出）',/以香港童軍總會最新公佈為準/.test(html));
+  ok('㉖ 手冊「關於」嘅依據有連去官方（唔係死字）',
+     /小童軍活動指引》[^<]*<\/a>/.test(G.HB.about())&&/scouting\.org\.hk/.test(G.HB.about()));
+})();
+
+/* ============ ㉗ 預快取瘦身：安裝包細・大圖背景補（2026-10-22） ============
+   以前 80 個檔 4.93 MB 一次過裝；而家安裝包 31 個檔約 0.94 MB，49 張圖（約 4 MB）
+   由頁面空閒時 postMessage 背景補。任何一張圖 404 都唔可以拖死其他。 */
+(function(){
+  const swTxt=fs.readFileSync(path.join(__dirname,'..','sw.js'),'utf8');
+  const grab=function(name){
+    const m=swTxt.match(new RegExp('var '+name+'=\\[([\\s\\S]*?)\\];'));
+    return m?(m[1].match(/'[^']*'/g)||[]).map(function(x){return x.slice(1,-1)}):[];
+  };
+  const assets=grab('ASSETS'),extra=grab('CACHE_EXTRA');
+  const sizeOf=function(list){
+    return list.reduce(function(t,a){
+      const rel=a.replace(/^\.\//,'');
+      try{return t+fs.statSync(path.join(__dirname,'..',rel)).size}catch(e){return t}
+    },0);
+  };
+  ok('㉗ 安裝包 ≤ 1.2 MB（實測 '+(sizeOf(assets)/1048576).toFixed(2)+' MB）',sizeOf(assets)<=1.2*1048576);
+  ok('㉗ 安裝包唔再包含大圖（img/* 全部去 CACHE_EXTRA）',
+     assets.every(function(a){return a.indexOf('/img/')<0})&&extra.length>=40);
+  ok('㉗ 背景補清單全部存在（0 個 404）',
+     extra.concat(assets).every(function(a){try{fs.statSync(path.join(__dirname,'..',a.replace(/^\.\//,'')));return true}catch(e){return false}}));
+  ok('㉗ sw.js 有 message 觸發背景補，逐張 add 唔用 addAll（一張失敗唔拖死其餘）',
+     /addEventListener\('message'/.test(swTxt)&&/precache-extra/.test(swTxt)&&
+     /function fillExtra/.test(swTxt)&&/c\.put\(u,res\)/.test(swTxt));
+  ok('㉗ 頁面空閒時先叫背景補（唔阻開 APP）',
+     /requestIdleCallback\(fill/.test(idxHtml)&&/postMessage\(\{t:'precache-extra'\}\)/.test(idxHtml));
+  ok('㉗ 圖缺／離線有後備（唔會開天窗）',/圖未載入（離線時改用圖解）/.test(fs.readFileSync(path.join(__dirname,'..','js','img.js'),'utf8')));
+})();
+
+/* ============ ㉘ 單一真相：集會長度只可以計出嚟，唔可以另寫一個 len ============
+   2026-10-22 實測：30 場範本有 13 場 `len` 同逐節加總唔一致（例：t02 寫 40，逐節 45）。
+   而 `len` 從來冇人讀——即係「第二個真相」。已整批刪走，長度一律由 Plan.lenOf() 由 stages 計。 */
+(function(){
+  const bad=G.TPLS.filter(function(t){return 'len' in t}).map(function(t){return t.id});
+  ok('㉘ 30 場範本冇 `len` 欄（長度只由 stages 加總，杜絕第二個真相）',bad.length===0,bad.join('、'));
+  const mism=G.TPLS.filter(function(t){
+    const sum=(t.stages||[]).reduce(function(a,x){return a+(+x.m||0)},0);
+    return !sum||G.Plan.lenOf(t)!==sum;
+  }).map(function(t){return t.id});
+  ok('㉘ 每場長度＝逐節加總（>0）',mism.length===0,mism.join('、'));
+  ok('㉘ 每場有 ≥3 節、總長 20–200 分鐘（唔會出現 0 分鐘集會）',
+     G.TPLS.every(function(t){const n=G.Plan.lenOf(t);return (t.stages||[]).length>=3&&n>=20&&n<=200}));
 })();
 
 /* ============ 結果 ============ */

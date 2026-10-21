@@ -237,18 +237,19 @@ var PrintKit={
       .sort(function(a,b){return (order[a.cat]||9)-(order[b.cat]||9)});
     var h='<div class="card printable-hero">'+
       '<span class="eyebrow">✂️ 工作紙 ‧ 圖紙 ‧ 教材庫</span>'+
-      '<h2>所有印得出嚟嘅嘢，全部喺呢度。</h2>'+
+      '<h1>所有印得出嚟嘅嘢，全部喺呢度。</h1>'+
       '<p class="mute">圖紙＝小朋友剪摺塗｜場地圖卡＝貼地貼牆｜教案＝領袖手揸。</p>'+
       '<div class="activity-tabs" style="margin-top:12px">'+
         cats.map(function(c){return '<button class="pill '+(PrintKit.tab===c[0]?'on':'')+'" onclick="PrintKit.setTab(\''+c[0]+'\')">'+c[1]+'</button>'}).join('')+
       '</div>'+
     '</div>'+
+    '<h2>📋 教材清單 <span class="tag">'+filtered.length+' 份</span></h2>'+
     '<div class="grid2">'+
       filtered.map(function(k){
         return '<div class="card print-kit-card">'+
           '<div class="p-ic">'+k.ic+'</div>'+
           '<div class="p-body">'+
-            '<h4>'+esc(k.n)+'</h4>'+
+            '<h3>'+esc(k.n)+'</h3>'+
             '<div class="p-pages">📄 '+esc(k.pages)+'</div>'+
             '<div class="btns" style="margin:6px 0 0">'+
               '<button class="btn sm gr" onclick="PrintKit.openModal(\''+k.id+'\')">🖨️ 預覽及列印</button>'+
@@ -821,6 +822,7 @@ var PrintKit={
       '</div>'+
       '<div class="badge-pos-box">'+
         '<h3>🏅 小童軍徽章佩戴標準位置</h3>'+
+        '<div class="u-src">📚 依據《小童軍活動指引》第三版（2026 年 8 月・2026-08-15 生效）整理；圖示只係<b>示意</b>，唔係官方圖片。制服新制式、配件同徽章尺寸一律以香港童軍總會最新公佈為準。</div>'+
         '<div class="pos-grid">'+
           '<div><b>👑 團員章 (Membership Badge)</b><br>佩戴於制服<b>左胸</b>口袋中央上方。</div>'+
           '<div><b>🔴🟤🔵🟢 進步獎章 (Progress Badges)</b><br>第一至四步依次佩戴於制服<b>左袖</b>。</div>'+

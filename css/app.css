@@ -2222,3 +2222,28 @@ figure.fig figcaption{font-size:.76rem;color:var(--mute);padding:7px 10px;border
 .prep-undo{margin-top:2px}
 .prep-done{background:#F0F8EC;border:1.5px solid #A9DCA6}
 .toc-row.on{background:#FFF9EA}
+
+/* ============================================================================
+   🧭 標題層級（2026-10-22 對齊）：每個 view 只出一個 h1，h2＝分區，h3＝卡標題。
+   以前 10 個 view 用 h2 做頁名 → 螢幕報讀器冇「呢頁叫咩」；而家全站 12/12 頁都係 1 個 h1。
+   ========================================================================== */
+#view h1{font-size:clamp(1.4rem,4.8vw,1.85rem);line-height:1.3;margin:.12em 0 .4em}
+.mem>h3{margin:0 0 4px;color:var(--ord);font-size:1rem}
+.tpl-card h3+.mute,.tpl-card small.mute{display:block;line-height:1.5}
+
+/* ============================================================================
+   📮 意見回報（Scout Admin 統一回報 v1）
+   一行 widget 負責提交；手冊底部嘅卡片＋模態係離線／腳本被封時嘅後備。
+   浮動掣一定要升上 #tabbar（否則蓋住「快鍵」），並且 ≥44px、列印時消失。
+   ========================================================================== */
+.feedback-card{border-left:6px solid var(--gh-blue)}
+.fb-privacy,.fedb-privacy{margin-top:8px;padding:8px 10px;border-radius:12px;
+  background:var(--gh-blue-lt);border:1px solid #cfe6f7;color:var(--gh-blue-dkr);
+  font-size:.78rem;line-height:1.55}
+#scoutw-fab{right:12px!important;min-height:44px!important;padding:11px 16px!important;
+  bottom:calc(var(--appfoot-h) + 78px + env(safe-area-inset-bottom))!important;z-index:2000!important;
+  font-size:.86rem!important;box-shadow:0 6px 18px rgba(58,55,46,.28)!important}
+@media print{#scoutw-fab,#scoutw-overlay{display:none!important}}
+/* 🧣 制服海報：來源＋「示意」聲明（自繪圖一定要標示意，唔可以當官方圖） */
+.u-src{margin:6px 0 0;padding:6px 9px;border-radius:9px;background:#FFF6DF;border:1px solid #FFE3A6;
+  font-size:.72rem;line-height:1.5;color:#7A5A12}

@@ -5,11 +5,25 @@ var HB={
   tab:'core',
   html:function(){
     var tabs=[['core','⚖️ 核心內容'],['badge','🏅 獎章制度'],['sfh','🛡️ 保護自己'],['tips','💡 帶領貼士'],['about','ℹ️ 關於']];
-    var h='<div class="card"><h2>📖 手冊</h2><div class="mute" style="font-size:.82rem">小童軍核心內容：查嘢用，撳到就有。</div><div>'+tabs.map(function(t){return '<span class="pill'+(HB.tab===t[0]?' on':'')+'" onclick="HB.t(\''+t[0]+'\')">'+t[1]+'</span>'}).join('')+'</div></div>';
+    var h='<div class="card"><h1>📖 手冊</h1><div class="mute" style="font-size:.82rem">小童軍核心內容：查嘢用，撳到就有。</div><div>'+tabs.map(function(t){return '<span class="pill'+(HB.tab===t[0]?' on':'')+'" onclick="HB.t(\''+t[0]+'\')">'+t[1]+'</span>'}).join('')+'</div></div>';
     h+=HB[HB.tab]();
+    h+=HB.feedbackCard();
     return h;
   },
   t:function(x){HB.tab=x;App.route()},
+  /* 📮 意見回報卡：手冊底部常駐（widget 載入唔到都有路可走） */
+  feedbackCard:function(){
+    return '<div class="card feedback-card"><h2>📮 意見回報</h2>'+
+      '<div class="mute" style="font-size:.83rem">用落有問題／想加嘢／想讚？直接講。</div>'+
+      '<div class="btns" style="margin-top:8px">'+
+        '<button class="btn gr" onclick="App.feedback()">📮 開回報表單</button>'+
+        '<a class="btn ghost" href="'+esc(App.fbUrl())+'" target="_blank" rel="noopener">🌐 網頁版表單</a>'+
+      '</div>'+
+      '<details class="guide-more"><summary>🔒 私隱界線・📴 離線做法</summary>'+
+        '<div class="fb-privacy">🔒 <b>私隱界線</b>：只收問題本身；唔好填小朋友姓名、班別、地址或相片。姓名／聯絡方式選填，可以匿名；APP 唔會上傳你部機嘅名單、出席或獎章紀錄。</div>'+
+        '<div class="mute" style="font-size:.78rem;margin-top:6px">📴 離線都用得：撳「開回報表單」會出可複製文字，貼去電郵／群組；恢復上網後右下角官方 <b>🐛💬 回報・意見</b> 掣會自動再出現（Scout Admin 統一回報，同其他童軍 APP 同一個看板）。</div>'+
+      '</details></div>';
+  },
   kit:function(){
     return '<div class="card"><h2>🧰 做之前點預備</h2><div class="mute" style="font-size:.84rem">物資幾多・場地查乜・家長訊息・章項去邊教。想一次過印齊：去 <button class="lnk" onclick="App.go(\'#pack\')">📦 集會套包</button>。</div></div>'+
       Kit.hubHtml()+
@@ -63,14 +77,14 @@ var HB={
   core:function(){
     var f=DATA.facts;
     return '<div class="card"><h2>⚖️ 小童軍核心內容</h2>'+
-      '<div class="mem" style="margin:10px 0"><h4>🫡 誓詞</h4><div class="big" style="font-size:1.25rem;line-height:1.8">'+f.promise.map(esc).join('<br>')+'</div><small class="mute">'+esc(f.promise_en)+'</small></div>'+
-      '<div class="mem" style="margin:10px 0"><h4>📜 規律</h4><div class="big" style="font-size:1.25rem">'+esc(f.law)+'</div><small class="mute">'+esc(f.law_en)+'</small></div>'+
-      '<div class="grid2"><div class="mem"><h4>📣 口號</h4><div class="big" style="font-size:1.3rem">'+f.slogan+'</div></div>'+
-      '<div class="mem"><h4>🏔️ 銘言</h4><div class="big" style="font-size:1.3rem">'+f.motto+'</div></div></div>'+
-      '<div class="mem" style="margin:10px 0"><h4>🎵 主題曲 Greeny Marchin\u2019 On <span class="tag">'+f.songNote+'</span></h4>'+
+      '<div class="mem" style="margin:10px 0"><h3>🫡 誓詞</h3><div class="big" style="font-size:1.25rem;line-height:1.8">'+f.promise.map(esc).join('<br>')+'</div><small class="mute">'+esc(f.promise_en)+'</small></div>'+
+      '<div class="mem" style="margin:10px 0"><h3>📜 規律</h3><div class="big" style="font-size:1.25rem">'+esc(f.law)+'</div><small class="mute">'+esc(f.law_en)+'</small></div>'+
+      '<div class="grid2"><div class="mem"><h3>📣 口號</h3><div class="big" style="font-size:1.3rem">'+f.slogan+'</div></div>'+
+      '<div class="mem"><h3>🏔️ 銘言</h3><div class="big" style="font-size:1.3rem">'+f.motto+'</div></div></div>'+
+      '<div class="mem" style="margin:10px 0"><h3>🎵 主題曲 Greeny Marchin\u2019 On <span class="tag">'+f.songNote+'</span></h3>'+
       f.song.map(function(l,i){return '<div style="font-size:1.1rem;font-weight:700"><span class="tag">'+(i+1)+'</span>'+esc(l)+'</div>'}).join('')+
       '<div class="song-note" style="margin-top:8px"><b>新領袖唔識旋律？</b> 去帶領畫面撳「▶ 播放伴奏」：APP 會即時彈出寄調 London Bridge 嘅旋律（C 調・4/4・句尾拖長・句與句之間換氣・有和弦托底），先數 4 拍先入，跟住黃色句子唱。可以揀慢／中／快三種速度—第一次帶用「慢」。</div><div class="btns" style="margin-top:8px"><button class="btn sm" onclick="Lead.startStage(\'t02\',1)">▶ 直接開卡拉OK</button></div></div>'+
-      '<div class="mem" style="margin:10px 0"><h4>🦗 支部小檔案</h4><div class="box">・年齡:4至7歲(8歲生日自動結束小童軍身分)<br>・特色:不設考驗,透過遊戲、唱歌、故事、律動、美勞學習<br>・目標:德智體群美靈平衡・認識自己、快樂同行<br>・團:最少6人、最多36人;領袖比例最好1:6<br>・快樂傘(PARABALLOON)係支部標誌,用於開會散會儀式</div></div></div>';
+      '<div class="mem" style="margin:10px 0"><h3>🦗 支部小檔案</h3><div class="box">・年齡:4至7歲(8歲生日自動結束小童軍身分)<br>・特色:不設考驗,透過遊戲、唱歌、故事、律動、美勞學習<br>・目標:德智體群美靈平衡・認識自己、快樂同行<br>・團:最少6人、最多36人;領袖比例最好1:6<br>・快樂傘(PARABALLOON)係支部標誌,用於開會散會儀式</div></div></div>';
   },
   badge:function(){
     return '<div class="card"><h2>👑 團員章</h2><div class="box">參加<b>4次集會</b>並完成以下各項,正式成為小童軍:</div>'+
@@ -79,7 +93,7 @@ var HB={
       DATA.steps.map(function(s,i){return '<div class="stop"><b><span style="color:'+s.c+'">⬤</span> '+s.n+'</b><br><small class="mute">'+s.mo+'</small></div>'}).join('')+
       '</div><div class="mute" style="font-size:.82rem">進度喺「🏅追蹤」記錄;建議喺集會/典禮中頒發。</div></div>'+
       '<div class="card"><h2>🦗 小草蜢獎章</h2><div class="box">完成進步獎章或年滿6歲開展「小草蜢歷險」:<b>七大範疇各完成2項體驗</b>(每範疇可獲體驗證書),全部完成=小草蜢獎章,約18個月,銜接幼童軍。</div>'+
-      '<div class="grid2" style="margin-top:8px">'+DATA.ghDomains.map(function(d){return '<div class="mem"><h4>'+d.ic+' '+d.n+'</h4><small class="mute">2項體驗</small></div>'}).join('')+'</div></div>';
+      '<div class="grid2" style="margin-top:8px">'+DATA.ghDomains.map(function(d){return '<div class="mem"><h3>'+d.ic+' '+d.n+'</h3><small class="mute">2項體驗</small></div>'}).join('')+'</div></div>';
   },
   chute:function(){
     return '<div class="card"><h2>🌈 快樂傘：先學基本動作，再揀玩法</h2><div class="mute" style="font-size:.83rem">睇圖就會帶。安全三句：執實傘邊、留一隻手臂距離、傘面唔企人。</div>'+
@@ -87,7 +101,7 @@ var HB={
       Img.fig('chute-steps','三步：執傘、揚高、蒙古包','① 執實 ② 數一二三揚高 ③ 踏前趴低變蒙古包')+
       '<div class="attention"><b>開會口令</b> 「面向傘、跪低、執實」→ 一、二、三揚傘。<br><b>散會口令</b> 「停、口號、慢慢放低」→ 傘落到膝頭才整理。</div>'+
       '<h3 style="margin-top:16px">16式玩法卡</h3><div class="grid2" style="margin-top:8px">'+DATA.chute.map(function(c,i){
-        return '<div class="mem"><h4>'+c.ic+' '+c.n+' <span class="tag">'+c.tag+'</span></h4><div class="box" style="font-size:.85rem">'+esc(c.h)+'</div><small class="mute">💡 '+esc(c.t)+'</small><div class="btns"><button class="btn sm gr" onclick="Lead.startChute('+i+')">▶ 開圖卡</button></div></div>'}).join('')+'</div></div>';
+        return '<div class="mem"><h3>'+c.ic+' '+c.n+' <span class="tag">'+c.tag+'</span></h3><div class="box" style="font-size:.85rem">'+esc(c.h)+'</div><small class="mute">💡 '+esc(c.t)+'</small><div class="btns"><button class="btn sm gr" onclick="Lead.startChute('+i+')">▶ 開圖卡</button></div></div>'}).join('')+'</div></div>';
   },
   sfh:function(){
     return '<div class="card"><h2>🛡️ 保護自己免受傷害</h2><div class="box">團員章必須項。學習目標:</div>'+
@@ -135,7 +149,7 @@ var HB={
   about:function(){
     var o=(typeof DATA!=='undefined'&&DATA.official)?DATA.official:{};
     return '<div class="card"><h2>ℹ️ 關於</h2><div class="box">🦗 <b>小童軍集會助手 Grasshopper Hub</b><br>由年度計劃到散會嗰刻:規劃→執集會→帶領→追蹤。<br><br>'+
-      '📚 內容依據《小童軍活動指引》第三版(2026年8月,2026-08-15生效)之訓練綱要編寫。<br><br>'+
+      '📚 內容依據<a href="'+esc(o.site)+'" target="_blank" rel="noopener" style="color:var(--gh-blue-dkr);font-weight:700">《小童軍活動指引》第三版</a>(2026年8月,2026-08-15生效)之訓練綱要編寫。制服／徽章新制式以總會最新公佈為準。<br><br>'+
       '🔒 團員資料只儲存在你自己裝置嘅瀏覽器,不會上傳。<br><br>'+
       '📴 支援離線使用:第一次開啟後,冇網都用到(加至主畫面更好用)。<br><br>'+
       '© 2026 Scout System</div>'+

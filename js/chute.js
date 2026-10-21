@@ -55,12 +55,12 @@ var Chute={
     var n=DATA.chute.length;
     var m=(typeof Kit!=='undefined'&&Kit.mats)?Kit.mats['快樂傘']:null;
     var h='<div class="card chute-hero"><span class="eyebrow">🌈 快樂傘</span>'+
-      '<h2>突然想加個節目？撳一下就開。</h2>'+
+      '<h1>突然想加個節目？撳一下就開。</h1>'+
       '<p class="mute">'+n+' 式，撳一下就開：有圖、有口令、有點帶三步。</p>'+
       '<div class="tk-grid">'+this.quick()+'</div></div>';
 
     /* ① 基本動作：未玩過都要先識三步 */
-    h+='<div class="card"><h3>👐 先學三步，乜式都玩得</h3>'+
+    h+='<div class="card"><h2>👐 先學三步，乜式都玩得</h2>'+
       '<div class="mute" style="font-size:.83rem">第一次玩，先做呢三步。</div>'+
       ((typeof Img!=='undefined')?Img.fig('chute-top','圍圈執實傘邊','圍一圈，雙手執實傘邊，領袖喺外面打手勢'):'')+
       ((typeof Img!=='undefined')?Img.fig('chute-steps','執傘・揚高・蒙古包','① 執實傘邊 ② 數一二三一齊揚高 ③ 踏前一步趴低變蒙古包'):'')+
@@ -70,18 +70,18 @@ var Chute={
       '<b>安全三句</b>（每次開場講）：🤲 執實傘邊　↔️ 留一隻手臂距離　🛑 聽停就停。</div></div>';
 
     /* ② 幾多張傘・冇傘點算：開會前先知都唔遲 */
-    if(m)h+='<div class="card"><h3>🧺 幾多張傘・冇傘點算</h3><div class="box">'+
+    if(m)h+='<div class="card"><h2>🧺 幾多張傘・冇傘點算</h2><div class="box">'+
       '<b>幾多：</b>'+esc(m.q)+'<br><b>點備：</b>'+esc(String(m.how).split("。")[0])+"。"+'<br><b>冇傘：</b>'+esc(m.sub)+'</div>'+
       '<div class="btns"><button class="btn sm ghost" onclick="Chute.find(\'傘\')">🔍 搵晒同傘有關嘅嘢</button></div></div>';
 
     /* ③ 玩法卡：分類揀＋即開 */
-    h+='<div class="card"><h3>🎴 '+n+' 式玩法卡 <span class="tag">即開即用</span></h3>'+
+    h+='<div class="card"><h2>🎴 '+n+' 式玩法卡 <span class="tag">即開即用</span></h2>'+
       '<div class="activity-tabs">'+this.TAGS.map(function(x){
         return '<span class="pill'+(Chute.tag===x[0]?' on':'')+'" onclick="Chute.f(\''+x[0]+'\')">'+x[1]+'</span>'}).join('')+'</div>'+
       '<div class="grid2">'+this.list().map(function(c){
         var i=DATA.chute.indexOf(c);
         var g=(typeof Guide!=='undefined'&&Guide.chute)?Guide.chute(c):{steps:[]};
-        return '<div class="mem chute-card"><h4>'+c.ic+' '+esc(c.n)+' <span class="tag">'+esc(c.tag)+'</span></h4>'+
+        return '<div class="mem chute-card"><h3>'+c.ic+' '+esc(c.n)+' <span class="tag">'+esc(c.tag)+'</span></h3>'+
           '<div class="chute-steps">'+(g.steps||[]).map(function(s){
             return '<span><b>'+esc(s[0])+'</b>'+esc(s[1])+esc(s[2])+'</span>'}).join('')+'</div>'+
           '<div class="btns" style="margin:6px 0 0"><button class="btn sm gr" onclick="Chute.play('+i+')">▶ 即開圖卡</button></div>'+
@@ -93,7 +93,7 @@ var Chute={
 
     /* ④ 同團員章嘅關係：玩完記得計數 */
     var b=(typeof Kit!=='undefined'&&Kit.badgeMap)?Kit.badgeMap.filter(function(x){return x.k==='chute'})[0]:null;
-    if(b)h+='<div class="card"><h3>🏅 玩完就計數：團員章「'+esc(b.t)+'」</h3>'+
+    if(b)h+='<div class="card"><h2>🏅 玩完就計數：團員章「'+esc(b.t)+'」</h3>'+
       '<div class="box">📍 '+esc(b.where)+'<br>💡 '+esc(String(b.how).split("；")[0])+'。'+'</div>'+
       '<div class="btns"><button class="btn sm gr" onclick="'+b.link+'">▶ 即刻開</button>'+
       '<button class="btn sm ghost" onclick="App.go(\'#track\')">🏅 去記錄</button></div></div>';
