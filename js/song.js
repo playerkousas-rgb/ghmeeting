@@ -27,9 +27,9 @@ var Song={
       '<p class="mute">撳一下就開唱：APP 即時彈伴奏，唔使上網、唔使搵片。</p>'+
       '<div class="song-setup" style="margin-top:8px">'+
         '<span>🐢 速度 '+Music.TEMPOS.map(function(t){
-          return '<button class="pill'+(Music.bpm===t.bpm?' on':'')+'" onclick="Song.tempo(\''+t.k+'\')">'+esc(t.n)+' ('+t.bpm+')</button>'}).join('')+'</span>'+
-        '<span class="pill'+(Music.countIn?' on':'')+'" onclick="Song.opt(\'countIn\')">🥁 4 拍數拍先入</span>'+
-        '<span class="pill'+(Music.chords?' on':'')+'" onclick="Song.opt(\'chords\')">🎹 和弦伴奏</span>'+
+          return '<button type="button" class="pill filter-pill'+(Music.bpm===t.bpm?' on':'')+'" aria-pressed="'+(Music.bpm===t.bpm?'true':'false')+'" onclick="Song.tempo(\''+t.k+'\')">'+esc(t.n)+' ('+t.bpm+')</button>'}).join('')+'</span>'+
+        '<button type="button" class="pill filter-pill'+(Music.countIn?' on':'')+'" aria-pressed="'+(Music.countIn?'true':'false')+'" onclick="Song.opt(\'countIn\')">🥁 4 拍數拍先入</button>'+
+        '<button type="button" class="pill filter-pill'+(Music.chords?' on':'')+'" aria-pressed="'+(Music.chords?'true':'false')+'" onclick="Song.opt(\'chords\')">🎹 和弦伴奏</button>'+
       '</div></div>';
 
     /* ① 日常歌曲清單 */
@@ -66,7 +66,7 @@ var Song={
 
     /* ④ 團員章：唱主題歌 */
     var b=(typeof Kit!=='undefined'&&Kit.badgeMap)?Kit.badgeMap.filter(function(x){return x.k==='song'})[0]:null;
-    if(b)h+='<div class="card"><h2>🏅 唱完就計數：團員章「'+esc(b.t)+'」</h3>'+
+    if(b)h+='<div class="card"><h2>🏅 唱完就計數：團員章「'+esc(b.t)+'」</h2>'+
       '<div class="box">📍 '+esc(b.where)+'<br>💡 '+esc(String(b.how).split("；")[0])+'。</div>'+
       '<div class="btns"><button class="btn sm gr" onclick="'+b.link+'">▶ 即刻開</button>'+
       '<button class="btn sm ghost" onclick="App.go(\'#track\')">🏅 去記錄</button></div></div>';

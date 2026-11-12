@@ -59,7 +59,7 @@ check('2 路由有寫 aria-current（螢幕報讀器知而家邊頁）', routerH
 check('2b 外連唔會有 aria-current（用 data-tab 揀選）', /dataset\.tab|data-tab/.test(jsAll['app.js'] || Object.values(jsAll).join('')));
 
 /* ---------- 3. 版本：App.VER ↔ sw.js CACHE ---------- */
-const ver = (Object.values(jsAll).join('\n').match(/VER\s*:\s*'([^']+)'/) || [, ''])[1];
+const ver = (Object.values(jsAll).join('\n').match(/(?:VER\s*:\s*|APP_VERSION\s*=\s*)'([^']+)'/) || [, ''])[1];
 const cache = (sw.match(/CACHE\s*=\s*'([^']+)'/) || [, ''])[1];
 const verKey = ver.replace(/^v/, '').replace(/\./g, '-');
 check('3 App.VER 同 sw.js CACHE 對齊', !!ver && cache.includes(verKey), ver + '／' + cache);
@@ -83,7 +83,7 @@ check('4b 大圖唔喺安裝包（改背景補）', heavy.length === 0, heavy.le
 if (extra.length) {
   check('4c 有 CACHE_EXTRA ＋ message 背景補，而且逐張 add（一張失敗唔拖死其餘）',
     /CACHE_EXTRA/.test(sw) && /addEventListener\('message'/.test(sw) && /precache-extra/.test(sw));
-  check('4d 頁面空閒時先叫背景補', /requestIdleCallback|postMessage/.test(idx));
+  check('4d 頁面空閒時先叫背景補', /requestIdleCallback|postMessage/.test(idx + read('js/pwa.js')));
 }
 
 /* ---------- 5. 模組定義唔准重複 ---------- */

@@ -251,12 +251,12 @@ node tools/align-check.mjs ../cubsmeeting    # 檢查另一個 MEETING APP
 
 ```bash
 node tests/smoke.js        # 404 條全 PASS
-node tests/ui.js           # 10 分頁／10 手冊分頁／25 教材／30 場兩疊紙
+node tests/ui.js           # 12 分頁／5 手冊分頁／25 教材／30 場兩疊紙
 node tests/audit.js        # 176 個環節 0 問題
 node tools/align-check.mjs # 16 項全 ✅
 ```
 
-⬜ 今個回合嘅實際結果：commit `abaeae3` 推上 `arena/a75ccc65-ghmeeting`，開咗 **PR #17**（base `main`）。合併前四步全部通過（403／全行得／0 問題／16 ✅）。
+⬜ 今個回合嘅實際結果：commit `abaeae3` 推上 `arena/a75ccc65-ghmeeting`，開咗 **PR #17**（base `main`）。合併前四步全部通過（404／全行得／0 問題／16 ✅）。
 ⬜ 每次合併前必做：`npm test`（＝smoke）全 PASS；`ui.js` 全行得；`align-check` 冇 ❌；文件同日更新（唔好「代碼改咗、文件寫舊數」）。
 ⬜ 合併後刪工作分支，只留 `main`；一條分支一件事。
 

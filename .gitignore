@@ -1,8 +1,18 @@
 # Vercel CLI 本地連結資料（含 project id，唔入 repo）
-.vercel
+.vercel/
 
-# 依賴・雜檔
+# 依賴・建置產物・雜檔
 node_modules/
+dist/
+build/
+coverage/
+.cache/
 .DS_Store
 Thumbs.db
 *.log
+*.bak
+
+# 本機秘密（.env.example 先入 repo）
+.env
+.env.*
+!.env.example

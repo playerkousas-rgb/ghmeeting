@@ -77,7 +77,7 @@ var Chute={
     /* ③ 玩法卡：分類揀＋即開 */
     h+='<div class="card"><h2>🎴 '+n+' 式玩法卡 <span class="tag">即開即用</span></h2>'+
       '<div class="activity-tabs">'+this.TAGS.map(function(x){
-        return '<span class="pill'+(Chute.tag===x[0]?' on':'')+'" onclick="Chute.f(\''+x[0]+'\')">'+x[1]+'</span>'}).join('')+'</div>'+
+        return '<button type="button" class="pill filter-pill'+(Chute.tag===x[0]?' on':'')+'" aria-pressed="'+(Chute.tag===x[0]?'true':'false')+'" onclick="Chute.f(\''+x[0]+'\')">'+x[1]+'</button>'}).join('')+'</div>'+
       '<div class="grid2">'+this.list().map(function(c){
         var i=DATA.chute.indexOf(c);
         var g=(typeof Guide!=='undefined'&&Guide.chute)?Guide.chute(c):{steps:[]};
@@ -93,7 +93,7 @@ var Chute={
 
     /* ④ 同團員章嘅關係：玩完記得計數 */
     var b=(typeof Kit!=='undefined'&&Kit.badgeMap)?Kit.badgeMap.filter(function(x){return x.k==='chute'})[0]:null;
-    if(b)h+='<div class="card"><h2>🏅 玩完就計數：團員章「'+esc(b.t)+'」</h3>'+
+    if(b)h+='<div class="card"><h2>🏅 玩完就計數：團員章「'+esc(b.t)+'」</h2>'+
       '<div class="box">📍 '+esc(b.where)+'<br>💡 '+esc(String(b.how).split("；")[0])+'。'+'</div>'+
       '<div class="btns"><button class="btn sm gr" onclick="'+b.link+'">▶ 即刻開</button>'+
       '<button class="btn sm ghost" onclick="App.go(\'#track\')">🏅 去記錄</button></div></div>';

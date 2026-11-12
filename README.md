@@ -9,8 +9,8 @@
 
 | 位置 | 寫住咩 |
 |---|---|
-| **每一頁最底**（10 個分頁都有） | `⚠️ 非官方 APP　與香港童軍總會無任何關聯` ＋ 官方兩個出口（支部網站／官方套包 PDF）＋ 收埋嘅「邊啲係官方？邊啲係 APP 自己寫？」 |
-| **每一張紙最底**（13 張教材／教案／檢查表／嘉許狀） | `© 2026 Scout System・非官方輔助工具・一切以香港童軍總會公佈為準` |
+| **每一頁最底**（12 個分頁都有） | `⚠️ 非官方 APP　與香港童軍總會無任何關聯` ＋ 官方兩個出口（支部網站／官方套包 PDF）＋ 收埋嘅「邊啲係官方？邊啲係 APP 自己寫？」 |
+| **每一張紙最底**（25 份教材／教案／檢查表／嘉許狀） | `© 2026 Scout System・非官方輔助工具・一切以香港童軍總會公佈為準` |
 | **⚙️ 設定**最底 | 細版同一段聲明 |
 | **📖 手冊 → ℹ️ 關於** | 完整版 ＋ 官方連結 |
 | 分享卡片／安裝描述（`og:`、manifest） | 開頭一句【非官方輔助工具】 |
@@ -28,7 +28,7 @@ APP 頁底、紙本頁底、設定、關於頁全部跟住轉。`tests/smoke.js`
 >
 > 全螢幕投影唔重複加標示（2026-09 決定）：撳全螢幕之前已經喺有頁底嗰版睇過，唔可能話唔知。
 
-> 版本號 `App.VER` 要同 `sw.js` 嘅 `CACHE` 對齊（`ghub-v5-1-0-unofficial`）：CSS 係 cache-first，唔 bump 就舊用戶永遠睇唔到新版。smoke ㉑ 有測。
+> 版本號 `App.VER` 要同 `sw.js` 嘅 `CACHE` 對齊（`ghub-v5-4-0-unofficial`）：CSS 係 cache-first，唔 bump 就舊用戶永遠睇唔到新版。smoke ㉑ 有測。
 
 新領袖只要呢個 APP，就帶得完整場集會：集會目錄・範本・印教材・執袋・設場・帶領・記出席，一 APP 搞掂。
 
@@ -63,9 +63,9 @@ APP 頁底、紙本頁底、設定、關於頁全部跟住轉。`tests/smoke.js`
 
 **ICON 規格**（`icons/svg/i-*.svg` ＝唯一真相）
 13 粒：🅰️ 集會目錄・範本・帶領・官方套包・手冊 ／ 🅱️ 工作紙・活動・歌曲・快樂傘・快鍵 ／ 頂欄 搜尋・記錄・設定。
-48×48 viewBox｜2.2px 圓角描邊｜水彩填色＋20% 白邊｜一套出齊 PNG 48/192/1024。
+48×48 viewBox｜2.2px 圓角描邊｜水彩填色＋20% 白邊｜一套出齊 PNG 48/192（1024 唔入 repo，交商店先至另出）。
 
-**吉祥物**：`img/ghmeeting_mascot.src.png`（原檔 1024² 去背）→ 裁法 **A 全身**（彩虹傘完整＋草蜢全身）→ 自動出 `icons/icon-512.png`・`icon-192.png`・`icon-512-maskable.png`（綠底）・`apple-touch-icon.png`（180² 綠底）。後備構圖 B／C 見 `docs/mascot-crop.html`。
+**吉祥物**：`img/ghmeeting_mascot.src.png`（原檔 1024² 去背・PNG8 量化）→ 裁法 **A 全身**（彩虹傘完整＋草蜢全身）→ 自動出 `icons/icon-512.png`・`icon-192.png`・`icon-maskable-512.png`・`icon-maskable-192.png`（綠底・66% 安全區）・`apple-touch-icon.png`（180² 綠底）。G11 九件套（favicon.ico／16／32／180／192／512／maskable-192／512／og-image 1200×630）合共 ≤260KB。後備構圖 B／C 見 `docs/mascot-crop.html`。
 
 ```bash
 bash tools/build-mascot.sh                         # 換吉祥物 → 全套 PWA icon（CROP=B|C 轉構圖）
@@ -186,7 +186,8 @@ node tools/build-icons.mjs                            # 改 ICON → sprite + PN
 ```bash
 node tests/smoke.js        # 404 項：主題曲節奏・遊戲狀態機・套包輸出・即用紙版面・上下 5+5 導航・圖紙搵得返・字數上限・12 頁各 1 個 h1 唔跳級・回報系統・預快取 ≤1.5 MB・0 重複定義
 node tests/audit.js        # 176 個環節 × 8 類缺口（含「手工有冇即用紙・有冇混入說明書」）
-node tests/ui.js           # 10 個分頁・tag 平衡・冷啟動（清空 localStorage）・25 份教材・30 場範本
+node tests/ui.js           # 12 個分頁・tag 平衡（stack）・冷啟動（清空 localStorage）・25 份教材・30 場範本
+node tests/regression.js   # 21 項 jsdom 真 DOM 回歸（XSS／配額／upsert／備份回滾／Modal／鍵盤／剪貼簿／PWA／G11）
 node tools/align-check.mjs # 其他 MEETING APP 都跑得嘅 10 類對齊檢查（exit code 可以當閘）
 ```
 
@@ -214,11 +215,11 @@ node tools/align-check.mjs # 其他 MEETING APP 都跑得嘅 10 類對齊檢查�
   判斷不了（無上一版／上一版不在淺 clone／git 出錯）一律 exit 1 照常部署（fail-open），不會靜悄悄漏掉部署。
   ⚠️ Vercel schema 規定 `ignoreCommand` **最長 256 字元**，超長會令整個部署即時驗證失敗，千萬別寫成長腳本（現行 250 字元）。
 - **部署瘦身**：`.vercelignore` 把文件、測試、腳本、設計原檔（`*.psd`／`*.ai`／`*.zip`／`*.pdf`）、
-  吉祥物母版 PNG（約 1 MB）和 ICON 來源（`icons/svg/`、`icons/png/48|1024/`、裁切預覽）留在 repo 但不上傳 Vercel。
+  吉祥物母版 PNG（PNG8 量化後約 160 KB）和 ICON 來源（`icons/svg/`、`icons/png/48/`、裁切預覽）留在 repo 但不上傳 Vercel。
 - **圖片規則（單檔 < 200 KB）**：教學插圖用 AVIF；吉祥物部署版是 `img/ghmeeting_mascot.webp`（約 116 KB，`sw.js` 快取這張，
-  母版 PNG 不壓縮、只留 repo）；PWA icon 規格要求 PNG，就量化成 PNG8（512² 約 95 KB，水彩質感看不出差別）。
+  母版 PNG 量化做 PNG8 128 色・約 160 KB）；PWA icon 規格要求 PNG，就量化成 PNG8（512² 約 28 KB，水彩質感看不出差別）。
   換吉祥物跑 `bash tools/build-mascot.sh` 會自動做埋 WebP＋PNG8 瘦身，之後記得升 `sw.js` 的 `CACHE` 版號。
-- 本專案**沒有** GitHub Actions 自動爬蟲 commit；日後若加入，commit 訊息加 `[skip ci]` 即可（`ignoreCommand` 已支援）。
+- **CI**：`.github/workflows/ci.yml` 喺 push/main＋PR 跑 `npm ci`、`npm test` 同 `node --test`（smoke＋ui＋audit＋regression＋align）。commit 訊息加 `[skip ci]` 可跳 Vercel 重建（`ignoreCommand` 已支援）。
   本機 `vercel` CLI 產生的 `.vercel/` 已在 `.gitignore`，不要入 repo。
 
 ## 結構

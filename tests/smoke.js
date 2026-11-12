@@ -65,7 +65,7 @@ const sandbox={
 };
 sandbox.window=sandbox;sandbox.globalThis=sandbox;
 const ctx=vm.createContext(sandbox);
-const order=['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','flow.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js','chute.js','song.js','tools.js'];
+const order=['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','pwa.js','flow.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js','chute.js','song.js','tools.js'];
 for(const f of order){
   vm.runInContext(fs.readFileSync(path.join(__dirname,'..','js',f),'utf8'),ctx,{filename:'js/'+f});
 }
@@ -848,21 +848,23 @@ ok('⑳c 一頁高度計得出（約 1057px）',pagePx>1000&&pagePx<1100,'px='+p
   ok('㉑ 設定 sheet 最底都有非官方聲明',/非官方 APP/.test(G.App.footMini())&&/未獲/.test(G.App.footMini()));
   ok('㉑ 關於頁用同一份文案（唔准各自亂寫）',/非官方 APP/.test(G.HB.about())&&/無任何關聯/.test(G.HB.about()));
 
-  /* 每張紙最底都有：13 個 p-foot 全部行勻 DATA.official.note */
+  /* 紙本、畫面、匯出／分享文字共用 App.legalLine()，唯一文案仍來自 DATA.official.note。 */
   let total=0,bad=[];
-  for(const f of ['craft.js','sheets.js','print.js','pack.js','kit.js','venue.js']){
+  for(const f of ['craft.js','print.js','pack.js','kit.js','venue.js']){
     const txt=fs.readFileSync(path.join(__dirname,'..','js',f),'utf8');
-    (txt.match(/p-foot/g)||[]).forEach(function(){total++});
-    (txt.match(/p-foot[^']*?<\/div>/g)||[]).forEach(function(line){
-      if(!/DATA\.official\.note/.test(line))bad.push(f);
-    });
+    const n=(txt.match(/class=\"p-foot\"/g)||[]).length;
+    const helpers=(txt.match(/App\.legalLine\(\)/g)||[]).length;
+    total+=n;
+    if(n!==helpers)bad.push(f+' ('+n+'/'+helpers+')');
   }
-  ok('㉑ 紙本頁底全部引用同一句非官方（'+total+' 張紙）',total===13&&bad.length===0,
-     '漏：'+[...new Set(bad)].join('、')+'（共 '+total+' 張）');
-  ok('㉑ 冇 paper 頁底淨係寫「© 2026 Scout System」就冇非官方',
-     !/p-foot[^']*?© 2026 Scout System<\/div>/.test(
-       ['craft.js','print.js','pack.js','kit.js','venue.js'].map(function(f){
-         return fs.readFileSync(path.join(__dirname,'..','js',f),'utf8')}).join('\n')));
+  const legal='© 2026 Scout System・'+G.DATA.official.note;
+  ok('㉑ 紙本頁底全部引用同一合法聲明（'+total+' 張）',total===13&&bad.length===0&&G.App.legalLine()===legal,
+     '漏：'+bad.join('、')+'；共 '+total+' 張紙');
+  const sheetSample=G.Sheets.page({n:'審計測試',tag:'小童軍集會即用紙',art:''});
+  ok('㉑ 即用紙 SVG、畫面與分享／匯出都用同一版權聲明',
+     sheetSample.includes(legal)&&G.App.foot().includes(legal)&&
+     /App\.legalLine\(\)/.test(fs.readFileSync(path.join(__dirname,'..','js','track.js'),'utf8'))&&
+     /App\.legalLine\(\)/.test(fs.readFileSync(path.join(__dirname,'..','js','prepare.js'),'utf8')));
   /* 列印唔好印出 APP 自己嘅頁底（紙本已經有 p-foot） */
   ok('㉑ 列印時收埋 APP 頁底聲明（紙本 p-foot 先係要印嗰個）',
      /\.print-preview-bar, \.sheet-flag, \.sheet-pageline, \.sheet-stat \{ display: none/.test(printCss)&&
@@ -882,8 +884,9 @@ ok('⑳c 一頁高度計得出（約 1057px）',pagePx>1000&&pagePx<1100,'px='+p
      /#flowbar\.on\{[^}]*?var\(--appfoot-h\)/.test(cssTxt)&&
      /calc\(108px \+ var\(--appfoot-h\)\)/.test(cssTxt));
   const appJs=fs.readFileSync(path.join(__dirname,'..','js','app.js'),'utf8');
-  ok('㉒ 頁底文字單一來源（DATA.official.note＋App.VER，唔准另寫第份）',
-     /getElementById\('appfoot'\)[\s\S]{0,200}?DATA\.official\.note[\s\S]{0,80}?App\.VER/.test(appJs));
+  ok('㉒ 頁底文字單一來源（App.legalLine()＋App.VER，唔准另寫第份）',
+     /getElementById\('appfoot'\)[\s\S]{0,200}?App\.legalLine\(\)[\s\S]{0,80}?App\.VER/.test(appJs)&&
+     /legalLine:function\([\s\S]{0,180}?DATA\.official\.note/.test(appJs));
   ok('㉒ 常駐頁底行文＝© 2026 Scout System・非官方・版本（同用戶要求嗰行一樣）',
      /^v\d+\.\d+$/.test(G.App.VER)&&/非官方輔助工具・一切以香港童軍總會公佈為準/.test('© 2026 Scout System・'+G.DATA.official.note+'・'+G.App.VER));
   ok('㉒ 列印唔好印出常駐頁底（同 tabbar 一齊收埋）',/, #appfoot \{?\s*$/.test(printCss)||/#appfoot/.test(printCss));
@@ -1012,7 +1015,7 @@ ok('⑳c 一頁高度計得出（約 1057px）',pagePx>1000&&pagePx<1100,'px='+p
      /addEventListener\('message'/.test(swTxt)&&/precache-extra/.test(swTxt)&&
      /function fillExtra/.test(swTxt)&&/c\.put\(u,res\)/.test(swTxt));
   ok('㉗ 頁面空閒時先叫背景補（唔阻開 APP）',
-     /requestIdleCallback\(fill/.test(idxHtml)&&/postMessage\(\{t:'precache-extra'\}\)/.test(idxHtml));
+     /requestIdleCallback\(fill/.test(fs.readFileSync(path.join(__dirname,'..','js','pwa.js'),'utf8'))&&/postMessage\(\{t:'precache-extra'\}\)/.test(fs.readFileSync(path.join(__dirname,'..','js','pwa.js'),'utf8')));
   ok('㉗ 圖缺／離線有後備（唔會開天窗）',/圖未載入（離線時改用圖解）/.test(fs.readFileSync(path.join(__dirname,'..','js','img.js'),'utf8')));
 })();
 

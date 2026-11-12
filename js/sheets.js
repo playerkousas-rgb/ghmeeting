@@ -11,7 +11,7 @@ var Sheets={
       (o.tip?'<text x="202" y="8" font-size="3.6" fill="#777" text-anchor="end">✂ '+esc(o.tip)+'</text>':'')+
       '<path d="M8 11H202" stroke="#e65100" stroke-width=".4"/>';
     var foot='<path d="M8 287H202" stroke="#bbb" stroke-width=".3"/>'+
-      '<text x="8" y="292" font-size="3.2" fill="#888">'+(o.name===false?'':esc('姓名：________________　'))+'日期：____________　'+esc(tag)+'　© 2026 Scout System</text>';
+      '<text x="8" y="292" font-size="3.2" fill="#888">'+(o.name===false?'':esc('姓名：________________　'))+'日期：____________　'+esc(tag)+'　'+esc(App.legalLine())+'</text>';
     return '<div class="a4-sheet ready-sheet">'+
       '<div class="rs-top"><span class="rs-ic">'+(o.ic||'✂️')+'</span><b>'+esc(o.n)+'</b>'+(o.tip?'<span class="rs-tip">✂ '+esc(o.tip)+'</span>':'')+'</div>'+
       '<svg class="rs-art" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+esc(o.n)+'">'+head+(o.art||'')+foot+'</svg>'+
