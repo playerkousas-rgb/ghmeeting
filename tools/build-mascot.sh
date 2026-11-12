@@ -13,7 +13,8 @@
 #   img/ghmeeting_mascot.webp   1024² WebP q90（部署／sw.js 快取用・目標 < 200 KB）
 #   icons/icon-512.png           512² 透明（PWA any）
 #   icons/icon-192.png           192² 透明（PWA any）
-#   icons/icon-512-maskable.png  512² 小童軍綠底（PWA maskable 安全區 60%）
+#   icons/icon-maskable-512.png  512² 小童軍綠底（PWA maskable 安全區 66%）
+#   icons/icon-maskable-192.png  192² 同上
 #   icons/apple-touch-icon.png   180² 小童軍綠底（iOS 唔支援透明）
 #   icons/icon-48.png             48² 透明（favicon / 細圖示）
 #
@@ -111,18 +112,32 @@ mk icons/icon-48.png 48
 
 # maskable：Android 會裁到中間 80% 圓，主體縮到 60% 貼喺品牌綠底
 convert -size 512x512 "xc:$GREEN" \
-  \( "img/ghmeeting_mascot.png" -background none -resize 307x307 \) \
-  -gravity center -composite -define png:color-type=6 -strip icons/icon-512-maskable.png
+  \( "img/ghmeeting_mascot.png" -background none -resize 338x338 \) \
+  -gravity center -composite -define png:color-type=6 -strip icons/icon-maskable-512.png
 
 # apple-touch-icon：iOS 主畫面唔支援透明，實心底
 convert -size 180x180 "xc:$GREEN" \
   \( "img/ghmeeting_mascot.png" -background none -resize 152x152 \) \
   -gravity center -composite -define png:color-type=2 -strip icons/apple-touch-icon.png
 
+# maskable-192（G11）
+convert -size 192x192 "xc:$GREEN" \
+  \( "img/ghmeeting_mascot.png" -background none -resize 127x127 \) \
+  -gravity center -composite -strip icons/icon-maskable-192.png
+
 # favicon（瀏覽器分頁）：紙白底，綠圈包住吉祥物
 convert -size 64x64 "xc:$PAPER" -fill "$GREEN" -draw "roundrectangle 2,2 61,61 14,14" \
   \( "img/ghmeeting_mascot.png" -background none -resize 52x52 \) \
   -gravity center -composite -define png:color-type=6 -strip icons/favicon-64.png
+
+# G11：16px 手繪三層（天・主體・地）＋32/48＋ICO 三合一
+convert -size 16x16 "xc:$GREEN" -fill '#3A7F39' -draw 'rectangle 0,11 15,15' \
+  -fill '#FFD54F' -draw 'circle 11,4 11,1.5' -fill '#FFFBF0' -draw 'polygon 3,12 8,5 13,12' \
+  -fill '#3A372E' -draw 'circle 6,9 6,8' -strip PNG8:icons/favicon-16.png
+convert icons/favicon-16.png -resize 32x32 icons/favicon-32.png
+convert -size 48x48 "xc:$GREEN" \( "img/ghmeeting_mascot.png" -background none -resize 38x38 \) \
+  -gravity center -composite -strip PNG8:icons/favicon-48.png
+convert icons/favicon-16.png icons/favicon-32.png icons/favicon-48.png -strip icons/favicon.ico
 
 # ⑥ 部署瘦身（唔做嘅話 icon 會去返 300 KB+，母版 PNG 成 1 MB）：
 #    - 吉祥物部署版轉 WebP（母版 PNG 保留原質素做母版，唔好直接壓佢）
@@ -130,10 +145,13 @@ convert -size 64x64 "xc:$PAPER" -fill "$GREEN" -draw "roundrectangle 2,2 61,61 1
 echo "⑤ 部署瘦身（WebP + PNG8 量化）..."
 convert "img/ghmeeting_mascot.png" -depth 8 -strip -quality 90 \
   -define webp:method=6 -define webp:alpha-quality=95 "img/ghmeeting_mascot.webp"
-for f in icons/icon-512.png icons/icon-512-maskable.png icons/icon-192.png icons/icon-48.png icons/apple-touch-icon.png icons/favicon-64.png; do
+for f in icons/icon-512.png icons/icon-maskable-512.png icons/icon-maskable-192.png icons/icon-192.png icons/icon-48.png icons/apple-touch-icon.png icons/favicon-64.png; do
   convert "$f" -strip -depth 8 -dither FloydSteinberg -colors 256 "PNG8:$TMP/opt.png"
   mv "$TMP/opt.png" "$f"
 done
+
+echo "⑥ 母版量化（PNG8 128 色，<500KB）..."
+convert "img/ghmeeting_mascot.png" -dither None -colors 128 -strip PNG8:"$TMP/mq.png" && mv "$TMP/mq.png" "img/ghmeeting_mascot.png"
 
 echo "✅ 完成："
 ls -la img/ghmeeting_mascot.png img/ghmeeting_mascot.webp icons/*.png | awk '{printf "   %-34s %s bytes\n",$9,$5}'

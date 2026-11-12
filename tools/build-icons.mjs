@@ -6,7 +6,6 @@
    產生：
      icons/gh-icons.svg        sprite（13 個 <symbol>，可 <use href="...#gh-plan">）
      icons/png/48/i-*.png      48×48  （介面用／後備）
-     icons/png/1024/i-*.png    1024×1024（商店圖、印刷、manifest shortcuts）
      index.html                自動注入 sprite（<!--GH-SPRITE:START--> ~ :END-->）
      docs/brand.html           自動注入 sprite（同一對 marker）
 
@@ -80,7 +79,7 @@ for (const html of ['index.html', path.join('docs', 'brand.html')]) {
   console.log(`✅ ${html} 已注入 sprite`);
 }
 
-/* ---------- 4. PNG 兩套：48 / 1024 ---------- */
+/* ---------- 4. PNG 兩套：48 / 192（G11：1024 唔入 repo） ---------- */
 let Resvg = null;
 {
   const require = createRequire(import.meta.url);
@@ -91,7 +90,7 @@ let Resvg = null;
 if (!Resvg) {
   console.log('⏭️  冇 @resvg/resvg-js → skip PNG（想出圖：npm i @resvg/resvg-js）');
 } else {
-  for (const size of [48, 192, 1024]) {
+  for (const size of [48, 192]) {
     const dir = path.join(ROOT, 'icons', 'png', String(size));
     fs.mkdirSync(dir, { recursive: true });
     for (const it of items) {

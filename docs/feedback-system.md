@@ -127,8 +127,8 @@ Scout Admin 會用 `SOURCE_ALIASES` 把來源名稱**正規化**；單一支部�
 
 1. `index.html` 最後加一行，只改 `data-app`（見第二節表）。
 2. 可選：手冊／設定頁加一張「📮 意見回報」卡（照抄 `HB.feedbackCard()` 結構）。
-3. `sw.js` 升 `CACHE` 版號，令舊用戶換新（本 APP：`ghub-v5-3-0-unofficial`）。
-4. 跑一次 `npm test`，加返「唔准用單一支部名做 `data-app`」的斷言（照抄 ㉔）。
+3. `sw.js` 升 `CACHE` 版號，令舊用戶換新（本 APP：`ghub-v5-4-0-unofficial`）。
+4. 跑一次 `npm test`（package.json 而家真係有），加返「唔准用單一支部名做 `data-app`」的斷言（照抄 ㉔）。
 5. 跑 `node tools/align-check.mjs`，確認 1a–1d 全 ✅。
 
 ---

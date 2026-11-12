@@ -13,7 +13,7 @@ const s={console,document:{getElementById:()=>null,querySelectorAll:()=>[],creat
     this.createGain=()=>({gain:{setValueAtTime(){},linearRampToValueAtTime(){},exponentialRampToValueAtTime(){}},connect(){}});
     this.resume=()=>{};}};
 s.window=s;const c=vm.createContext(s);
-['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','flow.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js']
+['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','pwa.js','flow.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js']
   .forEach(f=>vm.runInContext(fs.readFileSync(path.join(__dirname,'..','js',f),'utf8'),c,{filename:f}));
 const {TPLS,DATA,Kit,Guide,Craft,Venue,Sheets,Pack}=s;
 
@@ -80,6 +80,9 @@ if(Pack){
   console.log('\n📦 套包檢查：'+TPLS.length+' 場範本｜領袖套包太短：'+noLead+'｜有手工但冇小朋友紙：'+noKid+'｜兩疊紙混雜：'+mix);
   console.log('小朋友紙款式：'+Sheets.forMeet(TPLS.filter(t=>t.id==='t03')[0]).map(x=>x.k).join('、'));
 }
+const issueCount=Object.keys(bad).reduce((n,k)=>n+bad[k].length,0);
+if(issueCount){console.error('\n❌ 排查發現 '+issueCount+' 個問題');process.exitCode=1}
+else console.log('\n✅ 排查 0 問題');
 console.log('\nVenue 模組：'+(Venue?('已載入・'+Object.keys(Venue).length+' 個成員'):'❌ 未有'));
 if(Venue){
   console.log('場地佈置：'+Venue.layouts.length+' 種｜分區：'+Venue.zones.length+' 個｜時間表：'+Venue.timeline.length+' 步｜規矩：'+Venue.rules.length+' 條');

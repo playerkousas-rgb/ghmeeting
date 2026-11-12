@@ -49,11 +49,11 @@ var Pack={
   },
   /* 執袋單（APP 內剔，唔使印）：剔咗記住，完場自動清 */
   bagTick:function(tid){var a=Store.get('bagtick',{})||{};return a[tid||'']||[]},
-  bagSet:function(tid,on){var a=Store.get('bagtick',{})||{};if(on&&on.length)a[tid]=on.slice();else delete a[tid];Store.set('bagtick',a)},
+  bagSet:function(tid,on){var a=Store.get('bagtick',{})||{};if(on&&on.length)a[tid]=on.slice();else delete a[tid];return Store.set('bagtick',a)},
   bagToggle:function(i){
     var tid=Pack.meet().tid,on=Pack.bagTick(tid),p=on.indexOf(i);
     if(p<0)on.push(i);else on.splice(p,1);
-    Pack.bagSet(tid,on);
+    if(!Pack.bagSet(tid,on))return;
     var el=document.getElementById('bagRow'+i);
     if(el)el.className='kt-row'+(p<0?' on':'');
     var pb=document.getElementById('bagProg');
@@ -80,7 +80,7 @@ var Pack={
       '<div class="box" style="font-size:.8rem">手機／平板（充電）・哨子・急救包＋濕紙巾・名單紙本（含家長電話）・水・膠紙＋剪刀（大人用）</div></div>'+
       '<div class="btns"><button class="btn sm" onclick="Kit.copy(Kit.matsTipTxt(matsOf(Pack.meet().m)),this)">📋 複製清單</button>'+
       (on.length?'<button class="btn sm ghost" onclick="Pack.bagSet(Pack.meet().tid,[]);Pack.bagModal()">🧽 清重剔</button>':'')+
-      '<button class="btn sm ghost" onclick="Modal.close();Pack.setPart(\'bag\',1);toast(\'已加入列印\')">🖨️ 我都想印</button></div>');
+      '<button class="btn sm ghost" onclick="if(Pack.setPart(\'bag\',1)){Modal.close();toast(\'已加入列印\')}">🖨️ 我都想印</button></div>');
   },
   copies:function(){
     var n=Store.get('packcopies',0);
@@ -89,7 +89,7 @@ var Pack={
     return mem.length||1;   /* 未填名單就印 1 份做樣版，唔好白白印 12 份 */
   },
   hasRoster:function(){return (Store.get('members',[])||[]).length>0},
-  setCopies:function(v){Store.set('packcopies',Math.max(1,Math.min(40,+v||1)));Pack.route()},
+  setCopies:function(v){var ok=Store.set('packcopies',Math.max(1,Math.min(40,+v||1)));Pack.route();return ok},
   route:function(){if(App.view==='pack')App.route()},
 
   /* ---------- 今場係邊一場 ---------- */
@@ -109,17 +109,18 @@ var Pack={
     return {m:TPLS[0],tid:TPLS[0].id,no:1};
   },
   pick:function(type,id,no,quiet){
-    Store.set('packcur',{type:type,id:id,no:no||0});
-    if(typeof Flow!=='undefined'){var fs=Flow.st();fs.tid=id;fs.done={pick:1};Flow.save(fs);}
+    if(!Store.set('packcur',{type:type,id:id,no:no||0}))return false;
+    if(typeof Flow!=='undefined'){var fs=Flow.st();fs.tid=id;fs.done={pick:1};if(!Flow.save(fs))return false;}
     Pack.route();
     if(typeof Flow!=='undefined')Flow.render();
     if(!quiet)toast('📦 已轉去：'+(type==='my'?'我嘅集會':'範本'));
+    return true;
   },
   sel:function(){
     var id=Pack.meet().tid,a=Store.get('packsel',{})||{},ch=0;
     if(!a[id])a[id]={};
     Pack.PARTS.forEach(function(p){if(a[id][p.k]===undefined){a[id][p.k]=p.print?1:0;ch=1}});
-    if(ch)Store.set('packsel',a);
+    if(ch&&!Store.set('packsel',a))return (Store.get('packsel',{})||{})[id]||{};
     return a[id];
   },
   /* 一組套包內容（wantPrint=1 要印嘅／0 喺 APP 睇嘅） */
@@ -147,14 +148,13 @@ var Pack={
     return '<div class="pk-gh'+(wantPrint?'':' app')+'">'+(wantPrint?'🖨️ 印呢幾樣':'📱 呢幾樣 APP 睇就夠')+'</div>'+
       '<div class="pk-parts">'+rows+'</div>';
   },
-  toggle:function(k){Pack.setPart(k,Pack.on(k)?0:1);Pack.route()},
+  toggle:function(k){if(!Pack.setPart(k,Pack.on(k)?0:1))return false;Pack.route();return true},
   setPart:function(k,on){
     var id=Pack.meet().tid,a=Store.get('packsel',{})||{};
     Pack.sel();a=Store.get('packsel',{})||{};
     if(!a[id])a[id]={};
     a[id][k]=on?1:0;
-    Store.set('packsel',a);
-    return a[id];
+    return Store.set('packsel',a);
   },
   on:function(k){return !!Pack.sel()[k]},
 
@@ -263,7 +263,7 @@ var Pack={
     var m=Pack.instantMeet(k,mins);
     if(!m)return;
     var my=Store.get('mymeets',[])||[];
-    my.unshift(m);Store.set('mymeets',my);
+    my.unshift(m);if(!Store.set('mymeets',my))return;
     Pack.pick('my',m.id,0);
     toast('⚡ 已砌好「'+m.n+'」—套包可以印');
   },
@@ -370,7 +370,7 @@ var Pack={
       ['手機／平板（APP 開到・充電・轉飛航模式前先開好畫面）','擴音器或哨子（場細就哨子）','急救包＋濕紙巾＋垃圾袋','團員名單紙本（含家長電話・過敏）','水（每人 500 毫升）','膠紙一卷＋剪刀（大人用）'].map(function(x){
         return '<tr><td class="ck-box"></td><td>'+esc(x)+'</td></tr>'}).join('')+
       '</tbody></table></div>'+
-      '<div class="p-foot">旅團：'+esc(s.group||'____________')+'　日期：'+esc(Pack.dateLine(m))+'　© 2026 Scout System・'+DATA.official.note+'</div></div>';
+      '<div class="p-foot">旅團：'+esc(s.group||'____________')+'　日期：'+esc(Pack.dateLine(m))+'　'+esc(App.legalLine())+'</div></div>';
   },
   cards:function(m){
     var T=Pack.times(m),own=Kit.ownersOf(m),kids=Sheets.forMeet(m),h='',i;
@@ -420,7 +420,7 @@ var Pack={
       '<table class="print-table check-table"><thead><tr><th style="width:5%">✓</th><th style="width:66%">做乜</th><th style="width:29%">因為呢節</th></tr></thead><tbody>'+rows+'</tbody></table>'+
       '<div class="print-section" style="margin-top:8px"><div class="p-sec-title">🗣️ 開會前 3 分鐘・五條規矩（每條即場練一次）</div><div class="p-para tiny">'+
       (typeof Venue!=='undefined'?Venue.rules.map(function(r,i){return (i+1)+'. '+esc(r.t||r)}).join('<br>'):'')+'</div></div>'+
-      '<div class="p-foot">© 2026 Scout System・'+DATA.official.note+'</div></div>';
+      '<div class="p-foot">'+esc(App.legalLine())+'</div></div>';
   },
   checkKeys:function(m){
     var out=[];
@@ -434,7 +434,7 @@ var Pack={
     return '<div class="a4-sheet pack-sheet">'+
       '<div class="print-header-simple"><span>集會套包・家長通知</span> <b>📣 已填好・影相發群就得</b></div>'+
       Pack.msgBlock(m,0,ctx)+Pack.msgBlock(m,1,ctx)+
-      '<div class="p-foot">旅團：'+esc(s.group||'____________')+'　© 2026 Scout System・'+DATA.official.note+'</div></div>';
+      '<div class="p-foot">旅團：'+esc(s.group||'____________')+'　'+esc(App.legalLine())+'</div></div>';
   },
   msgBlock:function(m,i,ctx){
     var mm=Kit.msgs[i];
@@ -504,7 +504,7 @@ var Pack={
       '下面呢疊＝小朋友用嘅紙，印完即剪即摺即塗，紙上冇說明書。<br>'+
       '建議：分隔頁對摺夾住下面嗰疊，返到場一拎就分得清。</div>'+
       '<div class="pkd-list">'+ls.map(function(x){return '<div>'+x.ic+' '+esc(x.n)+'　—　'+esc(x.cp)+'</div>'}).join('')+'</div>'+
-      '<div class="p-foot">© 2026 Scout System・'+DATA.official.note+'</div></div>';
+      '<div class="p-foot">'+esc(App.legalLine())+'</div></div>';
   },
   toggleKid:function(k){
     var tid=Pack.meet().tid,all=Sheets.forMeet(Pack.meet().m).map(function(x){return x.k});
@@ -512,7 +512,7 @@ var Pack={
     var p=sel.indexOf(k);if(p<0)sel.push(k);else sel.splice(p,1);
     var a=Store.get('packkid',{})||{};
     if(sel.length>=all.length)delete a[tid];else a[tid]=sel;
-    Store.set('packkid',a);Pack.route();
+    if(!Store.set('packkid',a))return false;Pack.route();return true;
   },
   kidSheets:function(m,copies){
     var list=Pack.kidPicks(m),n=Math.max(1,Math.min(40,+copies||1)),h='',i,j;

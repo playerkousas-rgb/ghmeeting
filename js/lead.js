@@ -460,7 +460,7 @@ var Lead={
     document.getElementById('kidsArea').innerHTML='<div class="huge">🎉</div><div class="big">今日集會完滿結束!<br>小童軍——向前進!</div>'+
       '<div class="btns" style="justify-content:center"><button class="btn gr" onclick="Lead.done()">✓ 記錄完成+記出席</button><button class="btn ghost" onclick="Lead.exit()">離開</button></div>';
   },
-  done:function(){var no=Lead.S.no;if(no){var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});if(r){r.status='done';Store.set('plan',pl)}Track.attendPrompt(no)}else Lead.exit()},
+  done:function(){var no=Lead.S.no;if(no){var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});if(r){r.status='done';if(!Store.set('plan',pl))return}Track.attendPrompt(no)}else Lead.exit()},
   /* ================= 投影畫面 ================= */
   screen:function(st){
     Lead.after=null;var k=st.screen||(st.t==='唱遊'?'song':'howto');
@@ -802,9 +802,9 @@ Lead.scr={
       '</div>'+
       '<div class="song-setup">'+
         '<span>🐢 速度 '+Music.TEMPOS.map(function(t){
-          return '<button class="pill'+(Music.bpm===t.bpm?' on':'')+'" onclick="Lead.songTempo(\''+t.k+'\')">'+esc(t.n)+' ('+t.bpm+')</button>'}).join('')+'</span>'+
-        '<span class="pill'+(Music.countIn?' on':'')+'" onclick="Lead.songOpt(\'countIn\')">🥁 4 拍數拍先入</span>'+
-        '<span class="pill'+(Music.chords?' on':'')+'" onclick="Lead.songOpt(\'chords\')">🎹 和弦伴奏</span>'+
+          return '<button type="button" class="pill filter-pill'+(Music.bpm===t.bpm?' on':'')+'" aria-pressed="'+(Music.bpm===t.bpm?'true':'false')+'" onclick="Lead.songTempo(\''+t.k+'\')">'+esc(t.n)+' ('+t.bpm+')</button>'}).join('')+'</span>'+
+        '<button type="button" class="pill filter-pill'+(Music.countIn?' on':'')+'" aria-pressed="'+(Music.countIn?'true':'false')+'" onclick="Lead.songOpt(\'countIn\')">🥁 4 拍數拍先入</button>'+
+        '<button type="button" class="pill filter-pill'+(Music.chords?' on':'')+'" aria-pressed="'+(Music.chords?'true':'false')+'" onclick="Lead.songOpt(\'chords\')">🎹 和弦伴奏</button>'+
       '</div>'+
       '<div class="child-prompt">第一次帶：先播放一次，領袖跟住旋律唱；第二次先邀請小朋友加入。聽到 4 聲「嘀」先至開聲。</div>'+Lead.guideHtml(g);
   },
@@ -1862,7 +1862,7 @@ Lead.tools=function(tab){
   Lead.closeTools();
   var w=document.createElement('div');w.className='toolwrap';
   w.innerHTML='<div class="toolbox"><h3><span>🧰 領袖工具</span><button class="iconbtn" style="background:#ffe0b2" onclick="Lead.closeTools()">✕</button></h3>'+
-    '<div style="margin:6px 0">'+tabs.map(function(x){return '<span class="pill'+(x[0]===t?' on':'')+'" onclick="Lead.tools(\''+x[0]+'\')">'+x[1]+'</span>'}).join('')+'</div>'+
+    '<div style="margin:6px 0">'+tabs.map(function(x){return '<button type="button" class="pill filter-pill'+(x[0]===t?' on':'')+'" aria-pressed="'+(x[0]===t?'true':'false')+'" onclick="Lead.tools(\''+x[0]+'\')">'+x[1]+'</button>'}).join('')+'</div>'+
     '<div id="toolBody">'+body+'</div>'+
     (mem.length?'':'<div class="mute" style="font-size:.78rem;margin-top:8px">💡 加咗團員名單(🏅追蹤)之後,抽籤/分組會自動用返啲名。</div>')+'</div>';
   w.onclick=function(e){if(e.target===w)Lead.closeTools()};
@@ -1881,14 +1881,14 @@ Lead.toolBody=function(t,mem){
   if(t==='check')return Kit.checkToolHtml(Lead.S?Lead.S.meet:null);
   if(t==='wheel')return '<input type="text" id="whN" value="'+esc(names.join(','))+'" placeholder="名單(逗號分隔)"><div class="wheel" id="whl"><b id="whName">🎲</b></div>'+
     '<div class="btns" style="justify-content:center"><button class="btn" onclick="Lead.spin()">🎡 轉!</button></div>';
-  if(t==='group')return '<div class="btns"><span class="pill" onclick="Lead.grp(2)">2組</span><span class="pill" onclick="Lead.grp(3)">3組</span><span class="pill" onclick="Lead.grp(4)">4組</span></div><div id="grpOut"><div class="mute">撳上面揀組數</div></div>';
+  if(t==='group')return '<div class="btns"><button type="button" class="pill" onclick="Lead.grp(2)">2組</button><button type="button" class="pill" onclick="Lead.grp(3)">3組</button><button type="button" class="pill" onclick="Lead.grp(4)">4組</button></div><div id="grpOut"><div class="mute">撳上面揀組數</div></div>';
   if(t==='score'){Lead._score=Lead._score||[{n:'紅隊',s:0},{n:'藍隊',s:0}];
     return '<div id="scOut">'+Lead._score.map(function(x,i){return '<div class="scorerow"><span>'+esc(x.n)+'</span><span><button class="btn sm" onclick="Lead.sc('+i+',-1)">➖</button> <b>'+x.s+'</b> <button class="btn sm" onclick="Lead.sc('+i+',1)">➕</button></span></div>'}).join('')+'</div>'+
     '<div class="btns"><button class="btn sm ghost" onclick="Lead.addTeam()">➕ 加一隊</button>'+
     '<button class="btn sm ghost" onclick="Lead.resetScore()">🔄 歸零</button></div>';
   }
   if(t==='cd')return '<div class="big" style="text-align:center" id="cdD">⏳ 60</div><div class="btns" style="justify-content:center">'+
-    [30,60,120,300].map(function(x){return '<span class="pill" onclick="Lead.cd('+x+')">'+(x<60?x+'秒':(x/60)+'分鐘')+'</span>'}).join('')+'</div>';
+    [30,60,120,300].map(function(x){return '<button type="button" class="pill" onclick="Lead.cd('+x+')">'+(x<60?x+'秒':(x/60)+'分鐘')+'</button>'}).join('')+'</div>';
   if(t==='metro')return '<div class="metro-box"><div class="metro-dots" id="metroDots"></div>'+
     '<div class="btns" style="justify-content:center">'+[80,100,120,140].map(function(x){
       return '<button class="btn sm'+(Music.metro.bpm===x?' gr':' ghost')+'" onclick="Music.metro.start('+x+',4)">🥁 '+x+' BPM</button>'}).join('')+'</div>'+
@@ -1900,7 +1900,7 @@ Lead.toolBody=function(t,mem){
   if(t==='sfx')return '<div class="sfxgrid">'+
     [['ding','🔔 叮'],['pop','🫧 波'],['fanfare','🎉 恭喜'],['tick','⏱️ 嘀'],['wrong','❌ 錯了'],['alarm','⏰ 時間到']].map(function(x){
       return '<button class="sfx" onclick="Sfx.'+x[0]+'()"><b>'+x[1].split(' ')[0]+'</b>'+x[1].split(' ')[1]+'</button>'}).join('')+'</div>'+
-    '<div class="btns" style="margin-top:8px"><span class="pill'+(Sfx.on?' on':'')+'" onclick="Sfx.on=!Sfx.on;this.classList.toggle(\'on\')">'+(Sfx.on?'🔊 音效開':'🔇 音效關')+'</span></div>';
+    '<div class="btns" style="margin-top:8px"><button type="button" class="pill filter-pill'+(Sfx.on?' on':'')+'" aria-pressed="'+(Sfx.on?'true':'false')+'" onclick="Lead.tools(\'sfx\')">'+(Sfx.on?'🔊 音效開':'🔇 音效關')+'</button></div>';
   if(t==='breath')return '<div class="breath" id="brh">吸~~~</div><div class="mute" style="text-align:center">投影俾全體跟住一齊唞氣</div>';
   return '';
 };

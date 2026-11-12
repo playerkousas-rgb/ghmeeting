@@ -5,7 +5,7 @@ var HB={
   tab:'core',
   html:function(){
     var tabs=[['core','⚖️ 核心內容'],['badge','🏅 獎章制度'],['sfh','🛡️ 保護自己'],['tips','💡 帶領貼士'],['about','ℹ️ 關於']];
-    var h='<div class="card"><h1>📖 手冊</h1><div class="mute" style="font-size:.82rem">小童軍核心內容：查嘢用，撳到就有。</div><div>'+tabs.map(function(t){return '<span class="pill'+(HB.tab===t[0]?' on':'')+'" onclick="HB.t(\''+t[0]+'\')">'+t[1]+'</span>'}).join('')+'</div></div>';
+    var h='<div class="card"><h1>📖 手冊</h1><div class="mute" style="font-size:.82rem">小童軍核心內容：查嘢用，撳到就有。</div><div>'+tabs.map(function(t){return '<button type="button" class="pill filter-pill'+(HB.tab===t[0]?' on':'')+'" aria-pressed="'+(HB.tab===t[0]?'true':'false')+'" onclick="HB.t(\''+t[0]+'\')">'+t[1]+'</button>'}).join('')+'</div></div>';
     h+=HB[HB.tab]();
     h+=HB.feedbackCard();
     return h;

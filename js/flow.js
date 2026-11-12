@@ -26,12 +26,12 @@ var Flow={
     if(!s.done)s.done={};
     return s;
   },
-  save:function(s){Store.set('flow',s)},
+  save:function(s){return Store.set('flow',s)},
   tidNow:function(){return (typeof Pack!=='undefined')?Pack.meet().tid:''},
   /* 揀咗第二場 → 重新由第二步開始（第一步「揀集會」當做咗） */
   sync:function(){
     var s=Flow.st(),t=Flow.tidNow();
-    if(s.on&&s.tid!==t){s.tid=t;s.done={pick:1};s.min=0;Flow.save(s)}
+    if(s.on&&s.tid!==t){s.tid=t;s.done={pick:1};s.min=0;if(!Flow.save(s))return Flow.st()}
     return s;
   },
   on:function(){return !!Flow.st().on},
@@ -39,14 +39,14 @@ var Flow={
     var s=Flow.st();
     s.on=1;s.min=0;s.tid=Flow.tidNow();
     if(!s.done)s.done={};
-    Flow.save(s);
+    if(!Flow.save(s))return;
     if(typeof App!=='undefined')App.route();
     toast('🧭 好，我一步步帶你做到尾');
   },
   /* 揀咗一場＝即時入 STEP BY STEP 預備（整部 APP 都跟呢場：套包／工作紙／執袋全部自動係呢場） */
   select:function(no,tid){
-    if(typeof Pack!=='undefined')Pack.pick('tpl',tid,no||0,true);
-    var s=Flow.st();s.on=1;s.min=0;Flow.save(s);
+    if(typeof Pack!=='undefined'&&!Pack.pick('tpl',tid,no||0,true))return;
+    var s=Flow.st();s.on=1;s.min=0;if(!Flow.save(s))return;
     if(typeof App!=='undefined')App.go('#prep');
     var t=(typeof dur==='function')?dur(tid):null;
     toast('🧭 揀好「'+(t?esc(t.n):'')+'」— 跟住 6 步預備，一步只做一件事');
@@ -69,12 +69,12 @@ var Flow={
     return st.go;
   },
   quit:function(){
-    var s=Flow.st();s.on=0;Flow.save(s);
+    var s=Flow.st();s.on=0;if(!Flow.save(s))return;
     if(typeof App!=='undefined')App.route();
     toast('已收起嚮導 — 隨時喺「揀集會」頁撳返「🧭 帶我做到尾」');
   },
-  minimize:function(){var s=Flow.st();s.min=s.min?0:1;Flow.save(s);Flow.render()},
-  reset:function(){var s=Flow.st();s.done={};s.on=1;s.tid=Flow.tidNow();Flow.save(s);if(typeof App!=='undefined')App.route()},
+  minimize:function(){var s=Flow.st();s.min=s.min?0:1;if(!Flow.save(s))return;Flow.render()},
+  reset:function(){var s=Flow.st();s.done={};s.on=1;s.tid=Flow.tidNow();if(!Flow.save(s))return;if(typeof App!=='undefined')App.route()},
   /* 邊一步做咗、邊一步係「而家嗰步」 */
   isDone:function(k){return !!Flow.st().done[k]},
   /* 喺逐步預備頁做咗一步 → 頁面即刻更新（下一步彈出嚟）；其他頁就更新底部條 */
@@ -85,13 +85,13 @@ var Flow={
   mark:function(k,quiet){
     var s=Flow.st();
     if(s.done[k])return;
-    s.done[k]=1;Flow.save(s);
+    s.done[k]=1;if(!Flow.save(s))return;
     if(!s.on)return;
     var nx=Flow.cur();
     if(!quiet)toast(nx?('✓ 做咗！下一步：'+nx.ic+' '+nx.n):'🎉 全部步驟做齊，散會！');
     Flow._after();
   },
-  unmark:function(k){var s=Flow.st();delete s.done[k];Flow.save(s);Flow._after()},
+  unmark:function(k){var s=Flow.st();delete s.done[k];if(!Flow.save(s))return;Flow._after()},
   cur:function(){
     var s=Flow.st(),i;
     for(i=0;i<Flow.STEPS.length;i++)if(!s.done[Flow.STEPS[i].k])return Flow.STEPS[i];

@@ -21,30 +21,35 @@ const s={console,
     this.createGain=()=>({gain:{value:0,setValueAtTime(){},linearRampToValueAtTime(){},exponentialRampToValueAtTime(){}},connect(){},disconnect(){}});
     this.resume=()=>{};}};
 s.window=s;const c=vm.createContext(s);
-['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','flow.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js','chute.js','song.js','tools.js']
+['data.js','guide.js','craft.js','sheets.js','tpls.js','app.js','pwa.js','flow.js','prepare.js','print.js','pack.js','lead.js','img.js','track.js','handbook.js','play.js','kit.js','venue.js','chute.js','song.js','tools.js']
   .forEach(f=>vm.runInContext(fs.readFileSync(path.join(__dirname,'..','js',f),'utf8'),c,{filename:f}));
 const {App,HB,Play,Prepare,PrintKit,Pack,Kit,TPLS}=s;
 App.init();
 let fails=[];
 /* tag 平衡檢查：多咗／少咗一個 </div> 都會令成個版面散晒 */
 function tagBalance(html){
-  let d=0;
+  const stack=[];let bad=0;
   html.replace(/<(\/?)(div|section|article|details|table|tbody|thead|tr|td|th|button|small|b|h1|h2|h3|h4|span)\b[^>]*>/g,function(all,close){
-    if(/\/$>$/.test(all))return all;
-    d+= close?-1:1;
+    if(/\/>$/.test(all))return all;
+    const tag=all.match(/^<\/?([a-z0-9]+)/i)[1].toLowerCase();
+    if(!close){stack.push(tag);return all}
+    if(stack.length&&stack[stack.length-1]===tag)stack.pop();else bad++;
     return all;
   });
-  return d;
+  return bad+stack.length;
 }
-['#pack','#plan','#prep','#meet','#play','#track','#book','#print','#chute','#song','#tools'].forEach(h=>{
+const routes=['#pack','#plan','#prep','#meet','#play','#track','#book','#print','#chute','#song','#tools','#lead'];
+let viewsOk=0;
+routes.forEach(h=>{
   s.location.hash=h;
   try{App.route();const out=els.get('view').innerHTML;
     if(!out||out.length<200)fails.push(h+' 內容太短 '+out.length);
     const bal=tagBalance(out);
     if(bal!==0)fails.push(h+' tag 唔平衡（差 '+bal+' 個）');
-    else console.log('view',h,'ok',out.length);
+    else {viewsOk++;console.log('view',h,'ok',out.length)}
   }catch(e){fails.push(h+' → '+e.message)}
 });
+if(viewsOk!==routes.length)fails.push('分頁只行到 '+viewsOk+'/'+routes.length);
 /* 新手機／清空咗資料都要開到（即開即用底線） */
 Object.keys(s.localStorage).forEach(k=>s.localStorage.removeItem(k));
 ['#pack','#plan','#prep','#meet','#play','#track','#book','#print','#chute','#song','#tools'].forEach(h=>{
@@ -54,7 +59,7 @@ Object.keys(s.localStorage).forEach(k=>s.localStorage.removeItem(k));
     if(tagBalance(out)!==0)fails.push('清空資料後 '+h+' tag 唔平衡');
   }catch(e){fails.push('清空資料後 '+h+' → '+e.message)}
 });
-console.log('冷啟動（localStorage 清空）10 個分頁 ok');
+console.log('冷啟動（localStorage 清空）'+routes.length+' 個分頁 ok');
 
 /* 「其餘喺 APP 睇」唔可以係死掣：每個唔印嘅項目都要真係開到嘢出嚟 */
 App.init();
@@ -89,10 +94,12 @@ Pack.toggleKid(k0);
 if(Pack.kidPicks(cur.m).length!==picks0)fails.push('剔返佢之後款數唔返嚟');
 console.log('小朋友紙逐款揀 ok（'+picks0+' 款）');
 // 手冊每個分頁
-['core','badge','sfh','tips','about'].forEach(t=>{
-  try{HB.tab=t;const h=HB.html();if(h.length<500)fails.push('HB.'+t+' 太短')}catch(e){fails.push('HB.'+t+' → '+e.message)}
+const hbTabs=['core','badge','sfh','tips','about'];let hbOk=0;
+hbTabs.forEach(t=>{
+  try{HB.tab=t;const h=HB.html();if(h.length<500)fails.push('HB.'+t+' 太短');else hbOk++}catch(e){fails.push('HB.'+t+' → '+e.message)}
 });
-console.log('handbook 10 tabs ok');
+if(hbOk!==hbTabs.length)fails.push('手冊分頁只行到 '+hbOk+'/'+hbTabs.length);
+console.log('handbook '+hbOk+'/'+hbTabs.length+' tabs ok');
 // 教材庫每一格 render + openModal
 PrintKit.kits.forEach(k=>{
   try{const h=k.render(k.id==='lesson-plans'||k.id==='meet-pack'||k.id==='kid-pack'?'t03':(k.id==='craft-coach'||k.id==='craft-ready'?'lantern':undefined));
@@ -120,6 +127,6 @@ try{Kit.searchOpen();const r=Kit.searchHtml('套包');if(!/集會套包/.test(r)
 // 臨時集會
 try{Pack.instant('safety',40);console.log('instant ok ->',Pack.meet().m.n)}catch(e){fails.push('instant → '+e.message)}
 try{const kid=Pack.sheets('kid',Pack.meet().m,1);console.log('instant kid sheets len',kid.length)}catch(e){fails.push('instant kid → '+e.message)}
-console.log('\n分頁 10・手冊分頁 10・教材 '+PrintKit.kits.length+' 份・範本 '+TPLS.length+' 場（每場兩疊紙）');
+console.log('\n分頁 '+viewsOk+'/'+routes.length+'・手冊分頁 '+hbOk+'/'+hbTabs.length+'・教材 '+PrintKit.kits.length+' 份・範本 '+TPLS.length+' 場（每場兩疊紙）');
 if(fails.length){console.log('\n❌ '+fails.length+' 個問題：');fails.forEach(function(f){console.log('  ・'+f)});process.exit(1)}
 console.log('🎉 全部 UI 路徑行得');

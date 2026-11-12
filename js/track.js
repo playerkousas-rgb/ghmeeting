@@ -1,7 +1,7 @@
 /* 🦗 track.js — 團員名單、團員章/進步獎章/小草蜢進度、出席、匯出 © 2026 Scout System */
 var Track={
   html:function(){
-    var mem=Store.get('members');
+    var mem=Store.get('members',[])||[];
     var h='<div class="card"><h1>🏅 記錄（追蹤進度）</h1><div class="mute" style="font-size:.85rem">邊個團員章過咗幾多關、進步獎章去到第幾步、小草蜢七範疇體驗進度——唔使再靠記憶。資料只存喺你部裝置。</div>'+
       '<div class="btns" style="margin-top:10px"><button class="btn" onclick="Track.add()">➕ 加團員</button>'+
       '<button class="btn ghost" onclick="Track.export()">📤 匯出報告</button></div>'+
@@ -23,17 +23,17 @@ var Track={
       '<div class="progbar"><i style="width:'+memPct+'%"></i></div><small class="mute">團員章 '+memPct+'%・出席 '+Track.attCount(m)+' 次</small>'+
       '<div style="margin:8px 0 4px"><b style="font-size:.85rem">團員章</b></div>'+
       DATA.badgeItems.map(function(b){var inf=Kit.badgeInfo(b.k);var on=Track.itemDone(m,b.k);var auto=b.k==='attend';
-        return '<div class="chk" style="font-size:.8rem;padding:3px 0">'+(auto?'<span class="dot'+(on?' on':'')+'" title="出席自動計數，唔使自己剔"></span>':'<span class="dot'+(on?' on':'')+'" onclick="Track.tog('+i+',\''+b.k+'\')"></span>')+b.t+
+        return '<div class="chk" style="font-size:.8rem;padding:3px 0">'+(auto?'<span class="dot'+(on?' on':'')+'" title="出席自動計數，唔使自己剔"></span>':'<button type="button" class="dot'+(on?' on':'')+'" aria-pressed="'+(on?'true':'false')+'" aria-label="'+esc(b.t)+'" onclick="Track.tog('+i+',\''+b.k+'\')"></button>')+b.t+
         (auto?'<small class="mute" style="margin-left:5px">'+Track.attCount(m)+'/4 次（自動）</small>':'')+
         (on||!inf?'':'<small class="badge-where">📍 '+esc(inf.where)+(inf.link?' <button class="lnk" onclick="'+inf.link+'">▶ 即刻開</button>':'')+'</small>')+'</div>'}).join('')+
       '<div class="mute" style="font-size:.72rem;margin:2px 0 0">👆 未剔嘅項會顯示「去邊度教・即刻開」；剔咗即當作過關（資料只存喺你部機）。</div>'+
       '<div style="margin:8px 0 4px"><b style="font-size:.85rem">進步獎章</b></div><div class="btns">'+
-      DATA.steps.map(function(s,si){return '<span class="pill'+(step>si?' on':'')+'" onclick="Track.step('+i+','+(si+1)+')">'+s.n+'</span>'}).join('')+'</div>'+
+      DATA.steps.map(function(s,si){return '<button type="button" class="pill'+(step>si?' on':'')+'" aria-pressed="'+(step>si?'true':'false')+'" onclick="Track.step('+i+','+(si+1)+')">'+s.n+'</button>'}).join('')+'</div>'+
       '<div style="margin:8px 0 4px"><b style="font-size:.85rem">🦗 小草蜢 '+ghDone+'/7</b></div>'+
       DATA.ghDomains.map(function(d,gi){var c=m.gh&&m.gh[gi]||0;var g=Kit.ghMap[gi];
         return '<div class="chk" style="font-size:.8rem;padding:3px 0">'+d.ic+' '+d.n+' '+
         (c?'':'<small class="badge-where">💡 '+(g?esc(g.sug):'')+'</small>')+
-        '<span style="margin-left:auto">'+[0,1].map(function(x){return '<span class="dot'+(c>x?' on':'')+'" onclick="Track.gh('+i+','+gi+')"></span>'}).join('')+'</span></div>'}).join('')+
+        '<span style="margin-left:auto">'+[0,1].map(function(x){return '<button type="button" class="dot'+(c>x?' on':'')+'" aria-pressed="'+(c>x?'true':'false')+'" aria-label="'+esc(d.n)+' 體驗 '+(x+1)+'" onclick="Track.gh('+i+','+gi+')"></button>'}).join('')+'</span></div>'}).join('')+
       '<div class="btns" style="margin-top:6px"><button class="btn sm ghost" onclick="Track.edit('+i+')">✏️</button>'+
       '<button class="btn sm ghost rd" style="color:#b71c1c;border-color:#e53935" onclick="Track.del('+i+')">🗑️</button></div></div>';
   },
@@ -47,9 +47,13 @@ var Track={
     return {gh:Object.keys(gh).map(Number),badge:Object.keys(bd)};
   },
   ghDone:function(m){return m.gh&&DATA.ghDomains.every(function(_,i){return (m.gh[i]||0)>=2})},
-  tog:function(i,k){var mem=Store.get('members');mem[i].badge=mem[i].badge||{};mem[i].badge[k]=!mem[i].badge[k];Store.set('members',mem);Sfx.ding();App.route()},
-  step:function(i,v){var mem=Store.get('members');mem[i].step=(mem[i].step===v?0:v);Store.set('members',mem);App.route()},
-  gh:function(i,gi){var mem=Store.get('members');mem[i].gh=mem[i].gh||[];mem[i].gh[gi]=((mem[i].gh[gi]||0)+1)%3;Store.set('members',mem);Sfx.pop();App.route()},
+  tog:function(i,k){var mem=Store.get('members');mem[i].badge=mem[i].badge||{};mem[i].badge[k]=!mem[i].badge[k];if(!Store.set('members',mem))return;Sfx.ding();App.route()},
+  step:function(i,v){var mem=Store.get('members');mem[i].step=(mem[i].step===v?0:v);if(!Store.set('members',mem))return;App.route()},
+  gh:function(i,gi){var mem=Store.get('members',[])||[];var m=mem[i];if(!m)return;m.gh=m.gh||[];
+    var auto=Track.autoGh(m,Store.get('recs',[])||[]);
+    var next=((m.gh[gi]||0)+1)%3;m.gh[gi]=next;
+    m.ghBase=m.ghBase||[];m.ghBase[gi]=Math.max(0,next-(auto[gi]||0));
+    if(!Store.set('members',mem))return;Sfx.pop();App.route()},
   add:function(){
     Modal.open('<h3>➕ 加團員</h3><label class="f">姓名</label><input type="text" id="mN" placeholder="例如:陳小明">'+
       '<label class="f">出生日期(選填,計算8歲晉團)</label><input type="date" id="mB">'+
@@ -60,7 +64,7 @@ var Track={
     var n=document.getElementById('mN').value.trim();if(!n){toast('填個名先');return}
     var mem=Store.get('members');
     mem.push({id:'p'+Date.now()+Math.floor(Math.random()*99),n:n,bday:document.getElementById('mB').value,join:document.getElementById('mJ').value,badge:{},step:0,gh:[]});
-    Store.set('members',mem);Modal.close();App.route();toast('已加入 '+n);
+    if(!Store.set('members',mem))return;Modal.close();App.route();toast('已加入 '+n);
   },
   edit:function(i){
     var mem=Store.get('members');var m=mem[i];
@@ -68,12 +72,12 @@ var Track={
       '<label class="f">出生日期</label><input type="date" id="mB" value="'+(m.bday||'')+'">'+
       '<div class="btns" style="margin-top:12px"><button class="btn" onclick="Track.saveEdit('+i+')">儲存</button></div>');
   },
-  saveEdit:function(i){var mem=Store.get('members');mem[i].n=document.getElementById('mN').value.trim()||mem[i].n;mem[i].bday=document.getElementById('mB').value;Store.set('members',mem);Modal.close();App.route()},
-  del:function(i){var mem=Store.get('members');if(confirm('移除 '+mem[i].n+'?')){mem.splice(i,1);Store.set('members',mem);App.route()}},
+  saveEdit:function(i){var mem=Store.get('members');mem[i].n=document.getElementById('mN').value.trim()||mem[i].n;mem[i].bday=document.getElementById('mB').value;if(!Store.set('members',mem))return;Modal.close();App.route()},
+  del:function(i){var mem=Store.get('members');if(confirm('移除 '+mem[i].n+'?')){mem.splice(i,1);if(!Store.set('members',mem))return;App.route()}},
   /* ---- 出席 ---- */
   attendPrompt:function(no){
-    var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});var t=dur(r.tid)||{stages:[]};
-    var mem=Store.get('members');
+    var pl=Store.get('plan',{rows:[]})||{rows:[]};var r=(pl.rows||[]).find(function(x){return x.no===no});var t=(r&&dur(r.tid))||{id:'',n:'（未知集會）',stages:[]};
+    var mem=Store.get('members',[])||[];
     /* 未有名單：唔好死路——俾佢照樣標記完成（出席之後先補），或者先去加名單 */
     if(!mem.length){
       Modal.open('<h3>📝 第'+no+'次集會完成</h3><div class="mute" style="font-size:.85rem">'+esc(t.n)+'</div>'+
@@ -84,68 +88,84 @@ var Track={
     }
     Modal.open('<h3>📝 第'+no+'次集會完成</h3><div class="mute" style="font-size:.85rem">'+esc(t.n)+'</div>'+
       '<label class="f">邊個有出席?(全體預設✓,撳一下取消)</label>'+
-      mem.map(function(m,i){return '<div class="chk"><span class="dot on" id="at'+m.id+'" onclick="this.classList.toggle(\'on\')"></span>'+esc(m.n)+'</div>'}).join('')+
+      mem.map(function(m,i){return '<div class="chk"><button type="button" class="dot on" id="at'+esc(m.id)+'" aria-pressed="true" aria-label="'+esc(m.n)+' 出席" onclick="this.classList.toggle(\'on\');this.setAttribute(\'aria-pressed\',this.classList.contains(\'on\')?\'true\':\'false\')"></button>'+esc(m.n)+'</div>'}).join('')+
       (function(){var mk=Track.meetMarks(t);
-        return (mk.gh.length?'<div class="attention" style="margin:8px 0"><b>🦗 今場玩完會自動計入</b> '+mk.gh.map(function(g){return DATA.ghDomains[g].ic+' '+DATA.ghDomains[g].n}).join('、')+'（每場每範疇加 1 次，2 次即完成）</div>':'')})()+
+        return (mk.gh.length?'<div class="attention" style="margin:8px 0"><b>🦗 今場玩完會自動計入</b> '+mk.gh.map(function(g){var d=DATA.ghDomains[g];return d?(d.ic+' '+d.n):''}).filter(function(x){return x}).join('、')+'（每場每範疇加 1 次，2 次即完成）</div>':'')})()+
       '<label class="f">完成咗嘅團員章項目(會自動落入出席者度)</label>'+
-      t.stages.filter(function(s){return s.badge}).map(function(s){return '<div class="chk"><span class="dot" id="bg'+s.badge+'" onclick="this.classList.toggle(\'on\')"></span>'+DATA.badgeItems.find(function(b){return b.k===s.badge}).t+'</div>'}).join('')+
+      t.stages.filter(function(s){return s.badge}).map(function(s){var bi=DATA.badgeItems.find(function(b){return b.k===s.badge})||{t:s.badge};return '<div class="chk"><button type="button" class="dot" id="bg'+esc(s.badge)+'" aria-pressed="false" aria-label="'+esc(bi.t)+'" onclick="this.classList.toggle(\'on\');this.setAttribute(\'aria-pressed\',this.classList.contains(\'on\')?\'true\':\'false\')"></button>'+esc(bi.t)+'</div>'}).join('')+
       '<div class="btns" style="margin-top:12px"><button class="btn gr" onclick="Track.saveAttend('+no+')">✓ 儲存紀錄</button></div>');
   },
   /* 未有名單照樣收場：集會標完成＋嚮導記 ✓，出席紀錄留返加名單後補 */
   doneNoRoster:function(no){
-    var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});if(!r)return;
-    var t=dur(r.tid)||{stages:[]};
-    r.status='done';Store.set('plan',pl);
-    var recs=Store.get('recs',[]);
+    var pl=Store.get('plan',{rows:[]})||{rows:[]};var r=(pl.rows||[]).find(function(x){return x.no===no});if(!r)return;
+    var t=dur(r.tid)||{id:'',stages:[]};
+    var recs=(Store.get('recs',[])||[]).filter(function(x){return x.no!==no});
     recs.push({no:no,tid:r.tid,date:new Date().toISOString().slice(0,10),present:[],badges:[],gh:[],noroster:1});
-    Store.set('recs',recs);
+    var snap={plan:localStorage.getItem('gh_plan'),recs:localStorage.getItem('gh_recs')};
+    r.status='done';
+    if(!Store.set('plan',pl)||!Store.set('recs',recs)){Track._rollback(snap);return}
     if(typeof Flow!=='undefined')Flow.mark('rec',1);
     if(typeof Kit!=='undefined'&&Kit.ckClear)Kit.ckClear(t.id);
     App.route();
     toast('✓ 第'+no+'次已標完成 — 加咗名單之後先補出席');
   },
+  /* F6：同一 no 重save＝取代（upsert），出席／小草蜢唔會重複計；失敗回滾三个 key */
+  autoGh:function(m,recs){
+    var a=[];
+    (recs||[]).forEach(function(r){
+      if((r.present||[]).indexOf(m.id)<0)return;
+      (r.gh||[]).forEach(function(g){a[g]=(a[g]||0)+1});
+    });
+    return a.map(function(x){return Math.min(2,x||0)});
+  },
+  _rollback:function(snap){
+    Object.keys(snap).forEach(function(k){try{if(snap[k]===null)localStorage.removeItem('gh_'+k);else localStorage.setItem('gh_'+k,snap[k])}catch(e){}});
+    toast('儲存失敗—已還原原本紀錄 ✗');
+  },
   saveAttend:function(no){
-    var pl=Store.get('plan');var r=pl.rows.find(function(x){return x.no===no});var t=dur(r.tid)||{stages:[]};
-    /* 記出席＝呢場收咗工：目錄狀態一齊標完成（同帶領畫面「✓ 記錄完成」一致，邊個入口都一樣） */
-    if(r){r.status='done';Store.set('plan',pl)}
-    var mem=Store.get('members');
+    var pl=Store.get('plan',{rows:[]})||{rows:[]};var r=(pl.rows||[]).find(function(x){return x.no===no});
+    var t=(r&&dur(r.tid))||{id:r?r.tid:'',n:'（未知集會）',stages:[]};
+    var mem=Store.get('members',[])||[];
     var present=mem.filter(function(m){var e=document.getElementById('at'+m.id);return e&&e.classList.contains('on')}).map(function(m){return m.id});
-    var badges=t.stages.filter(function(s){return s.badge&&document.getElementById('bg'+s.badge)&&document.getElementById('bg'+s.badge).classList.contains('on')}).map(function(s){return s.badge});
-    /* 今場環節標咗 gh: 嘅範疇，一次過幫出席嘅團員計數（每場每範疇最多加 1） */
-    var marks=Track.meetMarks(t),ghs=marks.gh;
+    var badges=(t.stages||[]).filter(function(s){return s.badge&&document.getElementById('bg'+s.badge)&&document.getElementById('bg'+s.badge).classList.contains('on')}).map(function(s){return s.badge});
+    var marks=Track.meetMarks(t),ghs=marks.gh.filter(function(g){return !!DATA.ghDomains[g]});
     badges=badges.concat(marks.badge.filter(function(b){return badges.indexOf(b)<0}));
     var wasDone=mem.map(Track.memberDone),wasGh=mem.map(Track.ghDone);
-    var recs=Store.get('recs',[]);
-    recs.push({no:no,tid:r.tid,date:new Date().toISOString().slice(0,10),present:present,badges:badges,gh:ghs});
-    Store.set('recs',recs);
-    mem.forEach(function(m,i){
+    var oldRecs=Store.get('recs',[])||[];
+    var recs=oldRecs.filter(function(x){return x.no!==no});
+    recs.push({no:no,tid:r?r.tid:'',date:new Date().toISOString().slice(0,10),present:present,badges:badges,gh:ghs});
+    mem.forEach(function(m){
+      if(m.ghBase===undefined){var oldAuto=Track.autoGh(m,oldRecs);m.ghBase=(m.gh||[]).map(function(v,i){return Math.max(0,(v||0)-(oldAuto[i]||0))})}
+      var auto=Track.autoGh(m,recs);
+      m.gh=DATA.ghDomains.map(function(_,i){return Math.min(2,(m.ghBase[i]||0)+(auto[i]||0))});
       if(present.indexOf(m.id)<0)return;
       m.badge=m.badge||{};badges.forEach(function(b){m.badge[b]=true});
       if(Track.attCount(m)>=4)m.badge.attend=true;
-      if(ghs.length){m.gh=m.gh||[];ghs.forEach(function(gi){m.gh[gi]=Math.min(2,(m.gh[gi]||0)+1)})}
     });
-    Store.set('members',mem);
+    var snap={plan:localStorage.getItem('gh_plan'),recs:localStorage.getItem('gh_recs'),members:localStorage.getItem('gh_members')};
+    if(r)r.status='done';
+    if((r&&!Store.set('plan',pl))||!Store.set('recs',recs)||!Store.set('members',mem)){Track._rollback(snap);return}
     if(typeof Flow!=='undefined')Flow.mark('rec',1);
     if(typeof Kit!=='undefined'&&Kit.ckClear)Kit.ckClear(t.id);
     var newMem=mem.filter(function(m,i){return !wasDone[i]&&Track.memberDone(m)});
     var newGh=mem.filter(function(m,i){return !wasGh[i]&&Track.ghDone(m)});
     Modal.close();App.route();
-    if(newMem.length){Sfx.fanfare();toast('🎉 '+esc(newMem.map(function(m){return m.n}).slice(0,3).join('、'))+(newMem.length>1?' 等 '+newMem.length+' 位':'')+' 團員章齊晒！')}
-    else if(newGh.length){Sfx.fanfare();toast('🎉 '+newGh.length+' 位完成小草蜢七大範疇！')}
+    if(newMem.length){Sfx.fanfare();toast('🎉 '+newMem.map(function(m){return m.n}).slice(0,3).join('、')+(newMem.length>1?' 等 '+newMem.length+' 位':'')+' 團員章齊晒！')}
+    else if(newGh.length){Sfx.fanfare();toast('🎉 '+newGh.length+' 位完成小草蜢七大範！')}
     else toast('已記錄:出席'+present.length+'人'+(ghs.length?'・🦗 自動計入 '+ghs.length+' 個範疇':''));
   },
   records:function(){
-    var recs=Store.get('recs',[]);var mem=Store.get('members');
+    var recs=Store.get('recs',[])||[];var mem=Store.get('members',[])||[];
     if(!recs.length)return '<div class="empty">完成集會時撳「✓ 記錄完成」就會自動出紀錄。</div>';
     var h='<div class="tbl"><tr><th>日期</th><th>集會</th><th>出席</th></tr>';
     recs.slice().reverse().forEach(function(r){
-      var t=dur(r.tid);var names=r.present.map(function(id){var m=mem.find(function(x){return x.id===id});return m?m.n:'?'}).join('、');
-      h+='<tr><td>'+r.date+'</td><td>'+(t?esc(t.n):'?')+'</td><td>'+r.present.length+'人<br><small class="mute">'+esc(names)+'</small></td></tr>';
+      var t=dur(r.tid);var names=(r.present||[]).map(function(id){var m=mem.find(function(x){return x.id===id});return m?m.n:'?'}).join('、');
+      h+='<tr><td>'+esc(r.date||'')+'</td><td>'+(t?esc(t.n):'?')+'</td><td>'+(r.present||[]).length+'人<br><small class="mute">'+esc(names)+'</small></td></tr>';
     });
     return h+'</div>';
   },
   export:function(){
-    var mem=Store.get('members'),recs=Store.get('recs');
+    var mem=Store.get('members',[])||[],recs=Store.get('recs',[])||[];
     if(!mem.length){toast('未有團員資料');return}
     var L=['🦗 小童軍進度報告('+new Date().toLocaleDateString('zh-HK')+')',''];
     mem.forEach(function(m){
@@ -158,11 +178,14 @@ var Track={
       L.push('');
     });
     L.push('集會紀錄:'+recs.length+'次');
-    L.push('— 小童軍集會助手 © Scout System');
+    L.push('— 小童軍集會助手 '+App.legalLine());
     var txt=L.join('\n');
     var blob=new Blob(['\ufeff'+txt],{type:'text/plain;charset=utf-8'});
     var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='小童軍進度報告.txt';a.click();
-    if(navigator.clipboard)navigator.clipboard.writeText(txt).catch(function(){});
-    toast('已下載報告(並複製咗一份)');
+    /* 下載一定已觸發；只有 Clipboard API 真正成功先可以話「已複製」。 */
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      return navigator.clipboard.writeText(txt).then(function(){toast('已下載報告（並複製咗一份）');return true},function(){toast('已下載報告（未能複製）');return false});
+    }
+    toast('已下載報告（未能複製）');return Promise.resolve(false);
   }
 };

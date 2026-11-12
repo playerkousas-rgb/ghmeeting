@@ -3,7 +3,7 @@ var Prepare={
   filter:'all',
   html:function(){
     var cats=[['all','全部'],['member','團員章'],['prog','進步'],['fest','特別'],['outdoor','戶外'],['gh','小草蜢'],['custom','自訂']];
-    var h='<div class="card"><div><h1>🧩 範本</h1><div class="mute" style="font-size:.83rem">'+TPLS.length+' 場即用範本：撳標題＝揀咗就 STEP BY STEP 預備；想照帶就直接「▶ 帶領」。</div></div><div style="margin:8px 0">'+cats.map(function(c){return '<span class="pill'+(Prepare.filter===c[0]?' on':'')+'" onclick="Prepare.f(\''+c[0]+'\')">'+c[1]+'</span>'}).join('')+'</div>';
+    var h='<div class="card"><div><h1>🧩 範本</h1><div class="mute" style="font-size:.83rem">'+TPLS.length+' 場即用範本：撳標題＝揀咗就 STEP BY STEP 預備；想照帶就直接「▶ 帶領」。</div></div><div role="group" aria-label="範本分類" style="margin:8px 0">'+cats.map(function(c){return '<button type="button" class="pill filter-pill'+(Prepare.filter===c[0]?' on':'')+'" aria-pressed="'+(Prepare.filter===c[0]?'true':'false')+'" onclick="Prepare.f(\''+c[0]+'\')">'+c[1]+'</button>'}).join('')+'</div>';
     var list=TPLS.filter(function(t){return Prepare.filter==='all'||t.cat===Prepare.filter});
     h+='<h2>📋 即用範本 <span class="tag">'+list.length+' 場</span></h2>';
     list.forEach(function(t){
@@ -11,7 +11,7 @@ var Prepare={
       var chips=(Kit.rain[t.id]?'<span class="tag b" title="有室內後備版，落雨照玩">☔ 有後備版</span>':'')+
         (mk.gh.length?'<span class="tag g" title="完場自動幫細個計數，唔使自己寫表">🦗 自動計 '+mk.gh.length+' 範疇</span>':'')+
         (mk.badge.length?'<span class="tag g">🏅 自動剔 '+mk.badge.length+' 項</span>':'');
-      h+='<div class="mem tpl-card"><h3><a href="#prep" onclick="event.preventDefault();Flow.selectTpl(\''+t.id+'\')">'+esc(t.n)+'</a> <span class="tag">'+TPLS.catName[t.cat]+'</span></h4>'+'<small class="mute">'+t.mo+'・'+Plan.lenOf(t)+' 分鐘・'+t.stages.length+' 節</small>'+chips+'<div class="btns" style="margin:7px 0 0">'+'<button class="btn sm gr" onclick="Lead.start(\''+t.id+'\')">▶ 帶領</button>'+'<button class="btn sm ghost" onclick="Prepare.detail(\''+t.id+'\')">📋 睇詳細</button></div>'+'<details class="guide-more"><summary>內容・其他</summary>'+'<div class="box">'+esc(t.theme)+'</div><div class="btns">'+'<button class="btn sm ghost" onclick="PrintKit.openModal(\'lesson-plans\', \''+t.id+'\')">🖨️ 印教案</button>'+'<button class="btn sm ghost" onclick="Prepare.edit(\''+t.id+'\')">✏️ 改內容</button>'+'</div></details></div>';
+      h+='<div class="mem tpl-card"><h3><a href="#prep" onclick="event.preventDefault();Flow.selectTpl(\''+t.id+'\')">'+esc(t.n)+'</a> <span class="tag">'+TPLS.catName[t.cat]+'</span></h3>'+'<small class="mute">'+t.mo+'・'+Plan.lenOf(t)+' 分鐘・'+t.stages.length+' 節</small>'+chips+'<div class="btns" style="margin:7px 0 0">'+'<button class="btn sm gr" onclick="Lead.start(\''+t.id+'\')">▶ 帶領</button>'+'<button class="btn sm ghost" onclick="Prepare.detail(\''+t.id+'\')">📋 睇詳細</button></div>'+'<details class="guide-more"><summary>內容・其他</summary>'+'<div class="box">'+esc(t.theme)+'</div><div class="btns">'+'<button class="btn sm ghost" onclick="PrintKit.openModal(\'lesson-plans\', \''+t.id+'\')">🖨️ 印教案</button>'+'<button class="btn sm ghost" onclick="Prepare.edit(\''+t.id+'\')">✏️ 改內容</button>'+'</div></details></div>';
     });
     h+='</div>';
     var my=Store.get('mymeets',[]);
@@ -24,13 +24,13 @@ var Prepare={
   f:function(c){Prepare.filter=c;App.route()},
   brief:function(s,i){
     var g=Guide.forStage(s);
-    var mats=(s.mats||[]).length?'<div class="mats-bar"><b>🧺 要拎：</b>'+s.mats.map(function(m){return '<span class="pill" onclick="this.classList.toggle(\'on\')"><span class="dot"></span>'+esc(m)+'</span>'}).join('')+'</div>':'';
+    var mats=(s.mats||[]).length?'<div class="mats-bar"><b>🧺 要拎：</b>'+s.mats.map(function(m){return '<button type="button" class="pill filter-pill" aria-pressed="false" onclick="this.classList.toggle(\'on\');this.setAttribute(\'aria-pressed\',this.classList.contains(\'on\'))"><span class="dot"></span>'+esc(m)+'</button>'}).join('')+'</div>':'';
     var visual=(s.screen==='chuteopen'||s.screen==='chuteclose'||s.screen==='chute')?
       ((typeof Img!=='undefined')?Img.fig('chute-top','圍圈執實傘邊・一齊揚傘','圍一圈，雙手執實傘邊，數一二三一齊揚高'):Lead.parachuteSvg('open')):'';
     return '<article class="brief-card"><div class="brief-head"><span class="brief-no">'+(i+1)+'</span><div><h3>'+esc(s.n)+'</h3><small>'+esc(s.t)+'・'+(+s.m||0)+' 分鐘</small></div></div>'+mats+visual+
       '<div class="guide-lead"><b>領袖先做</b>'+esc(g.lead)+'</div><div class="guide-steps">'+g.steps.map(function(x){return '<div class="guide-step"><span class="gnum">'+esc(x[0])+'</span><span class="gicon">'+x[1]+'</span><b>'+esc(x[2])+'</b><small>'+esc(x[3])+'</small></div>'}).join('')+'</div><div class="say-box"><b>🎤 照講</b>'+esc(g.say)+'</div><details class="guide-more"><summary>👀 留意・🛡️ 安全</summary><div class="watch-row"><div><b>👀 睇住呢樣</b>'+esc(g.watch)+'</div><div class="safe"><b>🛡️ 安全</b>'+esc(g.safety)+'</div></div></details>'+
       ((Craft&&(Craft.match(s)||Craft.isCraft(s)))?Craft.mini(s):'')+Kit.ownerHtml(Prepare._detailId,i,s)+
-      '<div class="mark-row">'+(function(){var o=[];if(s.gh!==undefined)o.push('🦗 計入 '+DATA.ghDomains[s.gh].ic+' '+DATA.ghDomains[s.gh].n);if(s.badge)o.push('🏅 完場自動剔 '+DATA.badgeItems.filter(function(x){return x.k===s.badge})[0].t);return o.length?o.join('　'):'呢節唔使記數，玩就得'}())+'</div><details style="margin-top:9px"><summary>顯示完整玩法文字</summary><div class="box" style="margin-top:6px">'+esc(s.how||'')+'</div></details><div class="btns"><button class="btn sm gr" onclick="Prepare.detailStage(\''+esc(Prepare._detailId||'')+'\','+i+')">▶ 試用呢節</button></div></article>';
+      '<div class="mark-row">'+(function(){var o=[];if(s.gh!==undefined){var gd=DATA.ghDomains[s.gh];if(gd)o.push('🦗 計入 '+gd.ic+' '+gd.n)}if(s.badge){var bi=DATA.badgeItems.filter(function(x){return x.k===s.badge})[0];o.push('🏅 完場自動剔 '+(bi?bi.t:s.badge))}return o.length?o.join('　'):'呢節唔使記數，玩就得'}())+'</div><details style="margin-top:9px"><summary>顯示完整玩法文字</summary><div class="box" style="margin-top:6px">'+esc(s.how||'')+'</div></details><div class="btns"><button class="btn sm gr" onclick="Prepare.detailStage(\''+esc(Prepare._detailId||'')+'\','+i+')">▶ 試用呢節</button></div></article>';
   },
   detailStage:function(id,i){
     var t=dur(id);if(t&&t.stages[i])Lead.startStage(id,i);
@@ -65,7 +65,7 @@ var Prepare={
                       :'・🎨 <b>'+esc(x.n)+'</b> → <button class="lnk" onclick="Craft.open(\'any\')">萬用六步</button>'}).join('<br>')+
             '<br><small class="mute">未做過都跟得住：睇成品圖＋逐步拆解。</small></div>'})()+
         '<div class="card" style="box-shadow:none;border:1px solid var(--line);padding:11px;margin:12px 0"><h4 style="margin:0;color:var(--ord)">🧺 物資總清單・逐項撳一下剔走</h4><div class="mats-bar">'+
-          (mats.length?mats.map(function(m){return '<span class="pill" onclick="this.classList.toggle(\'on\')"><span class="dot"></span>'+esc(m)+'</span>'}).join(''):'<span class="mute">今次唔需要額外物資</span>')+'</div></div>'+
+          (mats.length?mats.map(function(m){return '<button type="button" class="pill filter-pill" aria-pressed="false" onclick="this.classList.toggle(\'on\');this.setAttribute(\'aria-pressed\',this.classList.contains(\'on\'))"><span class="dot"></span>'+esc(m)+'</button>'}).join(''):'<span class="mute">今次唔需要額外物資</span>')+'</div></div>'+
         Kit.meetKitHtml(t,'pre');
     } else {
       h+='<div class="btns" style="margin-top:10px"><button class="btn gr" onclick="Modal.close();Lead.start(\''+t.id+'\')">▶ 由頭開始帶領</button><button class="btn ghost" onclick="Modal.close();Pack.pick(\'tpl\',\''+t.id+'\')">📦 套包</button></div>'+
@@ -83,7 +83,7 @@ var Prepare={
     Prepare.editor(m,false);
   },
   editMy:function(id){var m=Store.get('mymeets').find(function(x){return x.id===id});if(m)Prepare.editor(m,true)},
-  delMy:function(id){if(confirm('刪除呢個自製集會?')){Store.set('mymeets',Store.get('mymeets').filter(function(x){return x.id!==id}));App.route()}},
+  delMy:function(id){if(confirm('刪除呢個自製集會?')){if(!Store.set('mymeets',(Store.get('mymeets',[])||[]).filter(function(x){return x.id!==id})))return;App.route()}},
   editor:function(m,isMy){
     Prepare._m=m;Prepare._isMy=isMy;
     var h='<h3>🛠️ 集會編排器</h3><label class="f">集會名稱</label><input type="text" id="edN" value="'+esc(m.n)+'"><div class="btns"><button class="btn sm" onclick="Prepare.save()">💾 儲存</button>'+
@@ -168,7 +168,7 @@ var Prepare={
     var m=Prepare._m;m.n=document.getElementById('edN').value||m.n;
     var my=Store.get('mymeets');var i=my.findIndex(function(x){return x.id===m.id});
     if(i>=0)my[i]=m;else my.push(m);
-    Store.set('mymeets',my);toast('已儲存 ✓');App.route();Modal.close();
+    if(!Store.set('mymeets',my))return;toast('已儲存 ✓');App.route();Modal.close();
   },
   preview:function(){
     var mats=matsOf(Prepare._m);
@@ -189,7 +189,7 @@ var Prepare={
     if(own.some(function(x){return x}))lines.push('','👥 分工:',t.stages.map(function(s,i){return '  '+(i+1)+'. '+s.n+' → '+(own[i]||'未定')}).join('\n'));
     var ck=Kit.checkFor(t.stages||[]);
     if(ck)lines.push('','🧭 '+ck.n+'（出發前讀一次）',ck.items.map(function(x,i){return '  '+(i+1)+'. '+x}).join('\n'));
-    lines.push('','— 分享自 小童軍集會助手 © Scout System');
+    lines.push('','— 分享自 小童軍集會助手 '+App.legalLine());
     var txt=lines.join('\n');
     if(navigator.share)navigator.share({text:txt}).catch(function(){});
     else if(navigator.clipboard)navigator.clipboard.writeText(txt).then(function(){toast('已複製,可直接貼俾其他領袖')});

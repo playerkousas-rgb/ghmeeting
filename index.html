@@ -4,17 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#6BBE66">
+<meta name="copyright" content="© SCOUT SYSTEM 2026">
+<meta name="app-version" content="v5.4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="草蜢助手">
 <meta name="description" content="【非官方輔助工具】前進・Forward —— 陪新領袖行完整場集會：集會目錄・範本・帶領・工作紙・活動・歌曲・快樂傘。與香港童軍總會無任何關聯，一切以總會公佈為準。">
 <meta property="og:title" content="小童軍集會助手 Grasshopper Hub（非官方）">
 <meta property="og:description" content="【非官方輔助工具】前進・Forward：唔係工具，係陪新領袖行完整場集會嘅同伴。與香港童軍總會無任何關聯。">
-<meta property="og:image" content="icons/icon-512.png">
-<link rel="icon" href="icons/favicon-64.png" sizes="64x64">
-<link rel="icon" href="icons/icon-48.png" sizes="48x48">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="apple-touch-icon" href="icons/icon-192.png" sizes="192x192">
+<meta property="og:image" content="https://ghmeeting.vercel.app/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="icon" href="icons/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
 <title>小童軍集會助手 Grasshopper Hub｜前進 Forward</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="css/app.css">
@@ -119,6 +124,7 @@
   <header id="topbar">
     <div class="brand" onclick="location.hash='#plan'"><img class="brand-ic" src="icons/icon-48.png" alt="" width="26" height="26">小童軍集會助手</div>
     <div class="topbtns">
+      <button id="installAppButton" class="iconbtn installbtn" hidden onclick="PWA.install()" title="📲 加入主畫面：全螢幕・離線都開得返" aria-label="加入主畫面：全螢幕、離線都開得返">📲</button>
       <button class="iconbtn" onclick="Kit.searchOpen()" title="🔍 全站搵嘢：範本・手工・圖紙・物料" aria-label="搜尋"><svg class="gh-ic" aria-hidden="true"><use href="#gh-search"></use></svg></button>
       <button class="iconbtn" onclick="App.go('#track')" title="🏅 記錄：團員名單・出席・獎章進度" aria-label="記錄"><svg class="gh-ic" aria-hidden="true"><use href="#gh-track"></use></svg></button>
       <button class="iconbtn" onclick="App.settings()" title="⚙️ 旅團設定" aria-label="設定"><svg class="gh-ic" aria-hidden="true"><use href="#gh-settings"></use></svg></button>
@@ -135,6 +141,13 @@
       <a href="#book" data-tab="book"><svg class="gh-ic" aria-hidden="true"><use href="#gh-book"></use></svg>手冊</a>
     </div>
   </nav>
+  <div id="updateBanner" role="region" aria-label="版本更新" hidden>
+    <span>🔄 有新版本可用。本機資料會保留；更新會重新載入頁面。</span>
+    <span class="ubtns">
+      <button id="updateNowButton" class="btn sm gr" onclick="PWA.applyUpdate()">立即更新</button>
+      <button id="updateLaterButton" class="btn sm ghost" onclick="PWA.later()" aria-label="稍後再更新">稍後</button>
+    </span>
+  </div>
   </div>
   <main id="view"></main>
   <!-- 🧭 step by step：揀咗集會之後，一步步帶到散會 -->
@@ -151,7 +164,7 @@
     </div>
   </nav>
   <!-- 🦗 常駐頁底：© 一行永遠貼喺屏幕最底、喺下方 5 掣下面（唔跟內容捲）。文字由 App.init() 用 DATA.official.note＋App.VER 填入——同 app-foot・p-foot 單一來源 -->
-  <footer id="appfoot" aria-label="非官方聲明"></footer>
+  <footer id="appfoot" aria-label="非官方聲明">© 2026 Scout System・非官方輔助工具・一切以香港童軍總會公佈為準・v5.4</footer>
 </div>
 <div id="leadroot" class="hidden"></div>
 <div id="modal"></div>
@@ -161,6 +174,7 @@
 <script src="js/sheets.js"></script>
 <script src="js/tpls.js"></script>
 <script src="js/app.js"></script>
+<script src="js/pwa.js"></script>
 <script src="js/flow.js"></script>
 <script src="js/prepare.js"></script>
 <script src="js/print.js"></script>
@@ -176,26 +190,8 @@
 <script src="js/song.js"></script>
 <script src="js/tools.js"></script>
 <script>
-if('serviceWorker' in navigator){
-  var _swHadController=!!navigator.serviceWorker.controller;
-  addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js').then(function(reg){
-      reg.update();
-      /* 安裝包先落（細）；大圖等有網空閒時背景補，唔阻開 APP */
-      var fill=function(){
-        var sw=(reg.active||navigator.serviceWorker.controller);
-        if(sw&&sw.postMessage)sw.postMessage({t:'precache-extra'});
-      };
-      if('requestIdleCallback' in window){requestIdleCallback(fill,{timeout:8000})}
-      else{setTimeout(fill,3000)}
-    }).catch(function(){});
-  });
-  /* 有新 SW 接手 → 自動重新整理一次，保證見到最新版（首次開啟唔會 refresh） */
-  navigator.serviceWorker.addEventListener('controllerchange',function(){
-    if(_swHadController){location.reload()}
-  });
-}
 App.init();
+PWA.init();
 </script>
 <!-- 📮 意見回報：Scout Admin 統一回報 v1。data-app 一定用「小童軍集會」（唔可以用單一支部名「小童軍」，否則會被歸入專章系統） -->
 <script src="https://scout-admin-blue.vercel.app/widget.js" data-app="小童軍集會" defer></script>
